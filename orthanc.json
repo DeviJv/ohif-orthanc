@@ -48,7 +48,6 @@
   "DicomAlwaysAllowMove" : false,
   "DicomCheckModalityHost" : false,
   "DicomModalities" : {
-      // "MAPDRX" : [ "MAPDR", "127.0.0.1", 11112]
   },
   "DicomModalitiesInDatabase" : false,
   "DicomEchoChecksFind" : false,
@@ -64,12 +63,11 @@
   "HttpTimeout" : 60,
   "HttpsVerifyPeers" : true,
   "HttpsCACertificates" : "/etc/ssl/certs/ca-certificates.crt",
-"UserMetadata" : {
-    // "Sample" : 1024
+" UserMetadata" : {
+
   },
   "UserContentType" : {
-    // "sample" : 1024
-    // "sample2" : [ 1025, "application/pdf" ]
+  
   },
   "StableAge" : 60,
   "StrictAetComparison" : false,

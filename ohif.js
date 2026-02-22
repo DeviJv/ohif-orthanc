@@ -137,6 +137,8 @@ window.config = {
   cornerstoneExtensionConfig: {},
 
   // studyListFunctionsEnabled is set to true to enable DICOM uploading
-  studyListFunctionsEnabled: true
-  
+  studyListFunctionsEnabled: true,
+  investigationalUseDialog: {
+  enabled: false
+},
 };

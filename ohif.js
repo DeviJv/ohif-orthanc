@@ -139,6 +139,7 @@ window.config = {
   // studyListFunctionsEnabled is set to true to enable DICOM uploading
   studyListFunctionsEnabled: true,
   investigationalUseDialog: {
-  enabled: false
-},
+    enabled: false
+  },
+  investigationalUseDialog: false
 };

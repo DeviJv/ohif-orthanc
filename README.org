@@ -26,13 +26,13 @@ It will also create a new /bridge-network/ pacs.
 1. To access =OHIF= go to address `http://server-ip:3000`.
 2. To access =ORTHANC= webpage go to address `http://server-ip:8042`
 
-Default Username is =mapdr= & password is =changestrongpassword=
+Default Username is =quantum= & password is =quantum123=
 
 
 *** Import DICOM Studies
 1. You can directly Import DICOM files or Folder from OHIF.
 2. You can directly send images from existing PACS/Machine
- - AE: MAPDR
+ - AE: QTM
  - PORT: 4242
  - IP: your-server-ip
 3. If you have file locally install httplib2 with pip =python ImportDicomFiles.py localhost 8042 /path/to/input/dir=

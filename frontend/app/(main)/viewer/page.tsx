@@ -31,7 +31,13 @@ function ViewerContent() {
     }
 
     // We assume viewer is hosted on port 3000 as configured in docker-compose
-    const ohifUrl = `http://localhost:3000/viewer/${studyId}`;
+    const getOhifUrl = () => {
+        if (typeof window === "undefined") return "";
+        const hostname = window.location.hostname;
+        return `http://${hostname}:3000/viewer/${studyId}`;
+    };
+
+    const ohifUrl = getOhifUrl();
 
     return (
         <div className="flex flex-col h-full gap-4">

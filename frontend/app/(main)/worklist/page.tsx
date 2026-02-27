@@ -12,13 +12,11 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, InformationCircleIcon, ArrowRight01Icon, RefreshIcon } from "@hugeicons/core-free-icons";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { Search01Icon, ArrowRight01Icon, RefreshIcon, ViewIcon, ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 
 interface Study {
     ID: string;
@@ -39,6 +37,8 @@ export default function WorklistPage() {
     const [studies, setStudies] = useState<Study[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(null);
+    const [showViewer, setShowViewer] = useState(false);
 
     const fetchStudies = async () => {
         setLoading(true);
@@ -66,11 +66,63 @@ export default function WorklistPage() {
         fetchStudies();
     }, []);
 
+    const handleOpenViewer = (uid: string) => {
+        setSelectedStudyUID(uid);
+        setShowViewer(true);
+    };
+
+    const handleBackToList = () => {
+        setShowViewer(false);
+        setSelectedStudyUID(null);
+    };
+
     const filteredStudies = studies.filter((study) => {
         const patientName = (study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName || "").toLowerCase();
         const patientID = (study.MainDicomTags.PatientID || "").toLowerCase();
         return patientName.includes(search.toLowerCase()) || patientID.includes(search.toLowerCase());
     });
+
+    const getOhifUrl = (uid: string) => {
+        if (typeof window === "undefined") return "";
+        const hostname = window.location.hostname;
+        return `http://${hostname}:3000/viewer/${uid}`;
+    };
+
+    if (showViewer && selectedStudyUID) {
+        return (
+            <div className="flex flex-col h-full gap-4">
+                <div className="flex items-center justify-between px-6 pt-4">
+                    <div className="flex items-center gap-6">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                            onClick={handleBackToList}
+                        >
+                            <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+                            Back
+                        </Button>
+                        <div className="flex items-center gap-3">
+                            <HugeiconsIcon icon={ViewIcon} className="size-5 text-primary" />
+                            <h1 className="font-bold text-lg tracking-tight">Diagnostic Viewer</h1>
+                            <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest ml-1">
+                                Orthanc Node
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex-1 bg-black mx-6 mb-6 rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative">
+                    <iframe
+                        src={getOhifUrl(selectedStudyUID)}
+                        className="w-full h-full border-0 absolute inset-0"
+                        title="OHIF Medical Viewer"
+                        allowFullScreen
+                    />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-6 p-6">
@@ -142,13 +194,15 @@ export default function WorklistPage() {
                                             {study.MainDicomTags.StudyDescription || "-"}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Link
-                                                href={`/viewer?id=${study.MainDicomTags.StudyInstanceUID}`}
-                                                className={cn(buttonVariants({ size: "sm", variant: "secondary" }), "gap-1")}
+                                            <Button
+                                                size="sm"
+                                                variant="secondary"
+                                                className="gap-1"
+                                                onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID)}
                                             >
                                                 Open Viewer
                                                 <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
-                                            </Link>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))

@@ -38,7 +38,7 @@ function ViewerContent() {
             <div className="flex items-center justify-between px-6 pt-4">
                 <div className="flex items-center gap-4">
                     <Link
-                        href="/"
+                        href="/worklist"
                         className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "gap-2")}
                     >
                         <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />

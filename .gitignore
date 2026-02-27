@@ -1,0 +1,18 @@
+# Database data (do not push to git)
+app_postgres_data/
+orthanc_db/
+postgres_data/
+orthanc_db/
+
+# Next.js / Node
+node_modules/
+.next/
+out/
+build/
+.env*
+!.env.example
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.log

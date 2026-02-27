@@ -1,0 +1,19 @@
+/* Hide OHIF header (logo, Study List, INVESTIGATIONAL USE ONLY, Options) */
+.header,
+header.header,
+.app-header,
+nav.navbar,
+.navbar,
+[class*="NavBar"],
+[class*="navbar"],
+[class*="Header"]:not([class*="study"]):not([class*="viewport"]) {
+  display: none !important;
+}
+
+/* Pastikan viewer mengisi ruang yang tersisa */
+.viewer-container,
+.app,
+#root > div {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}

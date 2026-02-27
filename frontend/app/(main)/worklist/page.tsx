@@ -84,8 +84,9 @@ export default function WorklistPage() {
 
     const getOhifUrl = (uid: string) => {
         if (typeof window === "undefined") return "";
+        const protocol = window.location.protocol; // "https:" or "http:"
         const hostname = window.location.hostname;
-        return `http://${hostname}:3000/viewer/${uid}`;
+        return `${protocol}//${hostname}:3000/viewer/${uid}`;
     };
 
     if (showViewer && selectedStudyUID) {

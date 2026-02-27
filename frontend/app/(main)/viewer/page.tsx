@@ -33,8 +33,9 @@ function ViewerContent() {
     // We assume viewer is hosted on port 3000 as configured in docker-compose
     const getOhifUrl = () => {
         if (typeof window === "undefined") return "";
+        const protocol = window.location.protocol; // "https:" or "http:"
         const hostname = window.location.hostname;
-        return `http://${hostname}:3000/viewer/${studyId}`;
+        return `${protocol}//${hostname}:3000/viewer/${studyId}`;
     };
 
     const ohifUrl = getOhifUrl();

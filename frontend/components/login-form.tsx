@@ -29,7 +29,23 @@ export function LoginForm({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
+  const normalizeCallbackUrl = (rawCallbackUrl: string | null) => {
+    if (!rawCallbackUrl) return "/";
+    if (rawCallbackUrl.startsWith("/")) return rawCallbackUrl;
+
+    try {
+      const parsed = new URL(rawCallbackUrl);
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "/";
+
+      const path = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+      return path.startsWith("/") ? path : "/";
+    } catch {
+      return "/";
+    }
+  };
+
+  const callbackUrl = normalizeCallbackUrl(searchParams.get("callbackUrl"));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +69,7 @@ export function LoginForm({
         router.push(callbackUrl);
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);

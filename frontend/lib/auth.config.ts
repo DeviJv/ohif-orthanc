@@ -9,7 +9,7 @@ export const authConfig = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
+            async authorize() {
                 // This will be overridden in the main auth.ts that has access to Prisma
                 return null;
             },
@@ -30,10 +30,19 @@ export const authConfig = {
             if (isApiRoute) return true;
 
             if (!isLoggedIn && !isOnLoginPage) {
-                return false; // Redirect to login
+                const loginUrl = nextUrl.clone();
+                loginUrl.pathname = '/login';
+                loginUrl.search = '';
+                // Keep callback relative so it never leaks internal hostnames like localhost.
+                loginUrl.searchParams.set('callbackUrl', `${nextUrl.pathname}${nextUrl.search}`);
+                return Response.redirect(loginUrl);
             }
 
             if (isLoggedIn && isOnLoginPage) {
+                const callbackUrl = nextUrl.searchParams.get('callbackUrl');
+                if (callbackUrl?.startsWith('/')) {
+                    return Response.redirect(new URL(callbackUrl, nextUrl));
+                }
                 return Response.redirect(new URL('/', nextUrl));
             }
 
@@ -41,13 +50,14 @@ export const authConfig = {
         },
         async jwt({ token, user }) {
             if (user) {
-                token.role = (user as any).role;
+                token.role = (user as { role?: string }).role;
             }
             return token;
         },
         async session({ session, token }) {
             if (token && session.user) {
-                (session.user as any).role = token.role;
+                (session.user as { role?: string }).role =
+                    typeof token.role === "string" ? token.role : undefined;
             }
             return session;
         },

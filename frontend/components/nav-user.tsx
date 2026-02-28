@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { signIn, signOut } from "next-auth/react"
+import { signOut } from "next-auth/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { UnfoldMoreIcon, SparklesIcon, CheckmarkBadgeIcon, CreditCardIcon, NotificationIcon, LogoutIcon } from "@hugeicons/core-free-icons"
 
@@ -34,6 +34,16 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: false })
+    } finally {
+      // Keep redirect on current browser origin to avoid wrong host from server-side base URL detection.
+      window.location.assign("/login")
+    }
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -96,7 +106,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem onClick={handleLogout}>
               <HugeiconsIcon icon={LogoutIcon} strokeWidth={2} />
               Log out
             </DropdownMenuItem>

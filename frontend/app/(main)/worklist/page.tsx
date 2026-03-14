@@ -1,71 +1,62 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-export const dynamic = "force-dynamic";
-
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
+import { 
+    RefreshIcon, 
+    ArrowLeft01Icon
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, ArrowRight01Icon, RefreshIcon, ViewIcon, ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
+import { 
+    useReactTable, 
+    getCoreRowModel, 
+    getPaginationRowModel, 
+    getSortedRowModel, 
+    getFilteredRowModel, 
+    ColumnFiltersState, 
+    SortingState, 
+    VisibilityState,
+    flexRender
+} from "@tanstack/react-table";
+import { DateRange } from "react-day-picker";
 
-interface Study {
-    ID: string;
-    MainDicomTags: {
-        PatientName: string;
-        PatientID: string;
-        StudyDate: string;
-        StudyDescription: string;
-        AccessionNumber: string;
-        StudyInstanceUID: string;
-    };
-    PatientMainDicomTags?: {
-        PatientName: string;
-    };
-}
+import { useWorklist } from "./hooks/use-worklist";
+import { getColumns } from "./components/columns";
+import { WorklistToolbar } from "./components/worklist-toolbar";
+import { StudyDetailRow } from "./components/study-detail-row";
+import { DeleteStudyDialog } from "./components/delete-study-dialog";
+import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance } from "./utils/actions";
+import { Study } from "./types";
+import OhifViewer from "../../../components/ohif-viewer";
+import BasicViewer from "../../../components/basic-viewer";
 
 export default function WorklistPage() {
-    const [studies, setStudies] = useState<Study[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState("");
-    const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(null);
-    const [viewerMode, setViewerMode] = useState<string>("viewer");
+    const {
+        studies, loading, uploading,
+        expandedStudies, expandedSeries, expandedInstances,
+        seriesData, instancesData, tagsData,
+        toggleStudyExpansion, toggleSeriesExpansion, toggleInstanceExpansion,
+        handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
+        handleEditPatient, handleAnonymize,
+        handleAddLabel, handleRemoveLabel,
+        handleFileUpload, fetchStudies
+    } = useWorklist();
+
+    // UI States
     const [showViewer, setShowViewer] = useState(false);
+    const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(null);
+    const [viewerMode, setViewerMode] = useState("viewer");
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [studyToDelete, setStudyToDelete] = useState<Study | null>(null);
 
-    const fetchStudies = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch("/api/orthanc/studies");
-            if (!response.ok) throw new Error("Failed to fetch study list");
-            const ids: string[] = await response.json();
-
-            const details = await Promise.all(
-                ids.slice(0, 20).map(async (id) => {
-                    const res = await fetch(`/api/orthanc/studies/${id}`);
-                    return res.json();
-                })
-            );
-
-            setStudies(details);
-        } catch (error) {
-            console.error("Failed to fetch studies:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchStudies();
-    }, []);
+    // Table State
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [globalFilter, setGlobalFilter] = useState("");
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
     const handleOpenViewer = (uid: string, mode: string = "viewer") => {
         setSelectedStudyUID(uid);
@@ -73,155 +64,215 @@ export default function WorklistPage() {
         setShowViewer(true);
     };
 
-    const handleBackToList = () => {
-        setShowViewer(false);
-        setSelectedStudyUID(null);
-    };
-
-    const filteredStudies = studies.filter((study) => {
-        const patientName = (study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName || "").toLowerCase();
-        const patientID = (study.MainDicomTags.PatientID || "").toLowerCase();
-        return patientName.includes(search.toLowerCase()) || patientID.includes(search.toLowerCase());
+    const columns = getColumns({
+        expandedStudies,
+        toggleStudyExpansion,
+        handleOpenViewer,
+        handleDownload: handleDownloadStudy,
+        setStudyToDelete,
+        setIsDeleteDialogOpen,
+        handleEditPatient
     });
 
-    const getOhifUrl = (uid: string, mode: string) => {
-        return `/ohif/${mode}?StudyInstanceUIDs=${uid}`;
-    };
+    const table = useReactTable({
+        data: studies,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        state: {
+            sorting,
+            columnFilters,
+            globalFilter,
+            columnVisibility,
+            rowSelection,
+        },
+    });
+
+    // Effect for date range filter
+    React.useEffect(() => {
+        table.getColumn("studyDate")?.setFilterValue(dateRange);
+    }, [dateRange, table]);
 
     if (showViewer && selectedStudyUID) {
         return (
-            <div className="flex flex-col h-full gap-4">
-                <div className="flex items-center justify-between px-6 pt-4">
-                    <div className="flex items-center gap-6">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2 text-muted-foreground hover:text-foreground transition-colors"
-                            onClick={handleBackToList}
-                        >
-                            <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
-                            Back
-                        </Button>
-                        <div className="flex items-center gap-3">
-                            <HugeiconsIcon icon={ViewIcon} className="size-5 text-primary" />
-                            <h1 className="font-bold text-lg tracking-tight">Diagnostic Viewer</h1>
-                            <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest ml-1">
-                                Orthanc Node
-                            </span>
+            <div className="flex flex-col h-screen w-full bg-[#020417] overflow-hidden">
+                {/* Viewer Container with Table-like Margins */}
+                <div className="flex-1 w-full max-w-[1600px] mx-auto p-6 md:p-8 overflow-hidden flex flex-col">
+                    <div className="flex-1 rounded-2xl border-2 border-slate-800/60 overflow-hidden bg-black shadow-2xl relative">
+                        {/* The Iframe */}
+                        <div className="absolute inset-0">
+                            {viewerMode === "viewer" ? (
+                                <OhifViewer studyInstanceUIDs={selectedStudyUID} />
+                            ) : (
+                                <BasicViewer studyInstanceUID={selectedStudyUID} />
+                            )}
+                        </div>
+                        
+                        {/* Integrated Header Overlay - Covers the OHIF Logo but keeps the toolbar visible */}
+                        <div className="absolute top-0 left-0 p-0 z-20 pointer-events-none">
+                            <div className="flex items-center gap-2 bg-[#090c29] border-r border-b border-slate-700/50 rounded-br-xl p-1.5 pr-5 shadow-2xl pointer-events-auto">
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    className="h-9 gap-2 text-slate-200 hover:text-white hover:bg-slate-800/50 px-3 rounded-lg"
+                                    onClick={() => setShowViewer(false)}
+                                >
+                                    <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+                                    <span className="font-semibold text-sm">Back to Worklist</span>
+                                </Button>
+                                
+                                <div className="w-px h-5 bg-slate-700 mx-1" />
+                                
+                                <div className="flex flex-col justify-center">
+                                    <span className="text-[11px] font-black text-primary uppercase tracking-tighter leading-tight">Quantum PACS</span>
+                                    <span className="text-[10px] text-slate-400 font-medium leading-tight">
+                                        Viewer v1.0
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="flex-1 bg-black mx-6 mb-6 rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative">
-                    <iframe
-                        src={getOhifUrl(selectedStudyUID, viewerMode)}
-                        className="w-full h-full border-0 absolute inset-0"
-                        title="OHIF Medical Viewer"
-                        allowFullScreen
-                    />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-6 p-6">
-            <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-bold tracking-tight">Study Worklist</h1>
-                    <p className="text-muted-foreground">Monitoring all radiographic studies from PACS node.</p>
-                </div>
-                <Button onClick={fetchStudies} disabled={loading} variant="outline" className="gap-2">
-                    <HugeiconsIcon icon={RefreshIcon} className={`size-4 ${loading ? "animate-spin" : ""}`} />
-                    Refresh Data
-                </Button>
+        <div className="p-6 max-w-[1600px] mx-auto space-y-6">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Study Worklist</h1>
+                <p className="text-muted-foreground">Manage and view medical imaging studies from Orthanc PACS.</p>
             </div>
 
-            <Card>
-                <CardHeader className="pb-3">
-                    <div className="flex items-center gap-4">
-                        <div className="relative flex-1 max-w-sm">
-                            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search Patient Name or ID..."
-                                className="pl-9"
-                                value={search}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Patient Name</TableHead>
-                                <TableHead>Patient ID</TableHead>
-                                <TableHead>Study Date</TableHead>
-                                <TableHead>Description</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
+            <WorklistToolbar 
+                table={table}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+                uploading={uploading}
+                handleFileUpload={handleFileUpload}
+                fetchStudies={fetchStudies}
+            />
+
+            <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+                <Table>
+                    <TableHeader className="bg-slate-50/50">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="font-bold text-slate-700">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ))}
                             </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-12">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <HugeiconsIcon icon={RefreshIcon} className="size-8 animate-spin text-primary" />
-                                            <span className="text-sm font-medium">Fetching from PACS Server...</span>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ) : filteredStudies.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
-                                        No studies found in the worklist.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                filteredStudies.map((study) => (
-                                    <TableRow key={study.ID}>
-                                        <TableCell className="font-semibold">
-                                            {study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName}
-                                        </TableCell>
-                                        <TableCell>{study.MainDicomTags.PatientID}</TableCell>
-                                        <TableCell>
-                                            {study.MainDicomTags.StudyDate ?
-                                                `${study.MainDicomTags.StudyDate.slice(0, 4)}-${study.MainDicomTags.StudyDate.slice(4, 6)}-${study.MainDicomTags.StudyDate.slice(6, 8)}`
-                                                : "N/A"}
-                                        </TableCell>
-                                        <TableCell className="max-w-[200px] truncate">
-                                            {study.MainDicomTags.StudyDescription || "-"}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex justify-end gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    variant="secondary"
-                                                    className="gap-1 h-8 text-[11px]"
-                                                    onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "viewer")}
-                                                >
-                                                    <HugeiconsIcon icon={ViewIcon} className="size-3" />
-                                                    Basic
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="gap-1 h-8 text-[11px]"
-                                                    onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmentation")}
-                                                >
-                                                    <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
-                                                    Segmentation
-                                                </Button>
-                                            </div>
-                                        </TableCell>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="text-center py-20">
+                                    <div className="flex flex-col items-center gap-3">
+                                        <HugeiconsIcon icon={RefreshIcon} className="size-10 animate-spin text-primary" />
+                                        <span className="text-lg font-medium text-slate-500">Fetching from PACS Server...</span>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <React.Fragment key={row.id}>
+                                    <TableRow
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id} className="py-4">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                                    {expandedStudies[row.original.ID] && (
+                                        <StudyDetailRow 
+                                            study={row.original}
+                                            studies={studies}
+                                            seriesData={seriesData}
+                                            instancesData={instancesData}
+                                            tagsData={tagsData}
+                                            expandedSeries={expandedSeries}
+                                            expandedInstances={expandedInstances}
+                                            toggleSeriesExpansion={toggleSeriesExpansion}
+                                            toggleInstanceExpansion={toggleInstanceExpansion}
+                                            handleAnonymize={handleAnonymize}
+                                            handleOpenOrthancViewer={handleOpenOrthancViewer}
+                                            handleDownloadSeries={handleDownloadSeries}
+                                            handleDeleteSeries={handleDeleteSeries}
+                                            handleDownloadInstance={handleDownloadInstance}
+                                            handleDeleteInstance={handleDeleteInstance}
+                                            handleAddLabel={handleAddLabel}
+                                            handleRemoveLabel={handleRemoveLabel}
+                                            columnsCount={columns.length}
+                                        />
+                                    )}
+                                </React.Fragment>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
+                                    No studies found.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <div className="flex items-center justify-between py-4">
+                <div className="text-sm text-muted-foreground font-medium">
+                    Showing {table.getFilteredRowModel().rows.length} studies
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="shadow-sm"
+                    >
+                        Previous
+                    </Button>
+                    <div className="flex items-center gap-1 text-sm font-medium px-2">
+                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="shadow-sm"
+                    >
+                        Next
+                    </Button>
+                </div>
+            </div>
+
+            <DeleteStudyDialog 
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+                study={studyToDelete}
+                onConfirm={handleDeleteStudy}
+            />
         </div>
     );
 }

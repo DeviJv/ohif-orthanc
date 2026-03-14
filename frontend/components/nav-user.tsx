@@ -49,8 +49,9 @@ export function NavUser({
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger
+            nativeButton={false}
             render={
-              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
+              <SidebarMenuButton render={<div />} size="lg" className="aria-expanded:bg-muted" />
             }
           >
             <Avatar>

@@ -46,6 +46,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: quantum-pacs-frontend:latest
     container_name: pacs-web
     # Port 3001 is now handled by Nginx, but keeping mapping for local access if needed
     ports:

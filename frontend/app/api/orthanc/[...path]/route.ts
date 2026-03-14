@@ -31,8 +31,8 @@ async function proxyRequest(req: NextRequest, segments: string[]) {
         };
 
         if (req.method !== "GET" && req.method !== "HEAD") {
-            const body = await req.text();
-            if (body) {
+            const body = await req.arrayBuffer();
+            if (body.byteLength > 0) {
                 fetchOptions.body = body;
                 // Forward the content type if available
                 const contentType = req.headers.get("content-type");
@@ -77,6 +77,22 @@ export async function GET(
 }
 
 export async function POST(
+    req: NextRequest,
+    { params }: { params: Promise<{ path: string[] }> }
+) {
+    const { path } = await params;
+    return proxyRequest(req, path);
+}
+
+export async function DELETE(
+    req: NextRequest,
+    { params }: { params: Promise<{ path: string[] }> }
+) {
+    const { path } = await params;
+    return proxyRequest(req, path);
+}
+
+export async function PUT(
     req: NextRequest,
     { params }: { params: Promise<{ path: string[] }> }
 ) {

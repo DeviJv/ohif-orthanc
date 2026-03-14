@@ -38,6 +38,7 @@ export default function WorklistPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(null);
+    const [viewerMode, setViewerMode] = useState<string>("viewer");
     const [showViewer, setShowViewer] = useState(false);
 
     const fetchStudies = async () => {
@@ -66,8 +67,9 @@ export default function WorklistPage() {
         fetchStudies();
     }, []);
 
-    const handleOpenViewer = (uid: string) => {
+    const handleOpenViewer = (uid: string, mode: string = "viewer") => {
         setSelectedStudyUID(uid);
+        setViewerMode(mode);
         setShowViewer(true);
     };
 
@@ -82,8 +84,8 @@ export default function WorklistPage() {
         return patientName.includes(search.toLowerCase()) || patientID.includes(search.toLowerCase());
     });
 
-    const getOhifUrl = (uid: string) => {
-        return `/viewer/${uid}`;
+    const getOhifUrl = (uid: string, mode: string) => {
+        return `/ohif/${mode}?StudyInstanceUIDs=${uid}`;
     };
 
     if (showViewer && selectedStudyUID) {
@@ -112,7 +114,7 @@ export default function WorklistPage() {
 
                 <div className="flex-1 bg-black mx-6 mb-6 rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative">
                     <iframe
-                        src={getOhifUrl(selectedStudyUID)}
+                        src={getOhifUrl(selectedStudyUID, viewerMode)}
                         className="w-full h-full border-0 absolute inset-0"
                         title="OHIF Medical Viewer"
                         allowFullScreen
@@ -192,15 +194,26 @@ export default function WorklistPage() {
                                             {study.MainDicomTags.StudyDescription || "-"}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button
-                                                size="sm"
-                                                variant="secondary"
-                                                className="gap-1"
-                                                onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID)}
-                                            >
-                                                Open Viewer
-                                                <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
-                                            </Button>
+                                            <div className="flex justify-end gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    variant="secondary"
+                                                    className="gap-1 h-8 text-[11px]"
+                                                    onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "viewer")}
+                                                >
+                                                    <HugeiconsIcon icon={ViewIcon} className="size-3" />
+                                                    Basic
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="gap-1 h-8 text-[11px]"
+                                                    onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmentation")}
+                                                >
+                                                    <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
+                                                    Segmentation
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))

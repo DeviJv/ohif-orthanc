@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 function ViewerContent() {
     const searchParams = useSearchParams();
     const studyId = searchParams.get("id");
+    const mode = searchParams.get("mode") || "viewer";
 
     if (!studyId) {
         return (
@@ -31,7 +32,7 @@ function ViewerContent() {
     }
 
     const getOhifUrl = () => {
-        return `/viewer/${studyId}`;
+        return `/ohif/${mode}?StudyInstanceUIDs=${studyId}`;
     };
 
     const ohifUrl = getOhifUrl();

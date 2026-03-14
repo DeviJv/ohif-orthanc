@@ -76,8 +76,8 @@ services:
       - ./nginx_ohif.conf:/etc/nginx/conf.d/default.conf:ro
       # SSL Certificates - Update these paths to match your VPS certificate location
       # Common path for Certbot: /etc/letsencrypt/live/yourdomain/fullchain.pem
-      # Mapping the whole live directory for convenience
-      - /etc/letsencrypt/live:/etc/nginx/ssl:ro
+      # Mapping the whole letsencrypt directory for convenience and to support symlinks
+      - /etc/letsencrypt:/etc/nginx/ssl:ro
     networks:
       - pacs
     depends_on:

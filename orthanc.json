@@ -15,7 +15,9 @@
   "MaximumStorageSize": 0,
   "MaximumPatientCount": 0,
   "MaximumStorageCacheSize": 128,
-  "LuaScripts": [],
+  "LuaScripts": [
+    "/etc/orthanc/validation.lua"
+  ],
   "Plugins": [
     "/usr/share/orthanc/plugins",
     "/usr/local/share/orthanc/plugins"

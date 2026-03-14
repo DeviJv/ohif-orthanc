@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         source: '/logo.png',
         destination: 'http://ohif:80/logo.png',
       },
+      {
+        source: '/orthanc/:path*',
+        destination: 'http://ohif:80/orthanc/:path*',
+      },
       // Proxy OHIF static assets that are loaded at root level (JS, CSS, configs)
       {
         source: '/:file(\\w+\\.js)',

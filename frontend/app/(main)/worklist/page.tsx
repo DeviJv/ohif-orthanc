@@ -83,7 +83,7 @@ export default function WorklistPage() {
     });
 
     const getOhifUrl = (uid: string) => {
-        return `/viewer/${uid}`;
+        return `/viewer/dicomweb/studies/${uid}`;
     };
 
     if (showViewer && selectedStudyUID) {

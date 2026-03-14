@@ -64,6 +64,16 @@ export default function WorklistPage() {
         setShowViewer(true);
     };
 
+    const handleDeleteStudyLocal = async (id: string) => {
+        try {
+            await handleDeleteStudy(id);
+            setIsDeleteDialogOpen(false);
+            setStudyToDelete(null);
+        } catch (error) {
+            console.error("Failed to delete study:", error);
+        }
+    };
+
     const columns = getColumns({
         expandedStudies,
         toggleStudyExpansion,
@@ -271,7 +281,7 @@ export default function WorklistPage() {
                 open={isDeleteDialogOpen}
                 onOpenChange={setIsDeleteDialogOpen}
                 study={studyToDelete}
-                onConfirm={handleDeleteStudy}
+                onConfirm={handleDeleteStudyLocal}
             />
         </div>
     );

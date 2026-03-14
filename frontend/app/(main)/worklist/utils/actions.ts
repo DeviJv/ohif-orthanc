@@ -1,8 +1,10 @@
 "use client";
 
 import { Study } from "../types";
+import { toast } from "sonner";
 
 export const handleDownloadStudy = async (id: string, patientName: string) => {
+    const toastId = toast.loading(`Preparing download for ${patientName}...`);
     try {
         const response = await fetch(`/api/orthanc/studies/${id}/archive`);
         if (!response.ok) throw new Error("Failed to download study");
@@ -15,13 +17,16 @@ export const handleDownloadStudy = async (id: string, patientName: string) => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        toast.success(`Study for ${patientName} downloaded successfully`, { id: toastId });
     } catch (error) {
         console.error("Download error:", error);
+        toast.error(`Failed to download study for ${patientName}`, { id: toastId });
         throw error;
     }
 };
 
 export const handleDownloadSeries = async (id: string, description: string) => {
+    const toastId = toast.loading(`Preparing download for series ${description || id.slice(0, 8)}...`);
     try {
         const response = await fetch(`/api/orthanc/series/${id}/archive`);
         if (!response.ok) throw new Error("Failed to download series");
@@ -34,13 +39,16 @@ export const handleDownloadSeries = async (id: string, description: string) => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        toast.success(`Series downloaded successfully`, { id: toastId });
     } catch (error) {
         console.error("Download series error:", error);
+        toast.error(`Failed to download series`, { id: toastId });
         throw error;
     }
 };
 
 export const handleDownloadInstance = async (id: string, instanceNumber: string) => {
+    const toastId = toast.loading(`Preparing download for instance ${instanceNumber}...`);
     try {
         const response = await fetch(`/api/orthanc/instances/${id}/file`);
         if (!response.ok) throw new Error("Failed to download instance");
@@ -53,8 +61,10 @@ export const handleDownloadInstance = async (id: string, instanceNumber: string)
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        toast.success(`Instance ${instanceNumber} downloaded`, { id: toastId });
     } catch (error) {
         console.error("Download instance error:", error);
+        toast.error(`Failed to download instance ${instanceNumber}`, { id: toastId });
         throw error;
     }
 };

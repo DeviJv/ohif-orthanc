@@ -4,8 +4,10 @@ import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { Study, Series, Instance, DicomTags } from "../types";
 import { orthancApi } from "../utils/api";
+import { useTasks } from "@/context/task-context";
 
 export function useWorklist() {
+    const { addTask, updateTask } = useTasks();
     const [studies, setStudies] = useState<Study[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -99,66 +101,69 @@ export function useWorklist() {
     }, [fetchInstanceTags]);
 
     const handleDeleteStudy = useCallback(async (id: string) => {
+        const taskId = addTask({ id: `delete-study-${id}`, description: "Deleting study...", type: "delete" });
         try {
             await orthancApi.deleteStudy(id);
-            toast.success("Study Dihapus", { description: "Seluruh data study telah dihapus dari PACS." });
+            updateTask(taskId, "success");
             fetchStudies();
         } catch (error) {
             console.error("Failed to delete study:", error);
-            toast.error("Gagal Menghapus Study", { description: "Terjadi kesalahan saat menghapus data di server." });
+            updateTask(taskId, "error");
         }
-    }, [fetchStudies]);
+    }, [fetchStudies, addTask, updateTask]);
 
     const handleDeleteSeries = useCallback(async (id: string, studyId: string) => {
         if (!confirm("Apakah Anda yakin ingin menghapus series ini?")) return;
+        const taskId = addTask({ id: `delete-series-${id}`, description: "Deleting series...", type: "delete" });
         try {
             await orthancApi.deleteSeries(id);
-            toast.success("Series Berhasil Dihapus", { description: `Series dengan ID ${id.slice(0, 8)} telah dihapus dari server.` });
+            updateTask(taskId, "success");
             setSeriesData(prev => ({ ...prev, [studyId]: prev[studyId].filter(s => s.ID !== id) }));
         } catch (error) {
             console.error("Delete series error:", error);
-            toast.error("Gagal Menghapus Series", { description: "Pastikan koneksi ke server Orthanc stabil." });
+            updateTask(taskId, "error");
         }
-    }, []);
+    }, [addTask, updateTask]);
 
     const handleDeleteInstance = useCallback(async (id: string, seriesId: string) => {
         if (!confirm("Apakah Anda yakin ingin menghapus instance ini?")) return;
+        const taskId = addTask({ id: `delete-instance-${id}`, description: "Deleting instance...", type: "delete" });
         try {
             await orthancApi.deleteInstance(id);
-            toast.success("Instance Berhasil Dihapus", { description: `Instance dengan ID ${id.slice(0, 8)} telah dihapus.` });
+            updateTask(taskId, "success");
             setInstancesData(prev => ({ ...prev, [seriesId]: prev[seriesId].filter(i => i.ID !== id) }));
         } catch (error) {
             console.error("Delete instance error:", error);
-            toast.error("Gagal Menghapus Instance", { description: "Gagal menghapus file instance DICOM." });
+            updateTask(taskId, "error");
         }
-    }, []);
+    }, [addTask, updateTask]);
 
     const handleEditPatient = useCallback(async (studyId: string, currentName: string) => {
         const newName = prompt("Masukkan Nama Pasien Baru:", currentName);
         if (newName === null || newName === currentName) return;
+        const taskId = addTask({ id: `edit-patient-${studyId}`, description: "Updating patient data...", type: "modify" });
         try {
-            const toastId = toast.loading("Memperbarui Data...", { description: "Sedang mengirim perubahan metadata ke server." });
             await orthancApi.modifyStudy(studyId, { PatientName: newName });
-            toast.success("Data Berhasil Diperbarui", { id: toastId, description: `Nama pasien telah diubah menjadi ${newName}.` });
+            updateTask(taskId, "success");
             fetchStudies();
         } catch (error) {
             console.error("Edit patient error:", error);
-            toast.error("Gagal memperbarui data", { description: "Terjadi kesalahan saat memodifikasi metadata di server." });
+            updateTask(taskId, "error");
         }
-    }, [fetchStudies]);
+    }, [fetchStudies, addTask, updateTask]);
 
     const handleAnonymize = useCallback(async (id: string, type: "study" | "series") => {
         if (!confirm(`Anonymize ${type}? This will create a new anonymized ${type}.`)) return;
+        const taskId = addTask({ id: `anonymize-${type}-${id}`, description: `Anonymizing ${type}...`, type: "anonymize" });
         try {
-            const toastId = toast.loading(`Sedang Mengonversi...`, { description: `Proses anonymize ${type} sedang berjalan di server.` });
             await orthancApi.anonymize(id, type);
-            toast.success("Anonymize Berhasil", { id: toastId, description: `${type} baru yang telah di-anonymize telah dibuat.` });
+            updateTask(taskId, "success");
             fetchStudies();
         } catch (error) {
             console.error("Anonymize error:", error);
-            toast.error("Gagal Anonymize", { description: `Terjadi kesalahan saat memproses anonymize ${type}.` });
+            updateTask(taskId, "error");
         }
-    }, [fetchStudies]);
+    }, [fetchStudies, addTask, updateTask]);
 
     const handleAddLabel = useCallback(async (studyId: string) => {
         const label = prompt("Enter label to add:");
@@ -188,7 +193,7 @@ export function useWorklist() {
         const files = event.target.files;
         if (!files || files.length === 0) return;
         setUploading(true);
-        const toastId = toast.loading(`Sedang Mengunggah...`, { description: `Mengunggah ${files.length} file DICOM ke server PACS.` });
+        const taskId = addTask({ id: "upload-dicom", description: `Uploading ${files.length} DICOM files...`, type: "upload" });
         try {
             let successCount = 0;
             let errorCount = 0;
@@ -198,21 +203,16 @@ export function useWorklist() {
                 const response = await orthancApi.uploadInstance(arrayBuffer);
                 if (response.ok) successCount++; else errorCount++;
             }
-            if (successCount > 0) {
-                toast.success("Unggah Berhasil", { id: toastId, description: `${successCount} file DICOM berhasil disimpan di server.` });
-                fetchStudies();
-            } else {
-                toast.error("Unggah Gagal", { id: toastId, description: "Semua file gagal diunggah ke server." });
-            }
-            if (errorCount > 0) toast.error("Beberapa File Gagal", { description: `${errorCount} file gagal diunggah.` });
+            updateTask(taskId, "success");
+            fetchStudies();
         } catch (error) {
             console.error("Upload error:", error);
-            toast.error("Terjadi Kesalahan", { id: toastId, description: "Gagal mengunggah file karena masalah jaringan." });
+            updateTask(taskId, "error");
         } finally {
             setUploading(false);
             if (event.target) event.target.value = "";
         }
-    }, [fetchStudies]);
+    }, [fetchStudies, addTask, updateTask]);
 
     return {
         studies, loading, uploading,

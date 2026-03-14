@@ -3,8 +3,22 @@
 import { Study } from "../types";
 import { toast } from "sonner";
 
-export const handleDownloadStudy = async (id: string, patientName: string) => {
-    const toastId = toast.loading(`Preparing download for ${patientName}...`);
+export interface TaskCallbacks {
+    addTask: (task: { id: string; description: string; type: "download" | "upload" | "delete" | "anonymize" | "modify" }) => string;
+    updateTask: (id: string, status: "loading" | "success" | "error") => void;
+}
+
+export const handleDownloadStudy = async (id: string, patientName: string, callbacks?: TaskCallbacks) => {
+    const description = `Preparing download for ${patientName}...`;
+    let taskId = "";
+    let toastId: string | number | undefined;
+    
+    if (callbacks) {
+        taskId = callbacks.addTask({ id: `download-study-${id}`, description, type: "download" });
+    } else {
+        toastId = toast.loading(description);
+    }
+
     try {
         const response = await fetch(`/api/orthanc/studies/${id}/archive`);
         if (!response.ok) throw new Error("Failed to download study");
@@ -17,16 +31,34 @@ export const handleDownloadStudy = async (id: string, patientName: string) => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        toast.success(`Study for ${patientName} downloaded successfully`, { id: toastId });
+
+        if (callbacks) {
+            callbacks.updateTask(taskId, "success");
+        } else {
+            toast.success(`Study for ${patientName} downloaded successfully`, { id: toastId });
+        }
     } catch (error) {
         console.error("Download error:", error);
-        toast.error(`Failed to download study for ${patientName}`, { id: toastId });
+        if (callbacks) {
+            callbacks.updateTask(taskId, "error");
+        } else {
+            toast.error(`Failed to download study for ${patientName}`, { id: toastId });
+        }
         throw error;
     }
 };
 
-export const handleDownloadSeries = async (id: string, description: string) => {
-    const toastId = toast.loading(`Preparing download for series ${description || id.slice(0, 8)}...`);
+export const handleDownloadSeries = async (id: string, description: string, callbacks?: TaskCallbacks) => {
+    const taskDesc = `Preparing download for series ${description || id.slice(0, 8)}...`;
+    let taskId = "";
+    let toastId: string | number | undefined;
+
+    if (callbacks) {
+        taskId = callbacks.addTask({ id: `download-series-${id}`, description: taskDesc, type: "download" });
+    } else {
+        toastId = toast.loading(taskDesc);
+    }
+
     try {
         const response = await fetch(`/api/orthanc/series/${id}/archive`);
         if (!response.ok) throw new Error("Failed to download series");
@@ -39,16 +71,34 @@ export const handleDownloadSeries = async (id: string, description: string) => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        toast.success(`Series downloaded successfully`, { id: toastId });
+
+        if (callbacks) {
+            callbacks.updateTask(taskId, "success");
+        } else {
+            toast.success(`Series downloaded successfully`, { id: toastId });
+        }
     } catch (error) {
         console.error("Download series error:", error);
-        toast.error(`Failed to download series`, { id: toastId });
+        if (callbacks) {
+            callbacks.updateTask(taskId, "error");
+        } else {
+            toast.error(`Failed to download series`, { id: toastId });
+        }
         throw error;
     }
 };
 
-export const handleDownloadInstance = async (id: string, instanceNumber: string) => {
-    const toastId = toast.loading(`Preparing download for instance ${instanceNumber}...`);
+export const handleDownloadInstance = async (id: string, instanceNumber: string, callbacks?: TaskCallbacks) => {
+    const taskDesc = `Preparing download for instance ${instanceNumber}...`;
+    let taskId = "";
+    let toastId: string | number | undefined;
+
+    if (callbacks) {
+        taskId = callbacks.addTask({ id: `download-instance-${id}`, description: taskDesc, type: "download" });
+    } else {
+        toastId = toast.loading(taskDesc);
+    }
+
     try {
         const response = await fetch(`/api/orthanc/instances/${id}/file`);
         if (!response.ok) throw new Error("Failed to download instance");
@@ -61,10 +111,19 @@ export const handleDownloadInstance = async (id: string, instanceNumber: string)
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        toast.success(`Instance ${instanceNumber} downloaded`, { id: toastId });
+
+        if (callbacks) {
+            callbacks.updateTask(taskId, "success");
+        } else {
+            toast.success(`Instance ${instanceNumber} downloaded`, { id: toastId });
+        }
     } catch (error) {
         console.error("Download instance error:", error);
-        toast.error(`Failed to download instance ${instanceNumber}`, { id: toastId });
+        if (callbacks) {
+            callbacks.updateTask(taskId, "error");
+        } else {
+            toast.error(`Failed to download instance ${instanceNumber}`, { id: toastId });
+        }
         throw error;
     }
 };

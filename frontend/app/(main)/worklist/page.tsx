@@ -22,6 +22,7 @@ import {
 import { DateRange } from "react-day-picker";
 
 import { useWorklist } from "./hooks/use-worklist";
+import { useTasks } from "@/context/task-context";
 import { getColumns } from "./components/columns";
 import { WorklistToolbar } from "./components/worklist-toolbar";
 import { StudyDetailRow } from "./components/study-detail-row";
@@ -58,10 +59,16 @@ export default function WorklistPage() {
     const [rowSelection, setRowSelection] = useState({});
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
+    const { addTask, updateTask } = useTasks();
+
     const handleOpenViewer = (uid: string, mode: string = "viewer") => {
         setSelectedStudyUID(uid);
         setViewerMode(mode);
         setShowViewer(true);
+    };
+
+    const handleDownloadStudyWithTasks = (id: string, name: string) => {
+        handleDownloadStudy(id, name, { addTask, updateTask });
     };
 
     const handleDeleteStudyLocal = async (id: string) => {
@@ -78,7 +85,7 @@ export default function WorklistPage() {
         expandedStudies,
         toggleStudyExpansion,
         handleOpenViewer,
-        handleDownload: handleDownloadStudy,
+        handleDownload: handleDownloadStudyWithTasks,
         setStudyToDelete,
         setIsDeleteDialogOpen,
         handleEditPatient
@@ -214,26 +221,26 @@ export default function WorklistPage() {
                                         ))}
                                     </TableRow>
                                     {expandedStudies[row.original.ID] && (
-                                        <StudyDetailRow 
-                                            study={row.original}
-                                            studies={studies}
-                                            seriesData={seriesData}
-                                            instancesData={instancesData}
-                                            tagsData={tagsData}
-                                            expandedSeries={expandedSeries}
-                                            expandedInstances={expandedInstances}
-                                            toggleSeriesExpansion={toggleSeriesExpansion}
-                                            toggleInstanceExpansion={toggleInstanceExpansion}
-                                            handleAnonymize={handleAnonymize}
-                                            handleOpenOrthancViewer={handleOpenOrthancViewer}
-                                            handleDownloadSeries={handleDownloadSeries}
-                                            handleDeleteSeries={handleDeleteSeries}
-                                            handleDownloadInstance={handleDownloadInstance}
-                                            handleDeleteInstance={handleDeleteInstance}
-                                            handleAddLabel={handleAddLabel}
-                                            handleRemoveLabel={handleRemoveLabel}
-                                            columnsCount={columns.length}
-                                        />
+                                        <StudyDetailRow
+                                        study={row.original}
+                                        studies={studies}
+                                        seriesData={seriesData}
+                                        instancesData={instancesData}
+                                        tagsData={tagsData}
+                                        expandedSeries={expandedSeries}
+                                        expandedInstances={expandedInstances}
+                                        toggleSeriesExpansion={toggleSeriesExpansion}
+                                        toggleInstanceExpansion={toggleInstanceExpansion}
+                                        handleAnonymize={handleAnonymize}
+                                        handleOpenOrthancViewer={handleOpenOrthancViewer}
+                                        handleDownloadSeries={(id, desc) => handleDownloadSeries(id, desc, { addTask, updateTask })}
+                                        handleDeleteSeries={handleDeleteSeries}
+                                        handleDownloadInstance={(id, num) => handleDownloadInstance(id, num, { addTask, updateTask })}
+                                        handleDeleteInstance={handleDeleteInstance}
+                                        handleAddLabel={handleAddLabel}
+                                        handleRemoveLabel={handleRemoveLabel}
+                                        columnsCount={columns.length}
+                                    />
                                     )}
                                 </React.Fragment>
                             ))

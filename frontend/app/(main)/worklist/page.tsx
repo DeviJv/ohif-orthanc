@@ -8,6 +8,13 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { 
     useReactTable, 
     getCoreRowModel, 
@@ -17,6 +24,7 @@ import {
     ColumnFiltersState, 
     SortingState, 
     VisibilityState,
+    PaginationState,
     flexRender
 } from "@tanstack/react-table";
 import { DateRange } from "react-day-picker";
@@ -27,8 +35,10 @@ import { getColumns } from "./components/columns";
 import { WorklistToolbar } from "./components/worklist-toolbar";
 import { StudyDetailRow } from "./components/study-detail-row";
 import { DeleteStudyDialog } from "./components/delete-study-dialog";
-import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance } from "./utils/actions";
+import { BulkDeleteStudyDialog } from "./components/bulk-delete-dialog";
+import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "./utils/actions";
 import { Study } from "./types";
+import { Skeleton } from "@/components/ui/skeleton";
 import OhifViewer from "../../../components/ohif-viewer";
 import BasicViewer from "../../../components/basic-viewer";
 
@@ -49,6 +59,7 @@ export default function WorklistPage() {
     const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(null);
     const [viewerMode, setViewerMode] = useState("viewer");
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
     const [studyToDelete, setStudyToDelete] = useState<Study | null>(null);
 
     // Table State
@@ -57,6 +68,10 @@ export default function WorklistPage() {
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    });
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
     const { addTask, updateTask } = useTasks();
@@ -81,6 +96,37 @@ export default function WorklistPage() {
         }
     };
 
+    const handleBulkDelete = () => {
+        const selectedRows = table.getFilteredSelectedRowModel().rows;
+        if (selectedRows.length === 0) return;
+        setIsBulkDeleteDialogOpen(true);
+    };
+
+    const handleConfirmBulkDelete = async () => {
+        const selectedRows = table.getFilteredSelectedRowModel().rows;
+        if (selectedRows.length === 0) return;
+
+        // Delete all selected studies in parallel
+        const deletePromises = selectedRows.map(row => handleDeleteStudy(row.original.ID));
+        
+        try {
+            await Promise.all(deletePromises);
+            setRowSelection({}); // Clear selection after delete
+            setIsBulkDeleteDialogOpen(false);
+            fetchStudies();
+        } catch (error) {
+            console.error("Bulk delete failed:", error);
+        }
+    };
+
+    const handleBulkDownload = () => {
+        const selectedRows = table.getFilteredSelectedRowModel().rows;
+        if (selectedRows.length === 0) return;
+        
+        const ids = selectedRows.map(row => row.original.ID);
+        handleBulkDownloadStudy(ids, { addTask, updateTask });
+    };
+
     const columns = getColumns({
         expandedStudies,
         toggleStudyExpansion,
@@ -103,12 +149,14 @@ export default function WorklistPage() {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
+        onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
             globalFilter,
             columnVisibility,
             rowSelection,
+            pagination,
         },
     });
 
@@ -177,6 +225,8 @@ export default function WorklistPage() {
                 uploading={uploading}
                 handleFileUpload={handleFileUpload}
                 fetchStudies={fetchStudies}
+                handleBulkDelete={handleBulkDelete}
+                handleBulkDownload={handleBulkDownload}
             />
 
             <div className="rounded-md border bg-white shadow-sm overflow-hidden">
@@ -199,14 +249,39 @@ export default function WorklistPage() {
                     </TableHeader>
                     <TableBody>
                         {loading ? (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="text-center py-20">
-                                    <div className="flex flex-col items-center gap-3">
-                                        <HugeiconsIcon icon={RefreshIcon} className="size-10 animate-spin text-primary" />
-                                        <span className="text-lg font-medium text-slate-500">Fetching from PACS Server...</span>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
+                            Array.from({ length: 10 }).map((_, i) => (
+                                <TableRow key={i} className="hover:bg-transparent border-b">
+                                    <TableCell className="py-4">
+                                        <div className="flex items-center justify-center pr-2">
+                                            <Skeleton className="size-4 rounded" />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="size-8 rounded-md" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-32" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-24" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-28" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-48" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <div className="flex justify-end gap-2">
+                                            <Skeleton className="h-8 w-16 rounded-md" />
+                                            <Skeleton className="h-8 w-16 rounded-md" />
+                                            <Skeleton className="h-8 w-16 rounded-md" />
+                                            <Skeleton className="size-8 rounded-md" />
+                                            <Skeleton className="size-8 rounded-md" />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         ) : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <React.Fragment key={row.id}>
@@ -255,10 +330,34 @@ export default function WorklistPage() {
                 </Table>
             </div>
 
-            <div className="flex items-center justify-between py-4">
-                <div className="text-sm text-muted-foreground font-medium">
-                    Showing {table.getFilteredRowModel().rows.length} studies
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+                <div className="flex items-center gap-4">
+                    <div className="text-sm text-muted-foreground font-medium">
+                        Showing {table.getFilteredRowModel().rows.length} studies
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l">Show per page</span>
+                        <Select
+                            value={table.getState().pagination.pageSize.toString()}
+                            onValueChange={(value) => {
+                                table.setPageSize(Number(value));
+                            }}
+                        >
+                            <SelectTrigger className="h-8 w-[70px]">
+                                <SelectValue placeholder={table.getState().pagination.pageSize} />
+                            </SelectTrigger>
+                            <SelectContent side="top">
+                                {[10, 30, 50, 100, 200].map((pageSize) => (
+                                    <SelectItem key={pageSize} value={pageSize.toString()}>
+                                        {pageSize}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
+
                 <div className="flex items-center gap-2">
                     <Button
                         variant="outline"
@@ -289,6 +388,13 @@ export default function WorklistPage() {
                 onOpenChange={setIsDeleteDialogOpen}
                 study={studyToDelete}
                 onConfirm={handleDeleteStudyLocal}
+            />
+
+            <BulkDeleteStudyDialog
+                open={isBulkDeleteDialogOpen}
+                onOpenChange={setIsBulkDeleteDialogOpen}
+                count={table.getFilteredSelectedRowModel().rows.length}
+                onConfirm={handleConfirmBulkDelete}
             />
         </div>
     );

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { Study } from "../types";
 import { formatDicomDate } from "../utils/format";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import { DateRange } from "react-day-picker";
 
@@ -36,6 +37,30 @@ export const getColumns = ({
     setIsDeleteDialogOpen,
     handleEditPatient
 }: GetColumnsProps): ColumnDef<Study>[] => [
+    {
+        id: "select",
+        header: ({ table }) => (
+            <div className="flex items-center justify-center pr-2">
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate") as any}
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            </div>
+        ),
+        cell: ({ row }) => (
+            <div className="flex items-center justify-center pr-2">
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    disabled={!row.getCanSelect()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            </div>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         id: "expander",
         header: () => null,

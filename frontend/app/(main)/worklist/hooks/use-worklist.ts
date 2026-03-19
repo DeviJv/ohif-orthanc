@@ -105,10 +105,15 @@ export function useWorklist() {
         try {
             await orthancApi.deleteStudy(id);
             updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
             fetchStudies();
         } catch (error) {
             console.error("Failed to delete study:", error);
             updateTask(taskId, "error");
+            toast.error("Gagal Menghapus Study", { description: "Terjadi kesalahan saat menghapus data di server." });
         }
     }, [fetchStudies, addTask, updateTask]);
 
@@ -118,10 +123,15 @@ export function useWorklist() {
         try {
             await orthancApi.deleteSeries(id);
             updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
             setSeriesData(prev => ({ ...prev, [studyId]: prev[studyId].filter(s => s.ID !== id) }));
         } catch (error) {
             console.error("Delete series error:", error);
             updateTask(taskId, "error");
+            toast.error("Gagal Menghapus Series", { description: "Pastikan koneksi ke server Orthanc stabil." });
         }
     }, [addTask, updateTask]);
 
@@ -131,10 +141,15 @@ export function useWorklist() {
         try {
             await orthancApi.deleteInstance(id);
             updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
             setInstancesData(prev => ({ ...prev, [seriesId]: prev[seriesId].filter(i => i.ID !== id) }));
         } catch (error) {
             console.error("Delete instance error:", error);
             updateTask(taskId, "error");
+            toast.error("Gagal Menghapus Instance", { description: "Gagal menghapus file instance DICOM." });
         }
     }, [addTask, updateTask]);
 
@@ -145,6 +160,11 @@ export function useWorklist() {
         try {
             await orthancApi.modifyStudy(studyId, { PatientName: newName });
             updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
+            
             fetchStudies();
         } catch (error) {
             console.error("Edit patient error:", error);
@@ -158,6 +178,11 @@ export function useWorklist() {
         try {
             await orthancApi.anonymize(id, type);
             updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
+            
             fetchStudies();
         } catch (error) {
             console.error("Anonymize error:", error);
@@ -194,16 +219,39 @@ export function useWorklist() {
         if (!files || files.length === 0) return;
         setUploading(true);
         const taskId = addTask({ id: "upload-dicom", description: `Uploading ${files.length} DICOM files...`, type: "upload" });
+        
         try {
+            // Konfigurasi Batch: Upload 5 file secara paralel
+            const BATCH_SIZE = 5;
             let successCount = 0;
             let errorCount = 0;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const arrayBuffer = await file.arrayBuffer();
-                const response = await orthancApi.uploadInstance(arrayBuffer);
-                if (response.ok) successCount++; else errorCount++;
+
+            for (let i = 0; i < files.length; i += BATCH_SIZE) {
+                const batch = Array.from(files).slice(i, i + BATCH_SIZE);
+                const batchPromises = batch.map(async (file) => {
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const response = await orthancApi.uploadInstance(arrayBuffer);
+                        if (response.ok) return true;
+                        return false;
+                    } catch (e) {
+                        return false;
+                    }
+                });
+
+                const results = await Promise.all(batchPromises);
+                results.forEach(res => {
+                    if (res) successCount++;
+                    else errorCount++;
+                });
             }
+
             updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
+            
             fetchStudies();
         } catch (error) {
             console.error("Upload error:", error);

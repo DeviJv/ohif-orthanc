@@ -16,7 +16,7 @@ export const handleDownloadStudy = async (id: string, patientName: string, callb
     if (callbacks) {
         taskId = callbacks.addTask({ id: `download-study-${id}`, description, type: "download" });
     } else {
-        toastId = toast.loading(description);
+        toastId = toast(description);
     }
 
     try {
@@ -34,6 +34,10 @@ export const handleDownloadStudy = async (id: string, patientName: string, callb
 
         if (callbacks) {
             callbacks.updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
         } else {
             toast.success(`Study for ${patientName} downloaded successfully`, { id: toastId });
         }
@@ -56,7 +60,7 @@ export const handleDownloadSeries = async (id: string, description: string, call
     if (callbacks) {
         taskId = callbacks.addTask({ id: `download-series-${id}`, description: taskDesc, type: "download" });
     } else {
-        toastId = toast.loading(taskDesc);
+        toastId = toast(taskDesc);
     }
 
     try {
@@ -74,6 +78,10 @@ export const handleDownloadSeries = async (id: string, description: string, call
 
         if (callbacks) {
             callbacks.updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
         } else {
             toast.success(`Series downloaded successfully`, { id: toastId });
         }
@@ -96,7 +104,7 @@ export const handleDownloadInstance = async (id: string, instanceNumber: string,
     if (callbacks) {
         taskId = callbacks.addTask({ id: `download-instance-${id}`, description: taskDesc, type: "download" });
     } else {
-        toastId = toast.loading(taskDesc);
+        toastId = toast(taskDesc);
     }
 
     try {
@@ -114,6 +122,10 @@ export const handleDownloadInstance = async (id: string, instanceNumber: string,
 
         if (callbacks) {
             callbacks.updateTask(taskId, "success");
+            // Auto dismiss toast after success
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
         } else {
             toast.success(`Instance ${instanceNumber} downloaded`, { id: toastId });
         }
@@ -143,4 +155,58 @@ export const handleOpenOrthancViewer = (id: string, type: "study" | "series" | "
 
 export const getOhifUrl = (uid: string, mode: string) => {
     return `/ohif/${mode}?StudyInstanceUIDs=${uid}`;
+};
+
+export const handleBulkDownloadStudy = async (ids: string[], callbacks?: TaskCallbacks) => {
+    const description = `Preparing bulk download for ${ids.length} studies...`;
+    let taskId = "";
+    let toastId: string | number | undefined;
+    
+    if (callbacks) {
+        taskId = callbacks.addTask({ id: `bulk-download-${Date.now()}`, description, type: "download" });
+    } else {
+        toastId = toast(description);
+    }
+
+    try {
+        const response = await fetch(`/api/orthanc/tools/create-archive`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                Resources: ids,
+                Synchronous: true
+            }),
+        });
+
+        if (!response.ok) throw new Error("Failed to create bulk archive");
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bulk_export_${new Date().toISOString().split('T')[0]}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        if (callbacks) {
+            callbacks.updateTask(taskId, "success");
+            setTimeout(() => {
+                toast.dismiss(taskId);
+            }, 3000);
+        } else {
+            toast.success(`${ids.length} studies downloaded successfully`, { id: toastId });
+        }
+    } catch (error) {
+        console.error("Bulk download error:", error);
+        if (callbacks) {
+            callbacks.updateTask(taskId, "error");
+        } else {
+            toast.error(`Failed to download studies`, { id: toastId });
+        }
+        throw error;
+    }
 };

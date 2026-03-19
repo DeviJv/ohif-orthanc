@@ -41,8 +41,9 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
                     if (task.startTime > twoHoursAgo && task.status === "loading") {
                         activeTasks[id] = task;
                         // Re-trigger toast for loading tasks
-                        const toastId = toast.loading(task.description, {
+                        const toastId = toast(task.description, {
                             description: "Resuming process after refresh...",
+                            duration: 4000,
                         });
                         setActiveToasts(prev => ({ ...prev, [id]: toastId }));
                     }
@@ -69,7 +70,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
             startTime: Date.now(),
         };
 
-        const toastId = toast.loading(newTask.description);
+        const toastId = toast(newTask.description);
         
         setTasks(prev => ({ ...prev, [id]: newTask }));
         setActiveToasts(prev => ({ ...prev, [id]: toastId }));

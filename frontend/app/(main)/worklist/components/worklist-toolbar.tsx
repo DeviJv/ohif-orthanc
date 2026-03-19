@@ -1,16 +1,20 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { cn } from "@/lib/utils";
 import { 
     Search01Icon, 
     RefreshIcon, 
     Upload01Icon, 
     Calendar01Icon, 
-    LayoutTableIcon 
+    LayoutTableIcon,
+    Delete01Icon,
+    Download01Icon,
+    MoreVerticalIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -21,6 +25,7 @@ import {
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuGroup,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -37,6 +42,8 @@ interface WorklistToolbarProps {
     uploading: boolean;
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
     fetchStudies: () => void;
+    handleBulkDelete: () => void;
+    handleBulkDownload: () => void;
 }
 
 export function WorklistToolbar({
@@ -47,7 +54,9 @@ export function WorklistToolbar({
     setDateRange,
     uploading,
     handleFileUpload,
-    fetchStudies
+    fetchStudies,
+    handleBulkDelete,
+    handleBulkDownload
 }: WorklistToolbarProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,6 +65,26 @@ export function WorklistToolbar({
             <CardHeader className="pb-3 border-b">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex flex-1 items-center gap-4">
+                        {table.getFilteredSelectedRowModel().rows.length > 0 && (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "size-8 p-0 shrink-0 select-none items-center justify-center")}>
+                                    <HugeiconsIcon icon={MoreVerticalIcon} className="size-4" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48">
+                                    <DropdownMenuLabel>Bulk Actions ({table.getFilteredSelectedRowModel().rows.length})</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleBulkDownload} className="gap-2 cursor-pointer">
+                                        <HugeiconsIcon icon={Download01Icon} className="size-4" />
+                                        Download Studies
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={handleBulkDelete} className="gap-2 text-destructive focus:text-destructive cursor-pointer" variant="destructive">
+                                        <HugeiconsIcon icon={Delete01Icon} className="size-4" />
+                                        Delete Studies
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
+
                         <div className="relative flex-1 max-w-sm">
                             <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                             <Input
@@ -119,7 +148,7 @@ export function WorklistToolbar({
                             accept=".dcm,application/dicom"
                         />
                         <Button 
-                            variant="outline" 
+                            variant="default" 
                             size="sm" 
                             className="gap-2"
                             onClick={() => fileInputRef.current?.click()}
@@ -133,6 +162,8 @@ export function WorklistToolbar({
                             Upload DICOM
                         </Button>
 
+
+
                         <Button 
                             variant="outline" 
                             size="sm" 
@@ -144,7 +175,7 @@ export function WorklistToolbar({
                         </Button>
 
                         <DropdownMenu>
-                            <DropdownMenuTrigger className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 py-2">
+                            <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-2")}>
                                 <HugeiconsIcon icon={LayoutTableIcon} className="size-4" />
                                 Columns
                             </DropdownMenuTrigger>

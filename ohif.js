@@ -1,6 +1,6 @@
 window.config = {
-  // default: '/'
-  routerBasename: '/',
+  // OHIF is served by Orthanc at /orthanc/ohif/ via Nginx
+  routerBasename: '/orthanc/ohif/',
   extensions: [],
   showStudyList: true,
   filterQueryParam: false,
@@ -8,9 +8,9 @@ window.config = {
     dicomWeb: [
       {
         name: 'Orthanc',
-        wadoUriRoot: '/orthanc/wado',
-        qidoRoot: '/orthanc/dicom-web',
-        wadoRoot: '/orthanc/dicom-web',
+        wadoUriRoot: '/wado',
+        qidoRoot: '/dicom-web',
+        wadoRoot: '/dicom-web',
         qidoSupportsIncludeField: true,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',

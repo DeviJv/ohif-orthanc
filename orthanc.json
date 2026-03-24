@@ -116,6 +116,21 @@
   "ExtraMainDicomTags": {
     "Patient": [ "0010,2154" ]
   },
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado/",
+    "Host": "localhost",
+    "Port": 8042,
+    "Ssl": false
+  },
+  "OHIF": {
+    "DataSource": "dicom-web",
+    "RouterBasename": "/orthanc/ohif/",
+    "CustomOhifScript": "/etc/orthanc/ohif.js",
+    "CustomCssFile": "/etc/orthanc/ohif_custom.css"
+  },
   "Warnings": {
     "W001_TagsBeingReadFromStorage": true,
     "W002_InconsistentDicomTagsInDb": true

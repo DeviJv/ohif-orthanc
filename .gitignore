@@ -16,3 +16,6 @@ build/
 .DS_Store
 Thumbs.db
 *.log
+
+# Local development override (do not push to git — VPS must use nginx_ohif.conf with SSL)
+docker-compose.override.yml

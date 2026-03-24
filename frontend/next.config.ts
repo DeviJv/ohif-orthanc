@@ -1,6 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    async rewrites() {
+        return [
+            {
+                source: "/orthanc/:path*",
+                destination: "/api/orthanc/:path*",
+            },
+            {
+                source: "/dicom-web/:path*",
+                destination: "/api/orthanc/dicom-web/:path*",
+            },
+        ];
+    },
     async headers() {
         return [
             {

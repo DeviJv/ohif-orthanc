@@ -1,27 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface OhifViewerProps {
     studyInstanceUIDs: string;
 }
 
+/**
+ * OhifViewer - Restored to baseline stability.
+ * Uses the standard /orthanc/ path prefix which is handled by Nginx in production.
+ * Globally handles the StudyInstanceUIDs parameter.
+ */
 export default function OhifViewer({ studyInstanceUIDs }: OhifViewerProps) {
-    const [viewerUrl, setViewerUrl] = useState<string>("");
-
-    useEffect(() => {
-        // Direct Port access for local development as requested by the user
-        // This bypasses any Next.js proxy 404 issues on port 3001
-        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-            setViewerUrl(`http://${window.location.hostname}:8042/ohif/viewer?StudyInstanceUIDs=${studyInstanceUIDs}`);
-        } else {
-            // Production fallback through Nginx
-            setViewerUrl(`/orthanc/ohif/viewer?StudyInstanceUIDs=${studyInstanceUIDs}`);
-        }
-    }, [studyInstanceUIDs]);
-
-    if (!viewerUrl) return null;
-
+    const viewerUrl = `/orthanc/ohif/viewer?StudyInstanceUIDs=${studyInstanceUIDs}`;
+    
     return (
         <iframe
             src={viewerUrl}

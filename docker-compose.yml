@@ -41,6 +41,8 @@ services:
     volumes:
       - ./orthanc.json:/etc/orthanc/orthanc.json:ro
       - ./auto-send.lua:/etc/orthanc/auto-send.lua:ro
+      - ./ohif.js:/etc/orthanc/ohif.js:ro
+      - ./ohif_custom.css:/etc/orthanc/ohif_custom.css:ro
       - ./orthanc_db:/var/lib/orthanc/db/
     restart: always
     depends_on:

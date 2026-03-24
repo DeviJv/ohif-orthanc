@@ -251,20 +251,13 @@ export function useWorklist() {
 
             // Update metadata if phone number is provided
             if (metadata?.PatientTelephoneNumbers && studyIds.size > 0) {
-                for (const studyId of Array.from(studyIds)) {
-                    try {
-                        const response = await orthancApi.modifyStudy(studyId, { 
-                            PatientTelephoneNumbers: metadata.PatientTelephoneNumbers! 
-                        });
-                        if (response.ok) {
-                            // Orthanc's /modify creates a NEW study. 
-                            // We delete the original one to avoid duplication.
-                            await orthancApi.deleteStudy(studyId);
-                        }
-                    } catch (e) {
-                        console.error(`Failed to modify/delete study ${studyId}:`, e);
-                    }
-                }
+                const originalStudyId = Array.from(studyIds)[0];
+                setUploading(false);
+                toast.loading("Memproses Metadata...", { id: "metadata-processing" });
+                const modifyRes = await orthancApi.modifyStudy(originalStudyId, {
+                    PatientTelephoneNumbers: metadata.PatientTelephoneNumbers
+                });
+                toast.dismiss("metadata-processing");
             }
 
             updateTask(taskId, "success");
@@ -281,6 +274,9 @@ export function useWorklist() {
         }
     }, [fetchStudies, addTask, updateTask]);
 
+    const [isSendTelegramDialogOpen, setIsSendTelegramDialogOpen] = useState(false);
+    const [selectedStudyForTelegram, setSelectedStudyForTelegram] = useState<Study | null>(null);
+
     const handleSendToTelegram = async (studyId: string) => {
         try {
             await orthancApi.sendToTelegram(studyId);
@@ -291,6 +287,11 @@ export function useWorklist() {
         }
     };
 
+    const openSendTelegramDialog = (study: Study) => {
+        setSelectedStudyForTelegram(study);
+        setIsSendTelegramDialogOpen(true);
+    };
+
     return {
         studies, loading, uploading,
         expandedStudies, expandedSeries, expandedInstances,
@@ -299,6 +300,8 @@ export function useWorklist() {
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
         handleEditPatient, handleAnonymize,
         handleAddLabel, handleRemoveLabel,
-        handleFileUpload, fetchStudies, handleSendToTelegram
+        handleFileUpload, fetchStudies, handleSendToTelegram,
+        isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
+        selectedStudyForTelegram, openSendTelegramDialog
     };
 }

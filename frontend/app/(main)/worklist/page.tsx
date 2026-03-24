@@ -30,12 +30,14 @@ import {
 import { DateRange } from "react-day-picker";
 
 import { useWorklist } from "./hooks/use-worklist";
+import { useStudyNotifier } from "./hooks/use-study-notifier";
 import { useTasks } from "@/context/task-context";
 import { getColumns } from "./components/columns";
 import { WorklistToolbar } from "./components/worklist-toolbar";
 import { StudyDetailRow } from "./components/study-detail-row";
 import { DeleteStudyDialog } from "./components/delete-study-dialog";
 import { BulkDeleteStudyDialog } from "./components/bulk-delete-dialog";
+import { SendTelegramDialog } from "./components/send-telegram-dialog";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "./utils/actions";
 import { Study } from "./types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -51,8 +53,13 @@ export default function WorklistPage() {
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
         handleEditPatient, handleAnonymize,
         handleAddLabel, handleRemoveLabel,
-        handleFileUpload, fetchStudies, handleSendToTelegram
+        handleFileUpload, fetchStudies, handleSendToTelegram,
+        isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
+        selectedStudyForTelegram, openSendTelegramDialog
     } = useWorklist();
+
+    // Setup Study Notifier (Sound & Toast on new studies)
+    useStudyNotifier(studies, fetchStudies);
 
     // UI States
     const [showViewer, setShowViewer] = useState(false);
@@ -135,7 +142,7 @@ export default function WorklistPage() {
         setStudyToDelete,
         setIsDeleteDialogOpen,
         handleEditPatient,
-        handleSendToTelegram
+        openSendTelegramDialog
     });
 
     const table = useReactTable({
@@ -396,6 +403,13 @@ export default function WorklistPage() {
                 onOpenChange={setIsBulkDeleteDialogOpen}
                 count={table.getFilteredSelectedRowModel().rows.length}
                 onConfirm={handleConfirmBulkDelete}
+            />
+
+            <SendTelegramDialog
+                open={isSendTelegramDialogOpen}
+                onOpenChange={setIsSendTelegramDialogOpen}
+                study={selectedStudyForTelegram}
+                onSendToDoctor={handleSendToTelegram}
             />
         </div>
     );

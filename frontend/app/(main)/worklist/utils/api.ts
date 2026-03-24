@@ -47,7 +47,7 @@ export const orthancApi = {
         const response = await fetch(`/api/orthanc/studies/${studyId}/modify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Replace: replaceTags, Force: true })
+            body: JSON.stringify({ Replace: replaceTags, Force: true, KeepSource: false })
         });
         if (!response.ok) throw new Error("Failed to modify study");
         return response;

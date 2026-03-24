@@ -27,7 +27,7 @@ interface GetColumnsProps {
     setStudyToDelete: (study: Study) => void;
     setIsDeleteDialogOpen: (open: boolean) => void;
     handleEditPatient: (id: string, name: string) => void;
-    handleSendToTelegram: (id: string) => void;
+    openSendTelegramDialog: (study: Study) => void;
 }
 
 export const getColumns = ({
@@ -38,7 +38,7 @@ export const getColumns = ({
     setStudyToDelete,
     setIsDeleteDialogOpen,
     handleEditPatient,
-    handleSendToTelegram
+    openSendTelegramDialog
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
         id: "select",
@@ -186,7 +186,7 @@ export const getColumns = ({
                         size="sm"
                         variant="ghost"
                         className="size-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                        onClick={() => handleSendToTelegram(study.ID)}
+                        onClick={() => openSendTelegramDialog(study)}
                         title="Send to Telegram Doctor"
                     >
                         <HugeiconsIcon icon={SentIcon} className="size-4" />

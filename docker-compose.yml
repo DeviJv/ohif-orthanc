@@ -40,11 +40,14 @@ services:
       - 4242:4242
     volumes:
       - ./orthanc.json:/etc/orthanc/orthanc.json:ro
+      - ./auto-send.lua:/etc/orthanc/auto-send.lua:ro
       - ./orthanc_db:/var/lib/orthanc/db/
     restart: always
     depends_on:
       orthanc-db:
         condition: service_healthy
+    environment:
+      - FRONTEND_INTERNAL_URL=http://pacs-web:3001
     networks:
       - pacs
 
@@ -60,6 +63,8 @@ services:
     ports:
       - 3001:3001
     environment:
+      - NEXT_PUBLIC_APP_URL=https://quantumtechsolution.id
+      - NEXTAUTH_URL=https://quantumtechsolution.id
       - DATABASE_URL=postgresql://pacsuser:pacspassword@app-db:5432/pacsweb
       - AUTH_SECRET=yoursecretphrasehere
       - AUTH_TRUST_HOST=true

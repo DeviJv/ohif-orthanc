@@ -65,8 +65,8 @@ services:
     ports:
       - 3001:3001
     environment:
-      - NEXT_PUBLIC_APP_URL=http://localhost:3001
-      - NEXTAUTH_URL=http://localhost:3001
+      - NEXT_PUBLIC_APP_URL=https://quantumtechsolution.id
+      - NEXTAUTH_URL=https://quantumtechsolution.id
       - DATABASE_URL=postgresql://pacsuser:pacspassword@app-db:5432/pacsweb
       - AUTH_SECRET=yoursecretphrasehere
       - AUTH_TRUST_HOST=true

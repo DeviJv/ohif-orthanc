@@ -141,14 +141,13 @@ export const handleDownloadInstance = async (id: string, instanceNumber: string,
 };
 
 export const handleOpenOrthancViewer = (id: string, type: "study" | "series" | "instance") => {
-    const orthancHost = `${window.location.hostname}:8042`;
-    const protocol = window.location.protocol;
+    const baseUrl = `${window.location.origin}/orthanc`;
     
     if (type === "series") {
-        const volviewUrl = `${protocol}//${orthancHost}/volview/index.html?names=[archive.zip]&urls=[../series/${id}/archive]`;
+        const volviewUrl = `${baseUrl}/volview/index.html?names=[archive.zip]&urls=[../series/${id}/archive]`;
         window.open(volviewUrl, "_blank");
     } else {
-        const explorerUrl = `${protocol}//${orthancHost}/app/explorer.html#${type}?uuid=${id}`;
+        const explorerUrl = `${baseUrl}/app/explorer.html#${type}?uuid=${id}`;
         window.open(explorerUrl, "_blank");
     }
 };

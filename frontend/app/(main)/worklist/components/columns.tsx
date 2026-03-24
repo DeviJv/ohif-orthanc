@@ -7,7 +7,8 @@ import {
     Download01Icon, 
     Delete01Icon, 
     PencilEdit01Icon, 
-    ArrowRight01Icon 
+    ArrowRight01Icon,
+    SentIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ interface GetColumnsProps {
     setStudyToDelete: (study: Study) => void;
     setIsDeleteDialogOpen: (open: boolean) => void;
     handleEditPatient: (id: string, name: string) => void;
+    handleSendToTelegram: (id: string) => void;
 }
 
 export const getColumns = ({
@@ -35,7 +37,8 @@ export const getColumns = ({
     handleDownload,
     setStudyToDelete,
     setIsDeleteDialogOpen,
-    handleEditPatient
+    handleEditPatient,
+    handleSendToTelegram
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
         id: "select",
@@ -85,9 +88,15 @@ export const getColumns = ({
         cell: ({ getValue }) => <span className="font-semibold">{getValue() as string}</span>,
     },
     {
-        accessorKey: "MainDicomTags.PatientID",
+        accessorFn: (row) => row.PatientMainDicomTags?.PatientID || row.MainDicomTags.PatientID,
         id: "patientID",
         header: "Patient ID",
+    },
+    {
+        accessorFn: (row) => row.PatientMainDicomTags?.PatientTelephoneNumbers || row.MainDicomTags.PatientTelephoneNumbers,
+        id: "phone",
+        header: "Phone",
+        cell: ({ getValue }) => getValue() || "-",
     },
     {
         accessorKey: "MainDicomTags.StudyDate",
@@ -171,6 +180,16 @@ export const getColumns = ({
                         title="Edit Patient Name"
                     >
                         <HugeiconsIcon icon={PencilEdit01Icon} className="size-4" />
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        onClick={() => handleSendToTelegram(study.ID)}
+                        title="Send to Telegram Doctor"
+                    >
+                        <HugeiconsIcon icon={SentIcon} className="size-4" />
                     </Button>
 
                     <Button

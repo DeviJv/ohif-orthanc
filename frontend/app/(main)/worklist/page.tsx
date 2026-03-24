@@ -51,7 +51,7 @@ export default function WorklistPage() {
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
         handleEditPatient, handleAnonymize,
         handleAddLabel, handleRemoveLabel,
-        handleFileUpload, fetchStudies
+        handleFileUpload, fetchStudies, handleSendToTelegram
     } = useWorklist();
 
     // UI States
@@ -134,7 +134,8 @@ export default function WorklistPage() {
         handleDownload: handleDownloadStudyWithTasks,
         setStudyToDelete,
         setIsDeleteDialogOpen,
-        handleEditPatient
+        handleEditPatient,
+        handleSendToTelegram
     });
 
     const table = useReactTable({

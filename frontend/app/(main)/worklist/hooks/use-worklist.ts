@@ -214,17 +214,16 @@ export function useWorklist() {
         }
     }, [fetchStudies]);
 
-    const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
+    const handleFileUpload = useCallback(async (files: FileList, metadata?: { PatientTelephoneNumbers?: string }) => {
         if (!files || files.length === 0) return;
         setUploading(true);
         const taskId = addTask({ id: "upload-dicom", description: `Uploading ${files.length} DICOM files...`, type: "upload" });
         
         try {
-            // Konfigurasi Batch: Upload 5 file secara paralel
             const BATCH_SIZE = 5;
             let successCount = 0;
             let errorCount = 0;
+            const studyIds = new Set<string>();
 
             for (let i = 0; i < files.length; i += BATCH_SIZE) {
                 const batch = Array.from(files).slice(i, i + BATCH_SIZE);
@@ -232,7 +231,11 @@ export function useWorklist() {
                     try {
                         const arrayBuffer = await file.arrayBuffer();
                         const response = await orthancApi.uploadInstance(arrayBuffer);
-                        if (response.ok) return true;
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.ParentStudy) studyIds.add(data.ParentStudy);
+                            return true;
+                        }
                         return false;
                     } catch (e) {
                         return false;
@@ -246,8 +249,25 @@ export function useWorklist() {
                 });
             }
 
+            // Update metadata if phone number is provided
+            if (metadata?.PatientTelephoneNumbers && studyIds.size > 0) {
+                for (const studyId of Array.from(studyIds)) {
+                    try {
+                        const response = await orthancApi.modifyStudy(studyId, { 
+                            PatientTelephoneNumbers: metadata.PatientTelephoneNumbers! 
+                        });
+                        if (response.ok) {
+                            // Orthanc's /modify creates a NEW study. 
+                            // We delete the original one to avoid duplication.
+                            await orthancApi.deleteStudy(studyId);
+                        }
+                    } catch (e) {
+                        console.error(`Failed to modify/delete study ${studyId}:`, e);
+                    }
+                }
+            }
+
             updateTask(taskId, "success");
-            // Auto dismiss toast after success
             setTimeout(() => {
                 toast.dismiss(taskId);
             }, 3000);
@@ -258,9 +278,18 @@ export function useWorklist() {
             updateTask(taskId, "error");
         } finally {
             setUploading(false);
-            if (event.target) event.target.value = "";
         }
     }, [fetchStudies, addTask, updateTask]);
+
+    const handleSendToTelegram = async (studyId: string) => {
+        try {
+            await orthancApi.sendToTelegram(studyId);
+            toast.success("Gambar berhasil dikirim ke Telegram Dokter");
+        } catch (error: any) {
+            console.error("Failed to send to Telegram:", error);
+            toast.error(error.message || "Gagal mengirim ke Telegram. Pastikan Bot Token dan Chat ID sudah benar.");
+        }
+    };
 
     return {
         studies, loading, uploading,
@@ -270,6 +299,6 @@ export function useWorklist() {
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
         handleEditPatient, handleAnonymize,
         handleAddLabel, handleRemoveLabel,
-        handleFileUpload, fetchStudies
+        handleFileUpload, fetchStudies, handleSendToTelegram
     };
 }

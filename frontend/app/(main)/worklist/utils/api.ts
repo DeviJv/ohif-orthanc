@@ -22,10 +22,25 @@ export const orthancApi = {
         });
     },
 
-    deleteStudy: async (id: string) => {
-        const response = await fetch(`/api/orthanc/studies/${id}`, { method: "DELETE" });
+    deleteStudy: async (studyId: string) => {
+        const response = await fetch(`/api/orthanc/studies/${studyId}`, {
+            method: "DELETE"
+        });
         if (!response.ok) throw new Error("Failed to delete study");
         return response;
+    },
+
+    sendToTelegram: async (studyId: string) => {
+        const response = await fetch("/api/telegram/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ studyId })
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || "Failed to send to Telegram");
+        }
+        return response.json();
     },
 
     modifyStudy: async (studyId: string, replaceTags: Record<string, string>) => {

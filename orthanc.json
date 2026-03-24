@@ -71,7 +71,7 @@
   "HttpTimeout": 60,
   "HttpsVerifyPeers": true,
   "HttpsCACertificates": "/etc/ssl/certs/ca-certificates.crt",
-  " UserMetadata": {},
+  "UserMetadata": {},
   "UserContentType": {},
   "StableAge": 60,
   "StrictAetComparison": false,
@@ -113,6 +113,9 @@
   "CheckRevisions": false,
   "SynchronousZipStream": true,
   "ZipLoaderThreads": 0,
+  "ExtraMainDicomTags": {
+    "Patient": [ "0010,2154" ]
+  },
   "Warnings": {
     "W001_TagsBeingReadFromStorage": true,
     "W002_InconsistentDicomTagsInDb": true

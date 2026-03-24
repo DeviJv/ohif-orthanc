@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table } from "@tanstack/react-table";
 import { Study } from "../types";
+import { UploadDicomDialog } from "./upload-dicom-dialog";
 
 interface WorklistToolbarProps {
     table: Table<Study>;
@@ -40,7 +41,7 @@ interface WorklistToolbarProps {
     dateRange: DateRange | undefined;
     setDateRange: (range: DateRange | undefined) => void;
     uploading: boolean;
-    handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleFileUpload: (files: FileList, metadata?: { PatientTelephoneNumbers?: string }) => Promise<void>;
     fetchStudies: () => void;
     handleBulkDelete: () => void;
     handleBulkDownload: () => void;
@@ -58,13 +59,14 @@ export function WorklistToolbar({
     handleBulkDelete,
     handleBulkDownload
 }: WorklistToolbarProps) {
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
     return (
         <Card className="mb-6 shadow-sm border-slate-200">
             <CardHeader className="pb-3 border-b">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex flex-1 items-center gap-4">
+                        {/* ... existing bulk actions dropdown ... */}
                         {table.getFilteredSelectedRowModel().rows.length > 0 && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "size-8 p-0 shrink-0 select-none items-center justify-center")}>
@@ -139,19 +141,11 @@ export function WorklistToolbar({
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <input
-                            type="file"
-                            multiple
-                            className="hidden"
-                            ref={fileInputRef}
-                            onChange={handleFileUpload}
-                            accept=".dcm,application/dicom"
-                        />
                         <Button 
                             variant="default" 
                             size="sm" 
                             className="gap-2"
-                            onClick={() => fileInputRef.current?.click()}
+                            onClick={() => setIsUploadDialogOpen(true)}
                             disabled={uploading}
                         >
                             {uploading ? (
@@ -162,7 +156,12 @@ export function WorklistToolbar({
                             Upload DICOM
                         </Button>
 
-
+                        <UploadDicomDialog 
+                            open={isUploadDialogOpen}
+                            onOpenChange={setIsUploadDialogOpen}
+                            onUpload={handleFileUpload}
+                            uploading={uploading}
+                        />
 
                         <Button 
                             variant="outline" 
@@ -195,6 +194,7 @@ export function WorklistToolbar({
                                                 >
                                                     {column.id === "patientName" ? "Patient Name" : 
                                                      column.id === "patientID" ? "Patient ID" :
+                                                     column.id === "phone" ? "Phone Number" :
                                                      column.id === "studyDate" ? "Study Date" :
                                                      column.id === "description" ? "Description" : 
                                                      column.id}
@@ -208,5 +208,4 @@ export function WorklistToolbar({
                 </div>
             </CardHeader>
         </Card>
-    );
-}
+    );}

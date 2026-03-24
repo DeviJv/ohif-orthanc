@@ -9,13 +9,16 @@ export interface Study {
         AccessionNumber: string;
         StudyInstanceUID: string;
         StudyID?: string;
+        PatientTelephoneNumbers?: string;
         ReferringPhysicianName?: string;
         InstitutionName?: string;
     };
     PatientMainDicomTags?: {
         PatientName: string;
+        PatientID?: string;
         PatientBirthDate?: string;
         PatientSex?: string;
+        PatientTelephoneNumbers?: string;
     };
     Series: string[];
     Labels: string[];

@@ -1,18 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/ohif/:path*',
-        destination: '/api/ohif/:path*',
-      },
-      {
-        source: '/dicom-web/:path*',
-        destination: '/api/dicomweb/:path*',
-      },
-    ];
-  },
+    async headers() {
+        return [
+            {
+                source: "/(.*)",
+                headers: [
+                    {
+                        key: "Cross-Origin-Embedder-Policy",
+                        value: "require-corp",
+                    },
+                    {
+                        key: "Cross-Origin-Opener-Policy",
+                        value: "same-origin",
+                    },
+                ],
+            },
+        ];
+    },
 };
 
 export default nextConfig;

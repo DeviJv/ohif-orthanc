@@ -96,7 +96,9 @@ export async function POST(req: NextRequest) {
         // 5. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
         const publicUrl = process.env.NEXT_PUBLIC_APP_URL || `http://${req.headers.get("host") || "localhost:3001"}`;
-        const viewerUrl = `${publicUrl}/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
+        const isLocal = publicUrl.includes("localhost") || publicUrl.includes("127.0.0.1");
+        const viewerPath = isLocal ? "/ohif/viewer" : "/orthanc/ohif/viewer";
+        const viewerUrl = `${publicUrl}${viewerPath}?StudyInstanceUIDs=${studyUID}`;
         const thumbUrl = `${publicUrl}/api/orthanc/instances/${instanceIds[0]}/preview`;
 
         const formData = new FormData();

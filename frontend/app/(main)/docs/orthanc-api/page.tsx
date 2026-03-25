@@ -1,0 +1,322 @@
+"use client";
+
+import React, { useState, useMemo } from "react";
+import { 
+    Card, CardHeader, CardTitle, CardDescription, CardContent 
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { 
+    HugeiconsIcon 
+} from "@hugeicons/react";
+import { 
+    Search01Icon, 
+    BookOpen02Icon, 
+    Copy01Icon, 
+    CodeIcon, 
+    Link01Icon,
+    InformationCircleIcon,
+    ComputerTerminalIcon,
+    Database01Icon,
+    Folder01Icon,
+    File01Icon,
+    InternetIcon
+} from "@hugeicons/core-free-icons";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { ORTHANC_API_DATA, ORTHANC_API_CATEGORIES, ApiEndpoint } from "@/lib/orthanc-api-data";
+
+export default function OrthancApiDocsPage() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [activeCategory, setActiveCategory] = useState<string>("All");
+
+    const filteredEndpoints = useMemo(() => {
+        return ORTHANC_API_DATA.filter(endpoint => {
+            const matchesSearch = 
+                endpoint.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                endpoint.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                endpoint.category.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            const matchesCategory = activeCategory === "All" || endpoint.category === activeCategory;
+            
+            return matchesSearch && matchesCategory;
+        });
+    }, [searchQuery, activeCategory]);
+
+    const categories = ["All", ...ORTHANC_API_CATEGORIES];
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        toast.success("Copied to clipboard");
+    };
+
+    return (
+        <div className="flex flex-col h-full overflow-hidden bg-slate-50/30">
+            {/* Header */}
+            <header className="flex flex-col gap-4 p-6 md:p-8 bg-white border-b shadow-sm shrink-0">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 max-w-7xl mx-auto w-full">
+                    <div className="space-y-1">
+                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
+                            <div className="bg-primary/10 p-2 rounded-xl">
+                                <HugeiconsIcon icon={BookOpen02Icon} className="size-6 text-primary" strokeWidth={2.5} />
+                            </div>
+                            Orthanc API Documentation
+                        </h1>
+                        <p className="text-slate-500 font-medium">
+                            Referensi lengkap REST API dan DICOMweb untuk integrasi PACS Quantum.
+                        </p>
+                    </div>
+                    <div className="relative w-full md:w-80 group">
+                        <HugeiconsIcon 
+                            icon={Search01Icon} 
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-primary transition-colors" 
+                        />
+                        <Input
+                            placeholder="Cari endpoint (misal: /studies)..."
+                            className="pl-10 h-11 bg-slate-50 border-slate-200 focus:bg-white transition-all shadow-inner"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
+            </header>
+
+            <div className="flex-1 overflow-hidden flex flex-col md:flex-row max-w-7xl mx-auto w-full">
+                {/* Sidebar Navigation */}
+                <aside className="w-full md:w-64 p-6 overflow-y-auto border-r bg-white/50 shrink-0 hidden md:block">
+                    <nav className="space-y-6">
+                        <div className="space-y-2">
+                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-2 mb-4">Categories</h3>
+                            {categories.map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setActiveCategory(cat)}
+                                    className={cn(
+                                        "w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2.5",
+                                        activeCategory === cat 
+                                            ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]" 
+                                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                    )}
+                                >
+                                    {getCategoryIcon(cat)}
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
+                </aside>
+
+                {/* Main Content */}
+                <main className="flex-1 p-6 md:p-8 overflow-y-auto scroll-smooth">
+                    <div className="space-y-10 max-w-4xl">
+                        {filteredEndpoints.length > 0 ? (
+                            filteredEndpoints.map((endpoint) => (
+                                <EndpointCard 
+                                    key={endpoint.id} 
+                                    endpoint={endpoint} 
+                                    onCopy={copyToClipboard} 
+                                />
+                            ))
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                                <div className="bg-slate-100 p-6 rounded-full">
+                                    <HugeiconsIcon icon={Search01Icon} className="size-10 text-slate-300" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-lg font-bold text-slate-900">Endpoint tidak ditemukan</h3>
+                                    <p className="text-slate-500">Coba gunakan kata kunci pencarian yang lain.</p>
+                                </div>
+                                <Button variant="outline" onClick={() => { setSearchQuery(""); setActiveCategory("All"); }}>
+                                    Reset semua filter
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
+}
+
+function getCategoryIcon(category: string) {
+    const size = "size-4";
+    switch(category) {
+        case "Patients": return <HugeiconsIcon icon={Folder01Icon} className={size} />;
+        case "Studies": return <HugeiconsIcon icon={Database01Icon} className={size} />;
+        case "Series": return <HugeiconsIcon icon={File01Icon} className={size} />;
+        case "Instances": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
+        case "DICOMweb": return <HugeiconsIcon icon={InternetIcon} className={size} />;
+        default: return <HugeiconsIcon icon={Link01Icon} className={size} />;
+    }
+}
+
+function EndpointCard({ endpoint, onCopy }: { endpoint: ApiEndpoint, onCopy: (text: string) => void }) {
+    const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "response">("curl");
+    
+    const curlCode = `curl -X ${endpoint.method} "http://localhost:8042${endpoint.path}" \\
+  -H "Authorization: Basic your_base64_auth"`;
+    
+    const fetchCode = `const response = await fetch("http://localhost:8042${endpoint.path}", {
+  method: "${endpoint.method}",
+  headers: {
+    "Authorization": "Basic " + btoa("username:password")
+  }
+});
+const data = await response.json();`;
+
+    return (
+        <section id={endpoint.id} className="scroll-mt-8 transition-all hover:-translate-y-1">
+            <Card className="shadow-sm border-slate-200 hover:shadow-xl hover:border-primary/20 transition-all overflow-hidden duration-300">
+                <CardHeader className="pb-4 bg-slate-50/50">
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <Badge className={cn(
+                            "font-bold px-2 py-0.5 rounded-sm tracking-wider text-[10px]",
+                            endpoint.method === "GET" && "bg-blue-500 hover:bg-blue-600 text-white",
+                            endpoint.method === "POST" && "bg-green-600 hover:bg-green-700 text-white",
+                            endpoint.method === "DELETE" && "bg-destructive hover:bg-destructive/90 text-white",
+                        )}>
+                            {endpoint.method}
+                        </Badge>
+                        <code className="text-sm font-mono font-bold text-slate-800 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm">
+                            {endpoint.path}
+                        </code>
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-auto">
+                            {endpoint.category}
+                        </span>
+                    </div>
+                    <CardTitle className="text-xl font-bold text-slate-900 mt-2">
+                        {endpoint.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                    </CardTitle>
+                    <CardDescription className="text-slate-600 leading-relaxed text-sm font-medium mt-1">
+                        {endpoint.description}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6 pt-6 bg-white">
+                    {endpoint.parameters && endpoint.parameters.length > 0 && (
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                                <HugeiconsIcon icon={InformationCircleIcon} className="size-3.5" />
+                                Parameters
+                            </h4>
+                            <div className="border rounded-xl overflow-hidden bg-slate-50/20 shadow-inner">
+                                <table className="w-full text-xs text-left">
+                                    <thead className="bg-slate-100/80 text-slate-500 font-bold border-b">
+                                        <tr>
+                                            <th className="px-4 py-3">Name</th>
+                                            <th className="px-4 py-3">Type</th>
+                                            <th className="px-4 py-3">Required</th>
+                                            <th className="px-4 py-3">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y text-slate-700">
+                                        {endpoint.parameters.map((p) => (
+                                            <tr key={p.name} className="hover:bg-slate-50/50 transition-colors">
+                                                <td className="px-4 py-3 font-mono font-bold text-primary">{p.name}</td>
+                                                <td className="px-4 py-3"><Badge variant="outline" className="text-[10px] font-mono">{p.type}</Badge></td>
+                                                <td className="px-4 py-3">{p.required ? <Badge className="bg-amber-100 text-amber-700 border-none text-[9px]">YES</Badge> : "No"}</td>
+                                                <td className="px-4 py-3 text-slate-500 italic">{p.description}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="space-y-3">
+                        <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                            <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
+                            Example Implementation
+                        </h4>
+                        
+                        <div className="w-full">
+                            <div className="flex bg-slate-100/50 p-1 h-9 gap-1 shadow-inner rounded-lg mb-2 w-fit">
+                                <button 
+                                    onClick={() => setActiveTab("curl")}
+                                    className={cn(
+                                        "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                        activeTab === "curl" ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:text-slate-700"
+                                    )}
+                                >
+                                    CURL
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab("fetch")}
+                                    className={cn(
+                                        "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                        activeTab === "fetch" ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:text-slate-700"
+                                    )}
+                                >
+                                    FETCH (JS)
+                                </button>
+                                {endpoint.response && (
+                                    <button 
+                                        onClick={() => setActiveTab("response")}
+                                        className={cn(
+                                            "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                            activeTab === "response" ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:text-slate-700"
+                                        )}
+                                    >
+                                        RESPONSE
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="relative">
+                                {activeTab === "curl" && (
+                                    <div className="relative animate-in fade-in duration-300">
+                                        <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
+                                            {curlCode}
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon-xs" 
+                                            className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
+                                            onClick={() => onCopy(curlCode)}
+                                        >
+                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                        </Button>
+                                    </div>
+                                )}
+                                
+                                {activeTab === "fetch" && (
+                                    <div className="relative animate-in fade-in duration-300">
+                                        <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
+                                            {fetchCode}
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon-xs" 
+                                            className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
+                                            onClick={() => onCopy(fetchCode)}
+                                        >
+                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {activeTab === "response" && endpoint.response && (
+                                    <div className="relative animate-in fade-in duration-300">
+                                        <div className="bg-slate-50 text-slate-600 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto border border-slate-200 shadow-inner italic">
+                                            {endpoint.response}
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon-xs" 
+                                            className="absolute right-3 top-3 text-slate-400 hover:text-primary transition-all rounded-lg"
+                                            onClick={() => onCopy(endpoint.response || "")}
+                                        >
+                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </section>
+    );
+}

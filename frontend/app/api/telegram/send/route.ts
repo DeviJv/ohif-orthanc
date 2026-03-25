@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -8,14 +9,24 @@ const ORTHANC_AUTH = Buffer.from(
     `${process.env.ORTHANC_USERNAME || "quantum"}:${process.env.ORTHANC_PASSWORD || "quantum123"}`
 ).toString("base64");
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+async function getTelegramCredentials() {
+    const [tokenRow, chatIdRow] = await Promise.all([
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } }),
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } }),
+    ]);
+    return {
+        botToken: tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "",
+        chatId: chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "",
+    };
+}
 
 export async function POST(req: NextRequest) {
     const session = await auth();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const { botToken: TELEGRAM_BOT_TOKEN, chatId: TELEGRAM_CHAT_ID } = await getTelegramCredentials();
 
     if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "your_bot_token_here") {
         return NextResponse.json({ error: "Telegram Bot Token is not configured" }, { status: 500 });

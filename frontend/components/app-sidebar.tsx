@@ -73,7 +73,11 @@ const data = {
       items: [
         {
           title: "User Guide",
-          url: "#",
+          url: "/docs/orthanc-api",
+        },
+        {
+          title: "Bot Telegram API",
+          url: "/docs/telegram-bot",
         },
         {
           title: "Support",

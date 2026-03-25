@@ -13,7 +13,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { LayoutBottomIcon, AudioWave01Icon, CommandIcon, ComputerTerminalIcon, RoboticIcon, BookOpen02Icon, Settings05Icon, CropIcon, PieChartIcon, MapsIcon } from "@hugeicons/core-free-icons"
+import { CommandIcon, ComputerTerminalIcon, RoboticIcon, BookOpen02Icon, Settings05Icon, CropIcon, PieChartIcon, MapsIcon } from "@hugeicons/core-free-icons"
 
 // This is sample data.
 const data = {
@@ -26,23 +26,9 @@ const data = {
     {
       name: "Quantum PACS",
       logo: (
-        <HugeiconsIcon icon={LayoutBottomIcon} strokeWidth={2} />
-      ),
-      plan: "Enterprise",
-    },
-    {
-      name: "Quantum Core",
-      logo: (
-        <HugeiconsIcon icon={AudioWave01Icon} strokeWidth={2} />
-      ),
-      plan: "Startup",
-    },
-    {
-      name: "Quantum Lab",
-      logo: (
         <HugeiconsIcon icon={CommandIcon} strokeWidth={2} />
       ),
-      plan: "Free",
+      plan: "Enterprise",
     },
   ],
   navMain: [

@@ -1,22 +1,25 @@
 # Install dependencies only when needed
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile || pnpm install
 
 # Rebuild the source code only when needed
 FROM node:20-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Skip type checking for faster builds in this demo context
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npx prisma generate
-RUN npm run build
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM node:20-alpine AS runner
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -41,4 +44,4 @@ EXPOSE 3001
 ENV PORT 3001
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]

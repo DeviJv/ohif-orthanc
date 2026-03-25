@@ -304,6 +304,9 @@ export function StudyDetailRow({
                                                                                                 </TableCell>
                                                                                                 <TableCell className="text-right py-1">
                                                                                                     <div className="flex justify-end gap-1">
+                                                                                                        <Button size="icon-xs" variant="ghost" className="size-6 text-primary" onClick={() => window.open(`/orthanc/instances/${instance.ID}/preview`, "_blank")} title="Preview Instance">
+                                                                                                            <HugeiconsIcon icon={ViewIcon} className="size-2.5" />
+                                                                                                        </Button>
                                                                                                         <Button size="icon-xs" variant="ghost" className="size-6" onClick={() => handleDownloadInstance(instance.ID, instance.MainDicomTags.InstanceNumber)} title="Download DCM">
                                                                                                             <HugeiconsIcon icon={Download01Icon} className="size-2.5" />
                                                                                                         </Button>

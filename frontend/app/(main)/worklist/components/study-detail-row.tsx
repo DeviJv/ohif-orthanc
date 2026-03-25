@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { 
     Tag01Icon, 
     ShieldIcon, 
@@ -11,7 +11,8 @@ import {
     Download01Icon, 
     Delete01Icon,
     RefreshIcon,
-    Copy01Icon
+    Copy01Icon,
+    Upload01Icon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Study, Series, Instance, DicomTags } from "../types";
 import { MetadataItem } from "./metadata-item";
 import { formatDicomDate, formatDicomTime } from "../utils/format";
+import { UploadSeriesDialog } from "./upload-series-dialog";
 
 interface StudyDetailRowProps {
     study: Study;
@@ -38,6 +40,7 @@ interface StudyDetailRowProps {
     handleDeleteInstance: (id: string, seriesId: string) => void;
     handleAddLabel: (id: string) => void;
     handleRemoveLabel: (id: string, label: string) => void;
+    handleUploadSeries: (files: FileList, studyId: string) => Promise<void>;
     columnsCount: number;
 }
 
@@ -59,8 +62,11 @@ export function StudyDetailRow({
     handleDeleteInstance,
     handleAddLabel,
     handleRemoveLabel,
+    handleUploadSeries,
     columnsCount
 }: StudyDetailRowProps) {
+    const [isUploadSeriesOpen, setIsUploadSeriesOpen] = useState(false);
+    const patientName = study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName;
     return (
         <TableRow className="bg-muted/30 hover:bg-muted/30 border-none">
             <TableCell colSpan={columnsCount} className="p-0">
@@ -139,6 +145,15 @@ export function StudyDetailRow({
                                 <div className="w-1 h-4 bg-primary rounded-full" />
                                 Series List
                             </h3>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="gap-2 text-xs h-7 border-primary/30 text-primary hover:bg-primary/5"
+                                onClick={() => setIsUploadSeriesOpen(true)}
+                            >
+                                <HugeiconsIcon icon={Upload01Icon} className="size-3" />
+                                Add Series
+                            </Button>
                         </div>
                         <div className="rounded-lg border bg-background overflow-hidden">
                             <Table>
@@ -350,6 +365,15 @@ export function StudyDetailRow({
                     </div>
                 </div>
             </TableCell>
+
+            {/* Upload Series Dialog */}
+            <UploadSeriesDialog
+                open={isUploadSeriesOpen}
+                onOpenChange={setIsUploadSeriesOpen}
+                studyId={study.ID}
+                patientName={patientName}
+                onUpload={(files) => handleUploadSeries(files, study.ID)}
+            />
         </TableRow>
     );
 }

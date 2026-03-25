@@ -43,6 +43,7 @@ import { Study } from "./types";
 import { Skeleton } from "@/components/ui/skeleton";
 import OhifViewer from "../../../components/ohif-viewer";
 import BasicViewer from "../../../components/basic-viewer";
+import SegmentedViewer from "../../../components/segmented-viewer";
 
 export default function WorklistPage() {
     const {
@@ -52,7 +53,7 @@ export default function WorklistPage() {
         toggleStudyExpansion, toggleSeriesExpansion, toggleInstanceExpansion,
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
         handleEditPatient, handleAnonymize,
-        handleAddLabel, handleRemoveLabel,
+        handleAddLabel, handleRemoveLabel, handleUploadSeries,
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog
@@ -183,6 +184,8 @@ export default function WorklistPage() {
                         <div className="absolute inset-0">
                             {viewerMode === "viewer" ? (
                                 <OhifViewer studyInstanceUIDs={selectedStudyUID} />
+                            ) : viewerMode === "segmented" ? (
+                                <SegmentedViewer studyInstanceUIDs={selectedStudyUID} />
                             ) : (
                                 <BasicViewer studyInstanceUID={selectedStudyUID} />
                             )}
@@ -322,6 +325,7 @@ export default function WorklistPage() {
                                         handleDeleteInstance={handleDeleteInstance}
                                         handleAddLabel={handleAddLabel}
                                         handleRemoveLabel={handleRemoveLabel}
+                                        handleUploadSeries={handleUploadSeries}
                                         columnsCount={columns.length}
                                     />
                                     )}

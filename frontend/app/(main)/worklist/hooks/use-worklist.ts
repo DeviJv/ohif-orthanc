@@ -214,6 +214,40 @@ export function useWorklist() {
         }
     }, [fetchStudies]);
 
+    const handleUploadSeries = useCallback(async (files: FileList, studyId: string) => {
+        if (!files || files.length === 0) return;
+        const taskId = addTask({ id: `upload-series-${studyId}`, description: `Uploading ${files.length} DICOM file(s) to study...`, type: "upload" });
+        try {
+            const BATCH_SIZE = 5;
+            let successCount = 0;
+
+            for (let i = 0; i < files.length; i += BATCH_SIZE) {
+                const batch = Array.from(files).slice(i, i + BATCH_SIZE);
+                const results = await Promise.all(
+                    batch.map(async (file) => {
+                        try {
+                            const buf = await file.arrayBuffer();
+                            const res = await orthancApi.uploadInstance(buf);
+                            return res.ok;
+                        } catch { return false; }
+                    })
+                );
+                results.forEach(ok => { if (ok) successCount++; });
+            }
+
+            updateTask(taskId, "success");
+            setTimeout(() => toast.dismiss(taskId), 3000);
+            toast.success(`${successCount} file berhasil diupload`);
+            // Refresh series for this study
+            setSeriesData(prev => { const next = { ...prev }; delete next[studyId]; return next; });
+            fetchSeries(studyId);
+        } catch (error) {
+            console.error("Upload series error:", error);
+            updateTask(taskId, "error");
+            toast.error("Gagal upload series");
+        }
+    }, [addTask, updateTask, fetchSeries]);
+
     const handleFileUpload = useCallback(async (files: FileList, metadata?: { PatientTelephoneNumbers?: string }) => {
         if (!files || files.length === 0) return;
         setUploading(true);
@@ -299,7 +333,7 @@ export function useWorklist() {
         toggleStudyExpansion, toggleSeriesExpansion, toggleInstanceExpansion,
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
         handleEditPatient, handleAnonymize,
-        handleAddLabel, handleRemoveLabel,
+        handleAddLabel, handleRemoveLabel, handleUploadSeries,
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog

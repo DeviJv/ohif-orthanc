@@ -7,8 +7,8 @@ import {
     Download01Icon, 
     Delete01Icon, 
     PencilEdit01Icon, 
-    ArrowRight01Icon,
-    SentIcon
+    SentIcon,
+    LayersLogoIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -152,6 +152,17 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="outline"
+                        className="gap-2 border-purple-300 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
+                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmented")}
+                        title="Open Segmented Viewer"
+                    >
+                        <HugeiconsIcon icon={LayersLogoIcon} className="size-4" />
+                        Segmented
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="outline"
                         className="gap-2"
                         onClick={() => handleDownload(study.ID, patientName)}
                     >
@@ -190,15 +201,6 @@ export const getColumns = ({
                         title="Send to Telegram Doctor"
                     >
                         <HugeiconsIcon icon={SentIcon} className="size-4" />
-                    </Button>
-
-                    <Button
-                        size="sm"
-                        variant="ghost"
-                        className="size-8 p-0"
-                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "basic-viewer")}
-                    >
-                        <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                     </Button>
                 </div>
             );

@@ -32,11 +32,11 @@ RUN adduser --system --uid 1001 nextjs
 # but for now we'll stick to the standard build output
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/prisma ./prisma
-# Fix generated prisma path if needed
-COPY --from=builder /app/app/generated/prisma ./app/generated/prisma
+# Fix generated prisma path and node_modules permissions
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/app/generated/prisma ./app/generated/prisma
 
 USER nextjs
 

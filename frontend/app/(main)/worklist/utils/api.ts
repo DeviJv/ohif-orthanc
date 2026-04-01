@@ -4,13 +4,13 @@ import { Study, Series, Instance } from "../types";
 export const orthancApi = {
     // Studies
     fetchStudies: async (): Promise<Study[]> => {
-        const response = await fetch("/api/orthanc/studies");
+        const response = await fetch(`/api/orthanc/studies?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
         if (!response.ok) throw new Error("Failed to fetch study list");
         const ids: string[] = await response.json();
 
         const details = await Promise.all(
             ids.slice(0, 50).map(async (id) => {
-                const res = await fetch(`/api/orthanc/studies/${id}`);
+                const res = await fetch(`/api/orthanc/studies/${id}?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
                 return res.json();
             })
         );
@@ -43,11 +43,26 @@ export const orthancApi = {
         return response.json();
     },
 
-    modifyStudy: async (studyId: string, replaceTags: Record<string, string>) => {
+    modifyStudy: async (studyId: string, modifications: Record<string, string>) => {
+        const replaceTags: Record<string, string> = {};
+        const removeTags: string[] = [];
+        
+        Object.entries(modifications).forEach(([key, value]) => {
+            if (value && value.trim() !== "") {
+                replaceTags[key] = value.trim();
+            } else {
+                removeTags.push(key);
+            }
+        });
+
+        const payload: any = { Force: true, KeepSource: false };
+        if (Object.keys(replaceTags).length > 0) payload.Replace = replaceTags;
+        if (removeTags.length > 0) payload.Remove = removeTags;
+
         const response = await fetch(`/api/orthanc/studies/${studyId}/modify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Replace: replaceTags, Force: true, KeepSource: false })
+            body: JSON.stringify(payload)
         });
         if (!response.ok) throw new Error("Failed to modify study");
         return response;
@@ -65,12 +80,12 @@ export const orthancApi = {
 
     // Series
     fetchSeriesDetails: async (studyId: string): Promise<Series[]> => {
-        const res = await fetch(`/api/orthanc/studies/${studyId}`);
+        const res = await fetch(`/api/orthanc/studies/${studyId}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
         const study: Study = await res.json();
 
         const details = await Promise.all(
             study.Series.map(async (id) => {
-                const seriesRes = await fetch(`/api/orthanc/series/${id}`);
+                const seriesRes = await fetch(`/api/orthanc/series/${id}?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
                 return seriesRes.json();
             })
         );
@@ -90,12 +105,12 @@ export const orthancApi = {
 
     // Instances
     fetchInstancesDetails: async (seriesId: string): Promise<Instance[]> => {
-        const res = await fetch(`/api/orthanc/series/${seriesId}`);
+        const res = await fetch(`/api/orthanc/series/${seriesId}?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
         const series: Series = await res.json();
 
         const details = await Promise.all(
             series.Instances.map(async (id) => {
-                const instanceRes = await fetch(`/api/orthanc/instances/${id}`);
+                const instanceRes = await fetch(`/api/orthanc/instances/${id}?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
                 return instanceRes.json();
             })
         );
@@ -108,7 +123,7 @@ export const orthancApi = {
     },
 
     fetchInstanceTags: async (instanceId: string) => {
-        const res = await fetch(`/api/orthanc/instances/${instanceId}/tags`);
+        const res = await fetch(`/api/orthanc/instances/${instanceId}/tags?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
         if (!res.ok) throw new Error("Failed to fetch instance tags");
         return res.json();
     },

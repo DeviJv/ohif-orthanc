@@ -153,12 +153,18 @@ export function useWorklist() {
         }
     }, [addTask, updateTask]);
 
-    const handleEditPatient = useCallback(async (studyId: string, currentName: string) => {
-        const newName = prompt("Masukkan Nama Pasien Baru:", currentName);
-        if (newName === null || newName === currentName) return;
-        const taskId = addTask({ id: `edit-patient-${studyId}`, description: "Updating patient data...", type: "modify" });
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [studyToEdit, setStudyToEdit] = useState<Study | null>(null);
+
+    const openEditDialog = (study: Study) => {
+        setStudyToEdit(study);
+        setIsEditDialogOpen(true);
+    };
+
+    const handleEditStudy = useCallback(async (studyId: string, modifications: Record<string, string>) => {
+        const taskId = addTask({ id: `edit-study-${studyId}`, description: "Updating study data...", type: "modify" });
         try {
-            await orthancApi.modifyStudy(studyId, { PatientName: newName });
+            await orthancApi.modifyStudy(studyId, modifications);
             updateTask(taskId, "success");
             // Auto dismiss toast after success
             setTimeout(() => {
@@ -166,9 +172,12 @@ export function useWorklist() {
             }, 3000);
             
             fetchStudies();
+            setIsEditDialogOpen(false);
+            setStudyToEdit(null);
         } catch (error) {
-            console.error("Edit patient error:", error);
+            console.error("Edit study error:", error);
             updateTask(taskId, "error");
+            toast.error("Gagal Buka File/Edit", { description: "Terjadi kesalahan saat mengupdate metadata." });
         }
     }, [fetchStudies, addTask, updateTask]);
 
@@ -332,7 +341,7 @@ export function useWorklist() {
         seriesData, instancesData, tagsData,
         toggleStudyExpansion, toggleSeriesExpansion, toggleInstanceExpansion,
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
-        handleEditPatient, handleAnonymize,
+        handleEditStudy, openEditDialog, isEditDialogOpen, setIsEditDialogOpen, studyToEdit, setStudyToEdit, handleAnonymize,
         handleAddLabel, handleRemoveLabel, handleUploadSeries,
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,

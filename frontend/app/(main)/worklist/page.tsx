@@ -38,6 +38,7 @@ import { StudyDetailRow } from "./components/study-detail-row";
 import { DeleteStudyDialog } from "./components/delete-study-dialog";
 import { BulkDeleteStudyDialog } from "./components/bulk-delete-dialog";
 import { SendTelegramDialog } from "./components/send-telegram-dialog";
+import { EditStudyDialog } from "./components/edit-study-dialog";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "./utils/actions";
 import { Study } from "./types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -52,7 +53,7 @@ export default function WorklistPage() {
         seriesData, instancesData, tagsData,
         toggleStudyExpansion, toggleSeriesExpansion, toggleInstanceExpansion,
         handleDeleteStudy, handleDeleteSeries, handleDeleteInstance,
-        handleEditPatient, handleAnonymize,
+        handleEditStudy, openEditDialog, isEditDialogOpen, setIsEditDialogOpen, studyToEdit, setStudyToEdit, handleAnonymize,
         handleAddLabel, handleRemoveLabel, handleUploadSeries,
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
@@ -142,7 +143,7 @@ export default function WorklistPage() {
         handleDownload: handleDownloadStudyWithTasks,
         setStudyToDelete,
         setIsDeleteDialogOpen,
-        handleEditPatient,
+        openEditDialog,
         openSendTelegramDialog
     });
 
@@ -414,6 +415,13 @@ export default function WorklistPage() {
                 onOpenChange={setIsSendTelegramDialogOpen}
                 study={selectedStudyForTelegram}
                 onSendToDoctor={handleSendToTelegram}
+            />
+
+            <EditStudyDialog
+                open={isEditDialogOpen}
+                onOpenChange={setIsEditDialogOpen}
+                study={studyToEdit}
+                onConfirm={handleEditStudy}
             />
         </div>
     );

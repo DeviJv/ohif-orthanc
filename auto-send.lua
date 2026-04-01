@@ -2,6 +2,12 @@ function OnStableStudy(studyId, tags, metadata)
     -- This function is called when a study is stable (no new instances for 5s)
     print("New stable study detected: " .. studyId)
     
+    -- Prevent trigger on modified or anonymized studies
+    if metadata["ModifiedFrom"] ~= nil or metadata["AnonymizedFrom"] ~= nil then
+        print("Study is a modification/anonymization of an existing study. Skipping Telegram auto-send.")
+        return
+    end
+
     -- Target the internal Next.js API (configurable via ENV)
     local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
     local secret = "pacs_secret_token_2026"

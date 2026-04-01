@@ -51,7 +51,9 @@ export async function GET(
             status: response.status,
             headers: {
                 ...buildResponseHeaders(response),
-                "Cache-Control": "public, max-age=3600",
+                "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
             },
         });
     } catch (error) {

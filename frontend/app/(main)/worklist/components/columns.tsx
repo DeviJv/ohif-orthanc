@@ -26,7 +26,7 @@ interface GetColumnsProps {
     handleDownload: (id: string, name: string) => void;
     setStudyToDelete: (study: Study) => void;
     setIsDeleteDialogOpen: (open: boolean) => void;
-    handleEditPatient: (id: string, name: string) => void;
+    openEditDialog: (study: Study) => void;
     openSendTelegramDialog: (study: Study) => void;
 }
 
@@ -37,7 +37,7 @@ export const getColumns = ({
     handleDownload,
     setStudyToDelete,
     setIsDeleteDialogOpen,
-    handleEditPatient,
+    openEditDialog,
     openSendTelegramDialog
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
@@ -91,6 +91,26 @@ export const getColumns = ({
         accessorFn: (row) => row.PatientMainDicomTags?.PatientID || row.MainDicomTags.PatientID,
         id: "patientID",
         header: "Patient ID",
+    },
+    {
+        accessorFn: (row) => (row.PatientMainDicomTags as any)?.PatientBirthDate || (row.MainDicomTags as any)?.PatientBirthDate,
+        id: "birthDate",
+        header: "Birth Date",
+        cell: ({ getValue }) => {
+            const val = getValue() as string;
+            return val ? formatDicomDate(val) : "-";
+        },
+    },
+    {
+        accessorFn: (row) => (row.PatientMainDicomTags as any)?.PatientSex || (row.MainDicomTags as any)?.PatientSex,
+        id: "gender",
+        header: "Gender",
+        cell: ({ getValue }) => {
+            const val = (getValue() as string)?.toUpperCase();
+            if (!val) return "-";
+            const labels: Record<string, string> = { M: "Male", F: "Female" };
+            return labels[val] ?? val;
+        },
     },
     {
         accessorFn: (row) => row.PatientMainDicomTags?.PatientTelephoneNumbers || row.MainDicomTags.PatientTelephoneNumbers,
@@ -186,9 +206,9 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0"
-                        onClick={() => handleEditPatient(study.ID, patientName)}
-                        title="Edit Patient Name"
+                        className="size-8 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                        onClick={() => openEditDialog(study)}
+                        title="Edit Study Metadata"
                     >
                         <HugeiconsIcon icon={PencilEdit01Icon} className="size-4" />
                     </Button>

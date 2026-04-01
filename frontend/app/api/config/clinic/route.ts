@@ -14,20 +14,44 @@ const KEYS = [
 ];
 
 export async function GET() {
-    const session = await auth();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    try {
+        const session = await auth();
+        if (!session) {
+            console.log("[Clinic API] Unauthorized attempt to access clinic config");
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
 
-    const rows = await db.appConfig.findMany({ where: { key: { in: KEYS } } });
-    const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+        const rows = await db.appConfig.findMany({ 
+            where: { key: { in: KEYS } } 
+        }).catch(e => {
+            console.error("[Clinic API] Database query failed:", e);
+            throw e;
+        });
 
-    return NextResponse.json({
-        clinicName: map["CLINIC_NAME"] || "",
-        clinicAddress: map["CLINIC_ADDRESS"] || "",
-        clinicPhone: map["CLINIC_PHONE"] || "",
-        clinicCity: map["CLINIC_CITY"] || "",
-        clinicLogo: map["CLINIC_LOGO_BASE64"] || "",
-        doctors: map["CLINIC_DOCTORS"] ? JSON.parse(map["CLINIC_DOCTORS"]) : [],
-    });
+        const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+
+        let doctors = [];
+        try {
+            doctors = map["CLINIC_DOCTORS"] ? JSON.parse(map["CLINIC_DOCTORS"]) : [];
+        } catch (e) {
+            console.error("[Clinic API] Failed to parse doctors JSON:", e);
+        }
+
+        return NextResponse.json({
+            clinicName: map["CLINIC_NAME"] || "",
+            clinicAddress: map["CLINIC_ADDRESS"] || "",
+            clinicPhone: map["CLINIC_PHONE"] || "",
+            clinicCity: map["CLINIC_CITY"] || "",
+            clinicLogo: map["CLINIC_LOGO_BASE64"] || "",
+            doctors: Array.isArray(doctors) ? doctors : [],
+        });
+    } catch (error) {
+        console.error("[Clinic API] Unexpected error in GET:", error);
+        return NextResponse.json(
+            { error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown" }, 
+            { status: 500 }
+        );
+    }
 }
 
 export async function POST(req: NextRequest) {

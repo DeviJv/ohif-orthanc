@@ -104,8 +104,19 @@ export default function ClinicSettingsPage() {
 
     if (isLoading) {
         return (
-            <div className="flex h-full items-center justify-center p-8">
-                <HugeiconsIcon icon={Building04Icon} className="size-8 animate-pulse text-primary/50" />
+            <div className="flex flex-col gap-6 p-4 md:p-8 max-w-4xl mx-auto animate-in fade-in duration-500">
+                <div className="space-y-2">
+                    <div className="h-8 w-64 bg-muted rounded-md animate-pulse" />
+                    <div className="h-4 w-96 bg-muted rounded-md animate-pulse" />
+                </div>
+                <div className="h-px w-full bg-border" />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="h-[300px] w-full bg-muted rounded-xl animate-pulse" />
+                        <div className="h-[200px] w-full bg-muted rounded-xl animate-pulse" />
+                    </div>
+                    <div className="h-[300px] w-full bg-muted rounded-xl animate-pulse" />
+                </div>
             </div>
         );
     }

@@ -39,6 +39,7 @@ import { DeleteStudyDialog } from "./components/delete-study-dialog";
 import { BulkDeleteStudyDialog } from "./components/bulk-delete-dialog";
 import { SendTelegramDialog } from "./components/send-telegram-dialog";
 import { EditStudyDialog } from "./components/edit-study-dialog";
+import { ExportPdfDialog } from "./components/export-pdf-dialog";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "./utils/actions";
 import { Study } from "./types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -59,6 +60,13 @@ export default function WorklistPage() {
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog
     } = useWorklist();
+
+    const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
+    const [studyForPdf, setStudyForPdf] = useState<Study | null>(null);
+    const openExportPdfDialog = (study: Study) => {
+        setStudyForPdf(study);
+        setIsExportPdfDialogOpen(true);
+    };
 
     // Setup Study Notifier (Sound & Toast on new studies)
     useStudyNotifier(studies, fetchStudies);
@@ -144,7 +152,8 @@ export default function WorklistPage() {
         setStudyToDelete,
         setIsDeleteDialogOpen,
         openEditDialog,
-        openSendTelegramDialog
+        openSendTelegramDialog,
+        openExportPdfDialog,
     });
 
     const table = useReactTable({
@@ -422,6 +431,12 @@ export default function WorklistPage() {
                 onOpenChange={setIsEditDialogOpen}
                 study={studyToEdit}
                 onConfirm={handleEditStudy}
+            />
+
+            <ExportPdfDialog
+                open={isExportPdfDialogOpen}
+                onOpenChange={setIsExportPdfDialogOpen}
+                study={studyForPdf}
             />
         </div>
     );

@@ -71,6 +71,19 @@ const data = {
         },
       ],
     },
+    {
+      title: "Settings",
+      url: "/settings",
+      icon: (
+        <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />
+      ),
+      items: [
+        {
+          title: "Profil Klinik",
+          url: "/settings",
+        },
+      ],
+    },
   ],
 }
 

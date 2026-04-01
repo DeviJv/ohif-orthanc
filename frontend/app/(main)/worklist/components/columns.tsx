@@ -8,7 +8,8 @@ import {
     Delete01Icon, 
     PencilEdit01Icon, 
     SentIcon,
-    LayersLogoIcon
+    LayersLogoIcon,
+    FileExportIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ interface GetColumnsProps {
     setIsDeleteDialogOpen: (open: boolean) => void;
     openEditDialog: (study: Study) => void;
     openSendTelegramDialog: (study: Study) => void;
+    openExportPdfDialog: (study: Study) => void;
 }
 
 export const getColumns = ({
@@ -38,7 +40,8 @@ export const getColumns = ({
     setStudyToDelete,
     setIsDeleteDialogOpen,
     openEditDialog,
-    openSendTelegramDialog
+    openSendTelegramDialog,
+    openExportPdfDialog,
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
         id: "select",
@@ -221,6 +224,16 @@ export const getColumns = ({
                         title="Send to Telegram Doctor"
                     >
                         <HugeiconsIcon icon={SentIcon} className="size-4" />
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                        onClick={() => openExportPdfDialog(study)}
+                        title="Export Laporan PDF"
+                    >
+                        <HugeiconsIcon icon={FileExportIcon} className="size-4" />
                     </Button>
                 </div>
             );

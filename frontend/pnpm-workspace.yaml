@@ -1,5 +1,6 @@
 ignoredBuiltDependencies:
   - '@prisma/engines'
+  - core-js
   - msw
   - unrs-resolver
 

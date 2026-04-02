@@ -6,7 +6,8 @@
     "Port": 5432,
     "Database": "orthanc",
     "Username": "orthanc",
-    "Password": "orthancpassword"
+    "Password": "orthancpassword",
+    "EnableUpgrades": true
   },
   "Name": "Q U A N T U M",
   "StorageDirectory": "/var/lib/orthanc/db",
@@ -128,7 +129,7 @@
   "OHIF": {
     "DataSource": "dicom-web",
     "RouterBasename": "/orthanc/ohif/",
-    "CustomOhifScript": "/etc/orthanc/ohif.js",
+    "UserConfiguration": "/etc/orthanc/ohif.js",
     "CustomCssFile": "/etc/orthanc/ohif_custom.css"
   },
   "Warnings": {

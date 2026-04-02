@@ -59,8 +59,9 @@ services:
       dockerfile: Dockerfile
     image: quantum-pacs-frontend:latest
     container_name: pacs-web
-    env_file:
-      - ./frontend/.env
+    volumes:
+      - ./frontend/.env:/app/.env:ro
+      - ./logo.png:/app/public/logo.png:ro
     # Port 3001 is now handled by Nginx, but keeping mapping for local access if needed
     ports:
       - 3001:3001
@@ -89,6 +90,8 @@ services:
       - "443:443"
     volumes:
       - ./nginx_ohif.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./logo.png:/usr/share/nginx/html/logo.png:ro
+      - ./ohif.js:/usr/share/nginx/html/orthanc/ohif/app-config.js:ro
       - /etc/letsencrypt:/etc/nginx/ssl:ro
     networks:
       - pacs

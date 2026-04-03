@@ -9,7 +9,7 @@ export interface Task {
     id: string;
     description: string;
     status: TaskStatus;
-    type: "download" | "upload" | "delete" | "anonymize" | "modify";
+    type: "download" | "upload" | "delete" | "anonymize" | "modify" | "ai";
     startTime: number;
     metadata?: any;
 }

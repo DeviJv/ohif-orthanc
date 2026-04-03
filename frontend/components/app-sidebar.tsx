@@ -62,10 +62,6 @@ const data = {
           url: "/docs/orthanc-api",
         },
         {
-          title: "Bot Telegram API",
-          url: "/docs/telegram-bot",
-        },
-        {
           title: "Support",
           url: "#",
         },

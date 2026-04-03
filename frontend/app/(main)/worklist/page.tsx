@@ -3,7 +3,11 @@
 import React, { useState } from "react";
 import { 
     RefreshIcon, 
-    ArrowLeft01Icon
+    ArrowLeft01Icon,
+    InformationCircleIcon,
+    FloppyDiskIcon,
+    CpuIcon,
+    AiCloud01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -58,7 +62,8 @@ export default function WorklistPage() {
         handleAddLabel, handleRemoveLabel, handleUploadSeries,
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
-        selectedStudyForTelegram, openSendTelegramDialog
+        selectedStudyForTelegram, openSendTelegramDialog,
+        aiMode, handleRunAi
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -154,6 +159,8 @@ export default function WorklistPage() {
         openEditDialog,
         openSendTelegramDialog,
         openExportPdfDialog,
+        aiMode,
+        handleRunAi,
     });
 
     const table = useReactTable({
@@ -222,6 +229,21 @@ export default function WorklistPage() {
                                         Viewer v1.0
                                     </span>
                                 </div>
+
+                                {aiMode === "MANUAL" && selectedStudyUID && (
+                                    <>
+                                        <div className="w-px h-5 bg-slate-700 mx-1" />
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            className="h-9 gap-2 text-primary hover:text-primary hover:bg-primary/10 px-3 rounded-lg animate-pulse"
+                                            onClick={() => handleRunAi(selectedStudyUID)}
+                                        >
+                                            <HugeiconsIcon icon={AiCloud01Icon} className="size-4" strokeWidth={2.5} />
+                                            <span className="font-bold text-sm tracking-tight">Run AI Analysis</span>
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

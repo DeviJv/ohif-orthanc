@@ -11,6 +11,7 @@ export function useWorklist() {
     const [studies, setStudies] = useState<Study[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
+    const [aiMode, setAiMode] = useState<string>("OFF");
     
     // Expand states
     const [expandedStudies, setExpandedStudies] = useState<Record<string, boolean>>({});
@@ -37,9 +38,24 @@ export function useWorklist() {
         }
     }, []);
 
+    const fetchAiConfig = useCallback(async () => {
+        try {
+            // Add timestamp to bust cache
+            const res = await fetch(`/api/config/ai?t=${Date.now()}`);
+            if (res.ok) {
+                const data = await res.json();
+                console.log("AI Config loaded:", data.mode);
+                setAiMode(data.mode);
+            }
+        } catch (error) {
+            console.error("Failed to fetch AI config:", error);
+        }
+    }, []);
+
     useEffect(() => {
         fetchStudies();
-    }, [fetchStudies]);
+        fetchAiConfig();
+    }, [fetchStudies, fetchAiConfig]);
 
     const fetchSeries = useCallback(async (studyId: string) => {
         if (seriesData[studyId]) return;
@@ -250,6 +266,12 @@ export function useWorklist() {
             // Refresh series for this study
             setSeriesData(prev => { const next = { ...prev }; delete next[studyId]; return next; });
             fetchSeries(studyId);
+            
+            // Auto-trigger AI if mode is AUTO (Now driven by Frontend for reliability)
+            if (aiMode === "AUTO") {
+                console.log("Frontend Trigger: Starting AI analysis for study:", studyId);
+                handleRunAi(studyId);
+            }
         } catch (error) {
             console.error("Upload series error:", error);
             updateTask(taskId, "error");
@@ -309,6 +331,13 @@ export function useWorklist() {
             }, 3000);
             
             fetchStudies();
+
+            // Auto-trigger AI if mode is AUTO (Now driven by Frontend for reliability)
+            if (aiMode === "AUTO" && studyIds.size > 0) {
+                const firstStudyId = Array.from(studyIds)[0];
+                console.log("Frontend Trigger: Starting AI analysis for study:", firstStudyId);
+                handleRunAi(firstStudyId);
+            }
         } catch (error) {
             console.error("Upload error:", error);
             updateTask(taskId, "error");
@@ -330,6 +359,32 @@ export function useWorklist() {
         }
     };
 
+    const handleRunAi = async (studyId: string) => {
+        const taskId = addTask({ id: `ai-trigger-${studyId}`, description: "Processing AI Analysis...", type: "ai" });
+        try {
+            const res = await fetch("/api/ai/trigger", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ studyId })
+            });
+
+            if (res.ok) {
+                updateTask(taskId, "success");
+                toast.success("AI Analysis Berhasil Di-trigger", {
+                    description: "Hasil akan segera dikirim ke Telegram Dokter."
+                });
+                setTimeout(() => toast.dismiss(taskId), 5000);
+            } else {
+                const data = await res.json();
+                throw new Error(data.error || "Gagal memicu AI");
+            }
+        } catch (error: any) {
+            console.error("AI trigger error:", error);
+            updateTask(taskId, "error");
+            toast.error("Gagal Menjalankan AI", { description: error.message });
+        }
+    };
+
     const openSendTelegramDialog = (study: Study) => {
         setSelectedStudyForTelegram(study);
         setIsSendTelegramDialogOpen(true);
@@ -345,6 +400,7 @@ export function useWorklist() {
         handleAddLabel, handleRemoveLabel, handleUploadSeries,
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
-        selectedStudyForTelegram, openSendTelegramDialog
+        selectedStudyForTelegram, openSendTelegramDialog,
+        aiMode, handleRunAi
     };
 }

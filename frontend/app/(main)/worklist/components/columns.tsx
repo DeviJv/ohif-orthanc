@@ -10,6 +10,7 @@ import {
     SentIcon,
     LayersLogoIcon,
     FileExportIcon,
+    AiCloud01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,8 @@ interface GetColumnsProps {
     openEditDialog: (study: Study) => void;
     openSendTelegramDialog: (study: Study) => void;
     openExportPdfDialog: (study: Study) => void;
+    aiMode?: string;
+    handleRunAi?: (studyId: string) => void;
 }
 
 export const getColumns = ({
@@ -42,6 +45,8 @@ export const getColumns = ({
     openEditDialog,
     openSendTelegramDialog,
     openExportPdfDialog,
+    aiMode,
+    handleRunAi,
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
         id: "select",
@@ -182,6 +187,20 @@ export const getColumns = ({
                         <HugeiconsIcon icon={LayersLogoIcon} className="size-4" />
                         Segmented
                     </Button>
+
+                    {handleRunAi && (
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="gap-2 border-primary/30 text-primary hover:bg-primary/5 hover:text-primary animate-pulse"
+                            onClick={() => handleRunAi(study.ID)}
+                            title="Run AI Analysis Manually"
+                            disabled={aiMode === "OFF"}
+                        >
+                            <HugeiconsIcon icon={AiCloud01Icon} className="size-4" strokeWidth={2.5} />
+                            Run AI
+                        </Button>
+                    )}
 
                     <Button
                         size="sm"

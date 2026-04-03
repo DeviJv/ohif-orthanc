@@ -4,9 +4,9 @@ services:
     container_name: orthanc-db
     restart: always
     environment:
-      POSTGRES_USER: orthanc
-      POSTGRES_PASSWORD: orthancpassword
-      POSTGRES_DB: orthanc
+      - POSTGRES_USER=${ORTHANC_USERNAME}
+      - POSTGRES_PASSWORD=${ORTHANC_PASSWORD}
+      - POSTGRES_DB=orthanc
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -24,9 +24,9 @@ services:
     ports:
       - 5433:5432
     environment:
-      POSTGRES_USER: pacsuser
-      POSTGRES_PASSWORD: pacspassword
-      POSTGRES_DB: pacsweb
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - ./app_postgres_data:/var/lib/postgresql/data
     networks:
@@ -38,6 +38,8 @@ services:
     ports:
       - 8042:8042
       - 4242:4242
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./orthanc.json:/etc/orthanc/orthanc.json:ro
       - ./auto-send.lua:/etc/orthanc/auto-send.lua:ro
@@ -54,26 +56,23 @@ services:
       - pacs
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     image: quantum-pacs-frontend:latest
     container_name: pacs-web
     volumes:
-      - ./frontend/.env:/app/.env:ro
       - ./logo.png:/app/public/logo.png:ro
     # Port 3001 is now handled by Nginx, but keeping mapping for local access if needed
     ports:
       - 3001:3001
     environment:
-      - NEXT_PUBLIC_APP_URL=https://quantumtechsolution.id
-      - NEXTAUTH_URL=https://quantumtechsolution.id
-      - DATABASE_URL=postgresql://pacsuser:pacspassword@app-db:5432/pacsweb
-      - AUTH_SECRET=yoursecretphrasehere
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      - NEXTAUTH_URL=${NEXT_PUBLIC_APP_URL}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@app-db:5432/${DB_NAME}
+      - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_TRUST_HOST=true
       - ORTHANC_URL=http://pacs:8042
-      - ORTHANC_USERNAME=quantum
-      - ORTHANC_PASSWORD=quantum123
+      - ORTHANC_USERNAME=${ORTHANC_USERNAME}
+      - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
+      - AI_BACKEND_URL=http://ai-engine:8000
     depends_on:
       - app-db
       - pacs
@@ -89,10 +88,15 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx_ohif.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx_ohif.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./logo.png:/usr/share/nginx/html/logo.png:ro
       - ./ohif.js:/usr/share/nginx/html/orthanc/ohif/app-config.js:ro
       - /etc/letsencrypt:/etc/nginx/ssl:ro
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - ORTHANC_USERNAME=${ORTHANC_USERNAME}
+      - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
+      - ORTHANC_AUTH_BASE64=${ORTHANC_AUTH_BASE64}
     networks:
       - pacs
     depends_on:
@@ -107,8 +111,8 @@ services:
     environment:
       - POSTGRES_HOST=orthanc-db
       - POSTGRES_DB=orthanc
-      - POSTGRES_USER=orthanc
-      - POSTGRES_PASSWORD=orthancpassword
+      - POSTGRES_USER=${ORTHANC_USERNAME}
+      - POSTGRES_PASSWORD=${ORTHANC_PASSWORD}
       - SCHEDULE=0 0 * * 0
       - BACKUP_KEEP_WEEKS=4
       - BACKUP_SUFFIX=_orthanc
@@ -126,9 +130,9 @@ services:
     restart: always
     environment:
       - POSTGRES_HOST=app-db
-      - POSTGRES_DB=pacsweb
-      - POSTGRES_USER=pacsuser
-      - POSTGRES_PASSWORD=pacspassword
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - SCHEDULE=0 0 * * 0
       - BACKUP_KEEP_WEEKS=4
       - BACKUP_SUFFIX=_app
@@ -138,6 +142,30 @@ services:
       - pacs
     depends_on:
       - app-db
+
+  ai-engine:
+    build:
+      context: ./backend-ai
+      dockerfile: Dockerfile
+      args:
+        - BUILD_TYPE=full #lite atau full ya value nya
+    container_name: ai-engine
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@app-db:5432/${DB_NAME}
+      - ORTHANC_URL=http://pacs:8042
+      - ORTHANC_USERNAME=${ORTHANC_USERNAME}
+      - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      - TELEGRAM_BOT_TOKEN=
+      - TELEGRAM_CHAT_ID=
+    depends_on:
+      - app-db
+      - pacs
+    networks:
+      - pacs
+    ports:
+      - "8000:8000"
 
 networks:
   pacs:

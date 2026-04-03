@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pydicom
+requests
+python-dotenv
+Pillow
+psycopg2-binary

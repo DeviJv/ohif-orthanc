@@ -9,8 +9,8 @@ server {
     listen 443 ssl;
     server_name _;
 
-    ssl_certificate     /etc/nginx/ssl/live/quantumtechsolution.id/fullchain.pem;
-    ssl_certificate_key /etc/nginx/ssl/live/quantumtechsolution.id/privkey.pem;
+    ssl_certificate     /etc/nginx/ssl/live/${DOMAIN_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/${DOMAIN_NAME}/privkey.pem;
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_ciphers         HIGH:!aNULL:!MD5;
 
@@ -67,7 +67,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Authorization "Basic cXVhbnR1bTpxdWFudHVtMTIz";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
         proxy_set_header X-Forwarded-Host $host;
     }
 
@@ -77,14 +77,14 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Authorization "Basic cXVhbnR1bTpxdWFudHVtMTIz";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
     }
 
     # WADO-URI fallback
     location /wado {
         proxy_pass http://pacs:8042/wado;
         proxy_set_header Host $host;
-        proxy_set_header Authorization "Basic cXVhbnR1bTpxdWFudHVtMTIz";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
     }
 }
 
@@ -93,8 +93,8 @@ server {
 #     server_name _;
 # 
 #     # Comment these out if you are running locally without SSL certificates
-#     # ssl_certificate     /etc/nginx/ssl/live/quantumtechsolution.id/fullchain.pem;
-#     # ssl_certificate_key /etc/nginx/ssl/live/quantumtechsolution.id/privkey.pem;
+#     ssl_certificate     /etc/nginx/ssl/live/${DOMAIN_NAME}/fullchain.pem;
+#     ssl_certificate_key /etc/nginx/ssl/live/${DOMAIN_NAME}/privkey.pem;
 # 
 #     ssl_protocols       TLSv1.2 TLSv1.3;
 #     ssl_ciphers         HIGH:!aNULL:!MD5;
@@ -142,7 +142,7 @@ server {
 #         proxy_set_header X-Real-IP $remote_addr;
 #         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 #         # Inject Orthanc authentication header to bypass prompt
-#         proxy_set_header Authorization "Basic cXVhbnR1bTpxdWFudHVtMTIz";
+#         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
 #         
 #         # To allow Orthanc to know it's being accessed via HTTPS
 #         proxy_set_header X-Forwarded-Host $host;
@@ -154,6 +154,6 @@ server {
 #         proxy_set_header Host $host;
 #         proxy_set_header X-Real-IP $remote_addr;
 #         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#         proxy_set_header Authorization "Basic cXVhbnR1bTpxdWFudHVtMTIz";
+#         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
 #     }
 # }

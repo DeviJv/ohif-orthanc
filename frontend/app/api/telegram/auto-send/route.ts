@@ -16,11 +16,13 @@ export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const querySecret = searchParams.get("secret");
     const authHeader = req.headers.get("Authorization");
+    const skipTelegram = searchParams.get("skipTelegram") === "1";
     
     console.log("Internal Auth Check:", { 
         hasAuthHeader: !!authHeader, 
         querySecret: querySecret, 
-        expectedKey: INTERNAL_PACS_KEY 
+        expectedKey: INTERNAL_PACS_KEY,
+        skipTelegram
     });
 
     let isValid = (authHeader === `Bearer ${INTERNAL_PACS_KEY}`) || (querySecret === INTERNAL_PACS_KEY);
@@ -33,6 +35,19 @@ export async function POST(req: NextRequest) {
         } else {
             return NextResponse.json({ error: "Unauthorized Internal Request" }, { status: 401 });
         }
+    }
+
+    // Capture studyId early
+    const { studyId } = await req.json();
+    if (!studyId) {
+        return NextResponse.json({ error: "Study ID is required" }, { status: 400 });
+    }
+
+    // Emit for real-time frontend notification (This triggers the SOUND and UI refresh)
+    emitStudyEvent({ studyId });
+
+    if (skipTelegram) {
+        return NextResponse.json({ success: true, message: "SSE Event emitted, Telegram skipped" });
     }
 
     if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "your_bot_token_here") {

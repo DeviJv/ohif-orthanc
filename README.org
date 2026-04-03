@@ -27,6 +27,7 @@ It will also create a new /bridge-network/ pacs.
 2. To access =ORTHANC= webpage go to address `http://server-ip:8042`
 
 Default Username is =quantum= & password is =quantum123=
+Default Password for AI Settings is =quantum%2026=
 
 
 *** Import DICOM Studies

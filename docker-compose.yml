@@ -56,6 +56,9 @@ services:
       - pacs
 
   frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     image: quantum-pacs-frontend:latest
     container_name: pacs-web
     volumes:

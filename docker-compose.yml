@@ -93,7 +93,6 @@ services:
     volumes:
       - ./nginx_ohif.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./logo.png:/usr/share/nginx/html/logo.png:ro
-      - ./ohif.js:/usr/share/nginx/html/orthanc/ohif/app-config.js:ro
       - /etc/letsencrypt:/etc/nginx/ssl:ro
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
@@ -104,6 +103,14 @@ services:
       - pacs
     depends_on:
       - frontend
+      - pacs
+      - ohif-viewer
+
+  ohif-viewer:
+    build: ./ohif
+    container_name: ohif-viewer
+    restart: always
+    networks:
       - pacs
 
   # Automated Weekly Backups (Sunday 00:00)

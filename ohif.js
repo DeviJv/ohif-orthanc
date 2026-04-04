@@ -217,11 +217,11 @@ if (true) {
       sourceName: 'dicomweb',
       configuration: {
         name: 'orthanc',
-        wadoUriRoot: '../dicom-web',
-        qidoRoot: '../dicom-web',
         wadoRoot: '../dicom-web',
+        stowRoot: '../dicom-web',
         qidoSupportsIncludeField: false,
         supportsReject: false,
+        allowMultiSelectExport: true,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
         enableStudyLazyLoad: true,

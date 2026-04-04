@@ -219,11 +219,6 @@ export function useWorklist() {
 
             await orthancApi.deleteSeries(id);
 
-            // If a series is deleted, we invalidate the AI result for that study
-            if (studyUid) {
-                await fetch(`/api/ai/results/${studyUid}`, { method: "DELETE" });
-            }
-
             updateTask(taskId, "success");
             setTimeout(() => toast.dismiss(taskId), 3000);
             setSeriesData(prev => ({ ...prev, [studyId]: prev[studyId].filter(s => s.ID !== id) }));

@@ -30,12 +30,17 @@ export function useWorklist() {
             const res = await fetch("/api/ai/results/all");
             if (res.ok) {
                 const data = await res.json();
+                console.log(`[DEBUG AI] Received ${data.length} results from DB`);
+                
                 const resultMap: Record<string, any> = {};
                 data.forEach((r: any) => {
-                    // Check all possible key variations defensively
-                    const rawUid = r.studyInstanceUid || r.study_instance_uid || r.StudyInstanceUID || "";
-                    const key = rawUid.toUpperCase();
-                    if (key) resultMap[key] = r;
+                    const rawUid = (r.studyInstanceUid || r.study_instance_uid || r.StudyInstanceUID || "").trim();
+                    if (rawUid) {
+                        const upperUid = rawUid.toUpperCase();
+                        resultMap[rawUid] = r;
+                        resultMap[upperUid] = r;
+                        console.log(`[DEBUG AI] Mapping result for UID: ${rawUid}`);
+                    }
                 });
                 setAiResults(resultMap);
                 return resultMap;
@@ -101,7 +106,10 @@ export function useWorklist() {
                     description: `Analisa AI untuk pasien ${patientName} telah berhasil diselesaikan 100%.`,
                     duration: 5000,
                 });
-                fetchAiResults(); // Force refresh buttons
+                console.log("[DEBUG AI] Task SUCCESS - Triggering delayed fetch (1s)...");
+                setTimeout(() => {
+                    fetchAiResults(); // Force refresh buttons
+                }, 1000);
             } else if (task.status === "error") {
                 toast.error("AI Analysis Failed", {
                     description: `Gagal memproses analisa AI untuk pasien ${patientName}.`,

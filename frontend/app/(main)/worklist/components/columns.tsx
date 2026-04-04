@@ -172,10 +172,16 @@ export const getColumns = ({
         header: "AI Summary",
         cell: ({ row, table }) => {
             const meta = table.options.meta as WorklistTableMeta;
-            const studyUid = (row.original.MainDicomTags.StudyInstanceUID || "").toUpperCase();
+            const studyUidRaw = (row.original.MainDicomTags.StudyInstanceUID || "").trim();
+            const studyUid = studyUidRaw.toUpperCase();
             const patientName = row.original.PatientMainDicomTags?.PatientName || row.original.MainDicomTags.PatientName;
-            const result = meta.aiResults?.[studyUid];
+            const result = meta.aiResults?.[studyUid] || meta.aiResults?.[studyUidRaw];
             
+            // Console log to debug matching process
+            if (meta.aiResults && Object.keys(meta.aiResults).length > 0) {
+                console.log(`[DEBUG TABLE] Checking AI for Patient: ${patientName}, UID: "${studyUidRaw}" - Found: ${!!result}`);
+            }
+
             if (!result) return <span className="text-slate-400 text-xs italic">-</span>;
 
             return (

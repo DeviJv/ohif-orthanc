@@ -12,7 +12,11 @@ export async function GET() {
             },
         });
 
-        return NextResponse.json(results);
+        return NextResponse.json(results, {
+            headers: {
+                "Cache-Control": "no-store, max-age=0",
+            },
+        });
     } catch (error) {
         console.error("[AI_RESULTS_GET_ALL]", error);
         return new NextResponse("Internal Error", { status: 500 });

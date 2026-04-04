@@ -1,19 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export async function GET(req: NextRequest) {
-    const session = await auth();
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+export async function GET() {
     try {
-        const results = await db.aiResult.findMany();
+        const results = await db.aiResult.findMany({
+            orderBy: {
+                updatedAt: "desc",
+            },
+        });
+
         return NextResponse.json(results);
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error) {
+        console.error("[AI_RESULTS_GET_ALL]", error);
+        return new NextResponse("Internal Error", { status: 500 });
     }
 }

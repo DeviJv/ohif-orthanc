@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { 
     RefreshIcon, 
     ArrowLeft01Icon,
@@ -35,8 +35,8 @@ import { DateRange } from "react-day-picker";
 
 import { useWorklist } from "./hooks/use-worklist";
 import { useStudyNotifier } from "./hooks/use-study-notifier";
-import { useTasks } from "@/context/task-context";
-import { getColumns } from "./components/columns";
+import { useTaskActions } from "@/context/task-context";
+import { getColumns, WorklistTableMeta } from "./components/columns";
 import { WorklistToolbar } from "./components/worklist-toolbar";
 import { StudyDetailRow } from "./components/study-detail-row";
 import { DeleteStudyDialog } from "./components/delete-study-dialog";
@@ -44,6 +44,8 @@ import { BulkDeleteStudyDialog } from "./components/bulk-delete-dialog";
 import { SendTelegramDialog } from "./components/send-telegram-dialog";
 import { EditStudyDialog } from "./components/edit-study-dialog";
 import { ExportPdfDialog } from "./components/export-pdf-dialog";
+import { AiResultDialog } from "./components/ai-result-dialog";
+import { FloatingAiProgress } from "./components/floating-ai-progress";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "./utils/actions";
 import { Study } from "./types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -63,15 +65,15 @@ export default function WorklistPage() {
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog,
-        aiMode, handleRunAi
+        aiMode, handleRunAi, aiResults
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
     const [studyForPdf, setStudyForPdf] = useState<Study | null>(null);
-    const openExportPdfDialog = (study: Study) => {
+    const openExportPdfDialog = useCallback((study: Study) => {
         setStudyForPdf(study);
         setIsExportPdfDialogOpen(true);
-    };
+    }, []);
 
     // Setup Study Notifier (Sound & Toast on new studies)
     useStudyNotifier(studies, fetchStudies);
@@ -83,6 +85,16 @@ export default function WorklistPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
     const [studyToDelete, setStudyToDelete] = useState<Study | null>(null);
+
+    const [isAiResultDialogOpen, setIsAiResultDialogOpen] = useState(false);
+    const [selectedAiResult, setSelectedAiResult] = useState<any>(null);
+    const [selectedPatientName, setSelectedPatientName] = useState("");
+
+    const openAiResultDialog = useCallback((result: any, patientName: string) => {
+        setSelectedAiResult(result);
+        setSelectedPatientName(patientName);
+        setIsAiResultDialogOpen(true);
+    }, []);
 
     // Table State
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -96,19 +108,19 @@ export default function WorklistPage() {
     });
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
-    const { addTask, updateTask } = useTasks();
+    const { addTask, updateTask } = useTaskActions();
 
-    const handleOpenViewer = (uid: string, mode: string = "viewer") => {
+    const handleOpenViewer = useCallback((uid: string, mode: string = "viewer") => {
         setSelectedStudyUID(uid);
         setViewerMode(mode);
         setShowViewer(true);
-    };
+    }, []);
 
-    const handleDownloadStudyWithTasks = (id: string, name: string) => {
+    const handleDownloadStudyWithTasks = useCallback((id: string, name: string) => {
         handleDownloadStudy(id, name, { addTask, updateTask });
-    };
+    }, [addTask, updateTask]);
 
-    const handleDeleteStudyLocal = async (id: string) => {
+    const handleDeleteStudyLocal = useCallback(async (id: string) => {
         try {
             await handleDeleteStudy(id);
             setIsDeleteDialogOpen(false);
@@ -116,15 +128,86 @@ export default function WorklistPage() {
         } catch (error) {
             console.error("Failed to delete study:", error);
         }
-    };
+    }, [handleDeleteStudy]);
 
-    const handleBulkDelete = () => {
+
+    const columns = useMemo(() => getColumns({
+        toggleStudyExpansion,
+        handleOpenViewer,
+        handleDownload: handleDownloadStudyWithTasks,
+        setStudyToDelete,
+        setIsDeleteDialogOpen,
+        openEditDialog,
+        openSendTelegramDialog,
+        openExportPdfDialog,
+        aiMode,
+        handleRunAi,
+        openAiResultDialog,
+    }), [
+        toggleStudyExpansion,
+        handleOpenViewer,
+        handleDownloadStudyWithTasks,
+        setStudyToDelete,
+        setIsDeleteDialogOpen,
+        openEditDialog,
+        openSendTelegramDialog,
+        openExportPdfDialog,
+        aiMode,
+        handleRunAi,
+        openAiResultDialog
+    ]);
+
+    const tableMeta = useMemo<WorklistTableMeta>(() => ({
+        expandedStudies,
+        aiResults,
+    }), [
+        expandedStudies, 
+        aiResults
+    ]);
+
+    const tableOptions = useMemo(() => ({
+        data: studies,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        onPaginationChange: setPagination,
+        meta: tableMeta,
+        state: {
+            sorting,
+            columnFilters,
+            globalFilter,
+            columnVisibility,
+            rowSelection,
+            pagination,
+        },
+    }), [
+        studies, 
+        columns, 
+        sorting, 
+        columnFilters, 
+        globalFilter, 
+        columnVisibility, 
+        rowSelection, 
+        pagination,
+        tableMeta
+    ]);
+
+    const table = useReactTable(tableOptions);
+
+    const handleBulkDelete = useCallback(() => {
         const selectedRows = table.getFilteredSelectedRowModel().rows;
         if (selectedRows.length === 0) return;
         setIsBulkDeleteDialogOpen(true);
-    };
+    }, [table]);
 
-    const handleConfirmBulkDelete = async () => {
+    const handleConfirmBulkDelete = useCallback(async () => {
         const selectedRows = table.getFilteredSelectedRowModel().rows;
         if (selectedRows.length === 0) return;
 
@@ -139,52 +222,15 @@ export default function WorklistPage() {
         } catch (error) {
             console.error("Bulk delete failed:", error);
         }
-    };
+    }, [table, handleDeleteStudy, fetchStudies]);
 
-    const handleBulkDownload = () => {
+    const handleBulkDownload = useCallback(() => {
         const selectedRows = table.getFilteredSelectedRowModel().rows;
         if (selectedRows.length === 0) return;
         
         const ids = selectedRows.map(row => row.original.ID);
         handleBulkDownloadStudy(ids, { addTask, updateTask });
-    };
-
-    const columns = getColumns({
-        expandedStudies,
-        toggleStudyExpansion,
-        handleOpenViewer,
-        handleDownload: handleDownloadStudyWithTasks,
-        setStudyToDelete,
-        setIsDeleteDialogOpen,
-        openEditDialog,
-        openSendTelegramDialog,
-        openExportPdfDialog,
-        aiMode,
-        handleRunAi,
-    });
-
-    const table = useReactTable({
-        data: studies,
-        columns,
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        onPaginationChange: setPagination,
-        state: {
-            sorting,
-            columnFilters,
-            globalFilter,
-            columnVisibility,
-            rowSelection,
-            pagination,
-        },
-    });
+    }, [table, addTask, updateTask]);
 
     // Effect for date range filter
     React.useEffect(() => {
@@ -272,107 +318,31 @@ export default function WorklistPage() {
                 handleBulkDownload={handleBulkDownload}
             />
 
-            <div className="rounded-md border bg-white shadow-sm overflow-hidden">
-                <Table>
-                    <TableHeader className="bg-slate-50/50">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="font-bold text-slate-700">
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {loading ? (
-                            Array.from({ length: 10 }).map((_, i) => (
-                                <TableRow key={i} className="hover:bg-transparent border-b">
-                                    <TableCell className="py-4">
-                                        <div className="flex items-center justify-center pr-2">
-                                            <Skeleton className="size-4 rounded" />
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="py-4">
-                                        <Skeleton className="size-8 rounded-md" />
-                                    </TableCell>
-                                    <TableCell className="py-4">
-                                        <Skeleton className="h-4 w-32" />
-                                    </TableCell>
-                                    <TableCell className="py-4">
-                                        <Skeleton className="h-4 w-24" />
-                                    </TableCell>
-                                    <TableCell className="py-4">
-                                        <Skeleton className="h-4 w-28" />
-                                    </TableCell>
-                                    <TableCell className="py-4">
-                                        <Skeleton className="h-4 w-48" />
-                                    </TableCell>
-                                    <TableCell className="py-4">
-                                        <div className="flex justify-end gap-2">
-                                            <Skeleton className="h-8 w-16 rounded-md" />
-                                            <Skeleton className="h-8 w-16 rounded-md" />
-                                            <Skeleton className="h-8 w-16 rounded-md" />
-                                            <Skeleton className="size-8 rounded-md" />
-                                            <Skeleton className="size-8 rounded-md" />
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        ) : table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <React.Fragment key={row.id}>
-                                    <TableRow
-                                        data-state={row.getIsSelected() && "selected"}
-                                        className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id} className="py-4">
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                    {expandedStudies[row.original.ID] && (
-                                        <StudyDetailRow
-                                        study={row.original}
-                                        studies={studies}
-                                        seriesData={seriesData}
-                                        instancesData={instancesData}
-                                        tagsData={tagsData}
-                                        expandedSeries={expandedSeries}
-                                        expandedInstances={expandedInstances}
-                                        toggleSeriesExpansion={toggleSeriesExpansion}
-                                        toggleInstanceExpansion={toggleInstanceExpansion}
-                                        handleAnonymize={handleAnonymize}
-                                        handleOpenOrthancViewer={handleOpenOrthancViewer}
-                                        handleDownloadSeries={(id, desc) => handleDownloadSeries(id, desc, { addTask, updateTask })}
-                                        handleDeleteSeries={handleDeleteSeries}
-                                        handleDownloadInstance={(id, num) => handleDownloadInstance(id, num, { addTask, updateTask })}
-                                        handleDeleteInstance={handleDeleteInstance}
-                                        handleAddLabel={handleAddLabel}
-                                        handleRemoveLabel={handleRemoveLabel}
-                                        handleUploadSeries={handleUploadSeries}
-                                        columnsCount={columns.length}
-                                    />
-                                    )}
-                                </React.Fragment>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
-                                    No studies found.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+            <MemoizedWorklistTable 
+                table={table}
+                loading={loading}
+                studies={studies}
+                expandedStudies={expandedStudies}
+                seriesData={seriesData}
+                instancesData={instancesData}
+                tagsData={tagsData}
+                expandedSeries={expandedSeries}
+                expandedInstances={expandedInstances}
+                toggleSeriesExpansion={toggleSeriesExpansion}
+                toggleInstanceExpansion={toggleInstanceExpansion}
+                handleAnonymize={handleAnonymize}
+                handleOpenOrthancViewer={handleOpenOrthancViewer}
+                handleDownloadSeries={handleDownloadSeries}
+                handleDeleteSeries={handleDeleteSeries}
+                handleDownloadInstance={handleDownloadInstance}
+                handleDeleteInstance={handleDeleteInstance}
+                handleAddLabel={handleAddLabel}
+                handleRemoveLabel={handleRemoveLabel}
+                handleUploadSeries={handleUploadSeries}
+                columns={columns}
+                addTask={addTask}
+                updateTask={updateTask}
+            />
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
                 <div className="flex items-center gap-4">
@@ -455,11 +425,161 @@ export default function WorklistPage() {
                 onConfirm={handleEditStudy}
             />
 
+            <AiResultDialog
+                open={isAiResultDialogOpen}
+                onOpenChange={setIsAiResultDialogOpen}
+                result={selectedAiResult}
+                patientName={selectedPatientName}
+            />
+
             <ExportPdfDialog
                 open={isExportPdfDialogOpen}
                 onOpenChange={setIsExportPdfDialogOpen}
                 study={studyForPdf}
             />
+
+            <FloatingAiProgress />
         </div>
     );
 }
+
+// --- Memoized Components for Performance ---
+
+interface WorklistTableProps {
+    table: any;
+    loading: boolean;
+    studies: Study[];
+    expandedStudies: Record<string, boolean>;
+    seriesData: Record<string, any>;
+    instancesData: Record<string, any>;
+    tagsData: Record<string, any>;
+    expandedSeries: Record<string, boolean>;
+    expandedInstances: Record<string, boolean>;
+    toggleSeriesExpansion: (id: string) => void;
+    toggleInstanceExpansion: (id: string) => void;
+    handleAnonymize: (id: string, type: "study" | "series") => Promise<void>;
+    handleOpenOrthancViewer: (id: string, type: "study" | "series" | "instance") => void;
+    handleDownloadSeries: (id: string, desc: string) => void;
+    handleDeleteSeries: (id: string, studyId: string) => Promise<void>;
+    handleDownloadInstance: (id: string, num: string) => void;
+    handleDeleteInstance: (id: string, seriesId: string) => Promise<void>;
+    handleAddLabel: (id: string) => Promise<void>;
+    handleRemoveLabel: (id: string, label: string) => Promise<void>;
+    handleUploadSeries: (files: FileList, studyId: string) => Promise<void>;
+    columns: any[];
+    addTask: any;
+    updateTask: any;
+}
+
+const WorklistTable = ({
+    table, loading, studies, expandedStudies, seriesData, instancesData, tagsData,
+    expandedSeries, expandedInstances, toggleSeriesExpansion, toggleInstanceExpansion,
+    handleAnonymize, handleOpenOrthancViewer, handleDeleteSeries, handleDeleteInstance,
+    handleAddLabel, handleRemoveLabel, handleUploadSeries, columns, addTask, updateTask
+}: WorklistTableProps) => {
+    return (
+        <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+            <Table>
+                <TableHeader className="bg-slate-50/50">
+                    {table.getHeaderGroups().map((headerGroup: any) => (
+                        <TableRow key={headerGroup.id}>
+                            {headerGroup.headers.map((header: any) => (
+                                <TableHead key={header.id} className="font-bold text-slate-700">
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                </TableHead>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableHeader>
+                <TableBody>
+                    {loading ? (
+                        Array.from({ length: 10 }).map((_, i) => (
+                            <TableRow key={i} className="hover:bg-transparent border-b">
+                                <TableCell className="py-4">
+                                    <div className="flex items-center justify-center pr-2">
+                                        <Skeleton className="size-4 rounded" />
+                                    </div>
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    <Skeleton className="size-8 rounded-md" />
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    <Skeleton className="h-4 w-32" />
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    <Skeleton className="h-4 w-24" />
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    <Skeleton className="h-4 w-28" />
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    <Skeleton className="h-4 w-48" />
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    <div className="flex justify-end gap-2">
+                                        <Skeleton className="h-8 w-16 rounded-md" />
+                                        <Skeleton className="h-8 w-16 rounded-md" />
+                                        <Skeleton className="h-8 w-16 rounded-md" />
+                                        <Skeleton className="size-8 rounded-md" />
+                                        <Skeleton className="size-8 rounded-md" />
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : table.getRowModel().rows?.length ? (
+                        table.getRowModel().rows.map((row: any) => (
+                            <React.Fragment key={row.id}>
+                                <TableRow
+                                    data-state={row.getIsSelected() && "selected"}
+                                    className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
+                                >
+                                    {row.getVisibleCells().map((cell: any) => (
+                                        <TableCell key={cell.id} className="py-4">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                                {expandedStudies[row.original.ID] && (
+                                    <StudyDetailRow
+                                    study={row.original}
+                                    studies={studies}
+                                    seriesData={seriesData}
+                                    instancesData={instancesData}
+                                    tagsData={tagsData}
+                                    expandedSeries={expandedSeries}
+                                    expandedInstances={expandedInstances}
+                                    toggleSeriesExpansion={toggleSeriesExpansion}
+                                    toggleInstanceExpansion={toggleInstanceExpansion}
+                                    handleAnonymize={handleAnonymize}
+                                    handleOpenOrthancViewer={handleOpenOrthancViewer}
+                                    handleDownloadSeries={(id, desc) => handleDownloadSeries(id, desc, { addTask, updateTask })}
+                                    handleDeleteSeries={handleDeleteSeries}
+                                    handleDownloadInstance={(id, num) => handleDownloadInstance(id, num, { addTask, updateTask })}
+                                    handleDeleteInstance={handleDeleteInstance}
+                                    handleAddLabel={handleAddLabel}
+                                    handleRemoveLabel={handleRemoveLabel}
+                                    handleUploadSeries={handleUploadSeries}
+                                    columnsCount={columns.length}
+                                />
+                                )}
+                            </React.Fragment>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
+                                No studies found.
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+        </div>
+    );
+};
+
+const MemoizedWorklistTable = React.memo(WorklistTable);

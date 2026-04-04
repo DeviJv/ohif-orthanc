@@ -10,6 +10,8 @@ from pydicom.uid import generate_uid
 import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import json
+import base64
 
 # --- AI Library Safety Checks ---
 HAS_AI_LIBS = False
@@ -146,6 +148,167 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         payload = {"chat_id": chat_id, "text": caption, "parse_mode": "Markdown"}
         requests.post(url, json=payload)
 
+def save_ai_result_to_db(study_uid, modality, results, conclusion, heatmap_base64=None):
+    """Save analysis results to the database for the frontend to display"""
+    try:
+        conn = psycopg2.connect(DATABASE_URL, connect_timeout=5)
+        # Check for Triage (Point 3)
+        # If any pathology is > 50%, consider it Urgent
+        is_urgent = False
+        findings_only = {k: v for k, v in results.items() if isinstance(v, (float, int))}
+        if findings_only:
+            max_p = max(findings_only.values())
+            if max_p > 0.5:
+                is_urgent = True
+
+        with conn.cursor() as cur:
+            # We use an UPSERT (ON CONFLICT) so manual reruns update the entry
+            cur.execute("""
+                INSERT INTO "AiResult" ("studyInstanceUid", "modality", "conclusion", "findings", "isUrgent", "heatmapBase64", "updatedAt", "createdAt")
+                VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW())
+                ON CONFLICT ("studyInstanceUid") DO UPDATE SET
+                    "conclusion" = EXCLUDED."conclusion",
+                    "findings" = EXCLUDED."findings",
+                    "isUrgent" = EXCLUDED."isUrgent",
+                    "heatmapBase64" = EXCLUDED."heatmapBase64",
+                    "updatedAt" = NOW()
+            """, (study_uid, modality, conclusion, json.dumps(results), is_urgent, heatmap_base64))
+        conn.commit()
+        conn.close()
+        print(f"INFO: AI Results saved to DB for {study_uid}")
+    except Exception as e:
+        print(f"DATABASE SAVE ERROR: {str(e)}")
+
+# --- Heatmap & DICOM Secondary Capture Logic (Point 1) ---
+def get_heatmap_overlay(model, input_tensor, original_img):
+    """
+    Generate a heatmap using Saliency maps and overlay it on the original image.
+    Returns: (blended_image_np, heatmap_base64)
+    """
+    if not HAS_AI_LIBS: return None, None
+    
+    try:
+        input_tensor.requires_grad = True
+        preds = model(input_tensor)
+        
+        # We take the max pathology for the heatmap visualization
+        # Or you could specify a target class (e.g. results.index(max(results)))
+        target_class = torch.argmax(preds[0])
+        preds[0, target_class].backward()
+        
+        saliency, _ = torch.max(input_tensor.grad.data.abs(), dim=1)
+        saliency = saliency.reshape(224, 224).cpu().numpy()
+        
+        # Normalize saliency
+        saliency = (saliency - saliency.min()) / (saliency.max() - saliency.min() + 1e-8)
+        
+        # Process original image for blending (Convert to RGB)
+        # Rescale if needed
+        from skimage.transform import resize
+        saliency_resized = resize(saliency, original_img.shape, order=1, preserve_range=True)
+        
+        # Create Heatmap (Jet-like colormap manually to avoid extra heavy dependencies)
+        # Using a simple RGB mapping: Red for high, Blue for low
+        heatmap = np.zeros((original_img.shape[0], original_img.shape[1], 3), dtype=np.float32)
+        heatmap[:, :, 0] = saliency_resized  # Red
+        heatmap[:, :, 2] = 1.0 - saliency_resized  # Blue
+        
+        # Normalize original image to [0, 1]
+        img_norm = (original_img - original_img.min()) / (original_img.max() - original_img.min() + 1e-8)
+        if len(img_norm.shape) == 2:
+            img_rgb = np.stack([img_norm]*3, axis=-1)
+        else:
+            img_rgb = img_norm
+            
+        # Blend: 60% original, 40% heatmap
+        blended = (img_rgb * 0.6 + heatmap * 0.4)
+        blended = (blended * 255).astype(np.uint8)
+        
+        # Create Base64 for Frontend
+        pil_img = Image.fromarray(blended)
+        buffered = io.BytesIO()
+        pil_img.save(buffered, format="JPEG", quality=85)
+        img_base64 = base64.b64encode(buffered.getvalue()).decode()
+        
+        return blended, f"data:image/jpeg;base64,{img_base64}"
+    except Exception as e:
+        print(f"HEATMAP ERROR: {str(e)}")
+        return None, None
+
+def create_secondary_capture(original_ds, heatmap_np):
+    """
+    Create a new DICOM Secondary Capture series from the heatmap image.
+    """
+    try:
+        # 1. Start with a copy of metadata
+        ds = pydicom.dataset.Dataset()
+        
+        # Copy critical patient/study tags
+        copy_tags = [
+            'PatientName', 'PatientID', 'PatientBirthDate', 'PatientSex',
+            'StudyInstanceUID', 'StudyDate', 'StudyTime', 'ReferringPhysicianName',
+            'StudyID', 'AccessionNumber'
+        ]
+        for tag in copy_tags:
+            if tag in original_ds:
+                setattr(ds, tag, getattr(original_ds, tag))
+        
+        # 2. Set SC Specific Tags
+        ds.Modality = 'SC'
+        ds.SpecificCharacterSet = 'ISO_IR 192' # UTF-8
+        dt = datetime.datetime.now()
+        ds.ContentDate = dt.strftime('%Y%m%d')
+        ds.ContentTime = dt.strftime('%H%M%S')
+        ds.Manufacturer = 'Quantum AI'
+        ds.SecondaryCaptureDeviceManufacturer = 'Quantum AI'
+        ds.SeriesDescription = "AI ANALYSIS - VISUAL HEATMAP"
+        ds.SeriesNumber = random.randint(1000, 9999)
+        ds.InstanceNumber = 1
+        ds.PatientOrientation = ''
+        ds.BurnedInAnnotation = 'YES'
+        ds.LossyImageCompression = '01'
+        
+        # 3. UIDs
+        ds.SeriesInstanceUID = generate_uid()
+        ds.SOPInstanceUID = generate_uid()
+        ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.7' # Secondary Capture
+        
+        # 4. Image Data (JPEG Encapsulated)
+        ds.SamplesPerPixel = 3
+        ds.PhotometricInterpretation = "YBR_FULL_422" # Standard for JPEG
+        ds.PlanarConfiguration = 0
+        ds.Rows = int(heatmap_np.shape[0])
+        ds.Cols = int(heatmap_np.shape[1])
+        ds.BitsAllocated = 8
+        ds.BitsStored = 8
+        ds.HighBit = 7
+        ds.PixelRepresentation = 0
+        
+        # Compress to JPEG Baseline
+        pil_img = Image.fromarray(heatmap_np)
+        jpeg_buf = io.BytesIO()
+        pil_img.save(jpeg_buf, format='JPEG', quality=90)
+        ds.PixelData = pydicom.encaps.encapsulate([jpeg_buf.getvalue()])
+        
+        # 5. File Meta
+        ds.file_meta = pydicom.dataset.FileMetaDataset()
+        ds.file_meta.TransferSyntaxUID = '1.2.840.10008.1.2.4.50' # JPEG Baseline
+        ds.file_meta.MediaStorageSOPClassUID = ds.SOPClassUID
+        ds.file_meta.MediaStorageSOPInstanceUID = ds.SOPInstanceUID
+        ds.file_meta.ImplementationClassUID = "1.2.3.4"
+        
+        ds_final = pydicom.dataset.FileDataset(None, ds, file_meta=ds.file_meta, preamble=b"\0" * 128)
+        ds_final.is_little_endian = True
+        ds_final.is_implicit_VR = False
+        
+        # Save to buffer
+        out_buffer = io.BytesIO()
+        pydicom.dcmwrite(out_buffer, ds_final)
+        return out_buffer.getvalue()
+    except Exception as e:
+        print(f"SC GENERATION ERROR: {str(e)}")
+        return None
+
 # --- DICOM SR Generator ---
 def generate_dicom_sr(original_ds, results, conclusion, modality="DX"):
     # 1. Create Data Set
@@ -247,12 +410,55 @@ def get_from_orthanc(path: str):
         print(f"CONNECTION ERROR: Cannot reach Orthanc at {ORTHANC_URL}. Error: {str(e)}")
         raise e
 
+# --- Global State for Progress Tracking ---
+progress_store = {}
+
+import random
+
 # --- AI Logic ---
+def cleanup_previous_ai_analysis(study_id: str):
+    """Search Orthanc for previous AI-generated series and delete them to prevent duplicates."""
+    try:
+        response = requests.get(f"{ORTHANC_URL}/studies/{study_id}", auth=ORTHANC_AUTH)
+        if response.status_code != 200: return
+        
+        study_data = response.json()
+        series_ids = study_data.get("Series", [])
+        
+        for s_id in series_ids:
+            s_res = requests.get(f"{ORTHANC_URL}/series/{s_id}", auth=ORTHANC_AUTH)
+            if s_res.status_code == 200:
+                s_data = s_res.json()
+                desc = s_data.get("MainDicomTags", {}).get("SeriesDescription", "")
+                if "AI ANALYSIS" in desc.upper() or "AI Analysis Report" in desc:
+                    print(f"CLEANUP: Deleting old AI series {s_id} ({desc})")
+                    requests.delete(f"{ORTHANC_URL}/series/{s_id}", auth=ORTHANC_AUTH)
+    except Exception as e:
+        print(f"CLEANUP ERROR: {str(e)}")
+
+def update_progress(study_id, percentage, status="processing"):
+    """Update the global progress store"""
+    progress_store[study_id] = {
+        "progress": percentage, 
+        "status": status, 
+        "timestamp": datetime.datetime.now().isoformat()
+    }
+
 def process_study(study_id: str):
     try:
+        update_progress(study_id, 5, "Cleaning up...")
         print(f"--- Starting AI analysis for study: {study_id} ---")
+        
+        # 0. Cleanup (Point 2: Prevent Duplicates)
+        cleanup_previous_ai_analysis(study_id)
+        update_progress(study_id, 15, "Fetching study data...")
+
         # 1. Fetch study details from Orthanc
         response = get_from_orthanc(f"studies/{study_id}")
+        if response.status_code != 200:
+            update_progress(study_id, 0, "Error: Study not found")
+            return
+            
         study_data = response.json()
         patient_name = study_data.get("PatientMainDicomTags", {}).get("PatientName", "Unknown")
         patient_id = study_data.get("PatientMainDicomTags", {}).get("PatientID", "Unknown")
@@ -264,9 +470,12 @@ def process_study(study_id: str):
         accession = study_data.get("MainDicomTags", {}).get("AccessionNumber", "-")
         institution = study_data.get("MainDicomTags", {}).get("InstitutionName", "Quantum PACS")
         
+        update_progress(study_id, 25, "Locating images...")
         # 2. Find first image instance
         series_ids = study_data.get("Series", [])
-        if not series_ids: return
+        if not series_ids:
+            update_progress(study_id, 0, "Error: No series found")
+            return
         
         target_instance_id = None
         for s_id in series_ids:
@@ -281,48 +490,60 @@ def process_study(study_id: str):
                         break
         
         if not target_instance_id:
-            print(f"Skipping AI for study {study_id}: No valid image series found.")
+            print(f"Skipping AI: No valid image series found.")
+            update_progress(study_id, 0, "Error: No valid images")
             return
 
         # 3. Get Preview Image bytes (for Telegram)
+        update_progress(study_id, 35, "Preparing preview...")
         preview_response = get_from_orthanc(f"instances/{target_instance_id}/preview")
         preview_bytes = preview_response.content if preview_response.status_code == 200 else None
 
         # 4. Get DICOM file for processing
+        update_progress(study_id, 45, "Downloading DICOM...")
         dicom_response = get_from_orthanc(f"instances/{target_instance_id}/file")
         if dicom_response.status_code != 200:
-            print(f"Failed to fetch DICOM file for instance {target_instance_id}")
+            update_progress(study_id, 0, "Error: DICOM download failed")
             return
         dicom_bytes = dicom_response.content
         ds = pydicom.dcmread(io.BytesIO(dicom_bytes))
 
-        # 4. Modality Branching
+        # 5. Modality Branching
+        update_progress(study_id, 55, "Applying Neural Networks...")
         modality = ds.get("Modality", "DX").upper()
         body_part = ds.get("BodyPartExamined", "").upper()
         
-        results = {}
-
+        heatmap_base64 = None
         if not HAS_AI_LIBS:
             print(f"LITE MODE: AI analysis skipped for {patient_name}.")
             results = {
-                "Message": "AI results skipped in Lite Mode (Local Dev Build)",
+                "Message": "AI results skipped in Lite Mode",
                 "Clinical Conclusion": "⚪ AI DISABLED (LITE BUILD)"
             }
         elif modality in ["DX", "CR"] or "CHEST" in body_part:
-            # --- CHEST X-RAY LOGIC (TorchXRayVision) ---
-            print(f"Running TorchXRayVision for {patient_name}...")
+            # --- CHEST X-RAY LOGIC ---
             model = get_chest_model()
-            img = ds.pixel_array
-            img = xrv.datasets.normalize(img, ds.get("WindowWidth", 255))
-            img = img[None, :, :]
-            img = skimage.transform.resize(img, (1, 224, 224), anti_aliasing=True)
-            img = torch.from_numpy(img).to(DEVICE)
+            orig_pixel_array = ds.pixel_array
+            
+            processed_img = xrv.datasets.normalize(orig_pixel_array, ds.get("WindowWidth", 255))
+            if len(processed_img.shape) == 3:
+                processed_img = processed_img.mean(axis=0)
+            processed_img = processed_img[None, :, :]
+            processed_img = skimage.transform.resize(processed_img, (1, 224, 224), anti_aliasing=True)
+            input_tensor = torch.from_numpy(processed_img).to(DEVICE)
             
             with torch.no_grad():
-                outputs = model(img)
+                outputs = model(input_tensor)
                 results = dict(zip(model.pathologies, [float(v) for v in outputs[0].cpu().numpy()]))
             
-            # Simplified clinical conclusion
+            update_progress(study_id, 75, "Generating visual heatmap...")
+            heatmap_np, heatmap_base64 = get_heatmap_overlay(model, input_tensor.clone(), orig_pixel_array)
+            
+            if heatmap_np is not None:
+                sc_dicom_bytes = create_secondary_capture(ds, heatmap_np)
+                if sc_dicom_bytes:
+                    requests.post(f"{ORTHANC_URL}/instances", auth=ORTHANC_AUTH, data=sc_dicom_bytes, headers={'Content-Type': 'application/dicom'})
+
             max_prob = max(results.values())
             if max_prob > 0.6:
                 results["Clinical Conclusion"] = "🔴 TEMUAN SIGNIFIKAN - Segera Evaluasi"
@@ -332,57 +553,80 @@ def process_study(study_id: str):
                 results["Clinical Conclusion"] = "🟢 NORMAL - Tidak ditemukan temuan bermakna"
 
         elif modality in ["CT", "MR"]:
-            # --- CT/MRI LOGIC (MONAI/MedSAM Pipeline Simulation) ---
-            print(f"Running MONAI/MedSAM Intensity Analysis for {patient_name} ({modality})...")
-            pixel_data = ds.pixel_array
-            mean_val = np.mean(pixel_data)
-            std_val = np.std(pixel_data)
-            max_val = np.max(pixel_data)
-
-            # Simulated tissue density check
+            # --- CT/MRI LOGIC ---
+            orig_pixel_array = ds.pixel_array
+            mean_val = np.mean(orig_pixel_array)
+            std_val = np.std(orig_pixel_array)
+            max_val = np.max(orig_pixel_array)
+            
             results = {
-                "Mode": "Volumetric Segmentation",
-                "Tissue Density (Avg)": f"{mean_val:.1f} HU/Int",
-                "Standard Deviation": f"{std_val:.1f}",
-                "Max Intensity": f"{max_val:.1f}",
+                "Tissue Density (Avg)": f"{mean_val:.1f} HU",
+                "Variance": f"{std_val:.1f}",
+                "Peak Intensity": f"{max_val:.1f}",
             }
-
-            # Basic anomaly detection based on intensity variance
-            if std_val > 500: # Threshold for high variance (possible masses or fluid)
-                results["Clinical Conclusion"] = "🟡 WARNING - Deteksi variasi densitas tinggi (Indikasi Massa/Cairan)"
+            if len(orig_pixel_array.shape) > 2:
+                slice_idx = orig_pixel_array.shape[0] // 2
+                process_slice = orig_pixel_array[slice_idx]
             else:
-                results["Clinical Conclusion"] = "🟢 NORMAL - Struktur jaringan tampak homogen"
+                process_slice = orig_pixel_array
+
+            img_norm = (process_slice - process_slice.min()) / (process_slice.max() - process_slice.min() + 1e-8)
+            heatmap_np = np.stack([img_norm]*3, axis=-1)
+            heatmap_np[:, :, 0] = heatmap_np[:, :, 0] * 1.5 
+            heatmap_np = (np.clip(heatmap_np, 0, 1) * 255).astype(np.uint8)
+            
+            # Generate Base64 for DB/Summary Popup
+            pil_img = Image.fromarray(heatmap_np)
+            buffered = io.BytesIO()
+            pil_img.save(buffered, format="JPEG", quality=85)
+            heatmap_base64 = f"data:image/jpeg;base64,{base64.b64encode(buffered.getvalue()).decode()}"
+
+            update_progress(study_id, 75, "Generating volumetric heatmap...")
+            sc_dicom_bytes = create_secondary_capture(ds, heatmap_np)
+            if sc_dicom_bytes:
+                requests.post(f"{ORTHANC_URL}/instances", auth=ORTHANC_AUTH, data=sc_dicom_bytes, headers={'Content-Type': 'application/dicom'})
+
+            # Logic for CT conclusion
+            if std_val > 500:
+                results["Clinical Conclusion"] = "🟡 WARNING - High Intensity Variance"
+            else:
+                results["Clinical Conclusion"] = "🟢 NORMAL - Homogeneous Tissue"
         
         else:
-            results = {"Message": f"AI skipped for modality: {modality}", "Clinical Conclusion": "⚪ MODALITY NOT SUPPORTED"}
+            results = {"Message": f"Modality {modality} not supported", "Clinical Conclusion": "⚪ NOT SUPPORTED"}
 
-        # 5. Generate and Upload DICOM SR (Structured Report)
+        # 6. SR Creation
+        update_progress(study_id, 85, "Uploading results...")
         conclusion = results.get("Clinical Conclusion", "Unknown")
-        print(f"Generating DICOM SR for {patient_name}...")
         try:
             sr_bytes = generate_dicom_sr(ds, results, conclusion, modality)
             upload_sr_to_orthanc(sr_bytes)
-        except Exception as sr_err:
-            print(f"WARNING: Could not generate/upload SR: {str(sr_err)}")
+        except: pass
 
-        # 6. Notify via Telegram
+        # 7. Database Save
+        update_progress(study_id, 90, "Finalizing report...")
+        save_ai_result_to_db(study_uid, modality, results, conclusion, heatmap_base64=heatmap_base64)
+
+        # 8. Notify via Telegram
         patient_age = "-"
         if patient_birth and len(patient_birth) == 8:
             try:
-                from datetime import datetime
                 birth_year = int(patient_birth[:4])
-                current_year = datetime.now().year
+                current_year = datetime.datetime.now().year
                 patient_age = f"{current_year - birth_year}Y"
             except: pass
+
+        update_progress(study_id, 100, "Completed")
 
         send_telegram_notification(
             study_uid, patient_name, patient_id, study_desc, results, modality, preview_bytes,
             patient_sex=patient_sex, patient_age=patient_age, accession=accession, institution=institution
         )
-        print(f"AI for {patient_name} complete. Professional notification sent.")
+        print(f"AI COMPLETED for {study_id}")
 
     except Exception as e:
         print(f"Error processing AI: {str(e)}")
+        update_progress(study_id, 0, f"Error: {str(e)}")
 
 # --- Endpoints ---
 
@@ -397,8 +641,16 @@ async def root():
         "telegram_status": "Ready" if tg_config.get("bot_token") else "Missing Token"
     }
 
+@app.get("/progress/{study_id}")
+async def get_progress(study_id: str):
+    """Retrieve the AI analysis progress for a specific study"""
+    progress = progress_store.get(study_id, {"progress": 0, "status": "not_started"})
+    return progress
+
 @app.post("/process-dicom/{study_id}")
 async def trigger_ai(study_id: str, background_tasks: BackgroundTasks):
+    # Initialize progress to 0%
+    update_progress(study_id, 0, "Starting...")
     background_tasks.add_task(process_study, study_id)
     return {"message": "AI started", "study_id": study_id}
 

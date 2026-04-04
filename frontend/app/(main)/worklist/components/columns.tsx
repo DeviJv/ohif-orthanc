@@ -21,8 +21,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { DateRange } from "react-day-picker";
 
-interface GetColumnsProps {
+export interface WorklistTableMeta {
     expandedStudies: Record<string, boolean>;
+    aiResults?: Record<string, any>;
+}
+
+interface GetColumnsProps {
     toggleStudyExpansion: (id: string) => void;
     handleOpenViewer: (uid: string, mode?: string) => void;
     handleDownload: (id: string, name: string) => void;
@@ -33,10 +37,10 @@ interface GetColumnsProps {
     openExportPdfDialog: (study: Study) => void;
     aiMode?: string;
     handleRunAi?: (studyId: string) => void;
+    openAiResultDialog?: (result: any, patientName: string) => void;
 }
 
 export const getColumns = ({
-    expandedStudies,
     toggleStudyExpansion,
     handleOpenViewer,
     handleDownload,
@@ -47,6 +51,7 @@ export const getColumns = ({
     openExportPdfDialog,
     aiMode,
     handleRunAi,
+    openAiResultDialog,
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
         id: "select",
@@ -75,19 +80,22 @@ export const getColumns = ({
     {
         id: "expander",
         header: () => null,
-        cell: ({ row }) => (
-            <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                onClick={() => toggleStudyExpansion(row.original.ID)}
-            >
-                <HugeiconsIcon
-                    icon={ArrowDown01Icon}
-                    className={`size-4 transition-transform duration-200 ${expandedStudies[row.original.ID] ? "rotate-180" : ""}`}
-                />
-            </Button>
-        ),
+        cell: ({ row, table }) => {
+            const meta = table.options.meta as WorklistTableMeta;
+            return (
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
+                    onClick={() => toggleStudyExpansion(row.original.ID)}
+                >
+                    <HugeiconsIcon
+                        icon={ArrowDown01Icon}
+                        className={`size-4 transition-transform duration-200 ${meta.expandedStudies[row.original.ID] ? "rotate-180" : ""}`}
+                    />
+                </Button>
+            );
+        },
     },
     {
         accessorFn: (row) => row.PatientMainDicomTags?.PatientName || row.MainDicomTags.PatientName,
@@ -160,6 +168,38 @@ export const getColumns = ({
         ),
     },
     {
+        id: "aiResult",
+        header: "AI Summary",
+        cell: ({ row, table }) => {
+            const meta = table.options.meta as WorklistTableMeta;
+            const studyUid = (row.original.MainDicomTags.StudyInstanceUID || "").toUpperCase();
+            const patientName = row.original.PatientMainDicomTags?.PatientName || row.original.MainDicomTags.PatientName;
+            const result = meta.aiResults?.[studyUid];
+            
+            if (!result) return <span className="text-slate-400 text-xs italic">-</span>;
+
+            return (
+                <div className="flex items-center gap-2">
+                    {result.isUrgent && (
+                        <div className="size-2 rounded-full bg-rose-500 animate-pulse shrink-0" title="Urgent Finding" />
+                    )}
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className={`h-8 px-3 text-[11px] font-bold uppercase transition-all rounded-lg ${
+                            result.isUrgent 
+                            ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 border border-rose-200' 
+                            : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 border border-emerald-200'
+                        }`}
+                        onClick={() => openAiResultDialog?.(result, patientName)}
+                    >
+                        View Results
+                    </Button>
+                </div>
+            );
+        }
+    },
+    {
         id: "actions",
         header: () => <div className="text-right">Action</div>,
         cell: ({ row }) => {
@@ -193,7 +233,7 @@ export const getColumns = ({
                             size="sm"
                             variant="outline"
                             className="gap-2 border-primary/30 text-primary hover:bg-primary/5 hover:text-primary animate-pulse"
-                            onClick={() => handleRunAi(study.ID)}
+                            onClick={() => handleRunAi?.(study.ID)}
                             title="Run AI Analysis Manually"
                             disabled={aiMode === "OFF"}
                         >

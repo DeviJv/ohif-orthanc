@@ -56,10 +56,10 @@ function calcAge(birthDateStr?: string): string {
     return String(age);
 }
 
-export function ExportPdfDialog({ open, onOpenChange, study }: ExportPdfDialogProps) {
+// Optimized with React.memo to prevent lag, but keeping ORIGINAL layout
+export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpenChange, study }: ExportPdfDialogProps) {
     const [clinic, setClinic] = useState<ClinicConfig | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [isLoadingClinic, setIsLoadingClinic] = useState(true);
     const [searchValue, setSearchValue] = useState("");
 
     const studyMainTags = study?.MainDicomTags as any;
@@ -76,7 +76,6 @@ export function ExportPdfDialog({ open, onOpenChange, study }: ExportPdfDialogPr
             "CR": "Rontgen",
             "PX": "Rontgen",
             "MG": "Mammografi",
-            "PT": "PET Scan",
         };
         return map[mod] || "Radiologi";
     };
@@ -111,15 +110,13 @@ export function ExportPdfDialog({ open, onOpenChange, study }: ExportPdfDialogPr
 
     useEffect(() => {
         if (open) {
-            setIsLoadingClinic(true);
             fetch("/api/config/clinic")
                 .then((r) => r.json())
                 .then((data) => {
                     setClinic(data);
                     if (data.doctors?.[0]) setFormData(p => ({ ...p, doctor: data.doctors[0] }));
                 })
-                .catch(() => toast.error("Gagal memuat profil klinik"))
-                .finally(() => setIsLoadingClinic(false));
+                .catch(() => toast.error("Gagal memuat profil klinik"));
 
             setFormData((prev) => ({
                 ...prev,
@@ -130,9 +127,6 @@ export function ExportPdfDialog({ open, onOpenChange, study }: ExportPdfDialogPr
                 date: format(new Date(), "d MMMM yyyy", { locale: idLocale }),
             }));
             setSearchValue("");
-        } else {
-            // When closing, reset loading state
-            setIsLoadingClinic(true);
         }
     }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName]);
 
@@ -289,164 +283,190 @@ export function ExportPdfDialog({ open, onOpenChange, study }: ExportPdfDialogPr
         <>
             {/* Dialog Form */}
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="w-full max-w-4xl sm:max-w-4xl md:max-w-5xl max-h-[90vh] overflow-hidden p-0 gap-0 border-none shadow-2xl bg-background flex flex-col">
-                    <DialogHeader className="px-6 py-4 border-b bg-background shrink-0">
+                <DialogContent className="w-full max-w-4xl sm:max-w-4xl md:max-w-5xl max-h-[90vh] overflow-hidden p-0 gap-0 border-none shadow-2xl bg-background">
+                    <DialogHeader className="px-6 py-4 border-b bg-background">
                         <DialogTitle className="flex items-center gap-3 text-xl font-bold">
                             <div className="bg-primary/10 text-primary p-2 rounded-lg">
                                 <HugeiconsIcon icon={FileExportIcon} className="size-5" />
                             </div>
-                            {isLoadingClinic ? (
-                                <span className="animate-pulse">Loading Laporan...</span>
-                            ) : (
-                                `Export Laporan ${modalityName}`
-                            )}
+                            Export Laporan {modalityName}
                         </DialogTitle>
                     </DialogHeader>
 
-                    {isLoadingClinic ? (
-                        <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] text-muted-foreground gap-3 bg-muted/10">
-                            <div className="size-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                            <p className="text-sm font-medium">Memuat profil klinik...</p>
-                        </div>
-                    ) : (
-                        <div className="flex-1 overflow-y-auto p-6 bg-muted/10">
-                            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                                {/* Left Column: Demographics & Context */}
-                                <div className="md:col-span-4 space-y-6">
-                                    <div className="bg-card border rounded-xl p-5 shadow-sm">
-                                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Identitas Pasien</h3>
-                                        <div className="space-y-1 mb-4">
-                                            <p className="font-bold text-lg text-foreground">{patientName || "Nama Tidak Diketahui"}</p>
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm text-muted-foreground font-medium">
-                                                    {patientSex === "M" ? "Laki-laki (M)" : patientSex === "F" ? "Perempuan (F)" : "Kelamin ( Tidak diketahui )"}
-                                                </p>
-                                                <span className="text-muted-foreground/30">•</span>
-                                                <p className="text-sm text-muted-foreground font-medium">RM: {patientID || "-"}</p>
-                                            </div>
-                                        </div>
-                                        <Separator className="my-4" />
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label htmlFor="e-age" className="text-xs font-semibold text-muted-foreground uppercase">Umur <span className="text-destructive">*</span></Label>
-                                                <Input id="e-age" value={formData.age} onChange={set("age")} placeholder="23" className="h-9 text-sm bg-background border" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="e-gender" className="text-xs font-semibold text-muted-foreground uppercase">L / P <span className="text-destructive">*</span></Label>
-                                                <Input id="e-gender" value={formData.gender} onChange={set("gender")} placeholder="L" className="h-9 text-sm bg-background border" />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2 mt-4">
-                                            <Label htmlFor="e-address" className="text-xs font-semibold text-muted-foreground uppercase">Alamat Pasien <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                            <Textarea id="e-address" value={formData.address} onChange={set("address")} placeholder="Alamat lengkap..." className="h-20 text-sm resize-none bg-background border" />
+                    <div className="overflow-y-auto p-6 max-h-[calc(90vh-140px)] bg-muted/30">
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                            
+                            {/* Left Column: Demographics & Context */}
+                            <div className="md:col-span-4 space-y-6">
+                                {/* Read-only Panel */}
+                                <div className="bg-card border rounded-xl p-5 shadow-sm">
+                                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Identitas Pasien</h3>
+                                    <div className="space-y-1 mb-4">
+                                        <p className="font-bold text-lg text-foreground">{patientName || "Nama Tidak Diketahui"}</p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm text-muted-foreground font-medium">
+                                                {patientSex === "M" ? "Laki-laki (M)" : patientSex === "F" ? "Perempuan (F)" : "Kelamin ( Tidak diketahui )"}
+                                            </p>
+                                            <span className="text-muted-foreground/30">•</span>
+                                            <p className="text-sm text-muted-foreground font-medium">RM: {patientID || "-"}</p>
                                         </div>
                                     </div>
-
-                                    <div className="bg-card border rounded-xl p-5 shadow-sm space-y-5">
-                                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Konteks Medis</h3>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label htmlFor="e-photo" className="text-xs font-semibold text-muted-foreground uppercase">No. Foto <span className="text-destructive">*</span></Label>
-                                                <Input id="e-photo" value={formData.photoNum} onChange={set("photoNum")} placeholder="01" className="h-9 text-sm bg-background border" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-semibold text-muted-foreground uppercase">Acc Number</Label>
-                                                <Input value={accessionNumber} readOnly className="h-9 text-sm bg-muted/30 border text-muted-foreground cursor-not-allowed" />
-                                            </div>
+                                    <Separator className="my-4" />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="e-age" className="text-xs font-semibold text-muted-foreground uppercase">Umur <span className="text-destructive">*</span></Label>
+                                            <Input id="e-age" value={formData.age} onChange={set("age")} placeholder="23" className="h-9 text-sm bg-background border" />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="e-sender" className="text-xs font-semibold text-muted-foreground uppercase">Dokter Pengirim <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                            <Input id="e-sender" value={formData.sender} onChange={set("sender")} placeholder="dr. Prodia..." className="h-9 text-sm bg-background border" />
+                                            <Label htmlFor="e-gender" className="text-xs font-semibold text-muted-foreground uppercase">L / P <span className="text-destructive">*</span></Label>
+                                            <Input id="e-gender" value={formData.gender} onChange={set("gender")} placeholder="L" className="h-9 text-sm bg-background border" />
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="e-diagnosis" className="text-xs font-semibold text-muted-foreground uppercase">Diagnosa Klinis <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                            <Input id="e-diagnosis" value={formData.diagnosis} onChange={set("diagnosis")} placeholder="Medical Check Up" className="h-9 text-sm bg-background border" />
-                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mt-4">
+                                        <Label htmlFor="e-address" className="text-xs font-semibold text-muted-foreground uppercase">Alamat Pasien <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
+                                        <Textarea id="e-address" value={formData.address} onChange={set("address")} placeholder="Alamat lengkap..." className="h-20 text-sm resize-none bg-background border" />
                                     </div>
                                 </div>
 
-                                {/* Right Column: Medical Report Content */}
-                                <div className="md:col-span-8 flex flex-col gap-6">
-                                    <div className="bg-card border rounded-xl shadow-sm flex-1 flex flex-col overflow-hidden">
-                                        <div className="p-5 border-b bg-muted/40">
-                                            <div className="flex justify-between items-start gap-4">
-                                                <div className="space-y-2 flex-1">
-                                                    <Label htmlFor="e-examtype" className="text-xs font-bold uppercase text-muted-foreground tracking-tight">Jenis Pemeriksaan <span className="text-destructive">*</span></Label>
-                                                    <Input id="e-examtype" value={formData.examType} onChange={set("examType")} placeholder="Rontgen Thorax PA" className="font-bold text-xl border-none bg-transparent shadow-none px-0 h-auto focus-visible:ring-0 w-full" />
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">Study Date</p>
-                                                    <p className="text-sm font-semibold">{studyDateFormatted || "-"}</p>
-                                                </div>
-                                            </div>
+                                {/* Examination Context */}
+                                <div className="bg-card border rounded-xl p-5 shadow-sm space-y-5">
+                                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Konteks Medis</h3>
+                                    
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="e-photo" className="text-xs font-semibold text-muted-foreground uppercase">No. Foto <span className="text-destructive">*</span></Label>
+                                            <Input id="e-photo" value={formData.photoNum} onChange={set("photoNum")} placeholder="01" className="h-9 text-sm bg-background border" />
                                         </div>
-                                        <div className="p-6 flex-1 flex flex-col gap-6 bg-card">
-                                            <div className="space-y-3 flex-1 flex flex-col">
-                                                <Label htmlFor="e-findings" className="font-bold text-base text-foreground">Temuan Radiologi <span className="text-destructive">*</span></Label>
-                                                <Textarea id="e-findings" value={formData.findings} onChange={set("findings")} placeholder={"Cor\t: Ukuran dan bentuk normal\nPulmo\t: Tidak ada proses infiltrat..."} className="font-mono text-sm min-h-[180px] flex-1 resize-y bg-background border" />
-                                            </div>
-                                            <div className="grid grid-cols-1 gap-6">
-                                                <div className="space-y-3">
-                                                    <Label htmlFor="e-conclusion" className="font-bold text-base text-foreground">Kesimpulan <span className="text-destructive">*</span></Label>
-                                                    <Textarea id="e-conclusion" value={formData.conclusion} onChange={set("conclusion")} placeholder="Jantung: Normal, Paru-paru: Bronchitis" className="min-h-[80px] resize-y text-sm bg-background border" />
-                                                </div>
-                                                <div className="space-y-3">
-                                                    <Label htmlFor="e-rec" className="font-bold text-base text-foreground">Anjuran <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                                    <Input id="e-rec" value={formData.recommendation} onChange={set("recommendation")} placeholder="-" className="bg-background border h-10" />
-                                                </div>
-                                            </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-xs font-semibold text-muted-foreground uppercase">Acc Number</Label>
+                                            <Input value={accessionNumber} readOnly className="h-9 text-sm bg-muted/30 border text-muted-foreground cursor-not-allowed" />
                                         </div>
                                     </div>
 
-                                    <div className="bg-card border rounded-xl shadow-sm p-5 grid grid-cols-12 gap-6">
-                                        <div className="col-span-8 space-y-2">
-                                            <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
-                                            {clinic?.doctors && clinic.doctors.length > 0 ? (
-                                                <Combobox value={formData.doctor} onValueChange={(v) => v && setFormData((p) => ({ ...p, doctor: v }))} inputValue={searchValue} onInputValueChange={setSearchValue}>
-                                                    <ComboboxInput placeholder="Cari atau pilih nama dokter..." className="w-full">
-                                                        <ComboboxContent>
-                                                            <ComboboxList tabIndex={-1}>
-                                                                {filteredDoctors.map((d, i) => (
-                                                                    <ComboboxItem key={i} value={d}>{d}</ComboboxItem>
-                                                                ))}
-                                                            </ComboboxList>
-                                                            <ComboboxEmpty>Dokter tidak ditemukan</ComboboxEmpty>
-                                                        </ComboboxContent>
-                                                    </ComboboxInput>
-                                                </Combobox>
-                                            ) : (
-                                                <Input value={formData.doctor} onChange={set("doctor")} placeholder="dr. Nama Dokter, Sp.Rad" className="bg-background font-medium border h-10" />
-                                            )}
-                                        </div>
-                                        <div className="col-span-4 space-y-2">
-                                            <Label htmlFor="e-date" className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan</Label>
-                                            <Input id="e-date" value={formData.date} onChange={set("date")} className="bg-background font-medium border h-10" />
-                                        </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="e-sender" className="text-xs font-semibold text-muted-foreground uppercase">Dokter Pengirim <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
+                                        <Input id="e-sender" value={formData.sender} onChange={set("sender")} placeholder="dr. Prodia..." className="h-9 text-sm bg-background border" />
                                     </div>
-                                    {(!clinic?.clinicName && !isLoadingClinic) && (
-                                        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 shadow-sm">
-                                            <span className="text-sm">⚠️</span>
-                                            <span>Profil klinik belum diisi. Pergi ke <strong>Settings → Profil Klinik</strong> untuk mengisi nama klinik, alamat, logo, dan daftar dokter.</span>
-                                        </div>
-                                    )}
+                                    
+                                    <div className="space-y-2">
+                                        <Label htmlFor="e-diagnosis" className="text-xs font-semibold text-muted-foreground uppercase">Diagnosa Klinis <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
+                                        <Input id="e-diagnosis" value={formData.diagnosis} onChange={set("diagnosis")} placeholder="Medical Check Up" className="h-9 text-sm bg-background border" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                            
+                            {/* Right Column: Medical Report Content */}
+                            <div className="md:col-span-8 flex flex-col gap-6">
+                                <div className="bg-card border rounded-xl shadow-sm flex-1 flex flex-col overflow-hidden">
+                                    <div className="p-5 border-b bg-muted/40">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <div className="space-y-2 flex-1">
+                                                <Label htmlFor="e-examtype" className="text-xs font-bold uppercase text-muted-foreground tracking-tight">Jenis Pemeriksaan <span className="text-destructive">*</span></Label>
+                                                <Input id="e-examtype" value={formData.examType} onChange={set("examType")} placeholder="Rontgen Thorax PA" className="font-bold text-xl border-none bg-transparent shadow-none px-0 h-auto focus-visible:ring-0 w-full" />
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase">Study Date</p>
+                                                <p className="text-sm font-semibold">{studyDateFormatted || "-"}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-6 flex-1 flex flex-col gap-6 bg-card">
+                                        <div className="space-y-3 flex-1 flex flex-col">
+                                            <Label htmlFor="e-findings" className="font-bold text-base text-foreground">Temuan Radiologi <span className="text-destructive">*</span></Label>
+                                            <Textarea
+                                                id="e-findings"
+                                                value={formData.findings}
+                                                onChange={set("findings")}
+                                                placeholder={"Cor\t: Ukuran dan bentuk normal\nPulmo\t: Tidak ada proses infiltrat..."}
+                                                className="font-mono text-sm min-h-[180px] flex-1 resize-y bg-background border"
+                                            />
+                                        </div>
 
-                    <DialogFooter className="px-6 py-4 border-t bg-background flex flex-row items-center justify-end gap-3 h-16 shrink-0">
+                                        <div className="grid grid-cols-1 gap-6">
+                                            <div className="space-y-3">
+                                                <Label htmlFor="e-conclusion" className="font-bold text-base text-foreground">Kesimpulan <span className="text-destructive">*</span></Label>
+                                                <Textarea 
+                                                    id="e-conclusion" 
+                                                    value={formData.conclusion} 
+                                                    onChange={set("conclusion")} 
+                                                    placeholder="Jantung: Normal, Paru-paru: Bronchitis" 
+                                                    className="min-h-[80px] resize-y text-sm bg-background border"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-3">
+                                                <Label htmlFor="e-rec" className="font-bold text-base text-foreground">Anjuran <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
+                                                <Input 
+                                                    id="e-rec" 
+                                                    value={formData.recommendation} 
+                                                    onChange={set("recommendation")} 
+                                                    placeholder="-" 
+                                                    className="bg-background border h-10"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-card border rounded-xl shadow-sm p-5 grid grid-cols-12 gap-6">
+                                    <div className="col-span-8 space-y-2">
+                                        <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
+                                        {clinic?.doctors && clinic.doctors.length > 0 ? (
+                                            <Combobox
+                                                value={formData.doctor}
+                                                onValueChange={(v) => v && setFormData((p) => ({ ...p, doctor: v }))}
+                                                inputValue={searchValue}
+                                                onInputValueChange={setSearchValue}
+                                            >
+                                                <ComboboxInput
+                                                    placeholder="Cari atau pilih nama dokter..."
+                                                    className="w-full"
+                                                >
+                                                    <ComboboxContent>
+                                                        <ComboboxList tabIndex={-1}>
+                                                            {filteredDoctors.map((d, i) => (
+                                                                <ComboboxItem key={i} value={d}>{d}</ComboboxItem>
+                                                            ))}
+                                                        </ComboboxList>
+                                                        <ComboboxEmpty>Dokter tidak ditemukan</ComboboxEmpty>
+                                                    </ComboboxContent>
+                                                </ComboboxInput>
+                                            </Combobox>
+                                        ) : (
+                                            <Input
+                                                value={formData.doctor}
+                                                onChange={set("doctor")}
+                                                placeholder="dr. Nama Dokter, Sp.Rad"
+                                                className="bg-background font-medium border h-10"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="col-span-4 space-y-2">
+                                        <Label htmlFor="e-date" className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan</Label>
+                                        <Input id="e-date" value={formData.date} onChange={set("date")} className="bg-background font-medium border h-10" />
+                                    </div>
+                                </div>
+
+                                {(!clinic?.clinicName) && (
+                                    <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 shadow-sm">
+                                        <span className="text-sm">⚠️</span>
+                                        <span>Profil klinik belum diisi. Pergi ke <strong>Settings → Profil Klinik</strong> untuk mengisi nama klinik, alamat, logo, dan daftar dokter.</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="px-6 py-4 border-t bg-muted/50 flex items-center justify-end gap-3 h-16">
                         <Button variant="outline" onClick={() => onOpenChange(false)} className="px-8 h-10">Batal</Button>
-                        <Button variant="default" onClick={handleGenerate} disabled={isGenerating || isLoadingClinic} className="gap-2 px-8 h-10 font-bold min-w-[180px]">
-                            {isGenerating ? (
-                                <div className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                <HugeiconsIcon icon={FileExportIcon} className="size-4" />
-                            )}
+                        <Button variant="default" onClick={handleGenerate} disabled={isGenerating} className="gap-2 px-8 h-10 font-bold min-w-[180px]">
+                            <HugeiconsIcon icon={FileExportIcon} className="size-4" />
                             {isGenerating ? "Membuat PDF..." : "Generate PDF"}
                         </Button>
-                    </DialogFooter>
+                    </div>
                 </DialogContent>
             </Dialog>
         </>
     );
-}
+});

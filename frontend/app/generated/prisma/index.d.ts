@@ -38,6 +38,11 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
  * 
  */
 export type AppConfig = $Result.DefaultSelection<Prisma.$AppConfigPayload>
+/**
+ * Model AiResult
+ * 
+ */
+export type AiResult = $Result.DefaultSelection<Prisma.$AiResultPayload>
 
 /**
  * Enums
@@ -224,6 +229,16 @@ export class PrismaClient<
     * ```
     */
   get appConfig(): Prisma.AppConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiResult`: Exposes CRUD operations for the **AiResult** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiResults
+    * const aiResults = await prisma.aiResult.findMany()
+    * ```
+    */
+  get aiResult(): Prisma.AiResultDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -669,7 +684,8 @@ export namespace Prisma {
     Account: 'Account',
     Session: 'Session',
     VerificationToken: 'VerificationToken',
-    AppConfig: 'AppConfig'
+    AppConfig: 'AppConfig',
+    AiResult: 'AiResult'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -688,7 +704,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1062,6 +1078,80 @@ export namespace Prisma {
           }
         }
       }
+      AiResult: {
+        payload: Prisma.$AiResultPayload<ExtArgs>
+        fields: Prisma.AiResultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiResultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiResultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>
+          }
+          findFirst: {
+            args: Prisma.AiResultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiResultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>
+          }
+          findMany: {
+            args: Prisma.AiResultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>[]
+          }
+          create: {
+            args: Prisma.AiResultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>
+          }
+          createMany: {
+            args: Prisma.AiResultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiResultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>[]
+          }
+          delete: {
+            args: Prisma.AiResultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>
+          }
+          update: {
+            args: Prisma.AiResultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiResultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiResultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiResultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiResultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiResultPayload>
+          }
+          aggregate: {
+            args: Prisma.AiResultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiResult>
+          }
+          groupBy: {
+            args: Prisma.AiResultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiResultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiResultCountArgs<ExtArgs>
+            result: $Utils.Optional<AiResultCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1163,6 +1253,7 @@ export namespace Prisma {
     session?: SessionOmit
     verificationToken?: VerificationTokenOmit
     appConfig?: AppConfigOmit
+    aiResult?: AiResultOmit
   }
 
   /* Types for Logging */
@@ -6599,6 +6690,1036 @@ export namespace Prisma {
 
 
   /**
+   * Model AiResult
+   */
+
+  export type AggregateAiResult = {
+    _count: AiResultCountAggregateOutputType | null
+    _min: AiResultMinAggregateOutputType | null
+    _max: AiResultMaxAggregateOutputType | null
+  }
+
+  export type AiResultMinAggregateOutputType = {
+    studyInstanceUid: string | null
+    modality: string | null
+    conclusion: string | null
+    isUrgent: boolean | null
+    heatmapPath: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AiResultMaxAggregateOutputType = {
+    studyInstanceUid: string | null
+    modality: string | null
+    conclusion: string | null
+    isUrgent: boolean | null
+    heatmapPath: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AiResultCountAggregateOutputType = {
+    studyInstanceUid: number
+    modality: number
+    conclusion: number
+    findings: number
+    isUrgent: number
+    heatmapPath: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AiResultMinAggregateInputType = {
+    studyInstanceUid?: true
+    modality?: true
+    conclusion?: true
+    isUrgent?: true
+    heatmapPath?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AiResultMaxAggregateInputType = {
+    studyInstanceUid?: true
+    modality?: true
+    conclusion?: true
+    isUrgent?: true
+    heatmapPath?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AiResultCountAggregateInputType = {
+    studyInstanceUid?: true
+    modality?: true
+    conclusion?: true
+    findings?: true
+    isUrgent?: true
+    heatmapPath?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AiResultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiResult to aggregate.
+     */
+    where?: AiResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiResults to fetch.
+     */
+    orderBy?: AiResultOrderByWithRelationInput | AiResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiResults
+    **/
+    _count?: true | AiResultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiResultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiResultMaxAggregateInputType
+  }
+
+  export type GetAiResultAggregateType<T extends AiResultAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiResult]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiResult[P]>
+      : GetScalarType<T[P], AggregateAiResult[P]>
+  }
+
+
+
+
+  export type AiResultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiResultWhereInput
+    orderBy?: AiResultOrderByWithAggregationInput | AiResultOrderByWithAggregationInput[]
+    by: AiResultScalarFieldEnum[] | AiResultScalarFieldEnum
+    having?: AiResultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiResultCountAggregateInputType | true
+    _min?: AiResultMinAggregateInputType
+    _max?: AiResultMaxAggregateInputType
+  }
+
+  export type AiResultGroupByOutputType = {
+    studyInstanceUid: string
+    modality: string
+    conclusion: string
+    findings: JsonValue
+    isUrgent: boolean
+    heatmapPath: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AiResultCountAggregateOutputType | null
+    _min: AiResultMinAggregateOutputType | null
+    _max: AiResultMaxAggregateOutputType | null
+  }
+
+  type GetAiResultGroupByPayload<T extends AiResultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiResultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiResultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiResultGroupByOutputType[P]>
+            : GetScalarType<T[P], AiResultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiResultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    studyInstanceUid?: boolean
+    modality?: boolean
+    conclusion?: boolean
+    findings?: boolean
+    isUrgent?: boolean
+    heatmapPath?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["aiResult"]>
+
+  export type AiResultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    studyInstanceUid?: boolean
+    modality?: boolean
+    conclusion?: boolean
+    findings?: boolean
+    isUrgent?: boolean
+    heatmapPath?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["aiResult"]>
+
+  export type AiResultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    studyInstanceUid?: boolean
+    modality?: boolean
+    conclusion?: boolean
+    findings?: boolean
+    isUrgent?: boolean
+    heatmapPath?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["aiResult"]>
+
+  export type AiResultSelectScalar = {
+    studyInstanceUid?: boolean
+    modality?: boolean
+    conclusion?: boolean
+    findings?: boolean
+    isUrgent?: boolean
+    heatmapPath?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AiResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "modality" | "conclusion" | "findings" | "isUrgent" | "heatmapPath" | "createdAt" | "updatedAt", ExtArgs["result"]["aiResult"]>
+
+  export type $AiResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiResult"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      studyInstanceUid: string
+      modality: string
+      conclusion: string
+      findings: Prisma.JsonValue
+      isUrgent: boolean
+      heatmapPath: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["aiResult"]>
+    composites: {}
+  }
+
+  type AiResultGetPayload<S extends boolean | null | undefined | AiResultDefaultArgs> = $Result.GetResult<Prisma.$AiResultPayload, S>
+
+  type AiResultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiResultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiResultCountAggregateInputType | true
+    }
+
+  export interface AiResultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiResult'], meta: { name: 'AiResult' } }
+    /**
+     * Find zero or one AiResult that matches the filter.
+     * @param {AiResultFindUniqueArgs} args - Arguments to find a AiResult
+     * @example
+     * // Get one AiResult
+     * const aiResult = await prisma.aiResult.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiResultFindUniqueArgs>(args: SelectSubset<T, AiResultFindUniqueArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiResult that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiResultFindUniqueOrThrowArgs} args - Arguments to find a AiResult
+     * @example
+     * // Get one AiResult
+     * const aiResult = await prisma.aiResult.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiResultFindUniqueOrThrowArgs>(args: SelectSubset<T, AiResultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiResult that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultFindFirstArgs} args - Arguments to find a AiResult
+     * @example
+     * // Get one AiResult
+     * const aiResult = await prisma.aiResult.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiResultFindFirstArgs>(args?: SelectSubset<T, AiResultFindFirstArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiResult that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultFindFirstOrThrowArgs} args - Arguments to find a AiResult
+     * @example
+     * // Get one AiResult
+     * const aiResult = await prisma.aiResult.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiResultFindFirstOrThrowArgs>(args?: SelectSubset<T, AiResultFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiResults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiResults
+     * const aiResults = await prisma.aiResult.findMany()
+     * 
+     * // Get first 10 AiResults
+     * const aiResults = await prisma.aiResult.findMany({ take: 10 })
+     * 
+     * // Only select the `studyInstanceUid`
+     * const aiResultWithStudyInstanceUidOnly = await prisma.aiResult.findMany({ select: { studyInstanceUid: true } })
+     * 
+     */
+    findMany<T extends AiResultFindManyArgs>(args?: SelectSubset<T, AiResultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiResult.
+     * @param {AiResultCreateArgs} args - Arguments to create a AiResult.
+     * @example
+     * // Create one AiResult
+     * const AiResult = await prisma.aiResult.create({
+     *   data: {
+     *     // ... data to create a AiResult
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiResultCreateArgs>(args: SelectSubset<T, AiResultCreateArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiResults.
+     * @param {AiResultCreateManyArgs} args - Arguments to create many AiResults.
+     * @example
+     * // Create many AiResults
+     * const aiResult = await prisma.aiResult.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiResultCreateManyArgs>(args?: SelectSubset<T, AiResultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiResults and returns the data saved in the database.
+     * @param {AiResultCreateManyAndReturnArgs} args - Arguments to create many AiResults.
+     * @example
+     * // Create many AiResults
+     * const aiResult = await prisma.aiResult.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiResults and only return the `studyInstanceUid`
+     * const aiResultWithStudyInstanceUidOnly = await prisma.aiResult.createManyAndReturn({
+     *   select: { studyInstanceUid: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiResultCreateManyAndReturnArgs>(args?: SelectSubset<T, AiResultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiResult.
+     * @param {AiResultDeleteArgs} args - Arguments to delete one AiResult.
+     * @example
+     * // Delete one AiResult
+     * const AiResult = await prisma.aiResult.delete({
+     *   where: {
+     *     // ... filter to delete one AiResult
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiResultDeleteArgs>(args: SelectSubset<T, AiResultDeleteArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiResult.
+     * @param {AiResultUpdateArgs} args - Arguments to update one AiResult.
+     * @example
+     * // Update one AiResult
+     * const aiResult = await prisma.aiResult.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiResultUpdateArgs>(args: SelectSubset<T, AiResultUpdateArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiResults.
+     * @param {AiResultDeleteManyArgs} args - Arguments to filter AiResults to delete.
+     * @example
+     * // Delete a few AiResults
+     * const { count } = await prisma.aiResult.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiResultDeleteManyArgs>(args?: SelectSubset<T, AiResultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiResults
+     * const aiResult = await prisma.aiResult.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiResultUpdateManyArgs>(args: SelectSubset<T, AiResultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiResults and returns the data updated in the database.
+     * @param {AiResultUpdateManyAndReturnArgs} args - Arguments to update many AiResults.
+     * @example
+     * // Update many AiResults
+     * const aiResult = await prisma.aiResult.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiResults and only return the `studyInstanceUid`
+     * const aiResultWithStudyInstanceUidOnly = await prisma.aiResult.updateManyAndReturn({
+     *   select: { studyInstanceUid: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiResultUpdateManyAndReturnArgs>(args: SelectSubset<T, AiResultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiResult.
+     * @param {AiResultUpsertArgs} args - Arguments to update or create a AiResult.
+     * @example
+     * // Update or create a AiResult
+     * const aiResult = await prisma.aiResult.upsert({
+     *   create: {
+     *     // ... data to create a AiResult
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiResult we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiResultUpsertArgs>(args: SelectSubset<T, AiResultUpsertArgs<ExtArgs>>): Prisma__AiResultClient<$Result.GetResult<Prisma.$AiResultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultCountArgs} args - Arguments to filter AiResults to count.
+     * @example
+     * // Count the number of AiResults
+     * const count = await prisma.aiResult.count({
+     *   where: {
+     *     // ... the filter for the AiResults we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiResultCountArgs>(
+      args?: Subset<T, AiResultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiResultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiResultAggregateArgs>(args: Subset<T, AiResultAggregateArgs>): Prisma.PrismaPromise<GetAiResultAggregateType<T>>
+
+    /**
+     * Group by AiResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiResultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiResultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiResultGroupByArgs['orderBy'] }
+        : { orderBy?: AiResultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiResultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiResultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiResult model
+   */
+  readonly fields: AiResultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiResult.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiResultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiResult model
+   */
+  interface AiResultFieldRefs {
+    readonly studyInstanceUid: FieldRef<"AiResult", 'String'>
+    readonly modality: FieldRef<"AiResult", 'String'>
+    readonly conclusion: FieldRef<"AiResult", 'String'>
+    readonly findings: FieldRef<"AiResult", 'Json'>
+    readonly isUrgent: FieldRef<"AiResult", 'Boolean'>
+    readonly heatmapPath: FieldRef<"AiResult", 'String'>
+    readonly createdAt: FieldRef<"AiResult", 'DateTime'>
+    readonly updatedAt: FieldRef<"AiResult", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiResult findUnique
+   */
+  export type AiResultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * Filter, which AiResult to fetch.
+     */
+    where: AiResultWhereUniqueInput
+  }
+
+  /**
+   * AiResult findUniqueOrThrow
+   */
+  export type AiResultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * Filter, which AiResult to fetch.
+     */
+    where: AiResultWhereUniqueInput
+  }
+
+  /**
+   * AiResult findFirst
+   */
+  export type AiResultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * Filter, which AiResult to fetch.
+     */
+    where?: AiResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiResults to fetch.
+     */
+    orderBy?: AiResultOrderByWithRelationInput | AiResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiResults.
+     */
+    cursor?: AiResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiResults.
+     */
+    distinct?: AiResultScalarFieldEnum | AiResultScalarFieldEnum[]
+  }
+
+  /**
+   * AiResult findFirstOrThrow
+   */
+  export type AiResultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * Filter, which AiResult to fetch.
+     */
+    where?: AiResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiResults to fetch.
+     */
+    orderBy?: AiResultOrderByWithRelationInput | AiResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiResults.
+     */
+    cursor?: AiResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiResults.
+     */
+    distinct?: AiResultScalarFieldEnum | AiResultScalarFieldEnum[]
+  }
+
+  /**
+   * AiResult findMany
+   */
+  export type AiResultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * Filter, which AiResults to fetch.
+     */
+    where?: AiResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiResults to fetch.
+     */
+    orderBy?: AiResultOrderByWithRelationInput | AiResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiResults.
+     */
+    cursor?: AiResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiResults.
+     */
+    skip?: number
+    distinct?: AiResultScalarFieldEnum | AiResultScalarFieldEnum[]
+  }
+
+  /**
+   * AiResult create
+   */
+  export type AiResultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AiResult.
+     */
+    data: XOR<AiResultCreateInput, AiResultUncheckedCreateInput>
+  }
+
+  /**
+   * AiResult createMany
+   */
+  export type AiResultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiResults.
+     */
+    data: AiResultCreateManyInput | AiResultCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiResult createManyAndReturn
+   */
+  export type AiResultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiResults.
+     */
+    data: AiResultCreateManyInput | AiResultCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiResult update
+   */
+  export type AiResultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AiResult.
+     */
+    data: XOR<AiResultUpdateInput, AiResultUncheckedUpdateInput>
+    /**
+     * Choose, which AiResult to update.
+     */
+    where: AiResultWhereUniqueInput
+  }
+
+  /**
+   * AiResult updateMany
+   */
+  export type AiResultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiResults.
+     */
+    data: XOR<AiResultUpdateManyMutationInput, AiResultUncheckedUpdateManyInput>
+    /**
+     * Filter which AiResults to update
+     */
+    where?: AiResultWhereInput
+    /**
+     * Limit how many AiResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiResult updateManyAndReturn
+   */
+  export type AiResultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * The data used to update AiResults.
+     */
+    data: XOR<AiResultUpdateManyMutationInput, AiResultUncheckedUpdateManyInput>
+    /**
+     * Filter which AiResults to update
+     */
+    where?: AiResultWhereInput
+    /**
+     * Limit how many AiResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiResult upsert
+   */
+  export type AiResultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AiResult to update in case it exists.
+     */
+    where: AiResultWhereUniqueInput
+    /**
+     * In case the AiResult found by the `where` argument doesn't exist, create a new AiResult with this data.
+     */
+    create: XOR<AiResultCreateInput, AiResultUncheckedCreateInput>
+    /**
+     * In case the AiResult was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiResultUpdateInput, AiResultUncheckedUpdateInput>
+  }
+
+  /**
+   * AiResult delete
+   */
+  export type AiResultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+    /**
+     * Filter which AiResult to delete.
+     */
+    where: AiResultWhereUniqueInput
+  }
+
+  /**
+   * AiResult deleteMany
+   */
+  export type AiResultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiResults to delete
+     */
+    where?: AiResultWhereInput
+    /**
+     * Limit how many AiResults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiResult without action
+   */
+  export type AiResultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiResult
+     */
+    select?: AiResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiResult
+     */
+    omit?: AiResultOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -6673,12 +7794,33 @@ export namespace Prisma {
   export type AppConfigScalarFieldEnum = (typeof AppConfigScalarFieldEnum)[keyof typeof AppConfigScalarFieldEnum]
 
 
+  export const AiResultScalarFieldEnum: {
+    studyInstanceUid: 'studyInstanceUid',
+    modality: 'modality',
+    conclusion: 'conclusion',
+    findings: 'findings',
+    isUrgent: 'isUrgent',
+    heatmapPath: 'heatmapPath',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AiResultScalarFieldEnum = (typeof AiResultScalarFieldEnum)[keyof typeof AiResultScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -6695,6 +7837,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -6755,6 +7906,27 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -7079,6 +8251,73 @@ export namespace Prisma {
     key?: StringWithAggregatesFilter<"AppConfig"> | string
     value?: StringWithAggregatesFilter<"AppConfig"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"AppConfig"> | Date | string
+  }
+
+  export type AiResultWhereInput = {
+    AND?: AiResultWhereInput | AiResultWhereInput[]
+    OR?: AiResultWhereInput[]
+    NOT?: AiResultWhereInput | AiResultWhereInput[]
+    studyInstanceUid?: StringFilter<"AiResult"> | string
+    modality?: StringFilter<"AiResult"> | string
+    conclusion?: StringFilter<"AiResult"> | string
+    findings?: JsonFilter<"AiResult">
+    isUrgent?: BoolFilter<"AiResult"> | boolean
+    heatmapPath?: StringNullableFilter<"AiResult"> | string | null
+    createdAt?: DateTimeFilter<"AiResult"> | Date | string
+    updatedAt?: DateTimeFilter<"AiResult"> | Date | string
+  }
+
+  export type AiResultOrderByWithRelationInput = {
+    studyInstanceUid?: SortOrder
+    modality?: SortOrder
+    conclusion?: SortOrder
+    findings?: SortOrder
+    isUrgent?: SortOrder
+    heatmapPath?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AiResultWhereUniqueInput = Prisma.AtLeast<{
+    studyInstanceUid?: string
+    AND?: AiResultWhereInput | AiResultWhereInput[]
+    OR?: AiResultWhereInput[]
+    NOT?: AiResultWhereInput | AiResultWhereInput[]
+    modality?: StringFilter<"AiResult"> | string
+    conclusion?: StringFilter<"AiResult"> | string
+    findings?: JsonFilter<"AiResult">
+    isUrgent?: BoolFilter<"AiResult"> | boolean
+    heatmapPath?: StringNullableFilter<"AiResult"> | string | null
+    createdAt?: DateTimeFilter<"AiResult"> | Date | string
+    updatedAt?: DateTimeFilter<"AiResult"> | Date | string
+  }, "studyInstanceUid">
+
+  export type AiResultOrderByWithAggregationInput = {
+    studyInstanceUid?: SortOrder
+    modality?: SortOrder
+    conclusion?: SortOrder
+    findings?: SortOrder
+    isUrgent?: SortOrder
+    heatmapPath?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AiResultCountOrderByAggregateInput
+    _max?: AiResultMaxOrderByAggregateInput
+    _min?: AiResultMinOrderByAggregateInput
+  }
+
+  export type AiResultScalarWhereWithAggregatesInput = {
+    AND?: AiResultScalarWhereWithAggregatesInput | AiResultScalarWhereWithAggregatesInput[]
+    OR?: AiResultScalarWhereWithAggregatesInput[]
+    NOT?: AiResultScalarWhereWithAggregatesInput | AiResultScalarWhereWithAggregatesInput[]
+    studyInstanceUid?: StringWithAggregatesFilter<"AiResult"> | string
+    modality?: StringWithAggregatesFilter<"AiResult"> | string
+    conclusion?: StringWithAggregatesFilter<"AiResult"> | string
+    findings?: JsonWithAggregatesFilter<"AiResult">
+    isUrgent?: BoolWithAggregatesFilter<"AiResult"> | boolean
+    heatmapPath?: StringNullableWithAggregatesFilter<"AiResult"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AiResult"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AiResult"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -7406,6 +8645,83 @@ export namespace Prisma {
   export type AppConfigUncheckedUpdateManyInput = {
     key?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiResultCreateInput = {
+    studyInstanceUid: string
+    modality: string
+    conclusion: string
+    findings: JsonNullValueInput | InputJsonValue
+    isUrgent?: boolean
+    heatmapPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AiResultUncheckedCreateInput = {
+    studyInstanceUid: string
+    modality: string
+    conclusion: string
+    findings: JsonNullValueInput | InputJsonValue
+    isUrgent?: boolean
+    heatmapPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AiResultUpdateInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    modality?: StringFieldUpdateOperationsInput | string
+    conclusion?: StringFieldUpdateOperationsInput | string
+    findings?: JsonNullValueInput | InputJsonValue
+    isUrgent?: BoolFieldUpdateOperationsInput | boolean
+    heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiResultUncheckedUpdateInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    modality?: StringFieldUpdateOperationsInput | string
+    conclusion?: StringFieldUpdateOperationsInput | string
+    findings?: JsonNullValueInput | InputJsonValue
+    isUrgent?: BoolFieldUpdateOperationsInput | boolean
+    heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiResultCreateManyInput = {
+    studyInstanceUid: string
+    modality: string
+    conclusion: string
+    findings: JsonNullValueInput | InputJsonValue
+    isUrgent?: boolean
+    heatmapPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AiResultUpdateManyMutationInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    modality?: StringFieldUpdateOperationsInput | string
+    conclusion?: StringFieldUpdateOperationsInput | string
+    findings?: JsonNullValueInput | InputJsonValue
+    isUrgent?: BoolFieldUpdateOperationsInput | boolean
+    heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiResultUncheckedUpdateManyInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    modality?: StringFieldUpdateOperationsInput | string
+    conclusion?: StringFieldUpdateOperationsInput | string
+    findings?: JsonNullValueInput | InputJsonValue
+    isUrgent?: BoolFieldUpdateOperationsInput | boolean
+    heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7754,6 +9070,99 @@ export namespace Prisma {
     value?: SortOrder
     updatedAt?: SortOrder
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type AiResultCountOrderByAggregateInput = {
+    studyInstanceUid?: SortOrder
+    modality?: SortOrder
+    conclusion?: SortOrder
+    findings?: SortOrder
+    isUrgent?: SortOrder
+    heatmapPath?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AiResultMaxOrderByAggregateInput = {
+    studyInstanceUid?: SortOrder
+    modality?: SortOrder
+    conclusion?: SortOrder
+    isUrgent?: SortOrder
+    heatmapPath?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AiResultMinOrderByAggregateInput = {
+    studyInstanceUid?: SortOrder
+    modality?: SortOrder
+    conclusion?: SortOrder
+    isUrgent?: SortOrder
+    heatmapPath?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
 
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
@@ -7893,6 +9302,10 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSessionsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -8071,6 +9484,42 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {

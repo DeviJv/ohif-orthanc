@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Study, Series, Instance, DicomTags } from "../types";
 import { orthancApi } from "../utils/api";
-import { useTasks } from "@/context/task-context";
+import { useTaskState, useTaskActions } from "@/context/task-context";
 
 export function useWorklist() {
-    const { addTask, updateTask } = useTasks();
+    const { addTask, updateTask } = useTaskActions();
+    const { tasks } = useTaskState();
     const [studies, setStudies] = useState<Study[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -22,11 +23,37 @@ export function useWorklist() {
     const [seriesData, setSeriesData] = useState<Record<string, Series[]>>({});
     const [instancesData, setInstancesData] = useState<Record<string, Instance[]>>({});
     const [tagsData, setTagsData] = useState<Record<string, DicomTags>>({});
+    const [aiResults, setAiResults] = useState<Record<string, any>>({});
+
+    const fetchAiResults = useCallback(async () => {
+        try {
+            const res = await fetch("/api/ai/results/all");
+            if (res.ok) {
+                const data = await res.json();
+                const resultMap: Record<string, any> = {};
+                data.forEach((r: any) => {
+                    // Check all possible key variations defensively
+                    const rawUid = r.studyInstanceUid || r.study_instance_uid || r.StudyInstanceUID || "";
+                    const key = rawUid.toUpperCase();
+                    if (key) resultMap[key] = r;
+                });
+                setAiResults(resultMap);
+                return resultMap;
+            }
+        } catch (e) {
+            console.error("Failed to fetch AI results:", e);
+        }
+        return {};
+    }, []);
 
     const fetchStudies = useCallback(async () => {
         setLoading(true);
         try {
-            const sortedDetails = await orthancApi.fetchStudies();
+            // Fetch studies AND AI results in parallel to avoid "hilang-muncul"
+            const [sortedDetails, resultMap] = await Promise.all([
+                orthancApi.fetchStudies(),
+                fetchAiResults()
+            ]);
             setStudies(sortedDetails);
         } catch (error) {
             console.error("Failed to fetch studies:", error);
@@ -36,7 +63,7 @@ export function useWorklist() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [fetchAiResults]);
 
     const fetchAiConfig = useCallback(async () => {
         try {
@@ -47,10 +74,24 @@ export function useWorklist() {
                 console.log("AI Config loaded:", data.mode);
                 setAiMode(data.mode);
             }
-        } catch (error) {
-            console.error("Failed to fetch AI config:", error);
+        } catch (e) {
+            console.error("Failed to fetch AI config:", e);
         }
     }, []);
+
+    // Instant refresh only when a NEW AI task completes
+    const prevCompletedCount = useRef(0);
+    useEffect(() => {
+        const completedAiTasks = Object.values(tasks).filter(
+            t => t.type === "ai" && t.status === "success"
+        ).length;
+        
+        if (completedAiTasks > prevCompletedCount.current) {
+            console.log("New AI task completed, refreshing results...");
+            fetchAiResults();
+        }
+        prevCompletedCount.current = completedAiTasks;
+    }, [tasks, fetchAiResults]);
 
     useEffect(() => {
         fetchStudies();
@@ -119,37 +160,52 @@ export function useWorklist() {
     const handleDeleteStudy = useCallback(async (id: string) => {
         const taskId = addTask({ id: `delete-study-${id}`, description: "Deleting study...", type: "delete" });
         try {
+            // Get study UID first for DB cleanup
+            const study = studies.find(s => s.ID === id);
+            const studyUid = study?.MainDicomTags.StudyInstanceUID;
+
             await orthancApi.deleteStudy(id);
+            
+            // Sync delete AI Result in Postgres
+            if (studyUid) {
+                await fetch(`/api/ai/results/${studyUid}`, { method: "DELETE" });
+            }
+
             updateTask(taskId, "success");
-            // Auto dismiss toast after success
-            setTimeout(() => {
-                toast.dismiss(taskId);
-            }, 3000);
+            setTimeout(() => toast.dismiss(taskId), 3000);
             fetchStudies();
         } catch (error) {
             console.error("Failed to delete study:", error);
             updateTask(taskId, "error");
             toast.error("Gagal Menghapus Study", { description: "Terjadi kesalahan saat menghapus data di server." });
         }
-    }, [fetchStudies, addTask, updateTask]);
+    }, [fetchStudies, addTask, updateTask, studies]);
 
     const handleDeleteSeries = useCallback(async (id: string, studyId: string) => {
         if (!confirm("Apakah Anda yakin ingin menghapus series ini?")) return;
         const taskId = addTask({ id: `delete-series-${id}`, description: "Deleting series...", type: "delete" });
         try {
+            // Get study UID for AI result cleanup
+            const study = studies.find(s => s.ID === studyId);
+            const studyUid = study?.MainDicomTags.StudyInstanceUID;
+
             await orthancApi.deleteSeries(id);
+
+            // If a series is deleted, we invalidate the AI result for that study
+            if (studyUid) {
+                await fetch(`/api/ai/results/${studyUid}`, { method: "DELETE" });
+            }
+
             updateTask(taskId, "success");
-            // Auto dismiss toast after success
-            setTimeout(() => {
-                toast.dismiss(taskId);
-            }, 3000);
+            setTimeout(() => toast.dismiss(taskId), 3000);
             setSeriesData(prev => ({ ...prev, [studyId]: prev[studyId].filter(s => s.ID !== id) }));
+            fetchAiResults(); // Refresh AI buttons
         } catch (error) {
             console.error("Delete series error:", error);
             updateTask(taskId, "error");
             toast.error("Gagal Menghapus Series", { description: "Pastikan koneksi ke server Orthanc stabil." });
         }
-    }, [addTask, updateTask]);
+    }, [addTask, updateTask, studies, fetchAiResults]);
 
     const handleDeleteInstance = useCallback(async (id: string, seriesId: string) => {
         if (!confirm("Apakah Anda yakin ingin menghapus instance ini?")) return;
@@ -172,10 +228,10 @@ export function useWorklist() {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [studyToEdit, setStudyToEdit] = useState<Study | null>(null);
 
-    const openEditDialog = (study: Study) => {
+    const openEditDialog = useCallback((study: Study) => {
         setStudyToEdit(study);
         setIsEditDialogOpen(true);
-    };
+    }, []);
 
     const handleEditStudy = useCallback(async (studyId: string, modifications: Record<string, string>) => {
         const taskId = addTask({ id: `edit-study-${studyId}`, description: "Updating study data...", type: "modify" });
@@ -349,7 +405,7 @@ export function useWorklist() {
     const [isSendTelegramDialogOpen, setIsSendTelegramDialogOpen] = useState(false);
     const [selectedStudyForTelegram, setSelectedStudyForTelegram] = useState<Study | null>(null);
 
-    const handleSendToTelegram = async (studyId: string) => {
+    const handleSendToTelegram = useCallback(async (studyId: string) => {
         try {
             await orthancApi.sendToTelegram(studyId);
             toast.success("Gambar berhasil dikirim ke Telegram Dokter");
@@ -357,10 +413,18 @@ export function useWorklist() {
             console.error("Failed to send to Telegram:", error);
             toast.error(error.message || "Gagal mengirim ke Telegram. Pastikan Bot Token dan Chat ID sudah benar.");
         }
-    };
+    }, []);
 
-    const handleRunAi = async (studyId: string) => {
-        const taskId = addTask({ id: `ai-trigger-${studyId}`, description: "Processing AI Analysis...", type: "ai" });
+    const handleRunAi = useCallback(async (studyId: string) => {
+        const study = studies.find(s => s.ID === studyId);
+        const studyUid = study?.MainDicomTags.StudyInstanceUID;
+        
+        const taskId = addTask({ 
+            id: `ai-trigger-${studyId}`, 
+            description: "AI Analysis in progress...", 
+            type: "ai",
+            metadata: { studyUid, studyId } 
+        });
         try {
             const res = await fetch("/api/ai/trigger", {
                 method: "POST",
@@ -369,11 +433,7 @@ export function useWorklist() {
             });
 
             if (res.ok) {
-                updateTask(taskId, "success");
-                toast.success("AI Analysis Berhasil Di-trigger", {
-                    description: "Hasil akan segera dikirim ke Telegram Dokter."
-                });
-                setTimeout(() => toast.dismiss(taskId), 5000);
+                // Background process started
             } else {
                 const data = await res.json();
                 throw new Error(data.error || "Gagal memicu AI");
@@ -383,12 +443,12 @@ export function useWorklist() {
             updateTask(taskId, "error");
             toast.error("Gagal Menjalankan AI", { description: error.message });
         }
-    };
+    }, [studies, addTask, updateTask]);
 
-    const openSendTelegramDialog = (study: Study) => {
+    const openSendTelegramDialog = useCallback((study: Study) => {
         setSelectedStudyForTelegram(study);
         setIsSendTelegramDialogOpen(true);
-    };
+    }, []);
 
     return {
         studies, loading, uploading,
@@ -401,6 +461,6 @@ export function useWorklist() {
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog,
-        aiMode, handleRunAi
+        aiMode, handleRunAi, aiResults
     };
 }

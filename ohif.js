@@ -76,7 +76,25 @@
 })();
 
 window.config = {
-  extensions: [],
+  extensions: [
+    {
+      id: '@ohif/extension-dicom-sr',
+      configuration: {
+        mappableTools: [
+          'LivewireTool',
+          'SplineROI',
+          'FreehandROI',
+          'FreehandLineROI',
+          'FreehandRectROI',
+          'FreehandEllipseROI',
+          'CircleROI',
+          'EllipticalROI',
+          'RectangleROI',
+          'PolylineROI',
+        ],
+      },
+    },
+  ],
   modes: [],
   customizationService: {},
   showStudyList: true,

@@ -132,17 +132,17 @@ export default function SettingsPage() {
 
             <Separator />
 
-            <Tabs defaultValue="clinic">
-                <TabsList className="mb-6">
-                    <TabsTrigger value="clinic" className="gap-2 px-4">
+            <Tabs defaultValue="clinic" className="w-full overflow-hidden">
+                <TabsList className="flex w-full overflow-x-auto overflow-y-hidden no-scrollbar justify-start h-auto p-1 py-1.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <TabsTrigger value="clinic" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
                         <HugeiconsIcon icon={Building04Icon} className="size-4" />
                         Profil Klinik / RS
                     </TabsTrigger>
-                    <TabsTrigger value="ai" className="gap-2 px-4">
+                    <TabsTrigger value="ai" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
                         <HugeiconsIcon icon={CpuIcon} className="size-4" />
                         Integrasi AI
                     </TabsTrigger>
-                    <TabsTrigger value="telegram" className="gap-2 px-4">
+                    <TabsTrigger value="telegram" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
                         <HugeiconsIcon icon={Message01Icon} className="size-4" />
                         Notifikasi Telegram
                     </TabsTrigger>
@@ -609,6 +609,9 @@ function AiSettingsTab() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     
+    // System Metrics state
+    const [systemMetrics, setSystemMetrics] = useState<any>(null);
+
     // Password protection state
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const [pendingMode, setPendingMode] = useState<string | null>(null);
@@ -618,10 +621,18 @@ function AiSettingsTab() {
     useEffect(() => {
         const fetchAiConfig = async () => {
             try {
-                const res = await fetch("/api/config/ai");
-                if (res.ok) {
-                    const data = await res.json();
+                const [resMode, resSystem] = await Promise.all([
+                    fetch("/api/config/ai"),
+                    fetch("/api/config/ai/system")
+                ]);
+                
+                if (resMode.ok) {
+                    const data = await resMode.json();
                     setMode(data.mode);
+                }
+                if (resSystem.ok) {
+                    const sysData = await resSystem.json();
+                    setSystemMetrics(sysData);
                 }
             } catch (error) {
                 console.error("Failed to fetch AI config:", error);
@@ -730,29 +741,52 @@ function AiSettingsTab() {
 
             <div className="space-y-4">
                 <Card className="bg-slate-50 border-slate-200">
-                    <CardHeader>
-                        <CardTitle className="text-sm font-bold flex items-center gap-2">
-                            <HugeiconsIcon icon={Settings05Icon} className="size-4" />
-                            Hardware Metrics
+                    <CardHeader className="pb-3 border-b border-slate-200/60 mb-2">
+                        <CardTitle className="text-sm font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                                <HugeiconsIcon icon={Settings05Icon} className="size-4" />
+                                Hardware & System Metrics
+                            </span>
+                            {systemMetrics?.ai?.status === "Connected" ? (
+                                <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200 text-[10px] h-5 shadow-none px-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />Online</Badge>
+                            ) : (
+                                <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 text-[10px] h-5 shadow-none px-1.5"><div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1" />Offline</Badge>
+                            )}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-xs space-y-4 text-slate-600">
-                        <div className="flex justify-between items-center pb-2 border-b">
-                            <span>Acceleration:</span>
-                            <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-50 border-emerald-100 shadow-none">Apple MPS (M3)</Badge>
-                        </div>
-                        <div className="flex justify-between items-center pb-2 border-b">
-                            <span>RAM Usage:</span>
-                            <span>Lazy Loading Enabled</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span>AI Model:</span>
-                            <span>TorchXRayVision v1.0</span>
-                        </div>
+                    <CardContent className="text-xs space-y-4 text-slate-600 pt-2">
+                        {systemMetrics ? (
+                            <div className="grid grid-cols-1 gap-2">
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                    <span className="text-muted-foreground font-medium">OS Server:</span>
+                                    <span className="font-mono text-slate-800 uppercase">{systemMetrics.system?.platform} ({systemMetrics.system?.arch})</span>
+                                </div>
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                    <span className="text-muted-foreground font-medium">CPU Cores:</span>
+                                    <span className="font-mono text-slate-800">{systemMetrics.system?.cpuCount} vCPU</span>
+                                </div>
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                    <span className="text-muted-foreground font-medium">Memori Terpakai:</span>
+                                    <span className="font-mono text-slate-800">{systemMetrics.system?.usedMemGb} GB / {systemMetrics.system?.totalMemGb} GB</span>
+                                </div>
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                    <span className="text-muted-foreground font-medium">AI Hardware Device:</span>
+                                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-50 border-blue-100 shadow-none uppercase">
+                                        {systemMetrics.ai?.device}
+                                    </Badge>
+                                </div>
+                                <div className="flex justify-between items-center pb-1">
+                                    <span className="text-muted-foreground font-medium">Engine Build:</span>
+                                    <span className="font-mono text-slate-800 font-bold tracking-tighter bg-slate-200/50 px-1.5 py-0.5 rounded">{systemMetrics.ai?.backendMode}</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-4 text-slate-400">Loading system metrics...</div>
+                        )}
                         
-                        <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-3 text-blue-900 mt-2">
+                        <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-3 text-blue-900 mt-2 shadow-sm">
                             <p className="leading-relaxed">
-                                **Tips:** Gunakan mode **Manual** jika Anda ingin menghemat baterai/RAM saat load pasien sedang tinggi.
+                                **Tips VPS:** Jika Anda mendeploy di VPS, pastikan RAM cukup. Sistem kami merekomendasikan minimal **4GB RAM** agar komputasi AI berjalan stabil.
                             </p>
                         </div>
                     </CardContent>

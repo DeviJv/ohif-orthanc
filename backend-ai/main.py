@@ -268,16 +268,31 @@ def process_study(study_id: str):
         series_ids = study_data.get("Series", [])
         if not series_ids: return
         
-        series_response = get_from_orthanc(f"series/{series_ids[0]}")
-        instance_ids = series_response.json().get("Instances", [])
-        if not instance_ids: return
+        target_instance_id = None
+        for s_id in series_ids:
+            series_response = get_from_orthanc(f"series/{s_id}")
+            if series_response.status_code == 200:
+                s_data = series_response.json()
+                s_modality = s_data.get("MainDicomTags", {}).get("Modality", "")
+                if s_modality not in ["SR", "PR", "KO"]:
+                    instance_ids = s_data.get("Instances", [])
+                    if instance_ids:
+                        target_instance_id = instance_ids[0]
+                        break
+        
+        if not target_instance_id:
+            print(f"Skipping AI for study {study_id}: No valid image series found.")
+            return
 
         # 3. Get Preview Image bytes (for Telegram)
-        preview_response = get_from_orthanc(f"instances/{instance_ids[0]}/preview")
-        preview_bytes = preview_response.content
+        preview_response = get_from_orthanc(f"instances/{target_instance_id}/preview")
+        preview_bytes = preview_response.content if preview_response.status_code == 200 else None
 
         # 4. Get DICOM file for processing
-        dicom_response = get_from_orthanc(f"instances/{instance_ids[0]}/file")
+        dicom_response = get_from_orthanc(f"instances/{target_instance_id}/file")
+        if dicom_response.status_code != 200:
+            print(f"Failed to fetch DICOM file for instance {target_instance_id}")
+            return
         dicom_bytes = dicom_response.content
         ds = pydicom.dcmread(io.BytesIO(dicom_bytes))
 

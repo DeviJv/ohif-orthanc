@@ -299,7 +299,7 @@ export default function WorklistPage() {
     }
 
     return (
-        <div className="p-6 max-w-[1600px] mx-auto space-y-6">
+        <div className="p-6 max-w-[1600px] ml-0 space-y-6">
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900">Study Worklist</h1>
                 <p className="text-muted-foreground">Manage and view medical imaging studies from Orthanc PACS.</p>

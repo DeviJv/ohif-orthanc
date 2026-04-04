@@ -56,7 +56,7 @@ export const getColumns = ({
     {
         id: "select",
         header: ({ table }) => (
-            <div className="flex items-center justify-center pr-2">
+            <div className="flex items-center justify-center px-2">
                 <Checkbox
                     checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate") as any}
                     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
@@ -65,7 +65,7 @@ export const getColumns = ({
             </div>
         ),
         cell: ({ row }) => (
-            <div className="flex items-center justify-center pr-2">
+            <div className="flex items-center justify-center px-2">
                 <Checkbox
                     checked={row.getIsSelected()}
                     disabled={!row.getCanSelect()}

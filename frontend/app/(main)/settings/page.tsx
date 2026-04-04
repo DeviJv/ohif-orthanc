@@ -149,7 +149,7 @@ export default function SettingsPage() {
                 </TabsList>
 
                 {/* ── Tab: Profil Klinik ── */}
-                <TabsContent value="clinic">
+                <TabsContent value="clinic" className="mt-6">
                     {isLoading ? (
                         <div className="flex items-center justify-center py-16">
                             <HugeiconsIcon icon={Building04Icon} className="size-8 animate-pulse text-primary/40" />
@@ -158,7 +158,7 @@ export default function SettingsPage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             {/* Left: Info + Doctors */}
                             <div className="lg:col-span-2 space-y-6">
-                                <Card>
+                                <Card className="border-2 border-slate-200/60 shadow-sm">
                                     <CardHeader>
                                         <CardTitle className="text-base flex items-center gap-2">
                                             <HugeiconsIcon icon={Building04Icon} className="size-4.5 text-primary" strokeWidth={2} />
@@ -208,7 +208,7 @@ export default function SettingsPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card>
+                                <Card className="border-2 border-slate-200/60 shadow-sm">
                                     <CardHeader>
                                         <CardTitle className="text-base flex items-center gap-2">
                                             <HugeiconsIcon icon={UserIcon} className="size-4.5 text-primary" strokeWidth={2} />
@@ -245,7 +245,7 @@ export default function SettingsPage() {
 
                             {/* Right: Logo */}
                             <div className="flex flex-col gap-4">
-                                <Card className="h-fit">
+                                <Card className="h-fit border-2 border-slate-200/60 shadow-sm">
                                     <CardHeader>
                                         <CardTitle className="text-base flex items-center gap-2">
                                             <HugeiconsIcon icon={ImageUploadIcon} className="size-4.5 text-primary" strokeWidth={2} />
@@ -301,12 +301,12 @@ export default function SettingsPage() {
                 </TabsContent>
 
                 {/* ── Tab: Integrasi AI ── */}
-                <TabsContent value="ai">
+                <TabsContent value="ai" className="mt-6">
                     <AiSettingsTab />
                 </TabsContent>
 
                 {/* ── Tab: Notifikasi Telegram ── */}
-                <TabsContent value="telegram">
+                <TabsContent value="telegram" className="mt-6">
                     <TelegramSettingsTab />
                 </TabsContent>
             </Tabs>
@@ -424,7 +424,7 @@ function TelegramSettingsTab() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
             {/* Configuration Section */}
             <div className="lg:col-span-2 space-y-6">
-                <Card className="border-primary/10 shadow-sm overflow-hidden">
+                <Card className="border-2 border-primary/20 shadow-sm overflow-hidden">
                     <CardHeader className="bg-primary/5 pb-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
@@ -556,7 +556,7 @@ function TelegramSettingsTab() {
 
             {/* Tutorial Section */}
             <div className="space-y-6">
-                <Card className="border-slate-200 shadow-sm">
+                <Card className="border-2 border-slate-200/60 shadow-sm">
                     <CardHeader className="pb-3">
                         <CardTitle className="text-sm font-bold flex items-center gap-2">
                             <HugeiconsIcon icon={InformationCircleIcon} className="size-4 text-blue-500" strokeWidth={2.5} />

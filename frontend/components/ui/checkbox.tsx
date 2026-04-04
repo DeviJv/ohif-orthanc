@@ -38,8 +38,8 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           data-state={isIndeterminate ? "indeterminate" : checked ? "checked" : "unchecked"}
           {...props}
         />
-        <div className="absolute pointer-events-none text-primary-foreground opacity-0 peer-checked:opacity-100 transition-opacity flex items-center justify-center">
-          <HugeiconsIcon icon={Tick02Icon} className="size-3" strokeWidth={3} />
+        <div className="absolute pointer-events-none text-white opacity-0 peer-checked:opacity-100 transition-opacity flex items-center justify-center">
+          <HugeiconsIcon icon={Tick02Icon} className="size-3" strokeWidth={4} />
         </div>
         {isIndeterminate && (
             <div className="absolute pointer-events-none text-primary-foreground flex items-center justify-center">

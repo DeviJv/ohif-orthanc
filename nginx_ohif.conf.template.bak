@@ -61,6 +61,11 @@ server {
     }
 
     # Standalone OHIF Viewer
+    location /orthanc/ohif/ {
+        proxy_pass http://ohif-viewer:80/;
+        proxy_set_header Host $host;
+    }
+
     # Orthanc — Explorer, REST API (OHIF is now redirected above)
     location /orthanc/ {
         proxy_pass http://pacs:8042/;

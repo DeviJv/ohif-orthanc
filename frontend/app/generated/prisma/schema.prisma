@@ -76,6 +76,7 @@ model AiResult {
   findings         Json // Store the results dictionary/probabilities
   isUrgent         Boolean  @default(false)
   heatmapPath      String? // Optional path for visual Grad-CAM
+  heatmapBase64    String?  @db.Text
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

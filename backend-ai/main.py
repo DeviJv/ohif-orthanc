@@ -149,20 +149,41 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         requests.post(url, json=payload)
 
 def save_ai_result_to_db(study_uid, modality, results, conclusion, heatmap_base64=None):
-    """Save analysis results to the database for the frontend to display"""
+    """Save analysis results to the database via API for the frontend to display"""
+    # 1. Prepare Data
+    is_urgent = False
+    findings_only = {k: v for k, v in results.items() if isinstance(v, (float, int))}
+    if findings_only:
+        max_p = max(findings_only.values())
+        if max_p > 0.5:
+            is_urgent = True
+
+    payload = {
+        "studyInstanceUid": study_uid,
+        "modality": modality,
+        "conclusion": conclusion,
+        "findings": results,
+        "isUrgent": is_urgent,
+        "heatmapBase64": heatmap_base64
+    }
+
+    # 2. Try API First (Recommended for VPS/Docker)
+    api_url = f"{NEXT_PUBLIC_APP_URL}/api/ai/results"
+    try:
+        print(f"INFO: Sending results to Frontend API: {api_url}")
+        res = requests.post(api_url, json=payload, timeout=10)
+        if res.status_code == 200:
+            print(f"INFO: AI Results successfully synced to Frontend DB for {study_uid}")
+            return
+        else:
+            print(f"WARNING: API sync failed with status {res.status_code}. Falling back to DB.")
+    except Exception as e:
+        print(f"API SYNC ERROR: {str(e)}. Falling back to DB.")
+
+    # 3. Fallback to Direct DB if API fails
     try:
         conn = psycopg2.connect(DATABASE_URL, connect_timeout=5)
-        # Check for Triage (Point 3)
-        # If any pathology is > 50%, consider it Urgent
-        is_urgent = False
-        findings_only = {k: v for k, v in results.items() if isinstance(v, (float, int))}
-        if findings_only:
-            max_p = max(findings_only.values())
-            if max_p > 0.5:
-                is_urgent = True
-
         with conn.cursor() as cur:
-            # We use an UPSERT (ON CONFLICT) so manual reruns update the entry
             cur.execute("""
                 INSERT INTO "AiResult" ("studyInstanceUid", "modality", "conclusion", "findings", "isUrgent", "heatmapBase64", "updatedAt", "createdAt")
                 VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW())
@@ -175,7 +196,7 @@ def save_ai_result_to_db(study_uid, modality, results, conclusion, heatmap_base6
             """, (study_uid, modality, conclusion, json.dumps(results), is_urgent, heatmap_base64))
         conn.commit()
         conn.close()
-        print(f"INFO: AI Results saved to DB for {study_uid}")
+        print(f"INFO: AI Results saved to DB via direct connection for {study_uid}")
     except Exception as e:
         print(f"DATABASE SAVE ERROR: {str(e)}")
 

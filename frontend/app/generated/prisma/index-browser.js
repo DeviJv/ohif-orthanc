@@ -174,6 +174,7 @@ exports.Prisma.AiResultScalarFieldEnum = {
   findings: 'findings',
   isUrgent: 'isUrgent',
   heatmapPath: 'heatmapPath',
+  heatmapBase64: 'heatmapBase64',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

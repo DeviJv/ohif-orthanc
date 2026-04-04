@@ -1,55 +1,84 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Tick02Icon } from "@hugeicons/core-free-icons"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "checked" | "onChange"> {
-  checked?: boolean | "indeterminate"
-  onCheckedChange?: (checked: boolean | "indeterminate") => void
+export interface CheckboxProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  checked?: boolean | "indeterminate";
+  onCheckedChange?: (checked: boolean | "indeterminate") => void;
 }
 
-const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, checked, onCheckedChange, ...props }, ref) => {
-    const innerRef = React.useRef<HTMLInputElement>(null)
-    
-    React.useImperativeHandle(ref, () => innerRef.current!)
+const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
+  ({ className, checked, onCheckedChange, disabled, ...props }, ref) => {
+    const isChecked = checked === true;
+    const isIndeterminate = checked === "indeterminate";
 
-    const isIndeterminate = checked === "indeterminate"
-
-    React.useEffect(() => {
-      if (innerRef.current) {
-        innerRef.current.indeterminate = isIndeterminate
+    const handleClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (disabled) return;
+      
+      if (onCheckedChange) {
+        if (isIndeterminate) {
+          onCheckedChange(true);
+        } else {
+          onCheckedChange(!isChecked);
+        }
       }
-    }, [isIndeterminate])
+    };
 
     return (
-      <div className="relative flex items-center justify-center">
-        <input
-          type="checkbox"
-          ref={innerRef}
-          checked={checked === true}
-          onChange={(e) => onCheckedChange?.(isIndeterminate ? true : e.target.checked)}
-          className={cn(
-            "peer size-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none checked:bg-primary checked:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:border-primary transition-colors cursor-pointer",
-            className
-          )}
-          data-state={isIndeterminate ? "indeterminate" : checked ? "checked" : "unchecked"}
-          {...props}
-        />
-        <div className="absolute pointer-events-none text-white opacity-0 peer-checked:opacity-100 transition-opacity flex items-center justify-center">
-          <HugeiconsIcon icon={Tick02Icon} className="size-3" strokeWidth={4} />
-        </div>
-        {isIndeterminate && (
-            <div className="absolute pointer-events-none text-primary-foreground flex items-center justify-center">
-                <div className="w-2 hs-[2px] bg-current rounded-full" />
-            </div>
+      <button
+        ref={ref}
+        type="button"
+        role="checkbox"
+        aria-checked={isIndeterminate ? "mixed" : isChecked}
+        disabled={disabled}
+        onClick={handleClick}
+        onPointerDown={(e) => e.stopPropagation()}
+        className={cn(
+          "relative flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-primary bg-background shadow-xs outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring/50 z-10",
+          // The black primary color you requested
+          (isChecked || isIndeterminate) && "bg-primary text-primary-foreground border-primary",
+          disabled && "cursor-not-allowed opacity-50",
+          className
         )}
-      </div>
-    )
+        {...props}
+      >
+        {(isChecked || isIndeterminate) && (
+          <div className="flex items-center justify-center text-primary-foreground pointer-events-none">
+            {isIndeterminate ? (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </div>
+        )}
+      </button>
+    );
   }
-)
-Checkbox.displayName = "Checkbox"
+);
 
-export { Checkbox }
+Checkbox.displayName = "Checkbox";
+
+export { Checkbox };

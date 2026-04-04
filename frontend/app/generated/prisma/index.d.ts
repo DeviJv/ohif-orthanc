@@ -6705,6 +6705,7 @@ export namespace Prisma {
     conclusion: string | null
     isUrgent: boolean | null
     heatmapPath: string | null
+    heatmapBase64: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6715,6 +6716,7 @@ export namespace Prisma {
     conclusion: string | null
     isUrgent: boolean | null
     heatmapPath: string | null
+    heatmapBase64: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6726,6 +6728,7 @@ export namespace Prisma {
     findings: number
     isUrgent: number
     heatmapPath: number
+    heatmapBase64: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -6738,6 +6741,7 @@ export namespace Prisma {
     conclusion?: true
     isUrgent?: true
     heatmapPath?: true
+    heatmapBase64?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6748,6 +6752,7 @@ export namespace Prisma {
     conclusion?: true
     isUrgent?: true
     heatmapPath?: true
+    heatmapBase64?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6759,6 +6764,7 @@ export namespace Prisma {
     findings?: true
     isUrgent?: true
     heatmapPath?: true
+    heatmapBase64?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6843,6 +6849,7 @@ export namespace Prisma {
     findings: JsonValue
     isUrgent: boolean
     heatmapPath: string | null
+    heatmapBase64: string | null
     createdAt: Date
     updatedAt: Date
     _count: AiResultCountAggregateOutputType | null
@@ -6871,6 +6878,7 @@ export namespace Prisma {
     findings?: boolean
     isUrgent?: boolean
     heatmapPath?: boolean
+    heatmapBase64?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["aiResult"]>
@@ -6882,6 +6890,7 @@ export namespace Prisma {
     findings?: boolean
     isUrgent?: boolean
     heatmapPath?: boolean
+    heatmapBase64?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["aiResult"]>
@@ -6893,6 +6902,7 @@ export namespace Prisma {
     findings?: boolean
     isUrgent?: boolean
     heatmapPath?: boolean
+    heatmapBase64?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["aiResult"]>
@@ -6904,11 +6914,12 @@ export namespace Prisma {
     findings?: boolean
     isUrgent?: boolean
     heatmapPath?: boolean
+    heatmapBase64?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type AiResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "modality" | "conclusion" | "findings" | "isUrgent" | "heatmapPath" | "createdAt" | "updatedAt", ExtArgs["result"]["aiResult"]>
+  export type AiResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "modality" | "conclusion" | "findings" | "isUrgent" | "heatmapPath" | "heatmapBase64" | "createdAt" | "updatedAt", ExtArgs["result"]["aiResult"]>
 
   export type $AiResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AiResult"
@@ -6920,6 +6931,7 @@ export namespace Prisma {
       findings: Prisma.JsonValue
       isUrgent: boolean
       heatmapPath: string | null
+      heatmapBase64: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["aiResult"]>
@@ -7351,6 +7363,7 @@ export namespace Prisma {
     readonly findings: FieldRef<"AiResult", 'Json'>
     readonly isUrgent: FieldRef<"AiResult", 'Boolean'>
     readonly heatmapPath: FieldRef<"AiResult", 'String'>
+    readonly heatmapBase64: FieldRef<"AiResult", 'String'>
     readonly createdAt: FieldRef<"AiResult", 'DateTime'>
     readonly updatedAt: FieldRef<"AiResult", 'DateTime'>
   }
@@ -7801,6 +7814,7 @@ export namespace Prisma {
     findings: 'findings',
     isUrgent: 'isUrgent',
     heatmapPath: 'heatmapPath',
+    heatmapBase64: 'heatmapBase64',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -8263,6 +8277,7 @@ export namespace Prisma {
     findings?: JsonFilter<"AiResult">
     isUrgent?: BoolFilter<"AiResult"> | boolean
     heatmapPath?: StringNullableFilter<"AiResult"> | string | null
+    heatmapBase64?: StringNullableFilter<"AiResult"> | string | null
     createdAt?: DateTimeFilter<"AiResult"> | Date | string
     updatedAt?: DateTimeFilter<"AiResult"> | Date | string
   }
@@ -8274,6 +8289,7 @@ export namespace Prisma {
     findings?: SortOrder
     isUrgent?: SortOrder
     heatmapPath?: SortOrderInput | SortOrder
+    heatmapBase64?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8288,6 +8304,7 @@ export namespace Prisma {
     findings?: JsonFilter<"AiResult">
     isUrgent?: BoolFilter<"AiResult"> | boolean
     heatmapPath?: StringNullableFilter<"AiResult"> | string | null
+    heatmapBase64?: StringNullableFilter<"AiResult"> | string | null
     createdAt?: DateTimeFilter<"AiResult"> | Date | string
     updatedAt?: DateTimeFilter<"AiResult"> | Date | string
   }, "studyInstanceUid">
@@ -8299,6 +8316,7 @@ export namespace Prisma {
     findings?: SortOrder
     isUrgent?: SortOrder
     heatmapPath?: SortOrderInput | SortOrder
+    heatmapBase64?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: AiResultCountOrderByAggregateInput
@@ -8316,6 +8334,7 @@ export namespace Prisma {
     findings?: JsonWithAggregatesFilter<"AiResult">
     isUrgent?: BoolWithAggregatesFilter<"AiResult"> | boolean
     heatmapPath?: StringNullableWithAggregatesFilter<"AiResult"> | string | null
+    heatmapBase64?: StringNullableWithAggregatesFilter<"AiResult"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"AiResult"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"AiResult"> | Date | string
   }
@@ -8655,6 +8674,7 @@ export namespace Prisma {
     findings: JsonNullValueInput | InputJsonValue
     isUrgent?: boolean
     heatmapPath?: string | null
+    heatmapBase64?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8666,6 +8686,7 @@ export namespace Prisma {
     findings: JsonNullValueInput | InputJsonValue
     isUrgent?: boolean
     heatmapPath?: string | null
+    heatmapBase64?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8677,6 +8698,7 @@ export namespace Prisma {
     findings?: JsonNullValueInput | InputJsonValue
     isUrgent?: BoolFieldUpdateOperationsInput | boolean
     heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    heatmapBase64?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8688,6 +8710,7 @@ export namespace Prisma {
     findings?: JsonNullValueInput | InputJsonValue
     isUrgent?: BoolFieldUpdateOperationsInput | boolean
     heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    heatmapBase64?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8699,6 +8722,7 @@ export namespace Prisma {
     findings: JsonNullValueInput | InputJsonValue
     isUrgent?: boolean
     heatmapPath?: string | null
+    heatmapBase64?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8710,6 +8734,7 @@ export namespace Prisma {
     findings?: JsonNullValueInput | InputJsonValue
     isUrgent?: BoolFieldUpdateOperationsInput | boolean
     heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    heatmapBase64?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8721,6 +8746,7 @@ export namespace Prisma {
     findings?: JsonNullValueInput | InputJsonValue
     isUrgent?: BoolFieldUpdateOperationsInput | boolean
     heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
+    heatmapBase64?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9106,6 +9132,7 @@ export namespace Prisma {
     findings?: SortOrder
     isUrgent?: SortOrder
     heatmapPath?: SortOrder
+    heatmapBase64?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -9116,6 +9143,7 @@ export namespace Prisma {
     conclusion?: SortOrder
     isUrgent?: SortOrder
     heatmapPath?: SortOrder
+    heatmapBase64?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -9126,6 +9154,7 @@ export namespace Prisma {
     conclusion?: SortOrder
     isUrgent?: SortOrder
     heatmapPath?: SortOrder
+    heatmapBase64?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }

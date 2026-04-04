@@ -322,6 +322,7 @@ export default function WorklistPage() {
                 table={table}
                 loading={loading}
                 studies={studies}
+                rowSelection={rowSelection}
                 expandedStudies={expandedStudies}
                 seriesData={seriesData}
                 instancesData={instancesData}
@@ -449,6 +450,7 @@ interface WorklistTableProps {
     table: any;
     loading: boolean;
     studies: Study[];
+    rowSelection: Record<string, any>;
     expandedStudies: Record<string, boolean>;
     seriesData: Record<string, any>;
     instancesData: Record<string, any>;
@@ -472,7 +474,7 @@ interface WorklistTableProps {
 }
 
 const WorklistTable = ({
-    table, loading, studies, expandedStudies, seriesData, instancesData, tagsData,
+    table, loading, studies, rowSelection, expandedStudies, seriesData, instancesData, tagsData,
     expandedSeries, expandedInstances, toggleSeriesExpansion, toggleInstanceExpansion,
     handleAnonymize, handleOpenOrthancViewer, handleDeleteSeries, handleDeleteInstance,
     handleAddLabel, handleRemoveLabel, handleUploadSeries, columns, addTask, updateTask
@@ -539,7 +541,7 @@ const WorklistTable = ({
                                     className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
                                 >
                                     {row.getVisibleCells().map((cell: any) => (
-                                        <TableCell key={cell.id} className="py-4">
+                                        <TableCell key={cell.id} className="py-4 relative z-10">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}

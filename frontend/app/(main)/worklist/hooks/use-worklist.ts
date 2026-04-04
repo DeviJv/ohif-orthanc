@@ -79,19 +79,39 @@ export function useWorklist() {
         }
     }, []);
 
-    // Instant refresh only when a NEW AI task completes
-    const prevCompletedCount = useRef(0);
+    // Real-time Toast Notifications for AI completion
+    const prevTasksRef = useRef<Record<string, any>>({});
     useEffect(() => {
-        const completedAiTasks = Object.values(tasks).filter(
-            t => t.type === "ai" && t.status === "success"
-        ).length;
-        
-        if (completedAiTasks > prevCompletedCount.current) {
-            console.log("New AI task completed, refreshing results...");
-            fetchAiResults();
-        }
-        prevCompletedCount.current = completedAiTasks;
-    }, [tasks, fetchAiResults]);
+        const finishedAiTasks = Object.entries(tasks).filter(([id, task]) => {
+            const prev = prevTasksRef.current[id];
+            return (
+                task.type === "ai" && 
+                (task.status === "success" || task.status === "error") && 
+                (!prev || prev.status === "processing" || prev.status === "not_started")
+            );
+        });
+
+        finishedAiTasks.forEach(([id, task]) => {
+            const studyId = (task.metadata as any)?.studyId;
+            const study = studies.find(s => s.ID === studyId);
+            const patientName = study?.MainDicomTags?.PatientName || "Unknown Patient";
+
+            if (task.status === "success") {
+                toast.success("AI Analysis Completed", {
+                    description: `Analisa AI untuk pasien ${patientName} telah berhasil diselesaikan 100%.`,
+                    duration: 5000,
+                });
+                fetchAiResults(); // Force refresh buttons
+            } else if (task.status === "error") {
+                toast.error("AI Analysis Failed", {
+                    description: `Gagal memproses analisa AI untuk pasien ${patientName}.`,
+                    duration: 5000,
+                });
+            }
+        });
+
+        prevTasksRef.current = { ...tasks };
+    }, [tasks, studies, fetchAiResults]);
 
     useEffect(() => {
         fetchStudies();

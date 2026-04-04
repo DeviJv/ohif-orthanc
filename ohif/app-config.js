@@ -76,7 +76,26 @@
 })();
 
 window.config = {
-  extensions: [],
+  extensions: [
+    {
+      id: '@ohif/extension-dicom-sr',
+      configuration: {
+        // Add mapping for complex tools
+        mappableTools: [
+          'Length',
+          'Bidirectional',
+          'Ellipse',
+          'Rectangle',
+          'Circle',
+          'ArrowAnnotate',
+          'Angle',
+          'FreehandROI',
+          'SplineROI',
+          'LivewireTool',
+        ],
+      },
+    },
+  ],
   modes: [],
   customizationService: {},
   showStudyList: true,

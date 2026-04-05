@@ -32,7 +32,8 @@ app = FastAPI(title="Quantum PACS AI Engine")
 # --- Configuration ---
 ORTHANC_URL = os.getenv("ORTHANC_URL", "http://pacs:8042")
 ORTHANC_AUTH = (os.getenv("ORTHANC_USERNAME", "quantum"), os.getenv("ORTHANC_PASSWORD", "quantum123"))
-NEXT_PUBLIC_APP_URL = os.getenv("NEXT_PUBLIC_APP_URL", "http://localhost:3000")
+PUBLIC_APP_URL = os.getenv("NEXT_PUBLIC_APP_URL", "http://localhost:3000")
+FRONTEND_INTERNAL_URL = os.getenv("FRONTEND_INTERNAL_URL", PUBLIC_APP_URL)
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://pacsuser:pacspassword@app-db:5432/pacsweb")
 
 # --- Dynamic Configuration (DB Priority) ---
@@ -112,8 +113,8 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         print("Telegram bot not configured in DB or ENV. Skipping notification.")
         return
 
-    viewer_url = f"{NEXT_PUBLIC_APP_URL}/orthanc/ohif/viewer?StudyInstanceUIDs={study_uid}"
-    export_url = f"{NEXT_PUBLIC_APP_URL}/worklist?export={study_uid}"
+    viewer_url = f"{PUBLIC_APP_URL}/orthanc/ohif/viewer?StudyInstanceUIDs={study_uid}"
+    export_url = f"{PUBLIC_APP_URL}/worklist?export={study_uid}"
     
     analysis_type = "🫁 Chest X-Ray Analysis" if modality in ["DX", "CR"] else f"🧠 {modality} Volumetric Analysis"
     
@@ -172,7 +173,7 @@ def save_ai_result_to_db(study_uid, modality, results, conclusion, heatmap_base6
     }
 
     # 2. Try API First (Recommended for VPS/Docker)
-    api_url = f"{NEXT_PUBLIC_APP_URL}/api/ai/results"
+    api_url = f"{FRONTEND_INTERNAL_URL}/api/ai/results"
     try:
         print(f"INFO: Sending results to Frontend API: {api_url}")
         res = requests.post(api_url, json=payload, timeout=10)

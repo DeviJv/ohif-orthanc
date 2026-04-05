@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
 
         // 4. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
-        const publicUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
 

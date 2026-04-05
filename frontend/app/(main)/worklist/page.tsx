@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { 
     RefreshIcon, 
     ArrowLeft01Icon,
@@ -54,6 +55,14 @@ import BasicViewer from "../../../components/basic-viewer";
 import SegmentedViewer from "../../../components/segmented-viewer";
 
 export default function WorklistPage() {
+    return (
+        <Suspense fallback={<div className="p-8"><Skeleton className="w-full h-[600px] rounded-2xl" /></div>}>
+            <WorklistContent />
+        </Suspense>
+    );
+}
+
+function WorklistContent() {
     const {
         studies, loading, uploading,
         expandedStudies, expandedSeries, expandedInstances,
@@ -233,9 +242,32 @@ export default function WorklistPage() {
     }, [table, addTask, updateTask]);
 
     // Effect for date range filter
-    React.useEffect(() => {
+    useEffect(() => {
         table.getColumn("studyDate")?.setFilterValue(dateRange);
     }, [dateRange, table]);
+
+    // --- DEEP LINK HANDLER: ?export=STUDY_UID ---
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const exportUID = searchParams.get("export");
+
+    useEffect(() => {
+        if (exportUID && !loading && studies.length > 0) {
+            const studyToExport = studies.find(s => 
+                s.MainDicomTags?.StudyInstanceUID === exportUID || s.ID === exportUID
+            );
+            
+            if (studyToExport) {
+                // Open the dialog
+                openExportPdfDialog(studyToExport);
+                
+                // Optional: Clear the param from URL without refreshing to prevent re-opening
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete("export");
+                router.replace(`/worklist?${params.toString()}`, { scroll: false });
+            }
+        }
+    }, [exportUID, loading, studies, openExportPdfDialog, searchParams, router]);
 
     if (showViewer && selectedStudyUID) {
         return (

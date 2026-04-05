@@ -4,8 +4,21 @@ import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(req: Request) {
     try {
+        const { searchParams } = new URL(req.url);
+        const studyInstanceUid = searchParams.get("studyInstanceUid");
+
+        if (studyInstanceUid) {
+            const result = await db.aiResult.findUnique({
+                where: { studyInstanceUid },
+            });
+            if (!result) {
+                return new NextResponse("Not Found", { status: 404 });
+            }
+            return NextResponse.json(result);
+        }
+
         const results = await db.aiResult.findMany({
             orderBy: {
                 updatedAt: "desc",

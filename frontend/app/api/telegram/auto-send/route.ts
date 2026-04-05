@@ -213,6 +213,7 @@ export async function POST(req: NextRequest) {
         const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
         
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
+        const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
         const thumbUrl = `${publicUrl}/api/orthanc/instances/${selectedInstanceId}/preview`;
 
         const formData = new FormData();
@@ -226,6 +227,7 @@ export async function POST(req: NextRequest) {
         
         if (studyUID) {
             caption += `\n\n🔗 View in OHIF:\n${viewerUrl}`;
+            caption += `\n\n📄 Print Kesimpulan:\n${exportUrl}`;
         }
 
         formData.append("caption", caption);

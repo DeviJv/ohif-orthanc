@@ -113,10 +113,12 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         return
 
     viewer_url = f"{NEXT_PUBLIC_APP_URL}/orthanc/ohif/viewer?StudyInstanceUIDs={study_uid}"
+    export_url = f"{NEXT_PUBLIC_APP_URL}/worklist?export={study_uid}"
+    
     analysis_type = "🫁 Chest X-Ray Analysis" if modality in ["DX", "CR"] else f"🧠 {modality} Volumetric Analysis"
     
     # Format AI Findings
-    conclusion = results.pop("Clinical Conclusion", "⚪ UNKNOWN")
+    conclusion_val = results.pop("Clinical Conclusion", "⚪ UNKNOWN")
     
     if modality in ["DX", "CR"]:
         findings_list = [f"• {k}: {v:.2%}" for k, v in results.items() if isinstance(v, (int, float)) and v > 0.30]
@@ -133,8 +135,9 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         f"📂 *Study:* {study_desc}\n"
         f"📡 *Modality:* {modality} | *Acc:* {accession}\n\n"
         f"🔗 *View in OHIF:*\n{viewer_url}\n\n"
+        f"📄 *Print Kesimpulan:*\n{export_url}\n\n"
         f"🧠 *AI FINDINGS ({analysis_type}):*\n{findings}\n\n"
-        f"📝 *KESIMPULAN:* \n{conclusion}\n\n"
+        f"📝 *KESIMPULAN:* \n{conclusion_val}\n\n"
         f"DISCLAIMER: AI-Generated Preliminary Report. Must be verified by Radiologist."
     )
 

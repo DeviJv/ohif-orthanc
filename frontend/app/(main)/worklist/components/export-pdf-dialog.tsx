@@ -126,9 +126,41 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 examType: studyDesc || `Pemeriksaan ${modalityName}`,
                 date: format(new Date(), "d MMMM yyyy", { locale: idLocale }),
             }));
+
+            // --- AUTO-POPULATE AI RESULTS ---
+            const studyUID = study?.MainDicomTags?.StudyInstanceUID;
+            if (studyUID) {
+                fetch(`/api/ai/results?studyInstanceUid=${studyUID}`)
+                    .then(r => r.ok ? r.json() : null)
+                    .then(aiData => {
+                        if (aiData && aiData.conclusion && aiData.conclusion !== "PROCESSING") {
+                            // Format findings dictionary into a nice multiline string
+                            let aiFindingsText = "";
+                            if (aiData.findings && typeof aiData.findings === 'object') {
+                                aiFindingsText = Object.entries(aiData.findings)
+                                    .filter(([k]) => k !== "Clinical Conclusion")
+                                    .map(([k, v]) => {
+                                        const displayVal = typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : String(v);
+                                        return `• ${k}: ${displayVal}`;
+                                    })
+                                    .join("\n");
+                            }
+
+                            setFormData(prev => ({
+                                ...prev,
+                                findings: aiFindingsText || prev.findings,
+                                conclusion: aiData.conclusion || prev.conclusion
+                            }));
+                            
+                            toast.success("Hasil AI otomatis dimuat ke dalam form");
+                        }
+                    })
+                    .catch(err => console.error("Error loading AI results for PDF:", err));
+            }
+
             setSearchValue("");
         }
-    }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName]);
+    }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName, study?.MainDicomTags?.StudyInstanceUID]);
 
     const filteredDoctors = React.useMemo(() => {
         if (!clinic?.doctors || !searchValue) return clinic?.doctors || [];

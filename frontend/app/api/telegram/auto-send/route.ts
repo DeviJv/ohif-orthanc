@@ -55,15 +55,6 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const { studyId } = await req.json();
-
-        if (!studyId) {
-            return NextResponse.json({ error: "Study ID is required" }, { status: 400 });
-        }
-
-        // Emit for real-time frontend notification
-        emitStudyEvent({ studyId });
-
         // 2. Get Study details to find the first instance
         const studyResponse = await fetch(`${ORTHANC_URL}/studies/${studyId}`, {
             headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
@@ -80,39 +71,43 @@ export async function POST(req: NextRequest) {
             throw new Error("No series found in this study");
         }
 
-        // 3. Get first series details
-        const seriesResponse = await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
+        // 3. Find a previewable instance — skip non-image series (e.g. AI DICOM SR)
+        let imageBuffer: ArrayBuffer | null = null;
+        for (const seriesId of seriesIds) {
+            const seriesRes = await fetch(`${ORTHANC_URL}/series/${seriesId}`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            });
+            if (!seriesRes.ok) continue;
+            const seriesInfo = await seriesRes.json();
+            const instanceIds = seriesInfo.Instances;
+            if (!instanceIds || instanceIds.length === 0) continue;
 
-        if (!seriesResponse.ok) {
-            throw new Error(`Failed to fetch series details: ${seriesResponse.status}`);
+            const midIndex = Math.floor(instanceIds.length / 2);
+            const previewUrl = `${ORTHANC_URL}/instances/${instanceIds[midIndex]}/preview`;
+            const previewResponse = await fetch(previewUrl, {
+                headers: { 
+                    "Authorization": `Basic ${ORTHANC_AUTH}`,
+                    "Accept": "image/jpeg"
+                }
+            });
+
+            if (previewResponse.ok) {
+                imageBuffer = await previewResponse.arrayBuffer();
+                break;
+            }
         }
 
-        const seriesData = await seriesResponse.json();
-        const instanceIds = seriesData.Instances;
-
-        if (!instanceIds || instanceIds.length === 0) {
-            throw new Error("No instances found in this series");
+        if (!imageBuffer) {
+            throw new Error("No previewable image series found in this study");
         }
 
-        // 4. Get preview image of the first instance
-        const previewUrl = `${ORTHANC_URL}/instances/${instanceIds[0]}/preview`;
-        const previewResponse = await fetch(previewUrl, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
-
-        if (!previewResponse.ok) {
-            throw new Error(`Failed to fetch instance preview: ${previewResponse.status}`);
-        }
-
-        const imageBuffer = await previewResponse.arrayBuffer();
 
         // 5. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
         const publicUrl = process.env.NEXT_PUBLIC_APP_URL || `http://${req.headers.get("host") || "localhost:3001"}`;
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
-        const thumbUrl = `${publicUrl}/api/orthanc/instances/${instanceIds[0]}/preview`;
+
+
 
         const formData = new FormData();
         formData.append("chat_id", TELEGRAM_CHAT_ID || "");

@@ -55,33 +55,38 @@ export async function POST(req: NextRequest) {
             throw new Error("No series found in this study");
         }
 
-        // 2. Get first series details
-        const seriesResponse = await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
+        // 3. Find a previewable instance — skip non-image series (e.g. AI DICOM SR)
+        let imageBuffer: ArrayBuffer | null = null;
+        for (const seriesId of seriesIds) {
+            const seriesRes = await fetch(`${ORTHANC_URL}/series/${seriesId}`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            });
+            if (!seriesRes.ok) continue;
+            const seriesData = await seriesRes.json();
+            const instanceIds = seriesData.Instances;
+            if (!instanceIds || instanceIds.length === 0) continue;
 
-        if (!seriesResponse.ok) {
-            throw new Error(`Failed to fetch series details: ${seriesResponse.status}`);
+            // Try to get a preview from the middle instance for best representation
+            const midIndex = Math.floor(instanceIds.length / 2);
+            const previewUrl = `${ORTHANC_URL}/instances/${instanceIds[midIndex]}/preview`;
+            const previewResponse = await fetch(previewUrl, {
+                headers: { 
+                    "Authorization": `Basic ${ORTHANC_AUTH}`,
+                    "Accept": "image/jpeg"
+                }
+            });
+
+            if (previewResponse.ok) {
+                imageBuffer = await previewResponse.arrayBuffer();
+                break; // Found a valid image, stop searching
+            }
+            // If 415 or other error, just move to next series
         }
 
-        const seriesData = await seriesResponse.json();
-        const instanceIds = seriesData.Instances;
-
-        if (!instanceIds || instanceIds.length === 0) {
-            throw new Error("No instances found in this series");
+        if (!imageBuffer) {
+            throw new Error("No previewable image series found in this study");
         }
 
-        // 3. Get preview image of the first instance
-        const previewUrl = `${ORTHANC_URL}/instances/${instanceIds[0]}/preview`;
-        const previewResponse = await fetch(previewUrl, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
-
-        if (!previewResponse.ok) {
-            throw new Error(`Failed to fetch instance preview: ${previewResponse.status}`);
-        }
-
-        const imageBuffer = await previewResponse.arrayBuffer();
 
         // 4. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;

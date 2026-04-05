@@ -16,20 +16,12 @@ server {
 
     client_max_body_size 500M;
 
-    # PRODUCTION: Standalone Containerized OHIF Viewer
-    location /orthanc/ohif/ {
-        proxy_pass http://ohif-viewer:80/;
-        proxy_set_header Host $host;
-        add_header Cache-Control "public, max-age=3600, must-revalidate";
-    }
-
-    # Serve the custom logo directly (high priority)
-    location = /logo.png {
-        alias /usr/share/nginx/html/logo.png;
-        add_header Cache-Control "public, max-age=2592000, immutable";
-        access_log off;
-    }
-
+    # SPEED OPTIMIZATION: Gzip for large OHIF assets
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_min_length 1000;
 
     # Required for OHIF v3 SharedArrayBuffer / volume rendering
     add_header Cross-Origin-Opener-Policy "same-origin" always;
@@ -60,8 +52,7 @@ server {
         proxy_read_timeout 3600s;
     }
 
-    # Standalone OHIF Viewer
-    # Orthanc — Explorer, REST API (OHIF is now redirected above)
+    # Orthanc — Explorer, REST API, and BUNDLED OHIF
     location /orthanc/ {
         proxy_pass http://pacs:8042/;
         proxy_set_header Host $host;
@@ -69,6 +60,10 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
         proxy_set_header X-Forwarded-Host $host;
+
+        # Reinforcing security headers for VPS
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "require-corp" always;
     }
 
     # DICOMweb — required by OHIF v3
@@ -78,6 +73,10 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+
+        # Ensuring COOP/COEP for data fetching
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "require-corp" always;
     }
 
     # WADO-URI fallback
@@ -86,74 +85,11 @@ server {
         proxy_set_header Host $host;
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
     }
-}
 
-# server {
-#     listen 443 ssl;
-#     server_name _;
-# 
-#     # Comment these out if you are running locally without SSL certificates
-#     ssl_certificate     /etc/nginx/ssl/live/${DOMAIN_NAME}/fullchain.pem;
-#     ssl_certificate_key /etc/nginx/ssl/live/${DOMAIN_NAME}/privkey.pem;
-# 
-#     ssl_protocols       TLSv1.2 TLSv1.3;
-#     ssl_ciphers         HIGH:!aNULL:!MD5;
-# 
-#     client_max_body_size 500M;
-# 
-#     # These headers are CRITICAL for OHIF "Basic" and "Segmented" viewers
-#     # they allow the use of SharedArrayBuffer which is required for volume rendering
-#     add_header Cross-Origin-Opener-Policy "same-origin" always;
-#     add_header Cross-Origin-Embedder-Policy "require-corp" always;
-#     add_header Cross-Origin-Resource-Policy "cross-origin" always;
-# 
-#     # Proxy to the Next.js Frontend
-#     location / {
-#         proxy_pass http://frontend:3001;
-#         proxy_set_header Host $host;
-#         proxy_set_header X-Real-IP $remote_addr;
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#         proxy_set_header X-Forwarded-Proto $scheme;
-#         
-#         # WebSockets support
-#         proxy_http_version 1.1;
-#         proxy_set_header Upgrade $http_upgrade;
-#         proxy_set_header Connection "upgrade";
-#     }
-# 
-#     # SSE (Server-Sent Events) support
-#     location /api/events {
-#         proxy_pass http://frontend:3001;
-#         proxy_set_header Host $host;
-#         proxy_http_version 1.1;
-#         proxy_set_header Connection "";
-#         proxy_buffering off;
-#         proxy_cache off;
-#         chunked_transfer_encoding off;
-#         proxy_read_timeout 3600s;
-#     }
-# 
-# 
-#     # Direct Proxy to Orthanc (for the webpage and direct API access)
-#     # Accessible via https://your-domain/orthanc/
-#     location /orthanc/ {
-#         proxy_pass http://pacs:8042/;
-#         proxy_set_header Host $host;
-#         proxy_set_header X-Real-IP $remote_addr;
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#         # Inject Orthanc authentication header to bypass prompt
-#         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
-#         
-#         # To allow Orthanc to know it's being accessed via HTTPS
-#         proxy_set_header X-Forwarded-Host $host;
-#     }
-# 
-#     # CRITICAL for OHIF v3: OHIF expects /dicom-web at root level
-#     location /dicom-web/ {
-#         proxy_pass http://pacs:8042/dicom-web/;
-#         proxy_set_header Host $host;
-#         proxy_set_header X-Real-IP $remote_addr;
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
-#     }
-# }
+    # Serve the custom logo directly (high priority)
+    location = /logo.png {
+        alias /usr/share/nginx/html/logo.png;
+        add_header Cache-Control "public, max-age=2592000, immutable";
+        access_log off;
+    }
+}

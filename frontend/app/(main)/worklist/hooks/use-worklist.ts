@@ -346,11 +346,13 @@ export function useWorklist() {
             setSeriesData(prev => { const next = { ...prev }; delete next[studyId]; return next; });
             fetchSeries(studyId);
             
-            // Auto-trigger AI if mode is AUTO (Now driven by Frontend for reliability)
+            // Auto-triggering is now handled exclusively by Orthanc StableStudy event for consistency
+            /*
             if (aiMode === "AUTO") {
                 console.log("Frontend Trigger: Starting AI analysis for study:", studyId);
                 handleRunAi(studyId);
             }
+            */
         } catch (error) {
             console.error("Upload series error:", error);
             updateTask(taskId, "error");
@@ -411,12 +413,14 @@ export function useWorklist() {
             
             fetchStudies();
 
-            // Auto-trigger AI if mode is AUTO (Now driven by Frontend for reliability)
+            // Auto-triggering is now handled exclusively by Orthanc StableStudy event for consistency
+            /*
             if (aiMode === "AUTO" && studyIds.size > 0) {
                 const firstStudyId = Array.from(studyIds)[0];
                 console.log("Frontend Trigger: Starting AI analysis for study:", firstStudyId);
                 handleRunAi(firstStudyId);
             }
+            */
         } catch (error) {
             console.error("Upload error:", error);
             updateTask(taskId, "error");

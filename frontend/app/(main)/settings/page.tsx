@@ -321,6 +321,9 @@ function TelegramSettingsTab() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isTesting, setIsTesting] = useState(false);
+    // Track whether user has actually edited (typed into) each field
+    const [tokenDirty, setTokenDirty] = useState(false);
+    const [chatIdDirty, setChatIdDirty] = useState(false);
     const [configInfo, setConfigInfo] = useState<{
         source: string;
         hasDbToken: boolean;
@@ -352,17 +355,29 @@ function TelegramSettingsTab() {
     }, []);
 
     const handleSave = async () => {
+        // Only send fields that the user actually edited to avoid saving masked values
+        const payload: Record<string, string> = {};
+        if (tokenDirty) payload.botToken = botToken;
+        if (chatIdDirty) payload.chatId = chatId;
+
+        if (Object.keys(payload).length === 0) {
+            toast.info("Tidak ada perubahan untuk disimpan.");
+            return;
+        }
+
         setIsSaving(true);
         try {
             const res = await fetch("/api/config/telegram", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ botToken, chatId }),
+                body: JSON.stringify(payload),
             });
             
             if (res.ok) {
                 toast.success("Konfigurasi berhasil disimpan");
-                // Refresh data to update mask/source
+                // Reset dirty flags & refresh masked display
+                setTokenDirty(false);
+                setChatIdDirty(false);
                 const refreshRes = await fetch("/api/config/telegram");
                 if (refreshRes.ok) {
                     const data = await refreshRes.json();
@@ -464,7 +479,7 @@ function TelegramSettingsTab() {
                                     type={showToken ? "text" : "password"}
                                     placeholder="Ex: 8601553740:AAHt68wyfkL5..."
                                     value={botToken}
-                                    onChange={(e) => setBotToken(e.target.value)}
+                                    onChange={(e) => { setBotToken(e.target.value); setTokenDirty(true); }}
                                     className="pr-10 font-mono text-sm tracking-tighter h-10"
                                 />
                                 <Button 
@@ -487,7 +502,7 @@ function TelegramSettingsTab() {
                                     type="text"
                                     placeholder="Ex: 1085499706"
                                     value={chatId}
-                                    onChange={(e) => setChatId(e.target.value)}
+                                    onChange={(e) => { setChatId(e.target.value); setChatIdDirty(true); }}
                                     className="font-mono text-sm h-10"
                                 />
                                 <Button 

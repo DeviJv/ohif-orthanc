@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { emitStudyEvent } from "@/lib/events";
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -8,9 +9,29 @@ const ORTHANC_AUTH = Buffer.from(
     `${process.env.ORTHANC_USERNAME || "quantum"}:${process.env.ORTHANC_PASSWORD || "quantum123"}`
 ).toString("base64");
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const INTERNAL_PACS_KEY = process.env.INTERNAL_PACS_KEY;
+
+// --- TRIPLE-LOCK LAYER 1: In-Memory Throttle ---
+// Use global to persist across Next.js hot-reloads in Docker
+const globalForLocks = global as unknown as {
+    triggerLocks: Map<string, number> | undefined;
+};
+const triggerLocks = globalForLocks.triggerLocks ?? new Map<string, number>();
+if (process.env.NODE_ENV !== "production") globalForLocks.triggerLocks = triggerLocks;
+
+const LOCK_DURATION_MS = 30000; // 30 seconds throttle per study
+
+async function getTelegramCredentials() {
+    const [tokenRow, chatIdRow] = await Promise.all([
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } }),
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } }),
+    ]);
+
+    return {
+        botToken: tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "",
+        chatId: chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "",
+    };
+}
 
 export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -18,23 +39,12 @@ export async function POST(req: NextRequest) {
     const authHeader = req.headers.get("Authorization");
     const skipTelegram = searchParams.get("skipTelegram") === "1";
     
-    console.log("Internal Auth Check:", { 
-        hasAuthHeader: !!authHeader, 
-        querySecret: querySecret, 
-        expectedKey: INTERNAL_PACS_KEY,
-        skipTelegram
-    });
-
-    let isValid = (authHeader === `Bearer ${INTERNAL_PACS_KEY}`) || (querySecret === INTERNAL_PACS_KEY);
+    const expectedKey = process.env.INTERNAL_PACS_KEY || "pacs_secret_token_2026";
+    let isValid = (authHeader === `Bearer ${expectedKey}`) || (querySecret === expectedKey);
 
     if (!isValid) {
-        console.error("Unauthorized Internal Request - Match failed - querySecret:", querySecret);
-        // Fallback check in case env is not loaded correctly yet
-        if (querySecret === "pacs_secret_token_2026") {
-            isValid = true;
-        } else {
-            return NextResponse.json({ error: "Unauthorized Internal Request" }, { status: 401 });
-        }
+        console.error("Unauthorized Internal Request - Match failed - querySecret:", querySecret, "expectedKey:", expectedKey);
+        return NextResponse.json({ error: "Unauthorized Internal Request" }, { status: 401 });
     }
 
     // Capture studyId early
@@ -46,73 +56,164 @@ export async function POST(req: NextRequest) {
     // Emit for real-time frontend notification (This triggers the SOUND and UI refresh)
     emitStudyEvent({ studyId });
 
-    if (skipTelegram) {
-        return NextResponse.json({ success: true, message: "SSE Event emitted, Telegram skipped" });
+    // 1. Fetch study details to get StudyInstanceUID for DB lock check
+    const studyResponse = await fetch(`${ORTHANC_URL}/studies/${studyId}`, {
+        headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+    });
+
+    if (!studyResponse.ok) {
+        return NextResponse.json({ error: `Failed to fetch study details: ${studyResponse.status}` }, { status: 500 });
     }
+
+    const studyData = await studyResponse.json();
+    const studyInstanceUid = studyData.MainDicomTags?.StudyInstanceUID;
+
+    // --- TRIPLE-LOCK LAYER 2: In-Memory Check ---
+    const now = Date.now();
+    const lastTrigger = triggerLocks.get(studyId);
+    if (lastTrigger && (now - lastTrigger < LOCK_DURATION_MS)) {
+        console.log(`IN-MEMORY LOCK: Throttling trigger for ${studyId}. Gap: ${now - lastTrigger}ms`);
+        return NextResponse.json({ success: true, message: "Trigger throttled (In-Memory)" });
+    }
+    triggerLocks.set(studyId, now);
+
+    if (skipTelegram) {
+        // --- TRIPLE-LOCK LAYER 3: Database Atomic Lock ---
+        if (studyInstanceUid) {
+            const existingResult = await db.aiResult.findUnique({
+                where: { studyInstanceUid }
+            });
+
+            // If result exists AND is either DONE (conclusion != PROCESSING) 
+            // OR is a RECENT PROCESSING task (less than 2 mins old), we skip.
+            if (existingResult) {
+                const isFinished = existingResult.conclusion !== "PROCESSING";
+                const isRecent = (now - new Date(existingResult.updatedAt).getTime()) < (120 * 1000);
+                
+                if (isFinished || isRecent) {
+                    console.log(`DATABASE LOCK: AI Result ${isFinished ? "FINISHED" : "IN-PROGRESS"} for ${studyInstanceUid}. Skipping trigger.`);
+                    return NextResponse.json({ success: true, message: `AI already ${isFinished ? "done" : "processing"} (Database Lock)` });
+                }
+            }
+
+            // CLAIM the study by marking it as PROCESSING
+            await db.aiResult.upsert({
+                where: { studyInstanceUid },
+                update: { 
+                    conclusion: "PROCESSING",
+                    updatedAt: new Date()
+                },
+                create: {
+                    studyInstanceUid,
+                    modality: studyData.MainDicomTags?.Modality || "CT",
+                    conclusion: "PROCESSING",
+                    findings: {},
+                }
+            });
+            console.log(`DATABASE CLAIM: Marked study ${studyInstanceUid} as PROCESSING`);
+        }
+
+        // If skipTelegram is true, it means mode is likely AUTO
+        // We catch this here to trigger the AI Engine automatically
+        const modeRow = await db.appConfig.findUnique({ where: { key: "AI_MODE" } });
+        if (modeRow?.value === "AUTO") {
+            const AI_BACKEND_URL = process.env.AI_BACKEND_URL || "http://backend-ai:8000";
+            console.log(`AUTO MODE DETECTED: Triggering AI Engine for ${studyId} at ${AI_BACKEND_URL}`);
+            
+            // Fire and forget AI trigger
+            fetch(`${AI_BACKEND_URL}/process-dicom/${studyId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            }).catch(err => console.error("AUTO AI Trigger Failed:", err));
+        }
+
+        return NextResponse.json({ success: true, message: "SSE Event emitted, AUTO-AI task triggered if applicable" });
+    }
+
+    // 1. Get credentials (DB or Env)
+    const { botToken: TELEGRAM_BOT_TOKEN, chatId: TELEGRAM_CHAT_ID } = await getTelegramCredentials();
 
     if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "your_bot_token_here") {
         return NextResponse.json({ error: "Telegram Bot Token is not configured" }, { status: 500 });
     }
 
     try {
-        const { studyId } = await req.json();
-
-        if (!studyId) {
-            return NextResponse.json({ error: "Study ID is required" }, { status: 400 });
-        }
+        // StudyId is already captured at line 41
 
         // Emit for real-time frontend notification
         emitStudyEvent({ studyId });
 
-        // 2. Get Study details to find the first instance
-        const studyResponse = await fetch(`${ORTHANC_URL}/studies/${studyId}`, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
-
-        if (!studyResponse.ok) {
-            throw new Error(`Failed to fetch study details: ${studyResponse.status}`);
-        }
-
-        const studyData = await studyResponse.json();
-        const seriesIds = studyData.Series;
-
-        if (!seriesIds || seriesIds.length === 0) {
+        if (!studyData.Series || studyData.Series.length === 0) {
             throw new Error("No series found in this study");
         }
 
-        // 3. Get first series details
-        const seriesResponse = await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
+        const seriesIds = studyData.Series;
 
-        if (!seriesResponse.ok) {
-            throw new Error(`Failed to fetch series details: ${seriesResponse.status}`);
+        // 3. Find the first valid IMAGE instance (Skip SR, SC, PR)
+        let selectedInstanceId: string | null = null;
+        let selectedModality: string | null = null;
+
+        for (const sId of seriesIds) {
+            const sRes = await fetch(`${ORTHANC_URL}/series/${sId}`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            });
+            if (sRes.ok) {
+                const sData = await sRes.json();
+                const mod = sData.MainDicomTags?.Modality?.trim().toUpperCase();
+                
+                console.log(`[LOG-V2] Checking series ${sId} modality: ${mod}`);
+
+                // Skip non-image modalities
+                if (!mod || ["SR", "SC", "PR"].includes(mod)) {
+                    console.log(`[LOG-V2] Skipping non-image series ${sId} (${mod})`);
+                    continue;
+                }
+
+                if (sData.Instances && sData.Instances.length > 0) {
+                    selectedInstanceId = sData.Instances[0];
+                    selectedModality = mod;
+                    console.log(`[LOG-V2] SUCCESS: Selected ${selectedInstanceId} (Modality ${mod})`);
+                    break;
+                }
+            }
         }
 
-        const seriesData = await seriesResponse.json();
-        const instanceIds = seriesData.Instances;
-
-        if (!instanceIds || instanceIds.length === 0) {
-            throw new Error("No instances found in this series");
+        // Fallback if no images found
+        if (!selectedInstanceId) {
+            console.log("No strictly image modality series found. Picking first available instance as fallback.");
+            const sRes = await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            });
+            if (sRes.ok) {
+                const sData = await sRes.json();
+                selectedInstanceId = sData.Instances?.[0];
+            }
         }
 
-        // 4. Get preview image of the first instance
-        const previewUrl = `${ORTHANC_URL}/instances/${instanceIds[0]}/preview`;
+        if (!selectedInstanceId) {
+            throw new Error("No instances found in this study anyway");
+        }
+
+        // 4. Get preview image of the selected instance
+        const previewUrl = `${ORTHANC_URL}/instances/${selectedInstanceId}/preview`;
         const previewResponse = await fetch(previewUrl, {
             headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
         });
 
         if (!previewResponse.ok) {
-            throw new Error(`Failed to fetch instance preview: ${previewResponse.status}`);
+            throw new Error(`Failed to fetch instance preview: ${previewResponse.status} for ${selectedInstanceId}`);
         }
 
         const imageBuffer = await previewResponse.arrayBuffer();
 
         // 5. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
-        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || `http://${req.headers.get("host") || "localhost:3001"}`;
+        
+        // Use carefully configured variable from root .env/compose
+        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+        
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
-        const thumbUrl = `${publicUrl}/api/orthanc/instances/${instanceIds[0]}/preview`;
+        const thumbUrl = `${publicUrl}/api/orthanc/instances/${selectedInstanceId}/preview`;
 
         const formData = new FormData();
         formData.append("chat_id", TELEGRAM_CHAT_ID || "");

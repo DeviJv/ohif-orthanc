@@ -50,6 +50,14 @@ export async function POST(req: Request) {
                 updatedAt: new Date(),
             },
         });
+        
+        // Emit event to trigger real-time UI update on the worklist
+        try {
+            const { emitStudyEvent } = require("@/lib/events");
+            emitStudyEvent({ studyInstanceUid, type: "AI_DONE" });
+        } catch (e) {
+            console.error("Failed to emit AI_DONE event:", e);
+        }
 
         return NextResponse.json(result);
     } catch (error) {

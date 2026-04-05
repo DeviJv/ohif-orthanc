@@ -55,37 +55,62 @@ export async function POST(req: NextRequest) {
             throw new Error("No series found in this study");
         }
 
-        // 2. Get first series details
-        const seriesResponse = await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
+        // 1. Find the first valid IMAGE instance (Skip SR, SC, PR)
+        let selectedInstanceId: string | null = null;
+        let selectedModality: string | null = null;
 
-        if (!seriesResponse.ok) {
-            throw new Error(`Failed to fetch series details: ${seriesResponse.status}`);
+        for (const sId of seriesIds) {
+            const sRes = await fetch(`${ORTHANC_URL}/series/${sId}`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            });
+            if (sRes.ok) {
+                const sData = await sRes.json();
+                const mod = sData.MainDicomTags?.Modality?.trim().toUpperCase();
+                
+                console.log(`[LOG-MANUAL-V2] Checking series ${sId} modality: ${mod}`);
+
+                // Skip non-image modalities
+                if (!mod || ["SR", "SC", "PR"].includes(mod)) {
+                    console.log(`[LOG-MANUAL-V2] Skipping non-image series ${sId} (${mod})`);
+                    continue;
+                }
+
+                if (sData.Instances && sData.Instances.length > 0) {
+                    selectedInstanceId = sData.Instances[0];
+                    selectedModality = mod;
+                    console.log(`[LOG-MANUAL-V2] SUCCESS: Selected ${selectedInstanceId} (Modality ${mod})`);
+                    break;
+                }
+            }
         }
 
-        const seriesData = await seriesResponse.json();
-        const instanceIds = seriesData.Instances;
-
-        if (!instanceIds || instanceIds.length === 0) {
-            throw new Error("No instances found in this series");
+        // Fallback if no images found
+        if (!selectedInstanceId) {
+            console.log("[LOG-MANUAL-V2] No image modality found. Picking first instance as fallback.");
+            selectedInstanceId = (await (await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            })).json())?.Instances?.[0];
         }
 
-        // 3. Get preview image of the first instance
-        const previewUrl = `${ORTHANC_URL}/instances/${instanceIds[0]}/preview`;
+        if (!selectedInstanceId) {
+            throw new Error("No instances found in this study");
+        }
+
+        // 3. Get preview image of the selected instance
+        const previewUrl = `${ORTHANC_URL}/instances/${selectedInstanceId}/preview`;
         const previewResponse = await fetch(previewUrl, {
             headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
         });
 
         if (!previewResponse.ok) {
-            throw new Error(`Failed to fetch instance preview: ${previewResponse.status}`);
+            throw new Error(`Failed to fetch instance preview: ${previewResponse.status} for ${selectedInstanceId}`);
         }
 
         const imageBuffer = await previewResponse.arrayBuffer();
 
         // 4. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
-        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || `http://${req.headers.get("host") || "localhost:3001"}`;
+        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
 
         const formData = new FormData();

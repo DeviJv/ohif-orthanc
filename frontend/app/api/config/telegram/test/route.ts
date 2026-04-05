@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,20 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const { botToken, chatId } = await req.json();
+        let { botToken, chatId } = await req.json();
+
+        // Helper to check if a value is masked
+        const isMasked = (val: string) => !val || val.includes("***");
+
+        // Resolve credentials if masked or empty
+        if (isMasked(botToken)) {
+            const tokenRow = await db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } });
+            botToken = tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "";
+        }
+        if (isMasked(chatId)) {
+            const chatIdRow = await db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } });
+            chatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "";
+        }
 
         if (!botToken || !chatId) {
             return NextResponse.json({ error: "Token and Chat ID are required for testing" }, { status: 400 });

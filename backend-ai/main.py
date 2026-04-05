@@ -488,9 +488,25 @@ def process_study(study_id: str):
         
         study_desc = study_data.get("MainDicomTags", {}).get("StudyDescription", "No Description")
         study_uid = study_data.get("MainDicomTags", {}).get("StudyInstanceUID")
+        
+        # --- Deduplication Check ---
+        try:
+            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
+            with conn.cursor() as cur:
+                # Only skip if a FINISHED result exists (anything not 'PROCESSING')
+                cur.execute("SELECT id FROM \"AiResult\" WHERE \"studyInstanceUid\" = %s AND \"conclusion\" != 'PROCESSING'", (study_uid,))
+                if cur.fetchone():
+                    print(f"SKIPPING: Finished AI Result already exists in DB for study {study_uid}")
+                    update_progress(study_id, 100, "Already Processed")
+                    conn.close()
+                    return
+            conn.close()
+        except Exception as e:
+            print(f"DEDUPLICATION DB CHECK WARNING: {str(e)}")
+
         accession = study_data.get("MainDicomTags", {}).get("AccessionNumber", "-")
         institution = study_data.get("MainDicomTags", {}).get("InstitutionName", "Quantum PACS")
-        
+
         update_progress(study_id, 25, "Locating images...")
         # 2. Find first image instance
         series_ids = study_data.get("Series", [])

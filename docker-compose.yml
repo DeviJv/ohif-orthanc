@@ -166,7 +166,7 @@ services:
       - ORTHANC_URL=http://pacs:8042
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
-      - NEXT_PUBLIC_APP_URL=http://pacs-web:3001
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - TELEGRAM_BOT_TOKEN=
       - TELEGRAM_CHAT_ID=
     depends_on:

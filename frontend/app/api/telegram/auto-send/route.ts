@@ -105,6 +105,7 @@ export async function POST(req: NextRequest) {
         // 5. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
         const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost";
+        console.log("[Telegram Auto-Send] publicUrl:", publicUrl);
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
 
 

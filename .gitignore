@@ -3,6 +3,7 @@ app_postgres_data/
 orthanc_db/
 postgres_data/
 orthanc_db/
+backups/
 
 # Next.js / Node
 node_modules/

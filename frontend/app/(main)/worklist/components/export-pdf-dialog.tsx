@@ -99,6 +99,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
         address: "",
         sender: studyMainTags?.ReferringPhysicianName || "",
         diagnosis: "",
+        soap: "",
         photoNum: "01",
         examType: studyDesc || `Pemeriksaan ${modalityName}`,
         findings: "",
@@ -276,6 +277,9 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             };
 
             currentY = drawSection("Jenis", formData.examType, currentY);
+            if (formData.soap && formData.soap.trim() !== "") {
+                currentY = drawSection("SOAP", formData.soap, currentY);
+            }
             currentY = drawSection("Temuan", formData.findings, currentY);
             currentY = drawSection("Kesimpulan", formData.conclusion, currentY);
             currentY = drawSection("Anjuran", formData.recommendation || "-", currentY);
@@ -383,6 +387,11 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                     <div className="space-y-2">
                                         <Label htmlFor="e-diagnosis" className="text-xs font-semibold text-muted-foreground uppercase">Diagnosa Klinis <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
                                         <Input id="e-diagnosis" value={formData.diagnosis} onChange={set("diagnosis")} placeholder="Medical Check Up" className="h-9 text-sm bg-background border" />
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                        <Label htmlFor="e-soap" className="text-xs font-semibold text-muted-foreground uppercase">SOAP Dokter <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
+                                        <Textarea id="e-soap" value={formData.soap} onChange={set("soap")} placeholder="S: Keluhan pasien...&#10;O: TD 120/80...&#10;A: Observasi...&#10;P: Tindakan lanjutan..." className="h-24 text-sm resize-y bg-background border" />
                                     </div>
                                 </div>
                             </div>

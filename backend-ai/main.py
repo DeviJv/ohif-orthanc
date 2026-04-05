@@ -133,6 +133,7 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         f"👤 *Patient:* {patient_name} ({patient_sex})\n"
         f"🆔 *ID:* {patient_id} | *Age:* {patient_age}\n"
         f"📂 *Study:* {study_desc}\n"
+        f"📝 *SOAP Dokter:* -\n"
         f"📡 *Modality:* {modality} | *Acc:* {accession}\n\n"
         f"🔗 *View in OHIF:*\n{viewer_url}\n\n"
         f"📄 *Print Kesimpulan:*\n{export_url}\n\n"

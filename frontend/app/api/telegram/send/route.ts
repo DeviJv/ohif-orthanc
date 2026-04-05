@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
 
         // 4. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
-        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+        const publicUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
         const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
 
@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
         const blob = new Blob([imageBuffer], { type: "image/jpeg" });
         formData.append("photo", blob, "preview.jpg");
         
-        let caption = `PACS Preview\nPatient: ${studyData.PatientMainDicomTags?.PatientName || "Unknown"}\nID: ${studyData.PatientMainDicomTags?.PatientID || "Unknown"}\nStudy: ${studyData.MainDicomTags?.StudyDescription || "No Description"}`;
+        let caption = `PACS Preview\nPatient: ${studyData.PatientMainDicomTags?.PatientName || "Unknown"}\nID: ${studyData.PatientMainDicomTags?.PatientID || "Unknown"}\nStudy: ${studyData.MainDicomTags?.StudyDescription || "No Description"}\nSOAP Dokter: -`;
         
         if (studyUID) {
             caption += `\n\n🔗 View in OHIF:\n${viewerUrl}`;

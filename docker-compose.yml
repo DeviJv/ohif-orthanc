@@ -72,7 +72,7 @@ services:
       - AUTH_SECRET=${AUTH_SECRET}
       # Let NextAuth trust the incoming host so localhost/IP/domain access all work.
       - AUTH_TRUST_HOST=true
-      - ORTHANC_URL=http://pacs:8042
+      - ORTHANC_URL=http://orthanc:8042
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
       - AI_BACKEND_URL=http://ai-engine:8000
@@ -163,7 +163,7 @@ services:
     restart: always
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@app-db:5432/${DB_NAME}
-      - ORTHANC_URL=http://pacs:8042
+      - ORTHANC_URL=http://orthanc:8042
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
       - FRONTEND_INTERNAL_URL=http://pacs-web:3001

@@ -5,6 +5,7 @@ FROM nginx:alpine
 
 # Copy all stable production assets from the local folder to the container
 COPY . /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80 for the internal network
 EXPOSE 80

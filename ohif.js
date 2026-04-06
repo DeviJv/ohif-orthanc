@@ -85,9 +85,9 @@ window.config = {
   showLoadingIndicator: true,
   strictZSpacingForVolumeViewport: true,
   maxNumRequests: {
-    interaction: 100,
-    thumbnail: 75,
-    prefetch: 25,
+    interaction: 24,
+    thumbnail: 8,
+    prefetch: 4,
   },
   httpErrorHandler: error => {
     if (error.status) {

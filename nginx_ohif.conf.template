@@ -5,6 +5,16 @@ server {
     return 301 https://$host$request_uri;
 }
 
+upstream pacs_web_upstream {
+    server pacs-web:3001;
+    keepalive 32;
+}
+
+upstream orthanc_upstream {
+    server orthanc:8042;
+    keepalive 64;
+}
+
 server {
     listen 443 ssl http2;
     server_name _;
@@ -45,7 +55,7 @@ server {
 
     # Next.js Frontend
     location / {
-        proxy_pass http://pacs-web:3001;
+        proxy_pass http://pacs_web_upstream;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -57,7 +67,7 @@ server {
 
     # SSE support for live notifications
     location /api/events {
-        proxy_pass http://pacs-web:3001;
+        proxy_pass http://pacs_web_upstream;
         proxy_set_header Host $host;
         proxy_http_version 1.1;
         proxy_set_header Connection "";
@@ -70,40 +80,85 @@ server {
     # OHIF shell/assets from Orthanc. Keep this separate so the browser can
     # reuse the large JS/CSS bundles across repeated viewer opens.
     location /orthanc/ohif/ {
-        proxy_pass http://orthanc:8042/ohif/;
+        proxy_pass http://orthanc_upstream/ohif/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
         proxy_set_header X-Forwarded-Host $host;
         expires 10m;
         add_header Cache-Control "public, max-age=600, stale-while-revalidate=86400" always;
     }
 
-    # Orthanc — Explorer, REST API
-    location /orthanc/ {
-        proxy_pass http://orthanc:8042/;
+    # OHIF DICOMweb traffic resolves to /orthanc/dicom-web because the viewer
+    # itself is mounted under /orthanc/ohif. Stream frames directly instead of
+    # buffering them to nginx temp files.
+    location /orthanc/dicom-web/ {
+        proxy_pass http://orthanc_upstream/dicom-web/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
+    }
+
+    # Orthanc — Explorer, REST API
+    location /orthanc/ {
+        proxy_pass http://orthanc_upstream/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
         proxy_set_header X-Forwarded-Host $host;
     }
 
     # DICOMweb — required by OHIF v3
     location /dicom-web/ {
-        proxy_pass http://orthanc:8042/dicom-web/;
+        proxy_pass http://orthanc_upstream/dicom-web/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
     }
 
     # WADO-URI fallback
     location /wado {
-        proxy_pass http://orthanc:8042/wado;
+        proxy_pass http://orthanc_upstream/wado;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
         proxy_set_header Host $host;
         proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
+    }
+
+    location /orthanc/wado {
+        proxy_pass http://orthanc_upstream/wado;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
     }
 }
 

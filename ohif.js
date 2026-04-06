@@ -16,8 +16,6 @@
     const style = document.createElement('style');
     style.id = 'ohif-custom-theme-live';
     style.innerHTML = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
       :root {
         --sh-background: #020617 !important;
         --sh-foreground: #f8fafc !important;
@@ -34,13 +32,13 @@
         --ui-gray-light: var(--sh-accent) !important;
         --text-primary-color: var(--sh-foreground) !important;
         
-        font-family: 'Inter', sans-serif !important;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
       }
 
       body {
         background-color: #020617 !important;
         color: #f8fafc !important;
-        font-family: 'Inter', sans-serif !important;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
       }
 
       .ohif-viewer-header {

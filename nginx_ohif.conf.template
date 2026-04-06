@@ -6,7 +6,7 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name _;
 
     ssl_certificate     /etc/nginx/ssl/live/${DOMAIN_NAME}/fullchain.pem;
@@ -15,6 +15,20 @@ server {
     ssl_ciphers         HIGH:!aNULL:!MD5;
 
     client_max_body_size 500M;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_types
+        text/plain
+        text/css
+        text/javascript
+        application/javascript
+        application/json
+        application/xml
+        image/svg+xml
+        application/wasm;
 
     # Serve the custom logo directly (high priority)
     location = /logo.png {
@@ -53,7 +67,20 @@ server {
         proxy_read_timeout 3600s;
     }
 
-    # Orthanc — OHIF, Explorer, REST API
+    # OHIF shell/assets from Orthanc. Keep this separate so the browser can
+    # reuse the large JS/CSS bundles across repeated viewer opens.
+    location /orthanc/ohif/ {
+        proxy_pass http://orthanc:8042/ohif/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_set_header X-Forwarded-Host $host;
+        expires 10m;
+        add_header Cache-Control "public, max-age=600, stale-while-revalidate=86400" always;
+    }
+
+    # Orthanc — Explorer, REST API
     location /orthanc/ {
         proxy_pass http://orthanc:8042/;
         proxy_set_header Host $host;

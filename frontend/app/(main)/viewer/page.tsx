@@ -32,7 +32,7 @@ function ViewerContent() {
     }
 
     const getOhifUrl = () => {
-        return `/ohif/${mode}?StudyInstanceUIDs=${studyId}`;
+        return `/orthanc/ohif/${mode}?StudyInstanceUIDs=${studyId}`;
     };
 
     const ohifUrl = getOhifUrl();

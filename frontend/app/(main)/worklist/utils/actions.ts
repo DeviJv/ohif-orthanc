@@ -153,7 +153,7 @@ export const handleOpenOrthancViewer = (id: string, type: "study" | "series" | "
 };
 
 export const getOhifUrl = (uid: string, mode: string) => {
-    return `/ohif/${mode}?StudyInstanceUIDs=${uid}`;
+    return `/orthanc/ohif/${mode}?StudyInstanceUIDs=${uid}`;
 };
 
 export const handleBulkDownloadStudy = async (ids: string[], callbacks?: TaskCallbacks) => {

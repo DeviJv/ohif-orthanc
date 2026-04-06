@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { 
     RefreshIcon, 
     ArrowLeft01Icon,
@@ -53,6 +53,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import OhifViewer from "../../../components/ohif-viewer";
 import BasicViewer from "../../../components/basic-viewer";
 import SegmentedViewer from "../../../components/segmented-viewer";
+
+type ViewerMode = "viewer" | "segmented" | "basic";
+
+function normalizeViewerMode(mode: string | null): ViewerMode {
+    if (mode === "segmented" || mode === "basic") {
+        return mode;
+    }
+
+    return "viewer";
+}
 
 export default function WorklistPage() {
     return (
@@ -116,11 +126,10 @@ function WorklistContent() {
 
     const { addTask, updateTask } = useTaskActions();
     const searchParams = useSearchParams();
-    const router = useRouter();
     const exportUID = searchParams.get("export");
-    const viewerStudyUID = searchParams.get("viewer");
-    const viewerModeParam = searchParams.get("mode");
-    const viewerMode = viewerModeParam === "segmented" || viewerModeParam === "basic" ? viewerModeParam : "viewer";
+    const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(() => searchParams.get("viewer"));
+    const [viewerMode, setViewerMode] = useState<ViewerMode>(() => normalizeViewerMode(searchParams.get("mode")));
+    const viewerStudyUID = selectedStudyUID;
     const showViewer = Boolean(viewerStudyUID);
 
     const buildWorklistUrl = useCallback((params: URLSearchParams) => {
@@ -128,28 +137,39 @@ function WorklistContent() {
         return query ? `/worklist?${query}` : "/worklist";
     }, []);
 
+    const replaceWorklistUrl = useCallback((mutate: (params: URLSearchParams) => void) => {
+        const params = new URLSearchParams(window.location.search);
+        mutate(params);
+        window.history.replaceState(window.history.state, "", buildWorklistUrl(params));
+    }, [buildWorklistUrl]);
+
     const selectedStudy = useMemo(() => {
         if (!viewerStudyUID) return null;
         return studies.find(s => s.MainDicomTags?.StudyInstanceUID === viewerStudyUID) ?? null;
     }, [studies, viewerStudyUID]);
 
     const handleOpenViewer = useCallback((uid: string, mode: string = "viewer") => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("viewer", uid);
-        if (mode === "viewer") {
-            params.delete("mode");
-        } else {
-            params.set("mode", mode);
-        }
-        router.replace(buildWorklistUrl(params), { scroll: false });
-    }, [searchParams, router, buildWorklistUrl]);
+        const nextMode = normalizeViewerMode(mode);
+        setSelectedStudyUID(uid);
+        setViewerMode(nextMode);
+        replaceWorklistUrl((params) => {
+            params.set("viewer", uid);
+            if (nextMode === "viewer") {
+                params.delete("mode");
+            } else {
+                params.set("mode", nextMode);
+            }
+        });
+    }, [replaceWorklistUrl]);
 
     const handleCloseViewer = useCallback(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.delete("viewer");
-        params.delete("mode");
-        router.replace(buildWorklistUrl(params), { scroll: false });
-    }, [searchParams, router, buildWorklistUrl]);
+        setSelectedStudyUID(null);
+        setViewerMode("viewer");
+        replaceWorklistUrl((params) => {
+            params.delete("viewer");
+            params.delete("mode");
+        });
+    }, [replaceWorklistUrl]);
 
     const handleDownloadStudyWithTasks = useCallback((id: string, name: string) => {
         handleDownloadStudy(id, name, { addTask, updateTask });
@@ -283,12 +303,12 @@ function WorklistContent() {
                 openExportPdfDialog(studyToExport);
                 
                 // Optional: Clear the param from URL without refreshing to prevent re-opening
-                const params = new URLSearchParams(searchParams.toString());
-                params.delete("export");
-                router.replace(buildWorklistUrl(params), { scroll: false });
+                replaceWorklistUrl((params) => {
+                    params.delete("export");
+                });
             }
         }
-    }, [exportUID, loading, studies, openExportPdfDialog, searchParams, router, buildWorklistUrl]);
+    }, [exportUID, loading, studies, openExportPdfDialog, replaceWorklistUrl]);
 
     if (showViewer && viewerStudyUID) {
         return (

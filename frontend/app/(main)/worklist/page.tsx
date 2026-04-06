@@ -88,9 +88,6 @@ function WorklistContent() {
     useStudyNotifier(studies, fetchStudies);
 
     // UI States
-    const [showViewer, setShowViewer] = useState(false);
-    const [selectedStudyUID, setSelectedStudyUID] = useState<string | null>(null);
-    const [viewerMode, setViewerMode] = useState("viewer");
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
     const [studyToDelete, setStudyToDelete] = useState<Study | null>(null);
@@ -118,12 +115,41 @@ function WorklistContent() {
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
     const { addTask, updateTask } = useTaskActions();
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const exportUID = searchParams.get("export");
+    const viewerStudyUID = searchParams.get("viewer");
+    const viewerModeParam = searchParams.get("mode");
+    const viewerMode = viewerModeParam === "segmented" || viewerModeParam === "basic" ? viewerModeParam : "viewer";
+    const showViewer = Boolean(viewerStudyUID);
+
+    const buildWorklistUrl = useCallback((params: URLSearchParams) => {
+        const query = params.toString();
+        return query ? `/worklist?${query}` : "/worklist";
+    }, []);
+
+    const selectedStudy = useMemo(() => {
+        if (!viewerStudyUID) return null;
+        return studies.find(s => s.MainDicomTags?.StudyInstanceUID === viewerStudyUID) ?? null;
+    }, [studies, viewerStudyUID]);
 
     const handleOpenViewer = useCallback((uid: string, mode: string = "viewer") => {
-        setSelectedStudyUID(uid);
-        setViewerMode(mode);
-        setShowViewer(true);
-    }, []);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("viewer", uid);
+        if (mode === "viewer") {
+            params.delete("mode");
+        } else {
+            params.set("mode", mode);
+        }
+        router.replace(buildWorklistUrl(params), { scroll: false });
+    }, [searchParams, router, buildWorklistUrl]);
+
+    const handleCloseViewer = useCallback(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("viewer");
+        params.delete("mode");
+        router.replace(buildWorklistUrl(params), { scroll: false });
+    }, [searchParams, router, buildWorklistUrl]);
 
     const handleDownloadStudyWithTasks = useCallback((id: string, name: string) => {
         handleDownloadStudy(id, name, { addTask, updateTask });
@@ -246,11 +272,6 @@ function WorklistContent() {
         table.getColumn("studyDate")?.setFilterValue(dateRange);
     }, [dateRange, table]);
 
-    // --- DEEP LINK HANDLER: ?export=STUDY_UID ---
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const exportUID = searchParams.get("export");
-
     useEffect(() => {
         if (exportUID && !loading && studies.length > 0) {
             const studyToExport = studies.find(s => 
@@ -264,12 +285,12 @@ function WorklistContent() {
                 // Optional: Clear the param from URL without refreshing to prevent re-opening
                 const params = new URLSearchParams(searchParams.toString());
                 params.delete("export");
-                router.replace(`/worklist?${params.toString()}`, { scroll: false });
+                router.replace(buildWorklistUrl(params), { scroll: false });
             }
         }
-    }, [exportUID, loading, studies, openExportPdfDialog, searchParams, router]);
+    }, [exportUID, loading, studies, openExportPdfDialog, searchParams, router, buildWorklistUrl]);
 
-    if (showViewer && selectedStudyUID) {
+    if (showViewer && viewerStudyUID) {
         return (
             <div className="flex flex-col h-screen w-full bg-[#020417] overflow-hidden">
                 {/* Viewer Container with Table-like Margins */}
@@ -278,11 +299,11 @@ function WorklistContent() {
                         {/* The Iframe */}
                         <div className="absolute inset-0">
                             {viewerMode === "viewer" ? (
-                                <OhifViewer studyInstanceUIDs={selectedStudyUID} />
+                                <OhifViewer studyInstanceUIDs={viewerStudyUID} />
                             ) : viewerMode === "segmented" ? (
-                                <SegmentedViewer studyInstanceUIDs={selectedStudyUID} />
+                                <SegmentedViewer studyInstanceUIDs={viewerStudyUID} />
                             ) : (
-                                <BasicViewer studyInstanceUID={selectedStudyUID} />
+                                <BasicViewer studyInstanceUID={viewerStudyUID} />
                             )}
                         </div>
                         
@@ -293,7 +314,7 @@ function WorklistContent() {
                                     variant="ghost" 
                                     size="sm"
                                     className="h-9 gap-2 text-slate-200 hover:text-white hover:bg-slate-800/50 px-3 rounded-lg"
-                                    onClick={() => setShowViewer(false)}
+                                    onClick={handleCloseViewer}
                                 >
                                     <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
                                     <span className="font-semibold text-sm">Back to Worklist</span>
@@ -308,14 +329,14 @@ function WorklistContent() {
                                     </span>
                                 </div>
 
-                                {aiMode === "MANUAL" && selectedStudyUID && (
+                                {aiMode === "MANUAL" && selectedStudy?.ID && (
                                     <>
                                         <div className="w-px h-5 bg-slate-700 mx-1" />
                                         <Button 
                                             variant="ghost" 
                                             size="sm"
                                             className="h-9 gap-2 text-primary hover:text-primary hover:bg-primary/10 px-3 rounded-lg animate-pulse"
-                                            onClick={() => handleRunAi(selectedStudyUID)}
+                                            onClick={() => handleRunAi(selectedStudy.ID)}
                                         >
                                             <HugeiconsIcon icon={AiCloud01Icon} className="size-4" strokeWidth={2.5} />
                                             <span className="font-bold text-sm tracking-tight">Run AI Analysis</span>

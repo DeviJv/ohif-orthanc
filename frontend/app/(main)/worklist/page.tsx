@@ -46,6 +46,7 @@ import { SendTelegramDialog } from "./components/send-telegram-dialog";
 import { EditStudyDialog } from "./components/edit-study-dialog";
 import { ExportPdfDialog } from "./components/export-pdf-dialog";
 import { AiResultDialog } from "./components/ai-result-dialog";
+import { BridgeSatuSehatDialog } from "./components/bridge-satusehat-dialog";
 import { FloatingAiProgress } from "./components/floating-ai-progress";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "./utils/actions";
 import { Study } from "./types";
@@ -84,7 +85,10 @@ function WorklistContent() {
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog,
-        aiMode, handleRunAi, aiResults
+        isBridgeDialogOpen, setIsBridgeDialogOpen,
+        selectedStudyForBridge, openBridgeDialog,
+        aiMode, handleRunAi, aiResults,
+        handleBridgeSatuSehat, ssIntegrationStatus
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -143,6 +147,20 @@ function WorklistContent() {
         window.history.replaceState(window.history.state, "", buildWorklistUrl(params));
     }, [buildWorklistUrl]);
 
+    // Unified Filter Handlers
+    const handleSetDateRange = useCallback((range: DateRange | undefined) => {
+        setDateRange(range);
+        setColumnFilters(prev => {
+            const others = prev.filter(f => f.id !== "studyDate");
+            if (!range) return others;
+            return [...others, { id: "studyDate", value: range }];
+        });
+    }, []);
+
+    const handleSetGlobalFilter = useCallback((value: string) => {
+        setGlobalFilter(value);
+    }, []);
+
     const selectedStudy = useMemo(() => {
         if (!viewerStudyUID) return null;
         return studies.find(s => s.MainDicomTags?.StudyInstanceUID === viewerStudyUID) ?? null;
@@ -198,6 +216,9 @@ function WorklistContent() {
         aiMode,
         handleRunAi,
         openAiResultDialog,
+        handleBridgeSatuSehat,
+        openBridgeDialog,
+        ssIntegrationStatus,
     }), [
         toggleStudyExpansion,
         handleOpenViewer,
@@ -209,15 +230,20 @@ function WorklistContent() {
         openExportPdfDialog,
         aiMode,
         handleRunAi,
-        openAiResultDialog
+        openAiResultDialog,
+        handleBridgeSatuSehat,
+        openBridgeDialog,
+        ssIntegrationStatus
     ]);
 
     const tableMeta = useMemo<WorklistTableMeta>(() => ({
         expandedStudies,
         aiResults,
+        ssIntegrationStatus,
     }), [
         expandedStudies, 
-        aiResults
+        aiResults,
+        ssIntegrationStatus
     ]);
 
     const tableOptions = useMemo(() => ({
@@ -225,7 +251,7 @@ function WorklistContent() {
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
+        onGlobalFilterChange: handleSetGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -287,10 +313,7 @@ function WorklistContent() {
         handleBulkDownloadStudy(ids, { addTask, updateTask });
     }, [table, addTask, updateTask]);
 
-    // Effect for date range filter
-    useEffect(() => {
-        table.getColumn("studyDate")?.setFilterValue(dateRange);
-    }, [dateRange, table]);
+    // Effect for handling initial filters or deep links can go here if needed.
 
     useEffect(() => {
         if (exportUID && !loading && studies.length > 0) {
@@ -372,7 +395,7 @@ function WorklistContent() {
     }
 
     return (
-        <div className="p-6 max-w-[1600px] ml-0 space-y-6">
+        <div className="p-6 w-full space-y-6">
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900">Study Worklist</h1>
                 <p className="text-muted-foreground">Manage and view medical imaging studies from Orthanc PACS.</p>
@@ -381,9 +404,9 @@ function WorklistContent() {
             <WorklistToolbar 
                 table={table}
                 globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
+                setGlobalFilter={handleSetGlobalFilter}
                 dateRange={dateRange}
-                setDateRange={setDateRange}
+                setDateRange={handleSetDateRange}
                 uploading={uploading}
                 handleFileUpload={handleFileUpload}
                 fetchStudies={fetchStudies}
@@ -510,6 +533,13 @@ function WorklistContent() {
                 open={isExportPdfDialogOpen}
                 onOpenChange={setIsExportPdfDialogOpen}
                 study={studyForPdf}
+            />
+
+            <BridgeSatuSehatDialog
+                open={isBridgeDialogOpen}
+                onOpenChange={setIsBridgeDialogOpen}
+                study={selectedStudyForBridge}
+                onBridge={handleBridgeSatuSehat}
             />
 
             <FloatingAiProgress />

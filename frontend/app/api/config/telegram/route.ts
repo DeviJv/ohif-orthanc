@@ -7,7 +7,6 @@ export const dynamic = "force-dynamic";
 /** GET /api/config/telegram
  * Returns current Telegram config.
  * Priority: DB → env var → empty string
- * Token is masked in response (show only first 6 + *** + last 4 chars)
  */
 export async function GET() {
     const session = await auth();
@@ -23,15 +22,9 @@ export async function GET() {
     const token = tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "";
     const chatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "";
 
-    // Mask: show first 6 chars + *** + last 4 chars
-    const maskSecret = (val: string) => {
-        if (!val || val.length < 12) return val ? "***" : "";
-        return `${val.slice(0, 6)}***${val.slice(-4)}`;
-    };
-
     return NextResponse.json({
-        botToken: maskSecret(token),
-        chatId: maskSecret(chatId),
+        botToken: token,
+        chatId: chatId,
         hasDbToken: !!tokenRow?.value,
         hasDbChatId: !!chatIdRow?.value,
         source: tokenRow?.value ? "database" : "environment",

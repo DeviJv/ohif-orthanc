@@ -179,6 +179,16 @@ exports.Prisma.AiResultScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SatuSehatIntegrationScalarFieldEnum = {
+  studyInstanceUid: 'studyInstanceUid',
+  satusehatId: 'satusehatId',
+  patientNik: 'patientNik',
+  status: 'status',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -215,7 +225,8 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   VerificationToken: 'VerificationToken',
   AppConfig: 'AppConfig',
-  AiResult: 'AiResult'
+  AiResult: 'AiResult',
+  SatuSehatIntegration: 'SatuSehatIntegration'
 };
 
 /**

@@ -19,11 +19,13 @@ import { Study } from "../types";
 import { formatDicomDate } from "../utils/format";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 
 export interface WorklistTableMeta {
     expandedStudies: Record<string, boolean>;
     aiResults?: Record<string, any>;
+    ssIntegrationStatus?: Record<string, any>;
 }
 
 interface GetColumnsProps {
@@ -38,6 +40,9 @@ interface GetColumnsProps {
     aiMode?: string;
     handleRunAi?: (studyId: string) => void;
     openAiResultDialog?: (result: any, patientName: string) => void;
+    handleBridgeSatuSehat?: (studyId: string, manualNik?: string) => void;
+    openBridgeDialog?: (study: Study) => void;
+    ssIntegrationStatus?: Record<string, any>;
 }
 
 export const getColumns = ({
@@ -52,6 +57,9 @@ export const getColumns = ({
     aiMode,
     handleRunAi,
     openAiResultDialog,
+    handleBridgeSatuSehat,
+    openBridgeDialog,
+    ssIntegrationStatus,
 }: GetColumnsProps): ColumnDef<Study>[] => [
     {
         id: "select",
@@ -102,11 +110,13 @@ export const getColumns = ({
         id: "patientName",
         header: "Patient Name",
         cell: ({ getValue }) => <span className="font-semibold">{getValue() as string}</span>,
+        enableGlobalFilter: true,
     },
     {
         accessorFn: (row) => row.PatientMainDicomTags?.PatientID || row.MainDicomTags.PatientID,
         id: "patientID",
         header: "Patient ID",
+        enableGlobalFilter: true,
     },
     {
         accessorFn: (row) => (row.PatientMainDicomTags as any)?.PatientBirthDate || (row.MainDicomTags as any)?.PatientBirthDate,
@@ -145,14 +155,24 @@ export const getColumns = ({
             if (!range || (!range.from && !range.to)) return true;
             if (!dateStr) return false;
             
-            const studyDate = new Date(
-                parseInt(dateStr.slice(0, 4)),
-                parseInt(dateStr.slice(4, 6)) - 1,
-                parseInt(dateStr.slice(6, 8))
-            );
+            // DICOM Date is YYYYMMDD
+            const year = parseInt(dateStr.slice(0, 4), 10);
+            const month = parseInt(dateStr.slice(4, 6), 10) - 1;
+            const day = parseInt(dateStr.slice(6, 8), 10);
+            
+            // Create date at 00:00:00 local time
+            const studyDate = new Date(year, month, day);
 
-            if (range.from && studyDate < range.from) return false;
-            if (range.to && studyDate > range.to) return false;
+            // Normalize range dates to 00:00:00 local time for fair comparison
+            if (range.from) {
+                const fromDate = new Date(range.from.getFullYear(), range.from.getMonth(), range.from.getDate());
+                if (studyDate < fromDate) return false;
+            }
+            
+            if (range.to) {
+                const toDate = new Date(range.to.getFullYear(), range.to.getMonth(), range.to.getDate());
+                if (studyDate > toDate) return false;
+            }
             
             return true;
         },
@@ -299,6 +319,31 @@ export const getColumns = ({
                         title="Export Laporan PDF"
                     >
                         <HugeiconsIcon icon={FileExportIcon} className="size-4" />
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className={cn(
+                            "size-8 p-0 transition-all",
+                            ssIntegrationStatus?.[study.MainDicomTags.StudyInstanceUID]?.status === "SUCCESS"
+                                ? "text-emerald-500 hover:text-emerald-600 bg-emerald-50"
+                                : "text-slate-400 hover:text-primary hover:bg-primary/5"
+                        )}
+                        onClick={() => openBridgeDialog?.(study)}
+                        title={
+                            ssIntegrationStatus?.[study.MainDicomTags.StudyInstanceUID]?.status === "SUCCESS"
+                                ? "Sudah Terkirim ke Satu Sehat"
+                                : "Kirim ke Satu Sehat"
+                        }
+                    >
+                        <HugeiconsIcon 
+                            icon={SentIcon} 
+                            className={cn(
+                                "size-4", 
+                                ssIntegrationStatus?.[study.MainDicomTags.StudyInstanceUID]?.status === "PROCESSING" && "animate-spin"
+                            )} 
+                        />
                     </Button>
                 </div>
             );

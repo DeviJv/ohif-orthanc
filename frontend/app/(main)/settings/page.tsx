@@ -37,6 +37,8 @@ import {
     ViewOffSlashIcon,
     InformationCircleIcon,
     RoboticIcon,
+    HealthIcon,
+    Link01Icon,
 } from "@hugeicons/core-free-icons";
 import { toast } from "sonner";
 
@@ -145,6 +147,10 @@ export default function SettingsPage() {
                     <TabsTrigger value="telegram" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
                         <HugeiconsIcon icon={Message01Icon} className="size-4" />
                         Notifikasi Telegram
+                    </TabsTrigger>
+                    <TabsTrigger value="satusehat" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
+                        <HugeiconsIcon icon={HealthIcon} className="size-4" />
+                        Integrasi Satu Sehat
                     </TabsTrigger>
                 </TabsList>
 
@@ -308,6 +314,11 @@ export default function SettingsPage() {
                 {/* ── Tab: Notifikasi Telegram ── */}
                 <TabsContent value="telegram" className="mt-6">
                     <TelegramSettingsTab />
+                </TabsContent>
+
+                {/* ── Tab: Integrasi Satu Sehat ── */}
+                <TabsContent value="satusehat" className="mt-6">
+                    <SatuSehatSettingsTab />
                 </TabsContent>
             </Tabs>
         </div>
@@ -853,6 +864,282 @@ function AiSettingsTab() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+        </div>
+    );
+}
+
+function SatuSehatSettingsTab() {
+    const [orgId, setOrgId] = useState("");
+    const [clientId, setClientId] = useState("");
+    const [clientSecret, setClientSecret] = useState("");
+    const [env, setEnv] = useState("staging");
+    const [showSecret, setShowSecret] = useState(false);
+    
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isTesting, setIsTesting] = useState(false);
+    
+    const [orgIdDirty, setOrgIdDirty] = useState(false);
+    const [clientIdDirty, setClientIdDirty] = useState(false);
+    const [secretDirty, setSecretDirty] = useState(false);
+    const [envDirty, setEnvDirty] = useState(false);
+
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const res = await fetch("/api/config/satusehat");
+                if (res.ok) {
+                    const data = await res.json();
+                    setOrgId(data.orgId);
+                    setClientId(data.clientId);
+                    setClientSecret(data.clientSecret);
+                    setEnv(data.env || "staging");
+                }
+            } catch (error) {
+                console.error("Failed to fetch config:", error);
+                toast.error("Gagal memuat konfigurasi Satu Sehat");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchConfig();
+    }, []);
+
+    const handleSave = async () => {
+        const payload: Record<string, string> = { env };
+        if (orgIdDirty) payload.orgId = orgId;
+        if (clientIdDirty) payload.clientId = clientId;
+        if (secretDirty) payload.clientSecret = clientSecret;
+        if (envDirty) payload.env = env;
+
+        setIsSaving(true);
+        try {
+            const res = await fetch("/api/config/satusehat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            
+            if (res.ok) {
+                toast.success("Konfigurasi Satu Sehat berhasil disimpan");
+                setOrgIdDirty(false);
+                setClientIdDirty(false);
+                setSecretDirty(false);
+                setEnvDirty(false);
+                
+                // Refresh to get masked secret
+                const refreshRes = await fetch("/api/config/satusehat");
+                if (refreshRes.ok) {
+                    const data = await refreshRes.json();
+                    setClientSecret(data.clientSecret);
+                }
+            } else {
+                toast.error("Gagal menyimpan konfigurasi");
+            }
+        } catch (error) {
+            toast.error("Terjadi kesalahan saat menyimpan");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleTest = async () => {
+        setIsTesting(true);
+        try {
+            const res = await fetch("/api/config/satusehat/test", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clientId, clientSecret, env, organizationId: orgId }),
+            });
+            
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || "Koneksi berhasil!");
+            } else {
+                toast.error(data.error || "Gagal menghubungi API Satu Sehat");
+            }
+        } catch (error) {
+            toast.error("Gagal melakukan tes koneksi");
+        } finally {
+            setIsTesting(false);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-16">
+                <HugeiconsIcon icon={HealthIcon} className="size-8 animate-pulse text-primary/40" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
+            <div className="lg:col-span-2 space-y-6">
+                <Card className="border-2 border-primary/20 shadow-sm overflow-hidden">
+                    <CardHeader className="bg-primary/5 pb-6">
+                        <div className="space-y-1">
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <HugeiconsIcon icon={HealthIcon} className="size-4.5 text-primary" strokeWidth={2} />
+                                Satu Sehat API Settings
+                            </CardTitle>
+                            <CardDescription className="text-xs">
+                                Konfigurasi kredensial untuk integrasi dengan platform Satu Sehat Kemenkes RI.
+                            </CardDescription>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="pt-6 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="env" className="text-sm font-semibold">Environment</Label>
+                                <select 
+                                    id="env"
+                                    value={env}
+                                    onChange={(e) => { setEnv(e.target.value); setEnvDirty(true); }}
+                                    className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                >
+                                    <option value="staging">Staging (Sandbox)</option>
+                                    <option value="production">Production</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="orgId" className="text-sm font-semibold">Organization ID</Label>
+                                <Input
+                                    id="orgId"
+                                    placeholder="Ex: bf3d3d7d-620a-406a-b790-..."
+                                    value={orgId}
+                                    onChange={(e) => { setOrgId(e.target.value); setOrgIdDirty(true); }}
+                                    className="h-10"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <Label htmlFor="clientId" className="text-sm font-semibold">Client ID</Label>
+                            <Input
+                                id="clientId"
+                                placeholder="Masukkan Client ID dari portal SATUSEHAT"
+                                value={clientId}
+                                onChange={(e) => { setClientId(e.target.value); setClientIdDirty(true); }}
+                                className="font-mono text-sm h-10"
+                            />
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="clientSecret" className="text-sm font-semibold">Client Secret</Label>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-primary transition-colors"
+                                    onClick={() => setShowSecret(!showSecret)}
+                                >
+                                    <HugeiconsIcon icon={showSecret ? ViewOffSlashIcon : ViewIcon} className="size-3.5" />
+                                    {showSecret ? "Hide" : "Show"}
+                                </Button>
+                            </div>
+                            <div className="flex gap-2">
+                                <Input
+                                    id="clientSecret"
+                                    type={showSecret ? "text" : "password"}
+                                    placeholder="Masukkan Client Secret Anda"
+                                    value={clientSecret}
+                                    onChange={(e) => { setClientSecret(e.target.value); setSecretDirty(true); }}
+                                    className="font-mono text-sm h-10"
+                                />
+                                <Button 
+                                    variant="outline" 
+                                    size="icon" 
+                                    className="shrink-0 h-10 w-10"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(clientSecret);
+                                        toast.success("Client Secret disalin");
+                                    }}
+                                >
+                                    <HugeiconsIcon icon={Copy01Icon} className="size-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                    <Separator />
+                    <div className="p-6 flex flex-wrap gap-3 justify-between">
+                        <Button 
+                            variant="outline" 
+                            className="gap-2 shrink-0 h-10 px-6 font-medium"
+                            onClick={handleTest}
+                            disabled={isTesting || isSaving}
+                        >
+                            <HugeiconsIcon icon={Link01Icon} className={cn("size-4", isTesting && "animate-bounce")} strokeWidth={2} />
+                            {isTesting ? "Testing..." : "Test Connection"}
+                        </Button>
+                        <Button 
+                            className="gap-2 shrink-0 h-10 px-8 font-semibold shadow-md active:scale-95 transition-all"
+                            onClick={handleSave}
+                            disabled={isSaving || isTesting}
+                        >
+                            <HugeiconsIcon icon={FloppyDiskIcon} className={cn("size-4", isSaving && "animate-spin")} strokeWidth={2} />
+                            {isSaving ? "Saving..." : "Simpan Config"}
+                        </Button>
+                    </div>
+                </Card>
+
+                <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3 text-blue-900 shadow-sm">
+                    <div className="bg-blue-500 text-white rounded-lg p-2 h-fit shrink-0">
+                        <HugeiconsIcon icon={InformationCircleIcon} className="size-4" strokeWidth={3} />
+                    </div>
+                    <div className="space-y-1">
+                        <h4 className="text-sm font-bold leading-tight">Integrasi Kemenkes</h4>
+                        <p className="text-xs text-blue-800/80 leading-relaxed">
+                            Pastikan kredensial yang dimasukkan sesuai dengan yang terdaftar di Portal Satu Sehat. 
+                            Gunakan mode Staging untuk pengujian sebelum pindah ke Production.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <Card className="border-2 border-slate-200/60 shadow-sm">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-sm font-bold flex items-center gap-2">
+                            <HugeiconsIcon icon={InformationCircleIcon} className="size-4 text-blue-500" strokeWidth={2.5} />
+                            Panduan Kode Akses API
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6 text-sm">
+                        <div className="space-y-4">
+                            <div className="flex gap-3 relative">
+                                <div className="absolute left-[9px] top-6 bottom-[-16px] w-[2px] bg-slate-100" />
+                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none">1</Badge>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-xs uppercase tracking-tighter">Temukan Kode Akses</p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        Dapatkan Client ID dan Client Secret dari portal SATUSEHAT di sebelah kanan layar.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex gap-3 relative">
+                                <div className="absolute left-[9px] top-6 bottom-[-16px] w-[2px] bg-slate-100" />
+                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none">2</Badge>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-xs uppercase tracking-tighter">Generate Token</p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        Gunakan tombol "Test Connection" untuk melakukan generate token via O-Auth2.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex gap-3">
+                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" strokeWidth={4} /></Badge>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-xs uppercase tracking-tighter">Kirim Data</p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed text-emerald-700">
+                                        Token hasil autentikasi akan digunakan otomatis sebagai Bearer Token Authorization.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 }

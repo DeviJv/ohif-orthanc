@@ -43,6 +43,11 @@ export type AppConfig = $Result.DefaultSelection<Prisma.$AppConfigPayload>
  * 
  */
 export type AiResult = $Result.DefaultSelection<Prisma.$AiResultPayload>
+/**
+ * Model SatuSehatIntegration
+ * 
+ */
+export type SatuSehatIntegration = $Result.DefaultSelection<Prisma.$SatuSehatIntegrationPayload>
 
 /**
  * Enums
@@ -239,6 +244,16 @@ export class PrismaClient<
     * ```
     */
   get aiResult(): Prisma.AiResultDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.satuSehatIntegration`: Exposes CRUD operations for the **SatuSehatIntegration** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SatuSehatIntegrations
+    * const satuSehatIntegrations = await prisma.satuSehatIntegration.findMany()
+    * ```
+    */
+  get satuSehatIntegration(): Prisma.SatuSehatIntegrationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -685,7 +700,8 @@ export namespace Prisma {
     Session: 'Session',
     VerificationToken: 'VerificationToken',
     AppConfig: 'AppConfig',
-    AiResult: 'AiResult'
+    AiResult: 'AiResult',
+    SatuSehatIntegration: 'SatuSehatIntegration'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -704,7 +720,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1152,6 +1168,80 @@ export namespace Prisma {
           }
         }
       }
+      SatuSehatIntegration: {
+        payload: Prisma.$SatuSehatIntegrationPayload<ExtArgs>
+        fields: Prisma.SatuSehatIntegrationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SatuSehatIntegrationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SatuSehatIntegrationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>
+          }
+          findFirst: {
+            args: Prisma.SatuSehatIntegrationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SatuSehatIntegrationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>
+          }
+          findMany: {
+            args: Prisma.SatuSehatIntegrationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>[]
+          }
+          create: {
+            args: Prisma.SatuSehatIntegrationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>
+          }
+          createMany: {
+            args: Prisma.SatuSehatIntegrationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SatuSehatIntegrationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>[]
+          }
+          delete: {
+            args: Prisma.SatuSehatIntegrationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>
+          }
+          update: {
+            args: Prisma.SatuSehatIntegrationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>
+          }
+          deleteMany: {
+            args: Prisma.SatuSehatIntegrationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SatuSehatIntegrationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SatuSehatIntegrationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>[]
+          }
+          upsert: {
+            args: Prisma.SatuSehatIntegrationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatIntegrationPayload>
+          }
+          aggregate: {
+            args: Prisma.SatuSehatIntegrationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSatuSehatIntegration>
+          }
+          groupBy: {
+            args: Prisma.SatuSehatIntegrationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatIntegrationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SatuSehatIntegrationCountArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatIntegrationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1254,6 +1344,7 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOmit
     appConfig?: AppConfigOmit
     aiResult?: AiResultOmit
+    satuSehatIntegration?: SatuSehatIntegrationOmit
   }
 
   /* Types for Logging */
@@ -7733,6 +7824,1027 @@ export namespace Prisma {
 
 
   /**
+   * Model SatuSehatIntegration
+   */
+
+  export type AggregateSatuSehatIntegration = {
+    _count: SatuSehatIntegrationCountAggregateOutputType | null
+    _min: SatuSehatIntegrationMinAggregateOutputType | null
+    _max: SatuSehatIntegrationMaxAggregateOutputType | null
+  }
+
+  export type SatuSehatIntegrationMinAggregateOutputType = {
+    studyInstanceUid: string | null
+    satusehatId: string | null
+    patientNik: string | null
+    status: string | null
+    error: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SatuSehatIntegrationMaxAggregateOutputType = {
+    studyInstanceUid: string | null
+    satusehatId: string | null
+    patientNik: string | null
+    status: string | null
+    error: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SatuSehatIntegrationCountAggregateOutputType = {
+    studyInstanceUid: number
+    satusehatId: number
+    patientNik: number
+    status: number
+    error: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SatuSehatIntegrationMinAggregateInputType = {
+    studyInstanceUid?: true
+    satusehatId?: true
+    patientNik?: true
+    status?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SatuSehatIntegrationMaxAggregateInputType = {
+    studyInstanceUid?: true
+    satusehatId?: true
+    patientNik?: true
+    status?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SatuSehatIntegrationCountAggregateInputType = {
+    studyInstanceUid?: true
+    satusehatId?: true
+    patientNik?: true
+    status?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SatuSehatIntegrationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatIntegration to aggregate.
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatIntegrations to fetch.
+     */
+    orderBy?: SatuSehatIntegrationOrderByWithRelationInput | SatuSehatIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SatuSehatIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SatuSehatIntegrations
+    **/
+    _count?: true | SatuSehatIntegrationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SatuSehatIntegrationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SatuSehatIntegrationMaxAggregateInputType
+  }
+
+  export type GetSatuSehatIntegrationAggregateType<T extends SatuSehatIntegrationAggregateArgs> = {
+        [P in keyof T & keyof AggregateSatuSehatIntegration]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSatuSehatIntegration[P]>
+      : GetScalarType<T[P], AggregateSatuSehatIntegration[P]>
+  }
+
+
+
+
+  export type SatuSehatIntegrationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatuSehatIntegrationWhereInput
+    orderBy?: SatuSehatIntegrationOrderByWithAggregationInput | SatuSehatIntegrationOrderByWithAggregationInput[]
+    by: SatuSehatIntegrationScalarFieldEnum[] | SatuSehatIntegrationScalarFieldEnum
+    having?: SatuSehatIntegrationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SatuSehatIntegrationCountAggregateInputType | true
+    _min?: SatuSehatIntegrationMinAggregateInputType
+    _max?: SatuSehatIntegrationMaxAggregateInputType
+  }
+
+  export type SatuSehatIntegrationGroupByOutputType = {
+    studyInstanceUid: string
+    satusehatId: string | null
+    patientNik: string | null
+    status: string
+    error: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SatuSehatIntegrationCountAggregateOutputType | null
+    _min: SatuSehatIntegrationMinAggregateOutputType | null
+    _max: SatuSehatIntegrationMaxAggregateOutputType | null
+  }
+
+  type GetSatuSehatIntegrationGroupByPayload<T extends SatuSehatIntegrationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SatuSehatIntegrationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SatuSehatIntegrationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SatuSehatIntegrationGroupByOutputType[P]>
+            : GetScalarType<T[P], SatuSehatIntegrationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SatuSehatIntegrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    studyInstanceUid?: boolean
+    satusehatId?: boolean
+    patientNik?: boolean
+    status?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["satuSehatIntegration"]>
+
+  export type SatuSehatIntegrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    studyInstanceUid?: boolean
+    satusehatId?: boolean
+    patientNik?: boolean
+    status?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["satuSehatIntegration"]>
+
+  export type SatuSehatIntegrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    studyInstanceUid?: boolean
+    satusehatId?: boolean
+    patientNik?: boolean
+    status?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["satuSehatIntegration"]>
+
+  export type SatuSehatIntegrationSelectScalar = {
+    studyInstanceUid?: boolean
+    satusehatId?: boolean
+    patientNik?: boolean
+    status?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
+
+  export type $SatuSehatIntegrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SatuSehatIntegration"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      studyInstanceUid: string
+      satusehatId: string | null
+      patientNik: string | null
+      status: string
+      error: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["satuSehatIntegration"]>
+    composites: {}
+  }
+
+  type SatuSehatIntegrationGetPayload<S extends boolean | null | undefined | SatuSehatIntegrationDefaultArgs> = $Result.GetResult<Prisma.$SatuSehatIntegrationPayload, S>
+
+  type SatuSehatIntegrationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SatuSehatIntegrationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SatuSehatIntegrationCountAggregateInputType | true
+    }
+
+  export interface SatuSehatIntegrationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SatuSehatIntegration'], meta: { name: 'SatuSehatIntegration' } }
+    /**
+     * Find zero or one SatuSehatIntegration that matches the filter.
+     * @param {SatuSehatIntegrationFindUniqueArgs} args - Arguments to find a SatuSehatIntegration
+     * @example
+     * // Get one SatuSehatIntegration
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SatuSehatIntegrationFindUniqueArgs>(args: SelectSubset<T, SatuSehatIntegrationFindUniqueArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SatuSehatIntegration that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SatuSehatIntegrationFindUniqueOrThrowArgs} args - Arguments to find a SatuSehatIntegration
+     * @example
+     * // Get one SatuSehatIntegration
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SatuSehatIntegrationFindUniqueOrThrowArgs>(args: SelectSubset<T, SatuSehatIntegrationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatIntegration that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationFindFirstArgs} args - Arguments to find a SatuSehatIntegration
+     * @example
+     * // Get one SatuSehatIntegration
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SatuSehatIntegrationFindFirstArgs>(args?: SelectSubset<T, SatuSehatIntegrationFindFirstArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatIntegration that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationFindFirstOrThrowArgs} args - Arguments to find a SatuSehatIntegration
+     * @example
+     * // Get one SatuSehatIntegration
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SatuSehatIntegrationFindFirstOrThrowArgs>(args?: SelectSubset<T, SatuSehatIntegrationFindFirstOrThrowArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SatuSehatIntegrations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SatuSehatIntegrations
+     * const satuSehatIntegrations = await prisma.satuSehatIntegration.findMany()
+     * 
+     * // Get first 10 SatuSehatIntegrations
+     * const satuSehatIntegrations = await prisma.satuSehatIntegration.findMany({ take: 10 })
+     * 
+     * // Only select the `studyInstanceUid`
+     * const satuSehatIntegrationWithStudyInstanceUidOnly = await prisma.satuSehatIntegration.findMany({ select: { studyInstanceUid: true } })
+     * 
+     */
+    findMany<T extends SatuSehatIntegrationFindManyArgs>(args?: SelectSubset<T, SatuSehatIntegrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SatuSehatIntegration.
+     * @param {SatuSehatIntegrationCreateArgs} args - Arguments to create a SatuSehatIntegration.
+     * @example
+     * // Create one SatuSehatIntegration
+     * const SatuSehatIntegration = await prisma.satuSehatIntegration.create({
+     *   data: {
+     *     // ... data to create a SatuSehatIntegration
+     *   }
+     * })
+     * 
+     */
+    create<T extends SatuSehatIntegrationCreateArgs>(args: SelectSubset<T, SatuSehatIntegrationCreateArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SatuSehatIntegrations.
+     * @param {SatuSehatIntegrationCreateManyArgs} args - Arguments to create many SatuSehatIntegrations.
+     * @example
+     * // Create many SatuSehatIntegrations
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SatuSehatIntegrationCreateManyArgs>(args?: SelectSubset<T, SatuSehatIntegrationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SatuSehatIntegrations and returns the data saved in the database.
+     * @param {SatuSehatIntegrationCreateManyAndReturnArgs} args - Arguments to create many SatuSehatIntegrations.
+     * @example
+     * // Create many SatuSehatIntegrations
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SatuSehatIntegrations and only return the `studyInstanceUid`
+     * const satuSehatIntegrationWithStudyInstanceUidOnly = await prisma.satuSehatIntegration.createManyAndReturn({
+     *   select: { studyInstanceUid: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SatuSehatIntegrationCreateManyAndReturnArgs>(args?: SelectSubset<T, SatuSehatIntegrationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SatuSehatIntegration.
+     * @param {SatuSehatIntegrationDeleteArgs} args - Arguments to delete one SatuSehatIntegration.
+     * @example
+     * // Delete one SatuSehatIntegration
+     * const SatuSehatIntegration = await prisma.satuSehatIntegration.delete({
+     *   where: {
+     *     // ... filter to delete one SatuSehatIntegration
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SatuSehatIntegrationDeleteArgs>(args: SelectSubset<T, SatuSehatIntegrationDeleteArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SatuSehatIntegration.
+     * @param {SatuSehatIntegrationUpdateArgs} args - Arguments to update one SatuSehatIntegration.
+     * @example
+     * // Update one SatuSehatIntegration
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SatuSehatIntegrationUpdateArgs>(args: SelectSubset<T, SatuSehatIntegrationUpdateArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SatuSehatIntegrations.
+     * @param {SatuSehatIntegrationDeleteManyArgs} args - Arguments to filter SatuSehatIntegrations to delete.
+     * @example
+     * // Delete a few SatuSehatIntegrations
+     * const { count } = await prisma.satuSehatIntegration.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SatuSehatIntegrationDeleteManyArgs>(args?: SelectSubset<T, SatuSehatIntegrationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatIntegrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SatuSehatIntegrations
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SatuSehatIntegrationUpdateManyArgs>(args: SelectSubset<T, SatuSehatIntegrationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatIntegrations and returns the data updated in the database.
+     * @param {SatuSehatIntegrationUpdateManyAndReturnArgs} args - Arguments to update many SatuSehatIntegrations.
+     * @example
+     * // Update many SatuSehatIntegrations
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SatuSehatIntegrations and only return the `studyInstanceUid`
+     * const satuSehatIntegrationWithStudyInstanceUidOnly = await prisma.satuSehatIntegration.updateManyAndReturn({
+     *   select: { studyInstanceUid: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SatuSehatIntegrationUpdateManyAndReturnArgs>(args: SelectSubset<T, SatuSehatIntegrationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SatuSehatIntegration.
+     * @param {SatuSehatIntegrationUpsertArgs} args - Arguments to update or create a SatuSehatIntegration.
+     * @example
+     * // Update or create a SatuSehatIntegration
+     * const satuSehatIntegration = await prisma.satuSehatIntegration.upsert({
+     *   create: {
+     *     // ... data to create a SatuSehatIntegration
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SatuSehatIntegration we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SatuSehatIntegrationUpsertArgs>(args: SelectSubset<T, SatuSehatIntegrationUpsertArgs<ExtArgs>>): Prisma__SatuSehatIntegrationClient<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SatuSehatIntegrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationCountArgs} args - Arguments to filter SatuSehatIntegrations to count.
+     * @example
+     * // Count the number of SatuSehatIntegrations
+     * const count = await prisma.satuSehatIntegration.count({
+     *   where: {
+     *     // ... the filter for the SatuSehatIntegrations we want to count
+     *   }
+     * })
+    **/
+    count<T extends SatuSehatIntegrationCountArgs>(
+      args?: Subset<T, SatuSehatIntegrationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SatuSehatIntegrationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SatuSehatIntegration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SatuSehatIntegrationAggregateArgs>(args: Subset<T, SatuSehatIntegrationAggregateArgs>): Prisma.PrismaPromise<GetSatuSehatIntegrationAggregateType<T>>
+
+    /**
+     * Group by SatuSehatIntegration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatIntegrationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SatuSehatIntegrationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SatuSehatIntegrationGroupByArgs['orderBy'] }
+        : { orderBy?: SatuSehatIntegrationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SatuSehatIntegrationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSatuSehatIntegrationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SatuSehatIntegration model
+   */
+  readonly fields: SatuSehatIntegrationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SatuSehatIntegration.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SatuSehatIntegrationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SatuSehatIntegration model
+   */
+  interface SatuSehatIntegrationFieldRefs {
+    readonly studyInstanceUid: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly satusehatId: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly patientNik: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly status: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly error: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly createdAt: FieldRef<"SatuSehatIntegration", 'DateTime'>
+    readonly updatedAt: FieldRef<"SatuSehatIntegration", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SatuSehatIntegration findUnique
+   */
+  export type SatuSehatIntegrationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatIntegration to fetch.
+     */
+    where: SatuSehatIntegrationWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatIntegration findUniqueOrThrow
+   */
+  export type SatuSehatIntegrationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatIntegration to fetch.
+     */
+    where: SatuSehatIntegrationWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatIntegration findFirst
+   */
+  export type SatuSehatIntegrationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatIntegration to fetch.
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatIntegrations to fetch.
+     */
+    orderBy?: SatuSehatIntegrationOrderByWithRelationInput | SatuSehatIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatIntegrations.
+     */
+    cursor?: SatuSehatIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatIntegrations.
+     */
+    distinct?: SatuSehatIntegrationScalarFieldEnum | SatuSehatIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatIntegration findFirstOrThrow
+   */
+  export type SatuSehatIntegrationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatIntegration to fetch.
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatIntegrations to fetch.
+     */
+    orderBy?: SatuSehatIntegrationOrderByWithRelationInput | SatuSehatIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatIntegrations.
+     */
+    cursor?: SatuSehatIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatIntegrations.
+     */
+    distinct?: SatuSehatIntegrationScalarFieldEnum | SatuSehatIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatIntegration findMany
+   */
+  export type SatuSehatIntegrationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatIntegrations to fetch.
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatIntegrations to fetch.
+     */
+    orderBy?: SatuSehatIntegrationOrderByWithRelationInput | SatuSehatIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SatuSehatIntegrations.
+     */
+    cursor?: SatuSehatIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatIntegrations.
+     */
+    skip?: number
+    distinct?: SatuSehatIntegrationScalarFieldEnum | SatuSehatIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatIntegration create
+   */
+  export type SatuSehatIntegrationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SatuSehatIntegration.
+     */
+    data: XOR<SatuSehatIntegrationCreateInput, SatuSehatIntegrationUncheckedCreateInput>
+  }
+
+  /**
+   * SatuSehatIntegration createMany
+   */
+  export type SatuSehatIntegrationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SatuSehatIntegrations.
+     */
+    data: SatuSehatIntegrationCreateManyInput | SatuSehatIntegrationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatIntegration createManyAndReturn
+   */
+  export type SatuSehatIntegrationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * The data used to create many SatuSehatIntegrations.
+     */
+    data: SatuSehatIntegrationCreateManyInput | SatuSehatIntegrationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatIntegration update
+   */
+  export type SatuSehatIntegrationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SatuSehatIntegration.
+     */
+    data: XOR<SatuSehatIntegrationUpdateInput, SatuSehatIntegrationUncheckedUpdateInput>
+    /**
+     * Choose, which SatuSehatIntegration to update.
+     */
+    where: SatuSehatIntegrationWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatIntegration updateMany
+   */
+  export type SatuSehatIntegrationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SatuSehatIntegrations.
+     */
+    data: XOR<SatuSehatIntegrationUpdateManyMutationInput, SatuSehatIntegrationUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatIntegrations to update
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * Limit how many SatuSehatIntegrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatIntegration updateManyAndReturn
+   */
+  export type SatuSehatIntegrationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * The data used to update SatuSehatIntegrations.
+     */
+    data: XOR<SatuSehatIntegrationUpdateManyMutationInput, SatuSehatIntegrationUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatIntegrations to update
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * Limit how many SatuSehatIntegrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatIntegration upsert
+   */
+  export type SatuSehatIntegrationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SatuSehatIntegration to update in case it exists.
+     */
+    where: SatuSehatIntegrationWhereUniqueInput
+    /**
+     * In case the SatuSehatIntegration found by the `where` argument doesn't exist, create a new SatuSehatIntegration with this data.
+     */
+    create: XOR<SatuSehatIntegrationCreateInput, SatuSehatIntegrationUncheckedCreateInput>
+    /**
+     * In case the SatuSehatIntegration was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SatuSehatIntegrationUpdateInput, SatuSehatIntegrationUncheckedUpdateInput>
+  }
+
+  /**
+   * SatuSehatIntegration delete
+   */
+  export type SatuSehatIntegrationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+    /**
+     * Filter which SatuSehatIntegration to delete.
+     */
+    where: SatuSehatIntegrationWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatIntegration deleteMany
+   */
+  export type SatuSehatIntegrationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatIntegrations to delete
+     */
+    where?: SatuSehatIntegrationWhereInput
+    /**
+     * Limit how many SatuSehatIntegrations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatIntegration without action
+   */
+  export type SatuSehatIntegrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatIntegration
+     */
+    select?: SatuSehatIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatIntegration
+     */
+    omit?: SatuSehatIntegrationOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -7820,6 +8932,19 @@ export namespace Prisma {
   };
 
   export type AiResultScalarFieldEnum = (typeof AiResultScalarFieldEnum)[keyof typeof AiResultScalarFieldEnum]
+
+
+  export const SatuSehatIntegrationScalarFieldEnum: {
+    studyInstanceUid: 'studyInstanceUid',
+    satusehatId: 'satusehatId',
+    patientNik: 'patientNik',
+    status: 'status',
+    error: 'error',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SatuSehatIntegrationScalarFieldEnum = (typeof SatuSehatIntegrationScalarFieldEnum)[keyof typeof SatuSehatIntegrationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8339,6 +9464,68 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"AiResult"> | Date | string
   }
 
+  export type SatuSehatIntegrationWhereInput = {
+    AND?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
+    OR?: SatuSehatIntegrationWhereInput[]
+    NOT?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
+    studyInstanceUid?: StringFilter<"SatuSehatIntegration"> | string
+    satusehatId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    status?: StringFilter<"SatuSehatIntegration"> | string
+    error?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    createdAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
+    updatedAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
+  }
+
+  export type SatuSehatIntegrationOrderByWithRelationInput = {
+    studyInstanceUid?: SortOrder
+    satusehatId?: SortOrderInput | SortOrder
+    patientNik?: SortOrderInput | SortOrder
+    status?: SortOrder
+    error?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatIntegrationWhereUniqueInput = Prisma.AtLeast<{
+    studyInstanceUid?: string
+    AND?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
+    OR?: SatuSehatIntegrationWhereInput[]
+    NOT?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
+    satusehatId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    status?: StringFilter<"SatuSehatIntegration"> | string
+    error?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    createdAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
+    updatedAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
+  }, "studyInstanceUid">
+
+  export type SatuSehatIntegrationOrderByWithAggregationInput = {
+    studyInstanceUid?: SortOrder
+    satusehatId?: SortOrderInput | SortOrder
+    patientNik?: SortOrderInput | SortOrder
+    status?: SortOrder
+    error?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SatuSehatIntegrationCountOrderByAggregateInput
+    _max?: SatuSehatIntegrationMaxOrderByAggregateInput
+    _min?: SatuSehatIntegrationMinOrderByAggregateInput
+  }
+
+  export type SatuSehatIntegrationScalarWhereWithAggregatesInput = {
+    AND?: SatuSehatIntegrationScalarWhereWithAggregatesInput | SatuSehatIntegrationScalarWhereWithAggregatesInput[]
+    OR?: SatuSehatIntegrationScalarWhereWithAggregatesInput[]
+    NOT?: SatuSehatIntegrationScalarWhereWithAggregatesInput | SatuSehatIntegrationScalarWhereWithAggregatesInput[]
+    studyInstanceUid?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
+    satusehatId?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
+    patientNik?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
+    status?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
+    error?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -8747,6 +9934,76 @@ export namespace Prisma {
     isUrgent?: BoolFieldUpdateOperationsInput | boolean
     heatmapPath?: NullableStringFieldUpdateOperationsInput | string | null
     heatmapBase64?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatIntegrationCreateInput = {
+    studyInstanceUid: string
+    satusehatId?: string | null
+    patientNik?: string | null
+    status?: string
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatuSehatIntegrationUncheckedCreateInput = {
+    studyInstanceUid: string
+    satusehatId?: string | null
+    patientNik?: string | null
+    status?: string
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatuSehatIntegrationUpdateInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientNik?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatIntegrationUncheckedUpdateInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientNik?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatIntegrationCreateManyInput = {
+    studyInstanceUid: string
+    satusehatId?: string | null
+    patientNik?: string | null
+    status?: string
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatuSehatIntegrationUpdateManyMutationInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientNik?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatIntegrationUncheckedUpdateManyInput = {
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
+    patientNik?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9191,6 +10448,36 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type SatuSehatIntegrationCountOrderByAggregateInput = {
+    studyInstanceUid?: SortOrder
+    satusehatId?: SortOrder
+    patientNik?: SortOrder
+    status?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatIntegrationMaxOrderByAggregateInput = {
+    studyInstanceUid?: SortOrder
+    satusehatId?: SortOrder
+    patientNik?: SortOrder
+    status?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatIntegrationMinOrderByAggregateInput = {
+    studyInstanceUid?: SortOrder
+    satusehatId?: SortOrder
+    patientNik?: SortOrder
+    status?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {

@@ -24,6 +24,15 @@ export function useWorklist() {
     const [instancesData, setInstancesData] = useState<Record<string, Instance[]>>({});
     const [tagsData, setTagsData] = useState<Record<string, DicomTags>>({});
     const [aiResults, setAiResults] = useState<Record<string, any>>({});
+    const [ssIntegrationStatus, setSsIntegrationStatus] = useState<Record<string, any>>({});
+
+    // Dialog states
+    const [isSendTelegramDialogOpen, setIsSendTelegramDialogOpen] = useState(false);
+    const [selectedStudyForTelegram, setSelectedStudyForTelegram] = useState<Study | null>(null);
+
+    // Satu Sehat Bridge state
+    const [isBridgeDialogOpen, setIsBridgeDialogOpen] = useState(false);
+    const [selectedStudyForBridge, setSelectedStudyForBridge] = useState<Study | null>(null);
 
     const fetchAiResults = useCallback(async () => {
         try {
@@ -51,6 +60,22 @@ export function useWorklist() {
         return {};
     }, []);
 
+    const fetchSsStatus = useCallback(async (studyInstanceUids: string[]) => {
+        try {
+            const statusMap: Record<string, any> = {};
+            await Promise.all(studyInstanceUids.map(async (uid) => {
+                const res = await fetch(`/api/satusehat/bridge?studyInstanceUid=${uid}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    statusMap[uid] = data;
+                }
+            }));
+            setSsIntegrationStatus(prev => ({ ...prev, ...statusMap }));
+        } catch (e) {
+            console.error("Failed to fetch SS status:", e);
+        }
+    }, []);
+
     const fetchStudies = useCallback(async () => {
         setLoading(true);
         try {
@@ -60,6 +85,10 @@ export function useWorklist() {
                 fetchAiResults()
             ]);
             setStudies(sortedDetails);
+            
+            // Fetch SS status for the studies
+            const uids = sortedDetails.map(s => s.MainDicomTags.StudyInstanceUID);
+            fetchSsStatus(uids);
         } catch (error) {
             console.error("Failed to fetch studies:", error);
             toast.error("Koneksi Server Gagal", {
@@ -68,7 +97,7 @@ export function useWorklist() {
         } finally {
             setLoading(false);
         }
-    }, [fetchAiResults]);
+    }, [fetchAiResults, fetchSsStatus]);
 
     const fetchAiConfig = useCallback(async () => {
         try {
@@ -429,9 +458,6 @@ export function useWorklist() {
         }
     }, [fetchStudies, addTask, updateTask]);
 
-    const [isSendTelegramDialogOpen, setIsSendTelegramDialogOpen] = useState(false);
-    const [selectedStudyForTelegram, setSelectedStudyForTelegram] = useState<Study | null>(null);
-
     const handleSendToTelegram = useCallback(async (studyId: string) => {
         try {
             await orthancApi.sendToTelegram(studyId);
@@ -477,6 +503,64 @@ export function useWorklist() {
         setIsSendTelegramDialogOpen(true);
     }, []);
 
+    const openBridgeDialog = useCallback((study: Study) => {
+        setSelectedStudyForBridge(study);
+        setIsBridgeDialogOpen(true);
+    }, []);
+
+    const handleBridgeSatuSehat = useCallback(async (studyId: string, manualNik?: string) => {
+        const taskId = addTask({ 
+            id: `ss-bridge-${studyId}`, 
+            description: "Bridging to Satu Sehat...", 
+            type: "upload" 
+        });
+
+        // Temukan Study untuk mendapatkan StudyInstanceUID
+        const study = studies.find(s => s.ID === studyId);
+        const studyInstanceUid = study?.MainDicomTags.StudyInstanceUID || studyId;
+
+        setSsIntegrationStatus(prev => ({ 
+            ...prev, 
+            [studyInstanceUid]: { ...prev[studyInstanceUid], status: "PROCESSING" } 
+        }));
+
+        try {
+            const res = await fetch("/api/satusehat/bridge", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    studyInstanceUid: studyId,
+                    manualNik: manualNik
+                }) 
+            });
+
+            if (res.ok) {
+                updateTask(taskId, "success");
+                toast.success("Berhasil dikirim ke Satu Sehat");
+                
+                // Refresh status
+                const statusRes = await fetch(`/api/satusehat/bridge?studyInstanceUid=${studyInstanceUid}`);
+                if (statusRes.ok) {
+                    const statusData = await statusRes.json();
+                    setSsIntegrationStatus(prev => ({ ...prev, [studyInstanceUid]: statusData }));
+                }
+            } else {
+                const data = await res.json();
+                throw new Error(data.error || "Gagal mengirim ke Satu Sehat");
+            }
+        } catch (error: any) {
+            console.error("SS bridge error:", error);
+            updateTask(taskId, "error");
+            toast.error("Satu Sehat Gagal", { description: error.message });
+            setSsIntegrationStatus(prev => ({ 
+                ...prev, 
+                [studyInstanceUid]: { ...prev[studyInstanceUid], status: "FAILED", error: error.message } 
+            }));
+        } finally {
+            setTimeout(() => toast.dismiss(taskId), 3000);
+        }
+    }, [addTask, updateTask]);
+
     return {
         studies, loading, uploading,
         expandedStudies, expandedSeries, expandedInstances,
@@ -488,6 +572,9 @@ export function useWorklist() {
         handleFileUpload, fetchStudies, handleSendToTelegram,
         isSendTelegramDialogOpen, setIsSendTelegramDialogOpen,
         selectedStudyForTelegram, openSendTelegramDialog,
-        aiMode, handleRunAi, aiResults
+        isBridgeDialogOpen, setIsBridgeDialogOpen,
+        selectedStudyForBridge, openBridgeDialog,
+        aiMode, handleRunAi, aiResults,
+        handleBridgeSatuSehat, ssIntegrationStatus
     };
 }

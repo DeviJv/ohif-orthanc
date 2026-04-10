@@ -1,8 +1,39 @@
-server {
     listen 80;
     server_name _;
-    # Redirect all HTTP to HTTPS
-    return 301 https://$host$request_uri;
+
+    proxy_read_timeout 300s;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+
+    # Direct access for localhost (no SSL required)
+    location / {
+        if ($host != "localhost") {
+            return 301 https://$host$request_uri;
+        }
+        proxy_pass http://pacs_web_upstream;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Proxy Orthanc & DICOMweb for local HTTP (localhost)
+    location /orthanc/ {
+        if ($host != "localhost") { return 301 https://$host$request_uri; }
+        proxy_pass http://orthanc_upstream/;
+        proxy_set_header Host $host;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+    }
+
+    location /dicom-web/ {
+        if ($host != "localhost") { return 301 https://$host$request_uri; }
+        proxy_pass http://orthanc_upstream/dicom-web/;
+        proxy_set_header Host $host;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+    }
 }
 
 upstream pacs_web_upstream {
@@ -25,6 +56,9 @@ server {
     ssl_ciphers         HIGH:!aNULL:!MD5;
 
     client_max_body_size 500M;
+    proxy_read_timeout 300s;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
 
     gzip on;
     gzip_vary on;

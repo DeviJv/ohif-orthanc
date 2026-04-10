@@ -80,3 +80,13 @@ model AiResult {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
+
+model SatuSehatIntegration {
+  studyInstanceUid String   @id
+  satusehatId      String?  // UUID from Kemenkes
+  patientNik       String?  // NIK used for this integration
+  status           String   @default("PENDING") // SUCCESS, FAILED
+  error            String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

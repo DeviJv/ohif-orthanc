@@ -78,6 +78,10 @@ const data = {
           title: "Profil Klinik",
           url: "/settings",
         },
+        {
+          title: "Testing Integrasi",
+          url: "/settings/testing",
+        },
       ],
     },
   ],

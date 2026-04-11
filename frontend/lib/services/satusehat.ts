@@ -5,10 +5,11 @@ export interface SatuSehatConfig {
     clientId: string;
     clientSecret: string;
     environment: "staging" | "production";
+    locationId?: string;
 }
 
 export class SatuSehatService {
-    private static async getConfig(): Promise<SatuSehatConfig | null> {
+    static async getConfig(): Promise<SatuSehatConfig | null> {
         const configs = await db.appConfig.findMany({
             where: {
                 key: {
@@ -42,7 +43,7 @@ export class SatuSehatService {
     private static cachedToken: string | null = null;
     private static tokenExpiry: number = 0; // Epoch in ms
 
-    private static async getAccessToken(config: SatuSehatConfig): Promise<string> {
+    static async getAccessToken(config: SatuSehatConfig): Promise<string> {
         const now = Date.now();
         
         // Use cache if token exists and hasn't expired (with 5 min safety buffer)
@@ -85,7 +86,7 @@ export class SatuSehatService {
         return this.cachedToken as string;
     }
 
-    private static getBaseUrl(environment: "staging" | "production"): string {
+    static getBaseUrl(environment: "staging" | "production"): string {
         return environment === "production"
             ? "https://api-satusehat.kemkes.go.id/fhir-r4/v1"
             : "https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1";

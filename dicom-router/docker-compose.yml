@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  dicom-router:
+    image: registry.dto.kemkes.go.id/pub/dicom-router:latest
+    container_name: dicom-router
+    restart: always
+    ports:
+      - "11112:11112"
+      - "18080:8080" # Mapping to avoided conflict if 8080 is used
+    environment:
+      - AE_TITLE=QTM-ROUTER  
+      - ORG_ID=${ORG_ID}
+      - CLIENT=${CLIENT_ID}
+      - SECRET=${CLIENT_SECRET}
+      - WEBHOOK_URL=${NEXT_PUBLIC_APP_URL}/api/dicom/webhook
+      - WEBHOOK_USER=admin
+      - WEBHOOK_PASSWORD=${INTERNAL_PACS_KEY}
+      - URL=${SATUSEHAT_URL}
+    networks:
+      - pacs
+
+networks:
+  pacs:
+    external: true

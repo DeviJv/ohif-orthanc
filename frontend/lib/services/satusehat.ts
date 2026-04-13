@@ -251,7 +251,7 @@ export class SatuSehatService {
         const payload = {
             resourceType: "Location",
             identifier: [{
-                system: `http://sys-ids.kemkes.go.id/location/${config.organizationId}`,
+                system: `https://sys-ids.kemkes.go.id/location/${config.organizationId}`,
                 value: "RAD-001"
             }],
             status: "active",
@@ -417,6 +417,17 @@ export class SatuSehatService {
                     resource: {
                         resourceType: "ServiceRequest",
                         meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceRequest"] },
+                        identifier: [{
+                            use: "usual",
+                            type: {
+                                coding: [{
+                                    system: "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    code: "ACSN"
+                                }]
+                            },
+                            system: `http://sys-ids.kemkes.go.id/acsn/${config.organizationId}`,
+                            value: params.accessionNumber
+                        }],
                         status: "active",
                         intent: "order",
                         category: [{
@@ -434,7 +445,6 @@ export class SatuSehatService {
                     },
                     request: { method: "POST", url: "ServiceRequest" }
                 },
-                // ==========================================
                 // 2. ENCOUNTER (Kunjungan Pasien)
                 // ==========================================
                 {
@@ -443,7 +453,7 @@ export class SatuSehatService {
                         resourceType: "Encounter",
                         meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Encounter"] },
                         identifier: [{
-                            system: `http://sys-ids.kemkes.go.id/encounter/${config.organizationId}`,
+                            system: `https://sys-ids.kemkes.go.id/encounter/${config.organizationId}`,
                             value: visitNumber
                         }],
                         status: "finished",
@@ -524,7 +534,7 @@ export class SatuSehatService {
                         resourceType: "ImagingStudy",
                         meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/ImagingStudy"] },
                         identifier: [{
-                            system: `http://sys-ids.kemkes.go.id/imagingstudy/${config.organizationId}`,
+                            system: `https://sys-ids.kemkes.go.id/imagingstudy/${config.organizationId}`,
                             value: params.studyInstanceUid
                         }],
                         status: "available",
@@ -688,6 +698,154 @@ export class SatuSehatService {
     }
 
     /**
+     * Membuat Order (ServiceRequest) saja tanpa ImagingStudy.
+     * Berguna untuk testing DICOM Router.
+     */
+    static async createTestOrder(params: {
+        accessionNumber: string;
+        patientName?: string;
+    }): Promise<{ id: string, logs: string[] }> {
+        const config = await this.getConfig();
+        if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
+
+        const activePatientId = config.defaultPatientId || "P02478375538"; 
+        const activePractitionerId = config.defaultPractitionerId || "10009880728";
+        
+        const logs: string[] = [`[TEST-ORDER] Membuat Order Mandiri untuk Accession: ${params.accessionNumber}`];
+        const token = await this.getAccessToken(config);
+        const baseUrl = this.getBaseUrl(config.environment, config.baseUrl);
+        const locationId = await this.getOrCreateLocationId(config);
+
+        const now = new Date();
+        const startTime = new Date(now.getTime() - 15 * 60 * 1000).toISOString();
+        const endTime = now.toISOString();
+        
+        const encounterUuid = `urn:uuid:${this.generateUuid()}`;
+        const serviceRequestUuid = `urn:uuid:${this.generateUuid()}`;
+        const conditionUuid = `urn:uuid:${this.generateUuid()}`;
+        const patientName = params.patientName || "Pasien Test Router";
+
+        const bundle = {
+            resourceType: "Bundle",
+            type: "transaction",
+            entry: [
+                {
+                    fullUrl: serviceRequestUuid,
+                    resource: {
+                        resourceType: "ServiceRequest",
+                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceRequest"] },
+                        identifier: [{
+                            use: "usual",
+                            type: {
+                                coding: [{
+                                    system: "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    code: "ACSN"
+                                }]
+                            },
+                            system: `http://sys-ids.kemkes.go.id/acsn/${config.organizationId}`,
+                            value: params.accessionNumber
+                        }],
+                        status: "active",
+                        intent: "order",
+                        category: [{
+                            coding: [{ system: "http://snomed.info/sct", code: "363679005", display: "Imaging" }]
+                        }],
+                        code: {
+                            coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }],
+                            text: "Pemeriksaan Radiologi (Test)"
+                        },
+                        subject: { reference: `Patient/${activePatientId}`, display: patientName },
+                        encounter: { reference: encounterUuid },
+                        authoredOn: startTime,
+                        requester: { reference: `Practitioner/${activePractitionerId}` },
+                        performer: [{ reference: `Organization/${config.organizationId}` }]
+                    },
+                    request: { method: "POST", url: "ServiceRequest" }
+                },
+                {
+                    fullUrl: encounterUuid,
+                    resource: {
+                        resourceType: "Encounter",
+                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Encounter"] },
+                        identifier: [{
+                            system: `https://sys-ids.kemkes.go.id/encounter/${config.organizationId}`,
+                            value: `TEST-${Date.now()}`
+                        }],
+                        status: "finished",
+                        class: {
+                            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                            code: "AMB",
+                            display: "ambulatory"
+                        },
+                        subject: { reference: `Patient/${activePatientId}`, display: patientName },
+                        participant: [{
+                            type: [{
+                                coding: [{
+                                    system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                    code: "PPRF",
+                                    display: "primary performer"
+                                }]
+                            }],
+                            individual: { reference: `Practitioner/${activePractitionerId}` }
+                        }],
+                        period: { start: startTime, end: endTime },
+                        location: [{ location: { reference: `Location/${locationId}` } }],
+                        statusHistory: [{ status: "finished", period: { start: startTime, end: endTime } }],
+                        diagnosis: [{
+                            condition: { reference: conditionUuid }, 
+                            use: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/diagnosis-role", code: "AD", display: "Admission diagnosis" }] }
+                        }],
+                        serviceProvider: { reference: `Organization/${config.organizationId}` }
+                    },
+                    request: { method: "POST", url: "Encounter" }
+                },
+                {
+                    fullUrl: conditionUuid,
+                    resource: {
+                        resourceType: "Condition",
+                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Condition"] },
+                        clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active" }] },
+                        category: [{
+                            coding: [{
+                                system: "http://terminology.hl7.org/CodeSystem/condition-category",
+                                code: "encounter-diagnosis",
+                                display: "Encounter Diagnosis"
+                            }]
+                        }],
+                        code: { coding: [{ system: "http://hl7.org/fhir/sid/icd-10", code: "Z00.0", display: "General medical examination" }] },
+                        subject: { reference: `Patient/${activePatientId}`, display: patientName },
+                        encounter: { reference: encounterUuid }
+                    },
+                    request: { method: "POST", url: "Condition" }
+                }
+            ]
+        };
+
+        const response = await fetch(baseUrl, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "X-Organization-Id": config.organizationId
+            },
+            body: JSON.stringify(bundle)
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            console.error("[TEST-ORDER] Error:", data);
+            throw new Error(data.issue?.[0]?.details?.text || "Gagal membuat Test Order");
+        }
+
+        logs.push("[TEST-ORDER] Sukses dikirim ke SatuSehat!");
+        return { 
+            id: data.entry?.[0]?.response?.location?.split("/").pop() || "OK", 
+            patientId: activePatientId,
+            logs 
+        };
+    }
+
+    /**
      * Entry point utama untuk Bridging. Sekarang menggunakan Mega-Bundle
      */
     static async submitImagingStudy(params: {
@@ -718,5 +876,75 @@ export class SatuSehatService {
         });
 
         return { id: result.ids["DiagnosticReport"] || "SUCCESS", logs: result.logs };
+    }
+
+    /**
+     * Mengecek apakah ServiceRequest dan ImagingStudy sudah ada di SatuSehat
+     * berdasarkan Accession Number.
+     */
+    static async getIntegrationStatus(accessionNumber: string): Promise<{
+        serviceRequest?: { id: string, status: string },
+        imagingStudy?: { id: string, status: string, seriesCount: number },
+        logs: string[]
+    }> {
+        const config = await this.getConfig();
+        if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
+
+        const token = await this.getAccessToken(config);
+        const logs: string[] = [`[CHECK-STATUS] Mencari resource untuk Accession: ${accessionNumber}`];
+        
+        const result: any = { logs };
+
+        // 1. Cari ServiceRequest
+        try {
+            const srUrl = this.getResourceUrl("ServiceRequest", config);
+            const srSearchUrl = `${srUrl}?identifier=http://sys-ids.kemkes.go.id/acsn/${config.organizationId}|${accessionNumber}`;
+            
+            const srRes = await fetch(srSearchUrl, {
+                headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
+            });
+
+            if (srRes.ok) {
+                const srData = await srRes.json();
+                if (srData.total > 0) {
+                    const sr = srData.entry[0].resource;
+                    result.serviceRequest = { id: sr.id, status: sr.status };
+                    logs.push(`[CHECK-STATUS] ServiceRequest DITEMUKAN: ${sr.id} (${sr.status})`);
+                } else {
+                    logs.push("[CHECK-STATUS] ServiceRequest TIDAK ditemukan.");
+                }
+            }
+        } catch (e: any) {
+            logs.push(`[CHECK-STATUS] Error mencari ServiceRequest: ${e.message}`);
+        }
+
+        // 2. Cari ImagingStudy
+        try {
+            const isUrl = this.getResourceUrl("ImagingStudy", config);
+            const isSearchUrl = `${isUrl}?identifier=http://sys-ids.kemkes.go.id/acsn/${config.organizationId}|${accessionNumber}`;
+            
+            const isRes = await fetch(isSearchUrl, {
+                headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
+            });
+
+            if (isRes.ok) {
+                const isData = await isRes.json();
+                if (isData.total > 0) {
+                    const study = isData.entry[0].resource;
+                    result.imagingStudy = { 
+                        id: study.id, 
+                        status: study.status,
+                        seriesCount: study.numberOfSeries || 0
+                    };
+                    logs.push(`[CHECK-STATUS] ImagingStudy DITEMUKAN: ${study.id} (${study.status})`);
+                } else {
+                    logs.push("[CHECK-STATUS] ImagingStudy TIDAK ditemukan.");
+                }
+            }
+        } catch (e: any) {
+            logs.push(`[CHECK-STATUS] Error mencari ImagingStudy: ${e.message}`);
+        }
+
+        return result;
     }
 }

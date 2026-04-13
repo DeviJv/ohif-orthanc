@@ -59,7 +59,9 @@
   "DicomAlwaysAllowGet": false,
   "DicomAlwaysAllowMove": false,
   "DicomCheckModalityHost": false,
-  "DicomModalities": {},
+  "DicomModalities": {
+    "QTM-ROUTER": [ "QTM-ROUTER", "dicom-router", 11112 ]
+  },
   "DicomModalitiesInDatabase": false,
   "DicomEchoChecksFind": false,
   "DicomScuTimeout": 10,
@@ -74,7 +76,7 @@
   "HttpsCACertificates": "/etc/ssl/certs/ca-certificates.crt",
   "UserMetadata": {},
   "UserContentType": {},
-  "StableAge": 10,
+  "StableAge": 5,
   "StrictAetComparison": false,
   "StoreMD5ForAttachments": true,
   "LimitFindResults": 0,

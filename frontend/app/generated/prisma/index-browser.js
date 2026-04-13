@@ -21,11 +21,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.2
+ * Prisma Client JS version: 6.19.3
  * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
  */
 Prisma.prismaVersion = {
-  client: "6.19.2",
+  client: "6.19.3",
   engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
 }
 
@@ -189,6 +189,30 @@ exports.Prisma.SatuSehatIntegrationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SatuSehatSettingScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  clientId: 'clientId',
+  clientSecret: 'clientSecret',
+  environment: 'environment',
+  authUrl: 'authUrl',
+  baseUrl: 'baseUrl',
+  encounterUrl: 'encounterUrl',
+  conditionUrl: 'conditionUrl',
+  serviceRequestUrl: 'serviceRequestUrl',
+  imagingStudyUrl: 'imagingStudyUrl',
+  observationUrl: 'observationUrl',
+  diagnosticReportUrl: 'diagnosticReportUrl',
+  compositionUrl: 'compositionUrl',
+  patientUrl: 'patientUrl',
+  locationUrl: 'locationUrl',
+  practitionerUrl: 'practitionerUrl',
+  defaultPatientId: 'defaultPatientId',
+  defaultPractitionerId: 'defaultPractitionerId',
+  isActive: 'isActive',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -226,7 +250,8 @@ exports.Prisma.ModelName = {
   VerificationToken: 'VerificationToken',
   AppConfig: 'AppConfig',
   AiResult: 'AiResult',
-  SatuSehatIntegration: 'SatuSehatIntegration'
+  SatuSehatIntegration: 'SatuSehatIntegration',
+  SatuSehatSetting: 'SatuSehatSetting'
 };
 
 /**

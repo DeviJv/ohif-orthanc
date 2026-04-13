@@ -48,6 +48,11 @@ export type AiResult = $Result.DefaultSelection<Prisma.$AiResultPayload>
  * 
  */
 export type SatuSehatIntegration = $Result.DefaultSelection<Prisma.$SatuSehatIntegrationPayload>
+/**
+ * Model SatuSehatSetting
+ * 
+ */
+export type SatuSehatSetting = $Result.DefaultSelection<Prisma.$SatuSehatSettingPayload>
 
 /**
  * Enums
@@ -254,6 +259,16 @@ export class PrismaClient<
     * ```
     */
   get satuSehatIntegration(): Prisma.SatuSehatIntegrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.satuSehatSetting`: Exposes CRUD operations for the **SatuSehatSetting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SatuSehatSettings
+    * const satuSehatSettings = await prisma.satuSehatSetting.findMany()
+    * ```
+    */
+  get satuSehatSetting(): Prisma.SatuSehatSettingDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -312,7 +327,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.19.2
+   * Prisma Client JS version: 6.19.3
    * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
    */
   export type PrismaVersion = {
@@ -701,7 +716,8 @@ export namespace Prisma {
     VerificationToken: 'VerificationToken',
     AppConfig: 'AppConfig',
     AiResult: 'AiResult',
-    SatuSehatIntegration: 'SatuSehatIntegration'
+    SatuSehatIntegration: 'SatuSehatIntegration',
+    SatuSehatSetting: 'SatuSehatSetting'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -720,7 +736,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatSetting"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1242,6 +1258,80 @@ export namespace Prisma {
           }
         }
       }
+      SatuSehatSetting: {
+        payload: Prisma.$SatuSehatSettingPayload<ExtArgs>
+        fields: Prisma.SatuSehatSettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SatuSehatSettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SatuSehatSettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>
+          }
+          findFirst: {
+            args: Prisma.SatuSehatSettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SatuSehatSettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>
+          }
+          findMany: {
+            args: Prisma.SatuSehatSettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>[]
+          }
+          create: {
+            args: Prisma.SatuSehatSettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>
+          }
+          createMany: {
+            args: Prisma.SatuSehatSettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SatuSehatSettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>[]
+          }
+          delete: {
+            args: Prisma.SatuSehatSettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>
+          }
+          update: {
+            args: Prisma.SatuSehatSettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.SatuSehatSettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SatuSehatSettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SatuSehatSettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.SatuSehatSettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatSettingPayload>
+          }
+          aggregate: {
+            args: Prisma.SatuSehatSettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSatuSehatSetting>
+          }
+          groupBy: {
+            args: Prisma.SatuSehatSettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatSettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SatuSehatSettingCountArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatSettingCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1345,6 +1435,7 @@ export namespace Prisma {
     appConfig?: AppConfigOmit
     aiResult?: AiResultOmit
     satuSehatIntegration?: SatuSehatIntegrationOmit
+    satuSehatSetting?: SatuSehatSettingOmit
   }
 
   /* Types for Logging */
@@ -8845,6 +8936,1243 @@ export namespace Prisma {
 
 
   /**
+   * Model SatuSehatSetting
+   */
+
+  export type AggregateSatuSehatSetting = {
+    _count: SatuSehatSettingCountAggregateOutputType | null
+    _avg: SatuSehatSettingAvgAggregateOutputType | null
+    _sum: SatuSehatSettingSumAggregateOutputType | null
+    _min: SatuSehatSettingMinAggregateOutputType | null
+    _max: SatuSehatSettingMaxAggregateOutputType | null
+  }
+
+  export type SatuSehatSettingAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SatuSehatSettingSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SatuSehatSettingMinAggregateOutputType = {
+    id: number | null
+    organizationId: string | null
+    clientId: string | null
+    clientSecret: string | null
+    environment: string | null
+    authUrl: string | null
+    baseUrl: string | null
+    encounterUrl: string | null
+    conditionUrl: string | null
+    serviceRequestUrl: string | null
+    imagingStudyUrl: string | null
+    observationUrl: string | null
+    diagnosticReportUrl: string | null
+    compositionUrl: string | null
+    patientUrl: string | null
+    locationUrl: string | null
+    practitionerUrl: string | null
+    defaultPatientId: string | null
+    defaultPractitionerId: string | null
+    isActive: boolean | null
+    updatedAt: Date | null
+  }
+
+  export type SatuSehatSettingMaxAggregateOutputType = {
+    id: number | null
+    organizationId: string | null
+    clientId: string | null
+    clientSecret: string | null
+    environment: string | null
+    authUrl: string | null
+    baseUrl: string | null
+    encounterUrl: string | null
+    conditionUrl: string | null
+    serviceRequestUrl: string | null
+    imagingStudyUrl: string | null
+    observationUrl: string | null
+    diagnosticReportUrl: string | null
+    compositionUrl: string | null
+    patientUrl: string | null
+    locationUrl: string | null
+    practitionerUrl: string | null
+    defaultPatientId: string | null
+    defaultPractitionerId: string | null
+    isActive: boolean | null
+    updatedAt: Date | null
+  }
+
+  export type SatuSehatSettingCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    clientId: number
+    clientSecret: number
+    environment: number
+    authUrl: number
+    baseUrl: number
+    encounterUrl: number
+    conditionUrl: number
+    serviceRequestUrl: number
+    imagingStudyUrl: number
+    observationUrl: number
+    diagnosticReportUrl: number
+    compositionUrl: number
+    patientUrl: number
+    locationUrl: number
+    practitionerUrl: number
+    defaultPatientId: number
+    defaultPractitionerId: number
+    isActive: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SatuSehatSettingAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SatuSehatSettingSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SatuSehatSettingMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    clientId?: true
+    clientSecret?: true
+    environment?: true
+    authUrl?: true
+    baseUrl?: true
+    encounterUrl?: true
+    conditionUrl?: true
+    serviceRequestUrl?: true
+    imagingStudyUrl?: true
+    observationUrl?: true
+    diagnosticReportUrl?: true
+    compositionUrl?: true
+    patientUrl?: true
+    locationUrl?: true
+    practitionerUrl?: true
+    defaultPatientId?: true
+    defaultPractitionerId?: true
+    isActive?: true
+    updatedAt?: true
+  }
+
+  export type SatuSehatSettingMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    clientId?: true
+    clientSecret?: true
+    environment?: true
+    authUrl?: true
+    baseUrl?: true
+    encounterUrl?: true
+    conditionUrl?: true
+    serviceRequestUrl?: true
+    imagingStudyUrl?: true
+    observationUrl?: true
+    diagnosticReportUrl?: true
+    compositionUrl?: true
+    patientUrl?: true
+    locationUrl?: true
+    practitionerUrl?: true
+    defaultPatientId?: true
+    defaultPractitionerId?: true
+    isActive?: true
+    updatedAt?: true
+  }
+
+  export type SatuSehatSettingCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    clientId?: true
+    clientSecret?: true
+    environment?: true
+    authUrl?: true
+    baseUrl?: true
+    encounterUrl?: true
+    conditionUrl?: true
+    serviceRequestUrl?: true
+    imagingStudyUrl?: true
+    observationUrl?: true
+    diagnosticReportUrl?: true
+    compositionUrl?: true
+    patientUrl?: true
+    locationUrl?: true
+    practitionerUrl?: true
+    defaultPatientId?: true
+    defaultPractitionerId?: true
+    isActive?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SatuSehatSettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatSetting to aggregate.
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatSettings to fetch.
+     */
+    orderBy?: SatuSehatSettingOrderByWithRelationInput | SatuSehatSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SatuSehatSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SatuSehatSettings
+    **/
+    _count?: true | SatuSehatSettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SatuSehatSettingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SatuSehatSettingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SatuSehatSettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SatuSehatSettingMaxAggregateInputType
+  }
+
+  export type GetSatuSehatSettingAggregateType<T extends SatuSehatSettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateSatuSehatSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSatuSehatSetting[P]>
+      : GetScalarType<T[P], AggregateSatuSehatSetting[P]>
+  }
+
+
+
+
+  export type SatuSehatSettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatuSehatSettingWhereInput
+    orderBy?: SatuSehatSettingOrderByWithAggregationInput | SatuSehatSettingOrderByWithAggregationInput[]
+    by: SatuSehatSettingScalarFieldEnum[] | SatuSehatSettingScalarFieldEnum
+    having?: SatuSehatSettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SatuSehatSettingCountAggregateInputType | true
+    _avg?: SatuSehatSettingAvgAggregateInputType
+    _sum?: SatuSehatSettingSumAggregateInputType
+    _min?: SatuSehatSettingMinAggregateInputType
+    _max?: SatuSehatSettingMaxAggregateInputType
+  }
+
+  export type SatuSehatSettingGroupByOutputType = {
+    id: number
+    organizationId: string
+    clientId: string
+    clientSecret: string
+    environment: string
+    authUrl: string
+    baseUrl: string
+    encounterUrl: string | null
+    conditionUrl: string | null
+    serviceRequestUrl: string | null
+    imagingStudyUrl: string | null
+    observationUrl: string | null
+    diagnosticReportUrl: string | null
+    compositionUrl: string | null
+    patientUrl: string | null
+    locationUrl: string | null
+    practitionerUrl: string | null
+    defaultPatientId: string | null
+    defaultPractitionerId: string | null
+    isActive: boolean
+    updatedAt: Date
+    _count: SatuSehatSettingCountAggregateOutputType | null
+    _avg: SatuSehatSettingAvgAggregateOutputType | null
+    _sum: SatuSehatSettingSumAggregateOutputType | null
+    _min: SatuSehatSettingMinAggregateOutputType | null
+    _max: SatuSehatSettingMaxAggregateOutputType | null
+  }
+
+  type GetSatuSehatSettingGroupByPayload<T extends SatuSehatSettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SatuSehatSettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SatuSehatSettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SatuSehatSettingGroupByOutputType[P]>
+            : GetScalarType<T[P], SatuSehatSettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SatuSehatSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    clientId?: boolean
+    clientSecret?: boolean
+    environment?: boolean
+    authUrl?: boolean
+    baseUrl?: boolean
+    encounterUrl?: boolean
+    conditionUrl?: boolean
+    serviceRequestUrl?: boolean
+    imagingStudyUrl?: boolean
+    observationUrl?: boolean
+    diagnosticReportUrl?: boolean
+    compositionUrl?: boolean
+    patientUrl?: boolean
+    locationUrl?: boolean
+    practitionerUrl?: boolean
+    defaultPatientId?: boolean
+    defaultPractitionerId?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["satuSehatSetting"]>
+
+  export type SatuSehatSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    clientId?: boolean
+    clientSecret?: boolean
+    environment?: boolean
+    authUrl?: boolean
+    baseUrl?: boolean
+    encounterUrl?: boolean
+    conditionUrl?: boolean
+    serviceRequestUrl?: boolean
+    imagingStudyUrl?: boolean
+    observationUrl?: boolean
+    diagnosticReportUrl?: boolean
+    compositionUrl?: boolean
+    patientUrl?: boolean
+    locationUrl?: boolean
+    practitionerUrl?: boolean
+    defaultPatientId?: boolean
+    defaultPractitionerId?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["satuSehatSetting"]>
+
+  export type SatuSehatSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    clientId?: boolean
+    clientSecret?: boolean
+    environment?: boolean
+    authUrl?: boolean
+    baseUrl?: boolean
+    encounterUrl?: boolean
+    conditionUrl?: boolean
+    serviceRequestUrl?: boolean
+    imagingStudyUrl?: boolean
+    observationUrl?: boolean
+    diagnosticReportUrl?: boolean
+    compositionUrl?: boolean
+    patientUrl?: boolean
+    locationUrl?: boolean
+    practitionerUrl?: boolean
+    defaultPatientId?: boolean
+    defaultPractitionerId?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["satuSehatSetting"]>
+
+  export type SatuSehatSettingSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    clientId?: boolean
+    clientSecret?: boolean
+    environment?: boolean
+    authUrl?: boolean
+    baseUrl?: boolean
+    encounterUrl?: boolean
+    conditionUrl?: boolean
+    serviceRequestUrl?: boolean
+    imagingStudyUrl?: boolean
+    observationUrl?: boolean
+    diagnosticReportUrl?: boolean
+    compositionUrl?: boolean
+    patientUrl?: boolean
+    locationUrl?: boolean
+    practitionerUrl?: boolean
+    defaultPatientId?: boolean
+    defaultPractitionerId?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "clientId" | "clientSecret" | "environment" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "isActive" | "updatedAt", ExtArgs["result"]["satuSehatSetting"]>
+
+  export type $SatuSehatSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SatuSehatSetting"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      organizationId: string
+      clientId: string
+      clientSecret: string
+      environment: string
+      authUrl: string
+      baseUrl: string
+      encounterUrl: string | null
+      conditionUrl: string | null
+      serviceRequestUrl: string | null
+      imagingStudyUrl: string | null
+      observationUrl: string | null
+      diagnosticReportUrl: string | null
+      compositionUrl: string | null
+      patientUrl: string | null
+      locationUrl: string | null
+      practitionerUrl: string | null
+      defaultPatientId: string | null
+      defaultPractitionerId: string | null
+      isActive: boolean
+      updatedAt: Date
+    }, ExtArgs["result"]["satuSehatSetting"]>
+    composites: {}
+  }
+
+  type SatuSehatSettingGetPayload<S extends boolean | null | undefined | SatuSehatSettingDefaultArgs> = $Result.GetResult<Prisma.$SatuSehatSettingPayload, S>
+
+  type SatuSehatSettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SatuSehatSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SatuSehatSettingCountAggregateInputType | true
+    }
+
+  export interface SatuSehatSettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SatuSehatSetting'], meta: { name: 'SatuSehatSetting' } }
+    /**
+     * Find zero or one SatuSehatSetting that matches the filter.
+     * @param {SatuSehatSettingFindUniqueArgs} args - Arguments to find a SatuSehatSetting
+     * @example
+     * // Get one SatuSehatSetting
+     * const satuSehatSetting = await prisma.satuSehatSetting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SatuSehatSettingFindUniqueArgs>(args: SelectSubset<T, SatuSehatSettingFindUniqueArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SatuSehatSetting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SatuSehatSettingFindUniqueOrThrowArgs} args - Arguments to find a SatuSehatSetting
+     * @example
+     * // Get one SatuSehatSetting
+     * const satuSehatSetting = await prisma.satuSehatSetting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SatuSehatSettingFindUniqueOrThrowArgs>(args: SelectSubset<T, SatuSehatSettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatSetting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingFindFirstArgs} args - Arguments to find a SatuSehatSetting
+     * @example
+     * // Get one SatuSehatSetting
+     * const satuSehatSetting = await prisma.satuSehatSetting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SatuSehatSettingFindFirstArgs>(args?: SelectSubset<T, SatuSehatSettingFindFirstArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatSetting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingFindFirstOrThrowArgs} args - Arguments to find a SatuSehatSetting
+     * @example
+     * // Get one SatuSehatSetting
+     * const satuSehatSetting = await prisma.satuSehatSetting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SatuSehatSettingFindFirstOrThrowArgs>(args?: SelectSubset<T, SatuSehatSettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SatuSehatSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SatuSehatSettings
+     * const satuSehatSettings = await prisma.satuSehatSetting.findMany()
+     * 
+     * // Get first 10 SatuSehatSettings
+     * const satuSehatSettings = await prisma.satuSehatSetting.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const satuSehatSettingWithIdOnly = await prisma.satuSehatSetting.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SatuSehatSettingFindManyArgs>(args?: SelectSubset<T, SatuSehatSettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SatuSehatSetting.
+     * @param {SatuSehatSettingCreateArgs} args - Arguments to create a SatuSehatSetting.
+     * @example
+     * // Create one SatuSehatSetting
+     * const SatuSehatSetting = await prisma.satuSehatSetting.create({
+     *   data: {
+     *     // ... data to create a SatuSehatSetting
+     *   }
+     * })
+     * 
+     */
+    create<T extends SatuSehatSettingCreateArgs>(args: SelectSubset<T, SatuSehatSettingCreateArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SatuSehatSettings.
+     * @param {SatuSehatSettingCreateManyArgs} args - Arguments to create many SatuSehatSettings.
+     * @example
+     * // Create many SatuSehatSettings
+     * const satuSehatSetting = await prisma.satuSehatSetting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SatuSehatSettingCreateManyArgs>(args?: SelectSubset<T, SatuSehatSettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SatuSehatSettings and returns the data saved in the database.
+     * @param {SatuSehatSettingCreateManyAndReturnArgs} args - Arguments to create many SatuSehatSettings.
+     * @example
+     * // Create many SatuSehatSettings
+     * const satuSehatSetting = await prisma.satuSehatSetting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SatuSehatSettings and only return the `id`
+     * const satuSehatSettingWithIdOnly = await prisma.satuSehatSetting.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SatuSehatSettingCreateManyAndReturnArgs>(args?: SelectSubset<T, SatuSehatSettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SatuSehatSetting.
+     * @param {SatuSehatSettingDeleteArgs} args - Arguments to delete one SatuSehatSetting.
+     * @example
+     * // Delete one SatuSehatSetting
+     * const SatuSehatSetting = await prisma.satuSehatSetting.delete({
+     *   where: {
+     *     // ... filter to delete one SatuSehatSetting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SatuSehatSettingDeleteArgs>(args: SelectSubset<T, SatuSehatSettingDeleteArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SatuSehatSetting.
+     * @param {SatuSehatSettingUpdateArgs} args - Arguments to update one SatuSehatSetting.
+     * @example
+     * // Update one SatuSehatSetting
+     * const satuSehatSetting = await prisma.satuSehatSetting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SatuSehatSettingUpdateArgs>(args: SelectSubset<T, SatuSehatSettingUpdateArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SatuSehatSettings.
+     * @param {SatuSehatSettingDeleteManyArgs} args - Arguments to filter SatuSehatSettings to delete.
+     * @example
+     * // Delete a few SatuSehatSettings
+     * const { count } = await prisma.satuSehatSetting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SatuSehatSettingDeleteManyArgs>(args?: SelectSubset<T, SatuSehatSettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SatuSehatSettings
+     * const satuSehatSetting = await prisma.satuSehatSetting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SatuSehatSettingUpdateManyArgs>(args: SelectSubset<T, SatuSehatSettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatSettings and returns the data updated in the database.
+     * @param {SatuSehatSettingUpdateManyAndReturnArgs} args - Arguments to update many SatuSehatSettings.
+     * @example
+     * // Update many SatuSehatSettings
+     * const satuSehatSetting = await prisma.satuSehatSetting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SatuSehatSettings and only return the `id`
+     * const satuSehatSettingWithIdOnly = await prisma.satuSehatSetting.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SatuSehatSettingUpdateManyAndReturnArgs>(args: SelectSubset<T, SatuSehatSettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SatuSehatSetting.
+     * @param {SatuSehatSettingUpsertArgs} args - Arguments to update or create a SatuSehatSetting.
+     * @example
+     * // Update or create a SatuSehatSetting
+     * const satuSehatSetting = await prisma.satuSehatSetting.upsert({
+     *   create: {
+     *     // ... data to create a SatuSehatSetting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SatuSehatSetting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SatuSehatSettingUpsertArgs>(args: SelectSubset<T, SatuSehatSettingUpsertArgs<ExtArgs>>): Prisma__SatuSehatSettingClient<$Result.GetResult<Prisma.$SatuSehatSettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SatuSehatSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingCountArgs} args - Arguments to filter SatuSehatSettings to count.
+     * @example
+     * // Count the number of SatuSehatSettings
+     * const count = await prisma.satuSehatSetting.count({
+     *   where: {
+     *     // ... the filter for the SatuSehatSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends SatuSehatSettingCountArgs>(
+      args?: Subset<T, SatuSehatSettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SatuSehatSettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SatuSehatSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SatuSehatSettingAggregateArgs>(args: Subset<T, SatuSehatSettingAggregateArgs>): Prisma.PrismaPromise<GetSatuSehatSettingAggregateType<T>>
+
+    /**
+     * Group by SatuSehatSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatSettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SatuSehatSettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SatuSehatSettingGroupByArgs['orderBy'] }
+        : { orderBy?: SatuSehatSettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SatuSehatSettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSatuSehatSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SatuSehatSetting model
+   */
+  readonly fields: SatuSehatSettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SatuSehatSetting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SatuSehatSettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SatuSehatSetting model
+   */
+  interface SatuSehatSettingFieldRefs {
+    readonly id: FieldRef<"SatuSehatSetting", 'Int'>
+    readonly organizationId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly clientId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly clientSecret: FieldRef<"SatuSehatSetting", 'String'>
+    readonly environment: FieldRef<"SatuSehatSetting", 'String'>
+    readonly authUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly baseUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly encounterUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly conditionUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly serviceRequestUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly imagingStudyUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly observationUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly diagnosticReportUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly compositionUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly patientUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly locationUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly practitionerUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly defaultPatientId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly defaultPractitionerId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly isActive: FieldRef<"SatuSehatSetting", 'Boolean'>
+    readonly updatedAt: FieldRef<"SatuSehatSetting", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SatuSehatSetting findUnique
+   */
+  export type SatuSehatSettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatSetting to fetch.
+     */
+    where: SatuSehatSettingWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatSetting findUniqueOrThrow
+   */
+  export type SatuSehatSettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatSetting to fetch.
+     */
+    where: SatuSehatSettingWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatSetting findFirst
+   */
+  export type SatuSehatSettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatSetting to fetch.
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatSettings to fetch.
+     */
+    orderBy?: SatuSehatSettingOrderByWithRelationInput | SatuSehatSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatSettings.
+     */
+    cursor?: SatuSehatSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatSettings.
+     */
+    distinct?: SatuSehatSettingScalarFieldEnum | SatuSehatSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatSetting findFirstOrThrow
+   */
+  export type SatuSehatSettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatSetting to fetch.
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatSettings to fetch.
+     */
+    orderBy?: SatuSehatSettingOrderByWithRelationInput | SatuSehatSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatSettings.
+     */
+    cursor?: SatuSehatSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatSettings.
+     */
+    distinct?: SatuSehatSettingScalarFieldEnum | SatuSehatSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatSetting findMany
+   */
+  export type SatuSehatSettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatSettings to fetch.
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatSettings to fetch.
+     */
+    orderBy?: SatuSehatSettingOrderByWithRelationInput | SatuSehatSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SatuSehatSettings.
+     */
+    cursor?: SatuSehatSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatSettings.
+     */
+    skip?: number
+    distinct?: SatuSehatSettingScalarFieldEnum | SatuSehatSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatSetting create
+   */
+  export type SatuSehatSettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SatuSehatSetting.
+     */
+    data: XOR<SatuSehatSettingCreateInput, SatuSehatSettingUncheckedCreateInput>
+  }
+
+  /**
+   * SatuSehatSetting createMany
+   */
+  export type SatuSehatSettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SatuSehatSettings.
+     */
+    data: SatuSehatSettingCreateManyInput | SatuSehatSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatSetting createManyAndReturn
+   */
+  export type SatuSehatSettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many SatuSehatSettings.
+     */
+    data: SatuSehatSettingCreateManyInput | SatuSehatSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatSetting update
+   */
+  export type SatuSehatSettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SatuSehatSetting.
+     */
+    data: XOR<SatuSehatSettingUpdateInput, SatuSehatSettingUncheckedUpdateInput>
+    /**
+     * Choose, which SatuSehatSetting to update.
+     */
+    where: SatuSehatSettingWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatSetting updateMany
+   */
+  export type SatuSehatSettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SatuSehatSettings.
+     */
+    data: XOR<SatuSehatSettingUpdateManyMutationInput, SatuSehatSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatSettings to update
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * Limit how many SatuSehatSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatSetting updateManyAndReturn
+   */
+  export type SatuSehatSettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * The data used to update SatuSehatSettings.
+     */
+    data: XOR<SatuSehatSettingUpdateManyMutationInput, SatuSehatSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatSettings to update
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * Limit how many SatuSehatSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatSetting upsert
+   */
+  export type SatuSehatSettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SatuSehatSetting to update in case it exists.
+     */
+    where: SatuSehatSettingWhereUniqueInput
+    /**
+     * In case the SatuSehatSetting found by the `where` argument doesn't exist, create a new SatuSehatSetting with this data.
+     */
+    create: XOR<SatuSehatSettingCreateInput, SatuSehatSettingUncheckedCreateInput>
+    /**
+     * In case the SatuSehatSetting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SatuSehatSettingUpdateInput, SatuSehatSettingUncheckedUpdateInput>
+  }
+
+  /**
+   * SatuSehatSetting delete
+   */
+  export type SatuSehatSettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+    /**
+     * Filter which SatuSehatSetting to delete.
+     */
+    where: SatuSehatSettingWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatSetting deleteMany
+   */
+  export type SatuSehatSettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatSettings to delete
+     */
+    where?: SatuSehatSettingWhereInput
+    /**
+     * Limit how many SatuSehatSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatSetting without action
+   */
+  export type SatuSehatSettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatSetting
+     */
+    select?: SatuSehatSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatSetting
+     */
+    omit?: SatuSehatSettingOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8945,6 +10273,33 @@ export namespace Prisma {
   };
 
   export type SatuSehatIntegrationScalarFieldEnum = (typeof SatuSehatIntegrationScalarFieldEnum)[keyof typeof SatuSehatIntegrationScalarFieldEnum]
+
+
+  export const SatuSehatSettingScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    clientId: 'clientId',
+    clientSecret: 'clientSecret',
+    environment: 'environment',
+    authUrl: 'authUrl',
+    baseUrl: 'baseUrl',
+    encounterUrl: 'encounterUrl',
+    conditionUrl: 'conditionUrl',
+    serviceRequestUrl: 'serviceRequestUrl',
+    imagingStudyUrl: 'imagingStudyUrl',
+    observationUrl: 'observationUrl',
+    diagnosticReportUrl: 'diagnosticReportUrl',
+    compositionUrl: 'compositionUrl',
+    patientUrl: 'patientUrl',
+    locationUrl: 'locationUrl',
+    practitionerUrl: 'practitionerUrl',
+    defaultPatientId: 'defaultPatientId',
+    defaultPractitionerId: 'defaultPractitionerId',
+    isActive: 'isActive',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SatuSehatSettingScalarFieldEnum = (typeof SatuSehatSettingScalarFieldEnum)[keyof typeof SatuSehatSettingScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9526,6 +10881,140 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
   }
 
+  export type SatuSehatSettingWhereInput = {
+    AND?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
+    OR?: SatuSehatSettingWhereInput[]
+    NOT?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
+    id?: IntFilter<"SatuSehatSetting"> | number
+    organizationId?: StringFilter<"SatuSehatSetting"> | string
+    clientId?: StringFilter<"SatuSehatSetting"> | string
+    clientSecret?: StringFilter<"SatuSehatSetting"> | string
+    environment?: StringFilter<"SatuSehatSetting"> | string
+    authUrl?: StringFilter<"SatuSehatSetting"> | string
+    baseUrl?: StringFilter<"SatuSehatSetting"> | string
+    encounterUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    conditionUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    serviceRequestUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    imagingStudyUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    observationUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    diagnosticReportUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    compositionUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    patientUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    locationUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    practitionerUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    defaultPatientId?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    defaultPractitionerId?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    isActive?: BoolFilter<"SatuSehatSetting"> | boolean
+    updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
+  }
+
+  export type SatuSehatSettingOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    clientId?: SortOrder
+    clientSecret?: SortOrder
+    environment?: SortOrder
+    authUrl?: SortOrder
+    baseUrl?: SortOrder
+    encounterUrl?: SortOrderInput | SortOrder
+    conditionUrl?: SortOrderInput | SortOrder
+    serviceRequestUrl?: SortOrderInput | SortOrder
+    imagingStudyUrl?: SortOrderInput | SortOrder
+    observationUrl?: SortOrderInput | SortOrder
+    diagnosticReportUrl?: SortOrderInput | SortOrder
+    compositionUrl?: SortOrderInput | SortOrder
+    patientUrl?: SortOrderInput | SortOrder
+    locationUrl?: SortOrderInput | SortOrder
+    practitionerUrl?: SortOrderInput | SortOrder
+    defaultPatientId?: SortOrderInput | SortOrder
+    defaultPractitionerId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatSettingWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
+    OR?: SatuSehatSettingWhereInput[]
+    NOT?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
+    organizationId?: StringFilter<"SatuSehatSetting"> | string
+    clientId?: StringFilter<"SatuSehatSetting"> | string
+    clientSecret?: StringFilter<"SatuSehatSetting"> | string
+    environment?: StringFilter<"SatuSehatSetting"> | string
+    authUrl?: StringFilter<"SatuSehatSetting"> | string
+    baseUrl?: StringFilter<"SatuSehatSetting"> | string
+    encounterUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    conditionUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    serviceRequestUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    imagingStudyUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    observationUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    diagnosticReportUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    compositionUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    patientUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    locationUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    practitionerUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    defaultPatientId?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    defaultPractitionerId?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    isActive?: BoolFilter<"SatuSehatSetting"> | boolean
+    updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
+  }, "id">
+
+  export type SatuSehatSettingOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    clientId?: SortOrder
+    clientSecret?: SortOrder
+    environment?: SortOrder
+    authUrl?: SortOrder
+    baseUrl?: SortOrder
+    encounterUrl?: SortOrderInput | SortOrder
+    conditionUrl?: SortOrderInput | SortOrder
+    serviceRequestUrl?: SortOrderInput | SortOrder
+    imagingStudyUrl?: SortOrderInput | SortOrder
+    observationUrl?: SortOrderInput | SortOrder
+    diagnosticReportUrl?: SortOrderInput | SortOrder
+    compositionUrl?: SortOrderInput | SortOrder
+    patientUrl?: SortOrderInput | SortOrder
+    locationUrl?: SortOrderInput | SortOrder
+    practitionerUrl?: SortOrderInput | SortOrder
+    defaultPatientId?: SortOrderInput | SortOrder
+    defaultPractitionerId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SatuSehatSettingCountOrderByAggregateInput
+    _avg?: SatuSehatSettingAvgOrderByAggregateInput
+    _max?: SatuSehatSettingMaxOrderByAggregateInput
+    _min?: SatuSehatSettingMinOrderByAggregateInput
+    _sum?: SatuSehatSettingSumOrderByAggregateInput
+  }
+
+  export type SatuSehatSettingScalarWhereWithAggregatesInput = {
+    AND?: SatuSehatSettingScalarWhereWithAggregatesInput | SatuSehatSettingScalarWhereWithAggregatesInput[]
+    OR?: SatuSehatSettingScalarWhereWithAggregatesInput[]
+    NOT?: SatuSehatSettingScalarWhereWithAggregatesInput | SatuSehatSettingScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SatuSehatSetting"> | number
+    organizationId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    clientId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    clientSecret?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    environment?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    authUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    baseUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    encounterUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    conditionUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    serviceRequestUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    imagingStudyUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    observationUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    diagnosticReportUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    compositionUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    patientUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    locationUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    practitionerUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    defaultPatientId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    defaultPractitionerId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    isActive?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatSetting"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -10008,6 +11497,174 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SatuSehatSettingCreateInput = {
+    id?: number
+    organizationId?: string
+    clientId?: string
+    clientSecret?: string
+    environment?: string
+    authUrl?: string
+    baseUrl?: string
+    encounterUrl?: string | null
+    conditionUrl?: string | null
+    serviceRequestUrl?: string | null
+    imagingStudyUrl?: string | null
+    observationUrl?: string | null
+    diagnosticReportUrl?: string | null
+    compositionUrl?: string | null
+    patientUrl?: string | null
+    locationUrl?: string | null
+    practitionerUrl?: string | null
+    defaultPatientId?: string | null
+    defaultPractitionerId?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type SatuSehatSettingUncheckedCreateInput = {
+    id?: number
+    organizationId?: string
+    clientId?: string
+    clientSecret?: string
+    environment?: string
+    authUrl?: string
+    baseUrl?: string
+    encounterUrl?: string | null
+    conditionUrl?: string | null
+    serviceRequestUrl?: string | null
+    imagingStudyUrl?: string | null
+    observationUrl?: string | null
+    diagnosticReportUrl?: string | null
+    compositionUrl?: string | null
+    patientUrl?: string | null
+    locationUrl?: string | null
+    practitionerUrl?: string | null
+    defaultPatientId?: string | null
+    defaultPractitionerId?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type SatuSehatSettingUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    organizationId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    clientSecret?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    authUrl?: StringFieldUpdateOperationsInput | string
+    baseUrl?: StringFieldUpdateOperationsInput | string
+    encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    conditionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceRequestUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagingStudyUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    observationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosticReportUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    compositionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    patientUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    locationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    practitionerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatSettingUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    organizationId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    clientSecret?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    authUrl?: StringFieldUpdateOperationsInput | string
+    baseUrl?: StringFieldUpdateOperationsInput | string
+    encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    conditionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceRequestUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagingStudyUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    observationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosticReportUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    compositionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    patientUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    locationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    practitionerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatSettingCreateManyInput = {
+    id?: number
+    organizationId?: string
+    clientId?: string
+    clientSecret?: string
+    environment?: string
+    authUrl?: string
+    baseUrl?: string
+    encounterUrl?: string | null
+    conditionUrl?: string | null
+    serviceRequestUrl?: string | null
+    imagingStudyUrl?: string | null
+    observationUrl?: string | null
+    diagnosticReportUrl?: string | null
+    compositionUrl?: string | null
+    patientUrl?: string | null
+    locationUrl?: string | null
+    practitionerUrl?: string | null
+    defaultPatientId?: string | null
+    defaultPractitionerId?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type SatuSehatSettingUpdateManyMutationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    organizationId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    clientSecret?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    authUrl?: StringFieldUpdateOperationsInput | string
+    baseUrl?: StringFieldUpdateOperationsInput | string
+    encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    conditionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceRequestUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagingStudyUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    observationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosticReportUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    compositionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    patientUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    locationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    practitionerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatSettingUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    organizationId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    clientSecret?: StringFieldUpdateOperationsInput | string
+    environment?: StringFieldUpdateOperationsInput | string
+    authUrl?: StringFieldUpdateOperationsInput | string
+    baseUrl?: StringFieldUpdateOperationsInput | string
+    encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    conditionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceRequestUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagingStudyUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    observationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosticReportUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    compositionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    patientUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    locationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    practitionerUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10480,6 +12137,113 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type SatuSehatSettingCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    clientId?: SortOrder
+    clientSecret?: SortOrder
+    environment?: SortOrder
+    authUrl?: SortOrder
+    baseUrl?: SortOrder
+    encounterUrl?: SortOrder
+    conditionUrl?: SortOrder
+    serviceRequestUrl?: SortOrder
+    imagingStudyUrl?: SortOrder
+    observationUrl?: SortOrder
+    diagnosticReportUrl?: SortOrder
+    compositionUrl?: SortOrder
+    patientUrl?: SortOrder
+    locationUrl?: SortOrder
+    practitionerUrl?: SortOrder
+    defaultPatientId?: SortOrder
+    defaultPractitionerId?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatSettingAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SatuSehatSettingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    clientId?: SortOrder
+    clientSecret?: SortOrder
+    environment?: SortOrder
+    authUrl?: SortOrder
+    baseUrl?: SortOrder
+    encounterUrl?: SortOrder
+    conditionUrl?: SortOrder
+    serviceRequestUrl?: SortOrder
+    imagingStudyUrl?: SortOrder
+    observationUrl?: SortOrder
+    diagnosticReportUrl?: SortOrder
+    compositionUrl?: SortOrder
+    patientUrl?: SortOrder
+    locationUrl?: SortOrder
+    practitionerUrl?: SortOrder
+    defaultPatientId?: SortOrder
+    defaultPractitionerId?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatSettingMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    clientId?: SortOrder
+    clientSecret?: SortOrder
+    environment?: SortOrder
+    authUrl?: SortOrder
+    baseUrl?: SortOrder
+    encounterUrl?: SortOrder
+    conditionUrl?: SortOrder
+    serviceRequestUrl?: SortOrder
+    imagingStudyUrl?: SortOrder
+    observationUrl?: SortOrder
+    diagnosticReportUrl?: SortOrder
+    compositionUrl?: SortOrder
+    patientUrl?: SortOrder
+    locationUrl?: SortOrder
+    practitionerUrl?: SortOrder
+    defaultPatientId?: SortOrder
+    defaultPractitionerId?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatuSehatSettingSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -10622,6 +12386,14 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -10836,6 +12608,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type AccountCreateWithoutUserInput = {

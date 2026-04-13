@@ -6,10 +6,52 @@ export interface SatuSehatConfig {
     clientSecret: string;
     environment: "staging" | "production";
     locationId?: string;
+    authUrl?: string;
+    baseUrl?: string;
+    defaultPatientId?: string;
+    defaultPractitionerId?: string;
+    // Granular URLs
+    encounterUrl?: string;
+    conditionUrl?: string;
+    serviceRequestUrl?: string;
+    imagingStudyUrl?: string;
+    observationUrl?: string;
+    diagnosticReportUrl?: string;
+    compositionUrl?: string;
+    patientUrl?: string;
+    locationUrl?: string;
+    practitionerUrl?: string;
 }
 
 export class SatuSehatService {
     static async getConfig(): Promise<SatuSehatConfig | null> {
+        // 1. Try to get from the new dynamic SatuSehatSetting table
+        const dbSetting = await db.satuSehatSetting.findFirst({
+            where: { isActive: true }
+        });
+
+        if (dbSetting) {
+            return {
+                organizationId: dbSetting.organizationId,
+                clientId: dbSetting.clientId,
+                clientSecret: dbSetting.clientSecret,
+                environment: dbSetting.environment as "staging" | "production",
+                authUrl: dbSetting.authUrl || undefined,
+                baseUrl: dbSetting.baseUrl || undefined,
+                defaultPatientId: dbSetting.defaultPatientId || undefined,
+                defaultPractitionerId: dbSetting.defaultPractitionerId || undefined,
+                encounterUrl: dbSetting.encounterUrl || undefined,
+                conditionUrl: dbSetting.conditionUrl || undefined,
+                serviceRequestUrl: dbSetting.serviceRequestUrl || undefined,
+                imagingStudyUrl: dbSetting.imagingStudyUrl || undefined,
+                observationUrl: dbSetting.observationUrl || undefined,
+                diagnosticReportUrl: dbSetting.diagnosticReportUrl || undefined,
+                compositionUrl: dbSetting.compositionUrl || undefined,
+                patientUrl: dbSetting.patientUrl || undefined,
+            };
+        }
+
+        // 2. Fallback to older AppConfig keys or process.env (Legacy support)
         const configs = await db.appConfig.findMany({
             where: {
                 key: {
@@ -52,11 +94,12 @@ export class SatuSehatService {
             return this.cachedToken;
         }
 
-        const baseUrl = config.environment === "production"
+        const defaultBaseUrl = config.environment === "production"
             ? "https://api-satusehat.kemkes.go.id/oauth2/v1"
             : "https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1";
             
-        const authUrl = `${baseUrl}/accesstoken?grant_type=client_credentials`;
+        // Use dynamic authUrl if provided in DB, otherwise use default
+        const authUrl = config.authUrl || `${defaultBaseUrl}/accesstoken?grant_type=client_credentials`;
 
         const params = new URLSearchParams();
         params.append("client_id", config.clientId.trim());
@@ -86,10 +129,38 @@ export class SatuSehatService {
         return this.cachedToken as string;
     }
 
-    static getBaseUrl(environment: "staging" | "production"): string {
+    static getBaseUrl(environment: "staging" | "production", customBaseUrl?: string): string {
+        if (customBaseUrl) return customBaseUrl;
+        
         return environment === "production"
             ? "https://api-satusehat.kemkes.go.id/fhir-r4/v1"
             : "https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1";
+    }
+
+    /**
+     * Resolves the final URL for a specific resource type, handling dynamic overrides.
+     */
+    static getResourceUrl(resourceType: string, config: SatuSehatConfig): string {
+        const baseUrl = this.getBaseUrl(config.environment, config.baseUrl);
+        
+        // Check for granular overrides in the config (e.g. encounterUrl)
+        const overrideMap: Record<string, string | undefined> = {
+            "Encounter": config.encounterUrl,
+            "Condition": config.conditionUrl,
+            "ServiceRequest": config.serviceRequestUrl,
+            "ImagingStudy": config.imagingStudyUrl,
+            "Observation": config.observationUrl,
+            "DiagnosticReport": config.diagnosticReportUrl,
+            "Composition": config.compositionUrl,
+            "Patient": config.patientUrl,
+            "Location": config.locationUrl,
+            "Practitioner": config.practitionerUrl,
+        };
+
+        const override = overrideMap[resourceType];
+        if (override) return override;
+
+        return `${baseUrl}/${resourceType}`;
     }
 
     /**
@@ -100,7 +171,7 @@ export class SatuSehatService {
         if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
 
         const token = await this.getAccessToken(config);
-        const baseUrl = this.getBaseUrl(config.environment);
+        const urlWithParams = this.getResourceUrl("Patient", config);
         
         // Membersihkan NIK dari spasi dan memastikan encoding yang benar
         const cleanNik = nik.trim();
@@ -108,7 +179,7 @@ export class SatuSehatService {
             identifier: `https://fhir.kemkes.go.id/id/nik|${cleanNik}`
         });
         
-        const url = `${baseUrl}/Patient?${params.toString()}`;
+        const url = `${urlWithParams}?${params.toString()}`;
 
         console.log(`[SATUSEHAT] GET Patient: ${url}`);
         const response = await fetch(url, {
@@ -150,9 +221,9 @@ export class SatuSehatService {
      */
     static async getLocationByOrg(config: SatuSehatConfig): Promise<string | null> {
         const token = await this.getAccessToken(config);
-        const baseUrl = this.getBaseUrl(config.environment);
+        const resourceUrl = this.getResourceUrl("Location", config);
         
-        const url = `${baseUrl}/Location?organization=${config.organizationId}`;
+        const url = `${resourceUrl}?organization=${config.organizationId}`;
         console.log(`[SATUSEHAT] GET Location by Org: ${url}`);
 
         const response = await fetch(url, {
@@ -176,9 +247,7 @@ export class SatuSehatService {
      */
     static async createLocation(config: SatuSehatConfig): Promise<string | null> {
         const token = await this.getAccessToken(config);
-        const baseUrl = this.getBaseUrl(config.environment);
-
-        const url = `${baseUrl}/Location`;
+        const url = this.getResourceUrl("Location", config);
         const payload = {
             resourceType: "Location",
             identifier: [{
@@ -300,19 +369,20 @@ export class SatuSehatService {
         const config = await this.getConfig();
         if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
 
-        // --- HARDCODE DUMMY DATA SANDBOX ---
-        const DUMMY_PATIENT_ID = "P02478375538"; // NIK dummy: 9271060312000001
-        const DUMMY_PRACTITIONER_ID = "10009880728"; // NIK dummy: 7209061211900001
-        
-        const activePatientId = DUMMY_PATIENT_ID; 
-        const activePractitionerId = DUMMY_PRACTITIONER_ID;
-        // -----------------------------------
+        // --- 🛡️ DYNAMIC PERSONAS (Using DB values if available) ---
+        const activePatientId = config.defaultPatientId || "P02478375538"; 
+        const activePractitionerId = config.defaultPractitionerId || "10009880728";
+        // ---------------------------------------------------------
 
         const logs: string[] = ["[MEGA-BUNDLE] Menyiapkan paket transaksi lengkap (Full Chain)..."];
-        logs.push(`[MEGA-BUNDLE] MENGGUNAKAN HARDCODE DUMMY: Patient ${activePatientId}, Practitioner ${activePractitionerId}`);
+        if (activePatientId === "P02478375538") {
+            logs.push(`[MEGA-BUNDLE] MENGGUNAKAN DUMMY DEFAULT: Patient ${activePatientId}, Practitioner ${activePractitionerId}`);
+        } else {
+            logs.push(`[MEGA-BUNDLE] Menggunakan Persona Dinamis: Patient ${activePatientId}, Practitioner ${activePractitionerId}`);
+        }
         
         const token = await this.getAccessToken(config);
-        const baseUrl = this.getBaseUrl(config.environment);
+        const baseUrl = this.getBaseUrl(config.environment, config.baseUrl);
 
         const now = new Date();
 

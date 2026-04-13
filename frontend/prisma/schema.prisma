@@ -90,3 +90,34 @@ model SatuSehatIntegration {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
+
+model SatuSehatSetting {
+  id               Int      @id @default(1)
+  organizationId   String   @default("")
+  clientId         String   @default("")
+  clientSecret     String   @default("") @db.Text
+  environment      String   @default("staging") // staging, production
+  
+  // Global URLs
+  authUrl          String   @default("") @db.Text
+  baseUrl          String   @default("") @db.Text
+  
+  // Per-Resource URL Overrides (Optional)
+  encounterUrl     String?  @db.Text
+  conditionUrl     String?  @db.Text
+  serviceRequestUrl String? @db.Text
+  imagingStudyUrl  String?  @db.Text
+  observationUrl   String?  @db.Text
+  diagnosticReportUrl String? @db.Text
+  compositionUrl   String?  @db.Text
+  patientUrl       String?  @db.Text
+  locationUrl      String?  @db.Text
+  practitionerUrl  String?  @db.Text
+  
+  // Default Personas (Dummy Data for Testing)
+  defaultPatientId      String? @default("")
+  defaultPractitionerId String? @default("")
+  
+  isActive         Boolean  @default(true)
+  updatedAt        DateTime @updatedAt
+}

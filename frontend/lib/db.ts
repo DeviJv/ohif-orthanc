@@ -1,4 +1,5 @@
 import { PrismaClient } from "@/app/generated/prisma";
+// Triggering reload to pick up new models
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 

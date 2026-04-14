@@ -704,7 +704,7 @@ export class SatuSehatService {
     static async createTestOrder(params: {
         accessionNumber: string;
         patientName?: string;
-    }): Promise<{ id: string, logs: string[] }> {
+    }): Promise<{ id: string, patientId: string, logs: string[] }> {
         const config = await this.getConfig();
         if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
 

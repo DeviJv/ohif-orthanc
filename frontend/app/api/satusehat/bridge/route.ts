@@ -110,8 +110,8 @@ export async function POST(req: NextRequest) {
         const ssId = result.id;
         await db.satuSehatIntegration.upsert({
             where: { studyInstanceUid: tags.StudyInstanceUID },
-            update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik },
-            create: { studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik }
+            update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik, syncedAt: new Date() },
+            create: { studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik, syncedAt: new Date() }
         });
 
         // 6. TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER (Kemenkes Dicom Router)

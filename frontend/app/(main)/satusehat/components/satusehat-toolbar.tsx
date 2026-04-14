@@ -17,6 +17,14 @@ import { DateRange } from "react-day-picker";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { FilterIcon } from "@hugeicons/core-free-icons";
 
 interface SatuSehatToolbarProps<TData> {
     table: Table<TData>;
@@ -24,6 +32,8 @@ interface SatuSehatToolbarProps<TData> {
     setGlobalFilter: (value: string) => void;
     dateRange: DateRange | undefined;
     setDateRange: (range: DateRange | undefined) => void;
+    statusFilter: string;
+    setStatusFilter: (value: string) => void;
     fetchStudies: () => void;
     handleBulkDownload: () => void;
     handleBulkSync: (selectedIds: string[]) => void;
@@ -35,6 +45,8 @@ export function SatuSehatToolbar<TData>({
     setGlobalFilter,
     dateRange,
     setDateRange,
+    statusFilter,
+    setStatusFilter,
     fetchStudies,
     handleBulkDownload,
     handleBulkSync
@@ -67,6 +79,21 @@ export function SatuSehatToolbar<TData>({
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                    <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
+                        <SelectTrigger className="h-8 w-36 bg-transparent border-0 ring-offset-0 focus:ring-0 focus:ring-offset-0 gap-2 shadow-none text-sm font-medium">
+                            <HugeiconsIcon icon={FilterIcon} className="size-4 text-slate-500" />
+                            <SelectValue placeholder="Semua Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="ALL">Semua Status</SelectItem>
+                            <SelectItem value="SUCCESS">Terkirim</SelectItem>
+                            <SelectItem value="PENDING">Pending</SelectItem>
+                            <SelectItem value="FAILED">Gagal</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
                     <Popover>
                         <PopoverTrigger 
                             className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 px-3 gap-2 font-medium ${

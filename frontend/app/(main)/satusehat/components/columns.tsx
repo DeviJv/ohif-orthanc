@@ -61,6 +61,34 @@ export const getColumns = ({
         id: "studyDate",
         header: "Study Date",
         cell: ({ getValue }) => formatDicomDate(getValue() as string),
+        filterFn: (row, columnId, filterValue: { from?: Date, to?: Date }) => {
+            if (!filterValue || (!filterValue.from && !filterValue.to)) return true;
+            
+            const rawDateStr = row.getValue(columnId) as string;
+            if (!rawDateStr) return false;
+            
+            // Format YYYYMMDD
+            const year = parseInt(rawDateStr.substring(0, 4));
+            const month = parseInt(rawDateStr.substring(4, 6)) - 1;
+            const day = parseInt(rawDateStr.substring(6, 8));
+            const rowDate = new Date(year, month, day);
+            
+            // Normalize times to midnight for comparison
+            rowDate.setHours(0,0,0,0);
+            
+            if (filterValue.from && filterValue.to) {
+                const fromDate = new Date(filterValue.from);
+                fromDate.setHours(0,0,0,0);
+                const toDate = new Date(filterValue.to);
+                toDate.setHours(0,0,0,0);
+                return rowDate >= fromDate && rowDate <= toDate;
+            } else if (filterValue.from) {
+                const fromDate = new Date(filterValue.from);
+                fromDate.setHours(0,0,0,0);
+                return rowDate >= fromDate;
+            }
+            return true;
+        }
     },
     {
         accessorKey: "MainDicomTags.AccessionNumber",
@@ -76,10 +104,11 @@ export const getColumns = ({
         }
     },
     {
+        accessorFn: (row) => row.satuSehat.status,
         id: "status",
-        header: "Sync Status",
-        cell: ({ row }) => {
-            const status = row.original.satuSehat.status;
+        header: "Status",
+        cell: ({ getValue }) => {
+            const status = getValue() as string;
             let bgColor = "bg-slate-100";
             let textColor = "text-slate-600";
             let label = "Pending";
@@ -104,7 +133,29 @@ export const getColumns = ({
                     {label}
                 </div>
             );
+        },
+        filterFn: (row, columnId, filterValue: string) => {
+            if (!filterValue || filterValue === "ALL") return true;
+            if (filterValue === "PENDING") {
+               return ["PENDING", "PROCESSING"].includes(row.getValue(columnId) as string);
+            }
+            return row.getValue(columnId) === filterValue;
         }
+    },
+    {
+        accessorFn: (row) => row.satuSehat.syncedAt,
+        id: "syncedAt",
+        header: "Selesai Pada",
+        cell: ({ getValue }) => {
+            const dateStr = getValue() as string;
+            if (!dateStr) return <span className="text-xs text-slate-400 italic">-</span>;
+            
+            const date = new Date(dateStr).toLocaleDateString("id-ID", {
+                day: "2-digit", month: "short", year: "numeric", hour: '2-digit', minute:'2-digit'
+            });
+            return <span className="text-xs text-slate-600 font-medium">{date}</span>;
+        },
+        sortingFn: "datetime"
     },
     {
         id: "errorDetail",
@@ -123,12 +174,6 @@ export const getColumns = ({
                         View Error
                     </Button>
                 )
-            }
-            if (ss.status === "SUCCESS" && ss.syncedAt) {
-                const date = new Date(ss.syncedAt).toLocaleDateString("id-ID", {
-                    day: "2-digit", month: "short", year: "numeric", hour: '2-digit', minute:'2-digit'
-                });
-                return <span className="text-xs text-slate-500">Synced at: {date}</span>;
             }
             return <span className="text-xs text-slate-400 italic">No errors</span>;
         }

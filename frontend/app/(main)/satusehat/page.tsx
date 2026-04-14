@@ -32,6 +32,7 @@ import { SentIcon } from "@hugeicons/core-free-icons";
 import { useSatuSehatWorklist } from "./hooks/use-satusehat-worklist";
 import { getColumns } from "./components/columns";
 import { SatuSehatToolbar } from "./components/satusehat-toolbar";
+import { SatuSehatStats } from "./components/satusehat-stats";
 import { WebhookMonitor } from "./components/webhook-monitor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
@@ -62,7 +63,7 @@ function SatuSehatContent() {
     } = useSatuSehatWorklist();
 
     // Table State
-    const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
+    const [sorting, setSorting] = useState<SortingState>([{ id: "syncedAt", desc: true }]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -72,6 +73,7 @@ function SatuSehatContent() {
         pageSize: 10,
     });
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+    const [statusFilter, setStatusFilter] = useState("ALL");
 
     // Columns
     const columns = useMemo(() => getColumns({
@@ -114,6 +116,15 @@ function SatuSehatContent() {
         });
     };
 
+    const handleSetStatusFilter = (val: string) => {
+        setStatusFilter(val);
+        setColumnFilters(prev => {
+            const others = prev.filter(f => f.id !== "status");
+            if (val === "ALL") return others;
+            return [...others, { id: "status", value: val }];
+        });
+    };
+
     const handleBulkDownload = () => {
         const selectedRows = table.getFilteredSelectedRowModel().rows;
         if (selectedRows.length === 0) return;
@@ -128,101 +139,108 @@ function SatuSehatContent() {
                 <p className="text-muted-foreground">Monitoring dan sinkronisasi manual data DICOM ke platform SatuSehat Kemenkes.</p>
             </div>
 
-            <WebhookMonitor />
+            <SatuSehatStats studies={studies} />
 
-            <SatuSehatToolbar 
-                table={table}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-                dateRange={dateRange}
-                setDateRange={handleSetDateRange}
-                fetchStudies={fetchStudies}
-                handleBulkSync={handleBulkSync}
-                handleBulkDownload={handleBulkDownload}
-            />
 
-            <div className="rounded-md border bg-white shadow-sm overflow-hidden">
-                <Table>
-                    <TableHeader className="bg-slate-50/50">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="font-bold text-slate-700">
-                                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {loading ? (
-                            Array.from({ length: 5 }).map((_, i) => (
-                                <TableRow key={i}>
-                                    <TableCell colSpan={columns.length} className="py-4">
-                                        <Skeleton className="h-8 w-full" />
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        ) : table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                    className="hover:bg-slate-50/80 transition-colors"
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="py-4">
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
+            <div className="mt-8 border border-slate-200 bg-white shadow-sm rounded-xl overflow-hidden flex flex-col">
+                <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
+                    <SatuSehatToolbar 
+                        table={table}
+                        globalFilter={globalFilter}
+                        setGlobalFilter={setGlobalFilter}
+                        dateRange={dateRange}
+                        setDateRange={handleSetDateRange}
+                        statusFilter={statusFilter}
+                        setStatusFilter={handleSetStatusFilter}
+                        fetchStudies={fetchStudies}
+                        handleBulkSync={handleBulkSync}
+                        handleBulkDownload={handleBulkDownload}
+                    />
+                </div>
+
+                <div className="w-full overflow-x-auto">
+                    <Table>
+                        <TableHeader className="bg-slate-50/50">
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => (
+                                        <TableHead key={header.id} className="font-bold text-slate-700">
+                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                        </TableHead>
                                     ))}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
-                                    No studies found.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {loading ? (
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell colSpan={columns.length} className="py-4">
+                                            <Skeleton className="h-8 w-full" />
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className="hover:bg-slate-50/80 transition-colors"
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id} className="py-4">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
+                                        No studies found.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
 
-            {/* Pagination Controls */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-                <div className="flex items-center gap-4">
-                    <div className="text-sm text-muted-foreground font-medium">
-                        Showing {table.getFilteredRowModel().rows.length} studies
+                {/* Pagination Controls */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-100 bg-white">
+                    <div className="flex items-center gap-4">
+                        <div className="text-sm text-muted-foreground font-medium">
+                            Showing {table.getFilteredRowModel().rows.length} studies
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l">Show per page</span>
+                            <Select
+                                value={table.getState().pagination.pageSize.toString()}
+                                onValueChange={(value) => table.setPageSize(Number(value))}
+                            >
+                                <SelectTrigger className="h-8 w-[70px]">
+                                    <SelectValue placeholder={table.getState().pagination.pageSize} />
+                                </SelectTrigger>
+                                <SelectContent side="top">
+                                    {[10, 30, 50, 100].map((pageSize) => (
+                                        <SelectItem key={pageSize} value={pageSize.toString()}>
+                                            {pageSize}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l">Show per page</span>
-                        <Select
-                            value={table.getState().pagination.pageSize.toString()}
-                            onValueChange={(value) => table.setPageSize(Number(value))}
-                        >
-                            <SelectTrigger className="h-8 w-[70px]">
-                                <SelectValue placeholder={table.getState().pagination.pageSize} />
-                            </SelectTrigger>
-                            <SelectContent side="top">
-                                {[10, 30, 50, 100].map((pageSize) => (
-                                    <SelectItem key={pageSize} value={pageSize.toString()}>
-                                        {pageSize}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                            Previous
+                        </Button>
+                        <div className="flex items-center gap-1 text-sm font-medium px-2">
+                            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
+                        </div>
+                        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                            Next
+                        </Button>
                     </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                        Previous
-                    </Button>
-                    <div className="flex items-center gap-1 text-sm font-medium px-2">
-                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                        Next
-                    </Button>
                 </div>
             </div>
 
@@ -295,6 +313,8 @@ function SatuSehatContent() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <WebhookMonitor />
+
         </div>
     );
 }

@@ -185,6 +185,8 @@ exports.Prisma.SatuSehatIntegrationScalarFieldEnum = {
   patientNik: 'patientNik',
   status: 'status',
   error: 'error',
+  bundleResponse: 'bundleResponse',
+  syncedAt: 'syncedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -219,6 +221,11 @@ exports.Prisma.SortOrder = {
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 

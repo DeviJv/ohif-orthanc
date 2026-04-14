@@ -7930,6 +7930,7 @@ export namespace Prisma {
     patientNik: string | null
     status: string | null
     error: string | null
+    syncedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7940,6 +7941,7 @@ export namespace Prisma {
     patientNik: string | null
     status: string | null
     error: string | null
+    syncedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7950,6 +7952,8 @@ export namespace Prisma {
     patientNik: number
     status: number
     error: number
+    bundleResponse: number
+    syncedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7962,6 +7966,7 @@ export namespace Prisma {
     patientNik?: true
     status?: true
     error?: true
+    syncedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7972,6 +7977,7 @@ export namespace Prisma {
     patientNik?: true
     status?: true
     error?: true
+    syncedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7982,6 +7988,8 @@ export namespace Prisma {
     patientNik?: true
     status?: true
     error?: true
+    bundleResponse?: true
+    syncedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8065,6 +8073,8 @@ export namespace Prisma {
     patientNik: string | null
     status: string
     error: string | null
+    bundleResponse: JsonValue | null
+    syncedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: SatuSehatIntegrationCountAggregateOutputType | null
@@ -8092,6 +8102,8 @@ export namespace Prisma {
     patientNik?: boolean
     status?: boolean
     error?: boolean
+    bundleResponse?: boolean
+    syncedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatIntegration"]>
@@ -8102,6 +8114,8 @@ export namespace Prisma {
     patientNik?: boolean
     status?: boolean
     error?: boolean
+    bundleResponse?: boolean
+    syncedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatIntegration"]>
@@ -8112,6 +8126,8 @@ export namespace Prisma {
     patientNik?: boolean
     status?: boolean
     error?: boolean
+    bundleResponse?: boolean
+    syncedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatIntegration"]>
@@ -8122,11 +8138,13 @@ export namespace Prisma {
     patientNik?: boolean
     status?: boolean
     error?: boolean
+    bundleResponse?: boolean
+    syncedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
+  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "bundleResponse" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
 
   export type $SatuSehatIntegrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatIntegration"
@@ -8137,6 +8155,8 @@ export namespace Prisma {
       patientNik: string | null
       status: string
       error: string | null
+      bundleResponse: Prisma.JsonValue | null
+      syncedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["satuSehatIntegration"]>
@@ -8567,6 +8587,8 @@ export namespace Prisma {
     readonly patientNik: FieldRef<"SatuSehatIntegration", 'String'>
     readonly status: FieldRef<"SatuSehatIntegration", 'String'>
     readonly error: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly bundleResponse: FieldRef<"SatuSehatIntegration", 'Json'>
+    readonly syncedAt: FieldRef<"SatuSehatIntegration", 'DateTime'>
     readonly createdAt: FieldRef<"SatuSehatIntegration", 'DateTime'>
     readonly updatedAt: FieldRef<"SatuSehatIntegration", 'DateTime'>
   }
@@ -10268,6 +10290,8 @@ export namespace Prisma {
     patientNik: 'patientNik',
     status: 'status',
     error: 'error',
+    bundleResponse: 'bundleResponse',
+    syncedAt: 'syncedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -10315,6 +10339,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -10828,6 +10860,8 @@ export namespace Prisma {
     patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     status?: StringFilter<"SatuSehatIntegration"> | string
     error?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    bundleResponse?: JsonNullableFilter<"SatuSehatIntegration">
+    syncedAt?: DateTimeNullableFilter<"SatuSehatIntegration"> | Date | string | null
     createdAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
     updatedAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
   }
@@ -10838,6 +10872,8 @@ export namespace Prisma {
     patientNik?: SortOrderInput | SortOrder
     status?: SortOrder
     error?: SortOrderInput | SortOrder
+    bundleResponse?: SortOrderInput | SortOrder
+    syncedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -10851,6 +10887,8 @@ export namespace Prisma {
     patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     status?: StringFilter<"SatuSehatIntegration"> | string
     error?: StringNullableFilter<"SatuSehatIntegration"> | string | null
+    bundleResponse?: JsonNullableFilter<"SatuSehatIntegration">
+    syncedAt?: DateTimeNullableFilter<"SatuSehatIntegration"> | Date | string | null
     createdAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
     updatedAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
   }, "studyInstanceUid">
@@ -10861,6 +10899,8 @@ export namespace Prisma {
     patientNik?: SortOrderInput | SortOrder
     status?: SortOrder
     error?: SortOrderInput | SortOrder
+    bundleResponse?: SortOrderInput | SortOrder
+    syncedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SatuSehatIntegrationCountOrderByAggregateInput
@@ -10877,6 +10917,8 @@ export namespace Prisma {
     patientNik?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     status?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
     error?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
+    bundleResponse?: JsonNullableWithAggregatesFilter<"SatuSehatIntegration">
+    syncedAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatIntegration"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
   }
@@ -11433,6 +11475,8 @@ export namespace Prisma {
     patientNik?: string | null
     status?: string
     error?: string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11443,6 +11487,8 @@ export namespace Prisma {
     patientNik?: string | null
     status?: string
     error?: string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11453,6 +11499,8 @@ export namespace Prisma {
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error?: NullableStringFieldUpdateOperationsInput | string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11463,6 +11511,8 @@ export namespace Prisma {
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error?: NullableStringFieldUpdateOperationsInput | string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11473,6 +11523,8 @@ export namespace Prisma {
     patientNik?: string | null
     status?: string
     error?: string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11483,6 +11535,8 @@ export namespace Prisma {
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error?: NullableStringFieldUpdateOperationsInput | string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11493,6 +11547,8 @@ export namespace Prisma {
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error?: NullableStringFieldUpdateOperationsInput | string | null
+    bundleResponse?: NullableJsonNullValueInput | InputJsonValue
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12106,6 +12162,29 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type SatuSehatIntegrationCountOrderByAggregateInput = {
     studyInstanceUid?: SortOrder
@@ -12113,6 +12192,8 @@ export namespace Prisma {
     patientNik?: SortOrder
     status?: SortOrder
     error?: SortOrder
+    bundleResponse?: SortOrder
+    syncedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12123,6 +12204,7 @@ export namespace Prisma {
     patientNik?: SortOrder
     status?: SortOrder
     error?: SortOrder
+    syncedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12133,8 +12215,35 @@ export namespace Prisma {
     patientNik?: SortOrder
     status?: SortOrder
     error?: SortOrder
+    syncedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -12608,6 +12717,29 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {

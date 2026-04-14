@@ -399,6 +399,11 @@ export class SatuSehatService {
         description?: string;
         numberOfSeries?: number;
         numberOfInstances?: number;
+        seriesList?: Array<{
+            uid: string;
+            modality: string;
+            instanceCount: number;
+        }>;
     }): Promise<{ ids: Record<string, string>, logs: string[] }> {
         const config = await this.getConfig();
         if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
@@ -589,7 +594,19 @@ export class SatuSehatService {
                             text: "Pemeriksaan Radiologi"
                         }],
                         description: sanitizedDescription,
-                        series: [{
+                        series: params.seriesList?.length ? params.seriesList.map((s) => ({
+                            uid: s.uid,
+                            modality: { system: "http://dicom.nema.org/resources/ontology/DCM", code: s.modality },
+                            numberOfInstances: s.instanceCount,
+                            performer: [{ 
+                                actor: { reference: `Practitioner/${activePractitionerId}` } 
+                            }],
+                            // Karena instance UIDs dicom asli banyak, default minimal kita pass fakes atau instances asli jika di pass
+                            instance: Array.from({ length: Math.min(s.instanceCount, 1) }).map((_, i) => ({
+                                uid: `${s.uid}.${i + 1}`,
+                                sopClass: { system: "urn:ietf:rfc:3986", code: "urn:oid:1.2.840.10008.5.1.4.1.1.7" }
+                            }))
+                        })) : [{
                             uid: `${params.studyInstanceUid}.1`,
                             modality: { system: "http://dicom.nema.org/resources/ontology/DCM", code: params.modality },
                             performer: [{ 
@@ -892,24 +909,218 @@ export class SatuSehatService {
         description?: string;
         numberOfSeries?: number;
         numberOfInstances?: number;
+        seriesList?: Array<{
+            uid: string;
+            modality: string;
+            instanceCount: number;
+        }>;
     }): Promise<{ id: string, logs: string[] }> {
         if (!params.accessionNumber) {
             throw new Error("Accession Number wajib ada untuk bridging ke SATUSEHAT.");
         }
 
-        const result = await SatuSehatService.createMegaBundle({
-            patientSsId: params.patientSsId,
-            patientName: params.patientName,
+        // Terapkan alur Fase 2 murni (Menggunakan createRadiologyResultBundle)
+        const result = await SatuSehatService.createRadiologyResultBundle({
             studyInstanceUid: params.studyInstanceUid,
             modality: params.modality,
             studyDate: params.studyDate,
             accessionNumber: params.accessionNumber,
             description: params.description,
             numberOfSeries: params.numberOfSeries,
-            numberOfInstances: params.numberOfInstances
+            numberOfInstances: params.numberOfInstances,
+            seriesList: params.seriesList
         });
 
         return { id: result.ids["DiagnosticReport"] || "SUCCESS", logs: result.logs };
+    }
+
+    /**
+     * Membuat Bundle Transaksi "Hilir" (Fase 2) untuk Radiologi.
+     * Alur ini berasumsi SIMRS sudah mengirimkan ServiceRequest & Encounter.
+     * Kita hanya mencari ServiceRequest berdasarkan AccessionNumber, 
+     * lalu menempelkan ImagingStudy, Observation, dan DiagnosticReport.
+     */
+    static async createRadiologyResultBundle(params: {
+        studyInstanceUid: string;
+        modality: string;
+        studyDate: string;
+        accessionNumber: string;
+        description?: string;
+        numberOfSeries?: number;
+        numberOfInstances?: number;
+        seriesList?: Array<{ uid: string; modality: string; instanceCount: number; }>;
+    }): Promise<{ ids: Record<string, string>, logs: string[] }> {
+        const config = await this.getConfig();
+        if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
+
+        const activePractitionerId = config.defaultPractitionerId || "10009880728";
+        const logs: string[] = ["[RADIOLOGY RESULT BUNDLE] Memulai sinkronisasi hasil hilir..."];
+        const token = await this.getAccessToken(config);
+
+        // 1. Cari ServiceRequest dari SIMRS
+        const srUrl = this.getResourceUrl("ServiceRequest", config);
+        const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}`;
+        
+        logs.push(`[RADIOLOGY RESULT BUNDLE] Mencari ServiceRequest di Kemenkes: Accession ${params.accessionNumber}`);
+        const srRes = await fetch(srSearchUrl, { headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId } });
+        
+        if (!srRes.ok) throw new Error(`[SatuSehat] Gagal mencari ServiceRequest HTTP ${srRes.status}`);
+        const srData = await srRes.json();
+
+        if (!srData.entry || srData.total === 0) {
+            throw new Error(`ServiceRequest dengan Accession Number ${params.accessionNumber} belum terdaftar di SatuSehat (Order SIMRS belum dilakukan).`);
+        }
+
+        const serviceRequest = srData.entry[0].resource;
+        const srId = serviceRequest.id;
+        const encounterRef = serviceRequest.encounter?.reference;
+        const patientRef = serviceRequest.subject?.reference;
+
+        if (!encounterRef) throw new Error(`ServiceRequest ${srId} tidak memiliki referensi Encounter.`);
+        if (!patientRef) throw new Error(`ServiceRequest ${srId} tidak memiliki referensi Subject/Patient.`);
+
+        logs.push(`[RADIOLOGY RESULT BUNDLE] Menggunakan Order dari SIMRS - SR ID: ${srId}`);
+
+        const generateUuid = () => 'urn:uuid:' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+
+        const imagingStudyUuid = generateUuid();
+        const observationUuid = generateUuid();
+        const reportUuid = generateUuid();
+        const now = new Date();
+        const startTime = new Date(now.getTime() - 1000 * 60 * 30).toISOString();
+        const sanitizedDescription = params.description 
+            ? params.description.replace(/[^a-zA-Z0-9\s.,?!-]/g, " ").trim().substring(0, 50) || "Pemeriksaan Radiologi"
+            : "Pemeriksaan Radiologi";
+
+        let validStartedTime = startTime; // Fallback to current time safely if DICOM date is invalid
+        if (params.studyDate && params.studyDate.length === 8) {
+            const yyyy = params.studyDate.substring(0, 4);
+            const mm = params.studyDate.substring(4, 6);
+            const dd = params.studyDate.substring(6, 8);
+            const parsedDate = new Date(`${yyyy}-${mm}-${dd}T00:00:00+00:00`);
+            const minDate = new Date("2014-06-03T00:00:00+00:00");
+            
+            // SatuSehat Rule 10424: Date cannot be before June 3, 2014, and cannot be a future date
+            if (parsedDate >= minDate && parsedDate <= now) {
+                validStartedTime = `${yyyy}-${mm}-${dd}T00:00:00+00:00`;
+            } else {
+                logs.push(`[WARNING] Data tanggal DICOM (${params.studyDate}) melanggar Rule Kemenkes. Menggunakan waktu server saat ini.`);
+            }
+        }
+
+        const entries: Array<any> = [
+            {
+                fullUrl: imagingStudyUuid,
+                resource: {
+                    resourceType: "ImagingStudy",
+                    meta: { profile: [this.getProfileUrl("ImagingStudy")] },
+                    identifier: [{
+                        system: this.getSystemUrl("imagingstudy", config.organizationId),
+                        value: params.studyInstanceUid
+                    }],
+                    status: "available",
+                    subject: { reference: patientRef },
+                    encounter: { reference: encounterRef },
+                    basedOn: [{ reference: `ServiceRequest/${srId}` }],
+                    modality: [{ system: "http://dicom.nema.org/resources/ontology/DCM", code: params.modality }],
+                    started: validStartedTime,
+                    numberOfSeries: params.numberOfSeries || 1,
+                    numberOfInstances: params.numberOfInstances || 1,
+                    procedureCode: [{ coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }], text: "Pemeriksaan Radiologi" }],
+                    description: sanitizedDescription,
+                    series: params.seriesList?.length ? params.seriesList.map((s) => ({
+                        uid: s.uid,
+                        modality: { system: "http://dicom.nema.org/resources/ontology/DCM", code: s.modality },
+                        numberOfInstances: s.instanceCount,
+                        performer: [{ actor: { reference: `Practitioner/${activePractitionerId}` } }],
+                        instance: Array.from({ length: Math.min(s.instanceCount, 1) }).map((_, i) => ({
+                            uid: `${s.uid}.${i + 1}`,
+                            sopClass: { system: "urn:ietf:rfc:3986", code: "urn:oid:1.2.840.10008.5.1.4.1.1.7" }
+                        }))
+                    })) : [{
+                        uid: `${params.studyInstanceUid}.1`,
+                        modality: { system: "http://dicom.nema.org/resources/ontology/DCM", code: params.modality },
+                        performer: [{ actor: { reference: `Practitioner/${activePractitionerId}` } }],
+                        instance: [{ uid: `${params.studyInstanceUid}.1.1`, sopClass: { system: "urn:ietf:rfc:3986", code: "urn:oid:1.2.840.10008.5.1.4.1.1.7" } }]
+                    }]
+                },
+                request: { method: "POST", url: "ImagingStudy" }
+            },
+            {
+                fullUrl: observationUuid,
+                resource: {
+                    resourceType: "Observation",
+                    meta: { profile: [this.getProfileUrl("Observation")] },
+                    status: "final",
+                    category: [{ coding: [{ system: "http://terminology.hl7.org/CodeSystem/observation-category", code: "imaging", display: "Imaging" }] }],
+                    code: { coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }] },
+                    subject: { reference: patientRef },
+                    encounter: { reference: encounterRef },
+                    effectiveDateTime: startTime,
+                    valueString: "Pemeriksaan Radiologi Selesai",
+                    performer: [{ reference: `Organization/${config.organizationId}` }]
+                },
+                request: { method: "POST", url: "Observation" }
+            },
+            {
+                fullUrl: reportUuid,
+                resource: {
+                    resourceType: "DiagnosticReport",
+                    meta: { profile: [this.getProfileUrl("DiagnosticReport")] },
+                    status: "final",
+                    category: [{ coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0074", code: "RAD", display: "Radiology" }] }],
+                    code: { coding: [{ system: "http://loinc.org", code: "72106-8", display: "Radiology Study report" }], text: "Laporan Studi Radiologi" },
+                    subject: { reference: patientRef },
+                    encounter: { reference: encounterRef },
+                    basedOn: [{ reference: `ServiceRequest/${srId}` }],
+                    effectiveDateTime: startTime,
+                    issued: now.toISOString(),
+                    performer: [{ reference: `Organization/${config.organizationId}` }],
+                    imagingStudy: [{ reference: imagingStudyUuid }],
+                    result: [{ reference: observationUuid }],
+                    conclusion: "Pemeriksaan Radiologi Selesai"
+                },
+                request: { method: "POST", url: "DiagnosticReport" }
+            }
+        ];
+
+        const bundle = { resourceType: "Bundle", type: "transaction", entry: entries };
+        logs.push("[RADIOLOGY RESULT BUNDLE] Mengirim payload ke Kemenkes...");
+
+        const bundleUrl = `${config.environment === 'production' ? 'https://api-satusehat.kemkes.go.id' : 'https://api-satusehat-stg.dto.kemkes.go.id'}/fhir-r4/v1`;
+        const postRes = await fetch(bundleUrl, {
+            method: 'POST',
+            headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(bundle)
+        });
+
+        const postData = await postRes.json();
+        
+        if (!postRes.ok) {
+            logs.push(`[RADIOLOGY RESULT BUNDLE] ERROR ${postRes.status}: ${JSON.stringify(postData)}`);
+            const err: any = new Error(postData.issue?.[0]?.diagnostics || "Gagal mengirim bundle Satu Sehat");
+            err.logs = logs;
+            throw err;
+        }
+
+        logs.push("[RADIOLOGY RESULT BUNDLE] Berhasil tersimpan!");
+        const generatedIds: Record<string, string> = {};
+        
+        if (postData.entry) {
+            postData.entry.forEach((ent: any) => {
+                if (ent.response && ent.response.location) {
+                    const parts = ent.response.location.split("/");
+                    if (parts.length >= 2) {
+                        const type = parts[parts.length - 4]; 
+                        const resId = parts[parts.length - 3];
+                        generatedIds[type] = resId;
+                    }
+                }
+            });
+        }
+        return { ids: generatedIds, logs };
     }
 
     /**

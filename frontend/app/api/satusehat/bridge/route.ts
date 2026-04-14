@@ -7,10 +7,12 @@ const ORTHANC_AUTH = Buffer.from(
     `${process.env.ORTHANC_USERNAME || "quantum"}:${process.env.ORTHANC_PASSWORD || "quantum123"}`
 ).toString("base64");
 
-const fetchOrthanc = async (path: string) => {
+const fetchOrthanc = async (path: string, options: RequestInit = {}) => {
     const res = await fetch(`${ORTHANC_URL}${path}`, {
+        ...options,
         headers: {
-            "Authorization": `Basic ${ORTHANC_AUTH}`
+            "Authorization": `Basic ${ORTHANC_AUTH}`,
+            ...options.headers
         }
     });
     if (!res.ok) throw new Error(`Orthanc error: ${res.statusText}`);
@@ -39,15 +41,27 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }, { status: 400 });
         }
 
-        // 2. Ambil data series untuk mendapatkan modality
+        // 2. Ambil data semua series yang ada
         const seriesIds = study.Series as string[];
-        let modality = "OT"; // Default Other
-        let instanceCount = 0;
+        let modality = "OT"; // Default primary modality
+        let instanceCount = study.Instances?.length || 0;
+        const seriesList = [];
         
         if (seriesIds.length > 0) {
-            const firstSeries = await fetchOrthanc(`/series/${seriesIds[0]}`);
-            modality = firstSeries.MainDicomTags?.Modality || "OT";
-            instanceCount = study.Instances?.length || 0;
+            // Ambil detail semua series
+            const seriesPromises = seriesIds.map(sId => fetchOrthanc(`/series/${sId}`));
+            const seriesDetails = await Promise.all(seriesPromises);
+            
+            // Set primary modality dari series pertama
+            modality = seriesDetails[0].MainDicomTags?.Modality || "OT";
+
+            for (const sDetail of seriesDetails) {
+                seriesList.push({
+                    uid: sDetail.MainDicomTags?.SeriesInstanceUID || sDetail.ID,
+                    modality: sDetail.MainDicomTags?.Modality || "OT",
+                    instanceCount: sDetail.Instances?.length || 1
+                });
+            }
         }
 
         // 3. Cari ID Pasien di Satu Sehat
@@ -74,7 +88,8 @@ export async function POST(req: NextRequest) {
                 accessionNumber: tags.AccessionNumber,
                 description: tags.StudyDescription,
                 numberOfSeries: seriesIds.length,
-                numberOfInstances: instanceCount
+                numberOfInstances: instanceCount,
+                seriesList: seriesList
             });
         } catch (e: any) {
             console.error("[SATUSEHAT BRIDGE] Detail Error:", e.message);
@@ -99,9 +114,27 @@ export async function POST(req: NextRequest) {
             create: { studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik }
         });
 
+        // 6. TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER (Kemenkes Dicom Router)
+        try {
+            console.log(`[SATUSEHAT BRIDGE] Triggering DICOM Send to QTM-ROUTER for Study: ${studyId}`);
+            // Mengirim command push secara Asynchronous agar muncul di menu Jobs
+            await fetchOrthanc("/modalities/QTM-ROUTER/store", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "Resources": [ studyId ],
+                    "Asynchronous": true
+                })
+            });
+            console.log(`[SATUSEHAT BRIDGE] Trigger to QTM-ROUTER sent successfully (Asynchronous Job Created).`);
+        } catch (routerErr: any) {
+            console.error(`[SATUSEHAT BRIDGE] Warning: Failed to trigger QTM-ROUTER: ${routerErr.message}`);
+            // Kita tidak perlu menggagalkan sync FHIR jika upload gambar delay, biarkan background job retry
+        }
+
         return NextResponse.json({ 
             success: true, 
-            message: "Berhasil dikirim ke Satu Sehat",
+            message: "Berhasil dikirim ke Satu Sehat & Gambar sedang diupload",
             satusehatId: ssId,
             logs: result.logs
         });

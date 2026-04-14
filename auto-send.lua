@@ -9,19 +9,7 @@ function OnStableStudy(studyId, tags, metadata)
         return
     end
 
-    -- 1. ROUTING TO SATUSEHAT DICOM ROUTER (Priority)
-    if metadata["1111"] ~= "true" then
-        print("ROUTING: Sending study to SatuSehat DICOM Router [QTM-ROUTER]...")
-        local storeResult = RestApiPost("/modalities/QTM-ROUTER/store", studyId)
-        if storeResult ~= nil then
-            RestApiPut("/studies/" .. studyId .. "/metadata/1111", "true")
-            print("SUCCESS: Study sent to DICOM Router.")
-        else
-            print("ERROR: Failed to send study to DICOM Router.")
-        end
-    end
-
-    -- 2. AI ANALYSIS TRIGGER
+    -- 2. AI ANALYSIS TRIGGER (Removed Router auto-send as requested)
     if metadata["AI_Processed"] ~= "true" then
         local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
         local configUrl = frontendUrl .. "/api/config/ai?orthanc=1"

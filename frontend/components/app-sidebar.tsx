@@ -48,6 +48,10 @@ const data = {
           title: "Study Worklist",
           url: "/worklist",
         },
+        {
+          title: "SatuSehat Sync",
+          url: "/satusehat",
+        },
       ],
     },
     {

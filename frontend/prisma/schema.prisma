@@ -87,6 +87,8 @@ model SatuSehatIntegration {
   patientNik       String?  // NIK used for this integration
   status           String   @default("PENDING") // SUCCESS, FAILED
   error            String?  @db.Text
+  bundleResponse   Json?    // Full response from SatuSehat
+  syncedAt         DateTime? // Time of successful sync
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

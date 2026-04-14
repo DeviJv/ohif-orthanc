@@ -94,12 +94,14 @@ export class SatuSehatService {
             return this.cachedToken;
         }
 
-        const defaultBaseUrl = config.environment === "production"
-            ? "https://api-satusehat.kemkes.go.id/oauth2/v1"
-            : "https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1";
-            
-        // Use dynamic authUrl if provided in DB, otherwise use default
-        const authUrl = config.authUrl || `${defaultBaseUrl}/accesstoken?grant_type=client_credentials`;
+        // Use dynamic authUrl if provided in DB, otherwise use default based on environment
+        let authUrl = config.authUrl;
+        if (!authUrl) {
+            const defaultAuthBase = config.environment === "production"
+                ? "https://api-satusehat.kemkes.go.id/oauth2/v1"
+                : "https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1";
+            authUrl = `${defaultAuthBase}/accesstoken?grant_type=client_credentials`;
+        }
 
         const params = new URLSearchParams();
         params.append("client_id", config.clientId.trim());
@@ -135,6 +137,38 @@ export class SatuSehatService {
         return environment === "production"
             ? "https://api-satusehat.kemkes.go.id/fhir-r4/v1"
             : "https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1";
+    }
+
+    /**
+     * Resolves the root URL for FHIR Profile definitions.
+     */
+    static getProfileRoot(): string {
+        return "https://fhir.kemkes.go.id/r4/StructureDefinition";
+    }
+
+    /**
+     * Resolves the root URL for Identifier Systems.
+     */
+    static getSystemRoot(): string {
+        return "http://sys-ids.kemkes.go.id";
+    }
+
+    /**
+     * Resolves a full Profile URL.
+     */
+    static getProfileUrl(resourceType: string): string {
+        return `${this.getProfileRoot()}/${resourceType}`;
+    }
+
+    /**
+     * Resolves a full System URL for an identifier.
+     */
+    static getSystemUrl(type: "acsn" | "encounter" | "imagingstudy" | "nik" | "location", orgId?: string): string {
+        if (type === "nik") return "https://fhir.kemkes.go.id/id/nik";
+        
+        const root = this.getSystemRoot();
+        if (!orgId) return `${root}/${type}`;
+        return `${root}/${type}/${orgId}`;
     }
 
     /**
@@ -176,7 +210,7 @@ export class SatuSehatService {
         // Membersihkan NIK dari spasi dan memastikan encoding yang benar
         const cleanNik = nik.trim();
         const params = new URLSearchParams({
-            identifier: `https://fhir.kemkes.go.id/id/nik|${cleanNik}`
+            identifier: `${this.getSystemUrl("nik")}|${cleanNik}`
         });
         
         const url = `${urlWithParams}?${params.toString()}`;
@@ -251,7 +285,7 @@ export class SatuSehatService {
         const payload = {
             resourceType: "Location",
             identifier: [{
-                system: `https://sys-ids.kemkes.go.id/location/${config.organizationId}`,
+                system: this.getSystemUrl("location", config.organizationId),
                 value: "RAD-001"
             }],
             status: "active",
@@ -416,7 +450,7 @@ export class SatuSehatService {
                     fullUrl: serviceRequestUuid,
                     resource: {
                         resourceType: "ServiceRequest",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceRequest"] },
+                        meta: { profile: [this.getProfileUrl("ServiceRequest")] },
                         identifier: [{
                             use: "usual",
                             type: {
@@ -425,7 +459,7 @@ export class SatuSehatService {
                                     code: "ACSN"
                                 }]
                             },
-                            system: `http://sys-ids.kemkes.go.id/acsn/${config.organizationId}`,
+                            system: this.getSystemUrl("acsn", config.organizationId),
                             value: params.accessionNumber
                         }],
                         status: "active",
@@ -451,9 +485,9 @@ export class SatuSehatService {
                     fullUrl: encounterUuid,
                     resource: {
                         resourceType: "Encounter",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Encounter"] },
+                        meta: { profile: [this.getProfileUrl("Encounter")] },
                         identifier: [{
-                            system: `https://sys-ids.kemkes.go.id/encounter/${config.organizationId}`,
+                            system: this.getSystemUrl("encounter", config.organizationId),
                             value: visitNumber
                         }],
                         status: "finished",
@@ -507,7 +541,7 @@ export class SatuSehatService {
                     fullUrl: conditionUuid,
                     resource: {
                         resourceType: "Condition",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Condition"] },
+                        meta: { profile: [this.getProfileUrl("Condition")] },
                         clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active" }] },
                         category: [{
                             coding: [{
@@ -532,9 +566,9 @@ export class SatuSehatService {
                     fullUrl: imagingStudyUuid,
                     resource: {
                         resourceType: "ImagingStudy",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/ImagingStudy"] },
+                        meta: { profile: [this.getProfileUrl("ImagingStudy")] },
                         identifier: [{
-                            system: `https://sys-ids.kemkes.go.id/imagingstudy/${config.organizationId}`,
+                            system: this.getSystemUrl("imagingstudy", config.organizationId),
                             value: params.studyInstanceUid
                         }],
                         status: "available",
@@ -576,7 +610,7 @@ export class SatuSehatService {
                     fullUrl: observationUuid,
                     resource: {
                         resourceType: "Observation",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Observation"] },
+                        meta: { profile: [this.getProfileUrl("Observation")] },
                         status: "final",
                         category: [{
                             coding: [{ system: "http://terminology.hl7.org/CodeSystem/observation-category", code: "imaging", display: "Imaging" }]
@@ -599,7 +633,7 @@ export class SatuSehatService {
                     fullUrl: reportUuid,
                     resource: {
                         resourceType: "DiagnosticReport",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/DiagnosticReport"] },
+                        meta: { profile: [this.getProfileUrl("DiagnosticReport")] },
                         status: "final",
                         category: [{
                             coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0074", code: "RAD", display: "Radiology" }]
@@ -627,7 +661,7 @@ export class SatuSehatService {
                     fullUrl: compositionUuid,
                     resource: {
                         resourceType: "Composition",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Composition"] },
+                        meta: { profile: [this.getProfileUrl("Composition")] },
                         status: "final",
                         type: {
                             coding: [{ system: "http://loinc.org", code: "18748-0", display: "Radiology Medical imaging report" }]
@@ -733,7 +767,7 @@ export class SatuSehatService {
                     fullUrl: serviceRequestUuid,
                     resource: {
                         resourceType: "ServiceRequest",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceRequest"] },
+                        meta: { profile: [this.getProfileUrl("ServiceRequest")] },
                         identifier: [{
                             use: "usual",
                             type: {
@@ -742,7 +776,7 @@ export class SatuSehatService {
                                     code: "ACSN"
                                 }]
                             },
-                            system: `http://sys-ids.kemkes.go.id/acsn/${config.organizationId}`,
+                            system: this.getSystemUrl("acsn", config.organizationId),
                             value: params.accessionNumber
                         }],
                         status: "active",
@@ -766,9 +800,9 @@ export class SatuSehatService {
                     fullUrl: encounterUuid,
                     resource: {
                         resourceType: "Encounter",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Encounter"] },
+                        meta: { profile: [this.getProfileUrl("Encounter")] },
                         identifier: [{
-                            system: `https://sys-ids.kemkes.go.id/encounter/${config.organizationId}`,
+                            system: this.getSystemUrl("encounter", config.organizationId),
                             value: `TEST-${Date.now()}`
                         }],
                         status: "finished",
@@ -803,7 +837,7 @@ export class SatuSehatService {
                     fullUrl: conditionUuid,
                     resource: {
                         resourceType: "Condition",
-                        meta: { profile: ["https://fhir.kemkes.go.id/r4/StructureDefinition/Condition"] },
+                        meta: { profile: [this.getProfileUrl("Condition")] },
                         clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active" }] },
                         category: [{
                             coding: [{
@@ -898,7 +932,7 @@ export class SatuSehatService {
         // 1. Cari ServiceRequest
         try {
             const srUrl = this.getResourceUrl("ServiceRequest", config);
-            const srSearchUrl = `${srUrl}?identifier=http://sys-ids.kemkes.go.id/acsn/${config.organizationId}|${accessionNumber}`;
+            const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${accessionNumber}`;
             
             const srRes = await fetch(srSearchUrl, {
                 headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
@@ -921,7 +955,7 @@ export class SatuSehatService {
         // 2. Cari ImagingStudy
         try {
             const isUrl = this.getResourceUrl("ImagingStudy", config);
-            const isSearchUrl = `${isUrl}?identifier=http://sys-ids.kemkes.go.id/acsn/${config.organizationId}|${accessionNumber}`;
+            const isSearchUrl = `${isUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${accessionNumber}`;
             
             const isRes = await fetch(isSearchUrl, {
                 headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }

@@ -191,6 +191,17 @@ exports.Prisma.SatuSehatIntegrationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SatuSehatWebhookLogScalarFieldEnum = {
+  id: 'id',
+  studyInstanceUid: 'studyInstanceUid',
+  patientName: 'patientName',
+  status: 'status',
+  message: 'message',
+  errorDetail: 'errorDetail',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SatuSehatSettingScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -258,6 +269,7 @@ exports.Prisma.ModelName = {
   AppConfig: 'AppConfig',
   AiResult: 'AiResult',
   SatuSehatIntegration: 'SatuSehatIntegration',
+  SatuSehatWebhookLog: 'SatuSehatWebhookLog',
   SatuSehatSetting: 'SatuSehatSetting'
 };
 

@@ -85,10 +85,11 @@ export const getColumns = ({
             let label = "Pending";
 
             if (status === "SUCCESS") {
-                bgColor = "bg-emerald-100";
-                textColor = "text-emerald-700";
+                bgColor = "bg-slate-900";
+                textColor = "text-white ring-1 ring-slate-800 shadow-sm";
                 label = "Terkirim";
             } else if (status === "FAILED") {
+
                 bgColor = "bg-rose-100";
                 textColor = "text-rose-700";
                 label = "Gagal";

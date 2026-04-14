@@ -19,6 +19,8 @@ RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM node:20-alpine AS runner
+# Install docker-cli agar Node.js bisa mengeksekusi "docker restart" via sock
+RUN apk add --no-cache docker-cli
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 

@@ -49,6 +49,11 @@ export type AiResult = $Result.DefaultSelection<Prisma.$AiResultPayload>
  */
 export type SatuSehatIntegration = $Result.DefaultSelection<Prisma.$SatuSehatIntegrationPayload>
 /**
+ * Model SatuSehatWebhookLog
+ * 
+ */
+export type SatuSehatWebhookLog = $Result.DefaultSelection<Prisma.$SatuSehatWebhookLogPayload>
+/**
  * Model SatuSehatSetting
  * 
  */
@@ -259,6 +264,16 @@ export class PrismaClient<
     * ```
     */
   get satuSehatIntegration(): Prisma.SatuSehatIntegrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.satuSehatWebhookLog`: Exposes CRUD operations for the **SatuSehatWebhookLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SatuSehatWebhookLogs
+    * const satuSehatWebhookLogs = await prisma.satuSehatWebhookLog.findMany()
+    * ```
+    */
+  get satuSehatWebhookLog(): Prisma.SatuSehatWebhookLogDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.satuSehatSetting`: Exposes CRUD operations for the **SatuSehatSetting** model.
@@ -717,6 +732,7 @@ export namespace Prisma {
     AppConfig: 'AppConfig',
     AiResult: 'AiResult',
     SatuSehatIntegration: 'SatuSehatIntegration',
+    SatuSehatWebhookLog: 'SatuSehatWebhookLog',
     SatuSehatSetting: 'SatuSehatSetting'
   };
 
@@ -736,7 +752,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatSetting"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1258,6 +1274,80 @@ export namespace Prisma {
           }
         }
       }
+      SatuSehatWebhookLog: {
+        payload: Prisma.$SatuSehatWebhookLogPayload<ExtArgs>
+        fields: Prisma.SatuSehatWebhookLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SatuSehatWebhookLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SatuSehatWebhookLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>
+          }
+          findFirst: {
+            args: Prisma.SatuSehatWebhookLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SatuSehatWebhookLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>
+          }
+          findMany: {
+            args: Prisma.SatuSehatWebhookLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>[]
+          }
+          create: {
+            args: Prisma.SatuSehatWebhookLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>
+          }
+          createMany: {
+            args: Prisma.SatuSehatWebhookLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SatuSehatWebhookLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>[]
+          }
+          delete: {
+            args: Prisma.SatuSehatWebhookLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>
+          }
+          update: {
+            args: Prisma.SatuSehatWebhookLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.SatuSehatWebhookLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SatuSehatWebhookLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SatuSehatWebhookLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.SatuSehatWebhookLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatWebhookLogPayload>
+          }
+          aggregate: {
+            args: Prisma.SatuSehatWebhookLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSatuSehatWebhookLog>
+          }
+          groupBy: {
+            args: Prisma.SatuSehatWebhookLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatWebhookLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SatuSehatWebhookLogCountArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatWebhookLogCountAggregateOutputType> | number
+          }
+        }
+      }
       SatuSehatSetting: {
         payload: Prisma.$SatuSehatSettingPayload<ExtArgs>
         fields: Prisma.SatuSehatSettingFieldRefs
@@ -1435,6 +1525,7 @@ export namespace Prisma {
     appConfig?: AppConfigOmit
     aiResult?: AiResultOmit
     satuSehatIntegration?: SatuSehatIntegrationOmit
+    satuSehatWebhookLog?: SatuSehatWebhookLogOmit
     satuSehatSetting?: SatuSehatSettingOmit
   }
 
@@ -8958,6 +9049,1032 @@ export namespace Prisma {
 
 
   /**
+   * Model SatuSehatWebhookLog
+   */
+
+  export type AggregateSatuSehatWebhookLog = {
+    _count: SatuSehatWebhookLogCountAggregateOutputType | null
+    _min: SatuSehatWebhookLogMinAggregateOutputType | null
+    _max: SatuSehatWebhookLogMaxAggregateOutputType | null
+  }
+
+  export type SatuSehatWebhookLogMinAggregateOutputType = {
+    id: string | null
+    studyInstanceUid: string | null
+    patientName: string | null
+    status: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type SatuSehatWebhookLogMaxAggregateOutputType = {
+    id: string | null
+    studyInstanceUid: string | null
+    patientName: string | null
+    status: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type SatuSehatWebhookLogCountAggregateOutputType = {
+    id: number
+    studyInstanceUid: number
+    patientName: number
+    status: number
+    message: number
+    errorDetail: number
+    rawPayload: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SatuSehatWebhookLogMinAggregateInputType = {
+    id?: true
+    studyInstanceUid?: true
+    patientName?: true
+    status?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type SatuSehatWebhookLogMaxAggregateInputType = {
+    id?: true
+    studyInstanceUid?: true
+    patientName?: true
+    status?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type SatuSehatWebhookLogCountAggregateInputType = {
+    id?: true
+    studyInstanceUid?: true
+    patientName?: true
+    status?: true
+    message?: true
+    errorDetail?: true
+    rawPayload?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SatuSehatWebhookLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatWebhookLog to aggregate.
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatWebhookLogs to fetch.
+     */
+    orderBy?: SatuSehatWebhookLogOrderByWithRelationInput | SatuSehatWebhookLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SatuSehatWebhookLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatWebhookLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatWebhookLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SatuSehatWebhookLogs
+    **/
+    _count?: true | SatuSehatWebhookLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SatuSehatWebhookLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SatuSehatWebhookLogMaxAggregateInputType
+  }
+
+  export type GetSatuSehatWebhookLogAggregateType<T extends SatuSehatWebhookLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateSatuSehatWebhookLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSatuSehatWebhookLog[P]>
+      : GetScalarType<T[P], AggregateSatuSehatWebhookLog[P]>
+  }
+
+
+
+
+  export type SatuSehatWebhookLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatuSehatWebhookLogWhereInput
+    orderBy?: SatuSehatWebhookLogOrderByWithAggregationInput | SatuSehatWebhookLogOrderByWithAggregationInput[]
+    by: SatuSehatWebhookLogScalarFieldEnum[] | SatuSehatWebhookLogScalarFieldEnum
+    having?: SatuSehatWebhookLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SatuSehatWebhookLogCountAggregateInputType | true
+    _min?: SatuSehatWebhookLogMinAggregateInputType
+    _max?: SatuSehatWebhookLogMaxAggregateInputType
+  }
+
+  export type SatuSehatWebhookLogGroupByOutputType = {
+    id: string
+    studyInstanceUid: string | null
+    patientName: string | null
+    status: string
+    message: string | null
+    errorDetail: JsonValue | null
+    rawPayload: JsonValue | null
+    createdAt: Date
+    _count: SatuSehatWebhookLogCountAggregateOutputType | null
+    _min: SatuSehatWebhookLogMinAggregateOutputType | null
+    _max: SatuSehatWebhookLogMaxAggregateOutputType | null
+  }
+
+  type GetSatuSehatWebhookLogGroupByPayload<T extends SatuSehatWebhookLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SatuSehatWebhookLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SatuSehatWebhookLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SatuSehatWebhookLogGroupByOutputType[P]>
+            : GetScalarType<T[P], SatuSehatWebhookLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SatuSehatWebhookLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studyInstanceUid?: boolean
+    patientName?: boolean
+    status?: boolean
+    message?: boolean
+    errorDetail?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["satuSehatWebhookLog"]>
+
+  export type SatuSehatWebhookLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studyInstanceUid?: boolean
+    patientName?: boolean
+    status?: boolean
+    message?: boolean
+    errorDetail?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["satuSehatWebhookLog"]>
+
+  export type SatuSehatWebhookLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studyInstanceUid?: boolean
+    patientName?: boolean
+    status?: boolean
+    message?: boolean
+    errorDetail?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["satuSehatWebhookLog"]>
+
+  export type SatuSehatWebhookLogSelectScalar = {
+    id?: boolean
+    studyInstanceUid?: boolean
+    patientName?: boolean
+    status?: boolean
+    message?: boolean
+    errorDetail?: boolean
+    rawPayload?: boolean
+    createdAt?: boolean
+  }
+
+  export type SatuSehatWebhookLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studyInstanceUid" | "patientName" | "status" | "message" | "errorDetail" | "rawPayload" | "createdAt", ExtArgs["result"]["satuSehatWebhookLog"]>
+
+  export type $SatuSehatWebhookLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SatuSehatWebhookLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      studyInstanceUid: string | null
+      patientName: string | null
+      status: string
+      message: string | null
+      errorDetail: Prisma.JsonValue | null
+      rawPayload: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["satuSehatWebhookLog"]>
+    composites: {}
+  }
+
+  type SatuSehatWebhookLogGetPayload<S extends boolean | null | undefined | SatuSehatWebhookLogDefaultArgs> = $Result.GetResult<Prisma.$SatuSehatWebhookLogPayload, S>
+
+  type SatuSehatWebhookLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SatuSehatWebhookLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SatuSehatWebhookLogCountAggregateInputType | true
+    }
+
+  export interface SatuSehatWebhookLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SatuSehatWebhookLog'], meta: { name: 'SatuSehatWebhookLog' } }
+    /**
+     * Find zero or one SatuSehatWebhookLog that matches the filter.
+     * @param {SatuSehatWebhookLogFindUniqueArgs} args - Arguments to find a SatuSehatWebhookLog
+     * @example
+     * // Get one SatuSehatWebhookLog
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SatuSehatWebhookLogFindUniqueArgs>(args: SelectSubset<T, SatuSehatWebhookLogFindUniqueArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SatuSehatWebhookLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SatuSehatWebhookLogFindUniqueOrThrowArgs} args - Arguments to find a SatuSehatWebhookLog
+     * @example
+     * // Get one SatuSehatWebhookLog
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SatuSehatWebhookLogFindUniqueOrThrowArgs>(args: SelectSubset<T, SatuSehatWebhookLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatWebhookLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogFindFirstArgs} args - Arguments to find a SatuSehatWebhookLog
+     * @example
+     * // Get one SatuSehatWebhookLog
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SatuSehatWebhookLogFindFirstArgs>(args?: SelectSubset<T, SatuSehatWebhookLogFindFirstArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatWebhookLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogFindFirstOrThrowArgs} args - Arguments to find a SatuSehatWebhookLog
+     * @example
+     * // Get one SatuSehatWebhookLog
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SatuSehatWebhookLogFindFirstOrThrowArgs>(args?: SelectSubset<T, SatuSehatWebhookLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SatuSehatWebhookLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SatuSehatWebhookLogs
+     * const satuSehatWebhookLogs = await prisma.satuSehatWebhookLog.findMany()
+     * 
+     * // Get first 10 SatuSehatWebhookLogs
+     * const satuSehatWebhookLogs = await prisma.satuSehatWebhookLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const satuSehatWebhookLogWithIdOnly = await prisma.satuSehatWebhookLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SatuSehatWebhookLogFindManyArgs>(args?: SelectSubset<T, SatuSehatWebhookLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SatuSehatWebhookLog.
+     * @param {SatuSehatWebhookLogCreateArgs} args - Arguments to create a SatuSehatWebhookLog.
+     * @example
+     * // Create one SatuSehatWebhookLog
+     * const SatuSehatWebhookLog = await prisma.satuSehatWebhookLog.create({
+     *   data: {
+     *     // ... data to create a SatuSehatWebhookLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends SatuSehatWebhookLogCreateArgs>(args: SelectSubset<T, SatuSehatWebhookLogCreateArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SatuSehatWebhookLogs.
+     * @param {SatuSehatWebhookLogCreateManyArgs} args - Arguments to create many SatuSehatWebhookLogs.
+     * @example
+     * // Create many SatuSehatWebhookLogs
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SatuSehatWebhookLogCreateManyArgs>(args?: SelectSubset<T, SatuSehatWebhookLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SatuSehatWebhookLogs and returns the data saved in the database.
+     * @param {SatuSehatWebhookLogCreateManyAndReturnArgs} args - Arguments to create many SatuSehatWebhookLogs.
+     * @example
+     * // Create many SatuSehatWebhookLogs
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SatuSehatWebhookLogs and only return the `id`
+     * const satuSehatWebhookLogWithIdOnly = await prisma.satuSehatWebhookLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SatuSehatWebhookLogCreateManyAndReturnArgs>(args?: SelectSubset<T, SatuSehatWebhookLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SatuSehatWebhookLog.
+     * @param {SatuSehatWebhookLogDeleteArgs} args - Arguments to delete one SatuSehatWebhookLog.
+     * @example
+     * // Delete one SatuSehatWebhookLog
+     * const SatuSehatWebhookLog = await prisma.satuSehatWebhookLog.delete({
+     *   where: {
+     *     // ... filter to delete one SatuSehatWebhookLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SatuSehatWebhookLogDeleteArgs>(args: SelectSubset<T, SatuSehatWebhookLogDeleteArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SatuSehatWebhookLog.
+     * @param {SatuSehatWebhookLogUpdateArgs} args - Arguments to update one SatuSehatWebhookLog.
+     * @example
+     * // Update one SatuSehatWebhookLog
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SatuSehatWebhookLogUpdateArgs>(args: SelectSubset<T, SatuSehatWebhookLogUpdateArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SatuSehatWebhookLogs.
+     * @param {SatuSehatWebhookLogDeleteManyArgs} args - Arguments to filter SatuSehatWebhookLogs to delete.
+     * @example
+     * // Delete a few SatuSehatWebhookLogs
+     * const { count } = await prisma.satuSehatWebhookLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SatuSehatWebhookLogDeleteManyArgs>(args?: SelectSubset<T, SatuSehatWebhookLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatWebhookLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SatuSehatWebhookLogs
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SatuSehatWebhookLogUpdateManyArgs>(args: SelectSubset<T, SatuSehatWebhookLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatWebhookLogs and returns the data updated in the database.
+     * @param {SatuSehatWebhookLogUpdateManyAndReturnArgs} args - Arguments to update many SatuSehatWebhookLogs.
+     * @example
+     * // Update many SatuSehatWebhookLogs
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SatuSehatWebhookLogs and only return the `id`
+     * const satuSehatWebhookLogWithIdOnly = await prisma.satuSehatWebhookLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SatuSehatWebhookLogUpdateManyAndReturnArgs>(args: SelectSubset<T, SatuSehatWebhookLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SatuSehatWebhookLog.
+     * @param {SatuSehatWebhookLogUpsertArgs} args - Arguments to update or create a SatuSehatWebhookLog.
+     * @example
+     * // Update or create a SatuSehatWebhookLog
+     * const satuSehatWebhookLog = await prisma.satuSehatWebhookLog.upsert({
+     *   create: {
+     *     // ... data to create a SatuSehatWebhookLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SatuSehatWebhookLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SatuSehatWebhookLogUpsertArgs>(args: SelectSubset<T, SatuSehatWebhookLogUpsertArgs<ExtArgs>>): Prisma__SatuSehatWebhookLogClient<$Result.GetResult<Prisma.$SatuSehatWebhookLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SatuSehatWebhookLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogCountArgs} args - Arguments to filter SatuSehatWebhookLogs to count.
+     * @example
+     * // Count the number of SatuSehatWebhookLogs
+     * const count = await prisma.satuSehatWebhookLog.count({
+     *   where: {
+     *     // ... the filter for the SatuSehatWebhookLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends SatuSehatWebhookLogCountArgs>(
+      args?: Subset<T, SatuSehatWebhookLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SatuSehatWebhookLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SatuSehatWebhookLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SatuSehatWebhookLogAggregateArgs>(args: Subset<T, SatuSehatWebhookLogAggregateArgs>): Prisma.PrismaPromise<GetSatuSehatWebhookLogAggregateType<T>>
+
+    /**
+     * Group by SatuSehatWebhookLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatWebhookLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SatuSehatWebhookLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SatuSehatWebhookLogGroupByArgs['orderBy'] }
+        : { orderBy?: SatuSehatWebhookLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SatuSehatWebhookLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSatuSehatWebhookLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SatuSehatWebhookLog model
+   */
+  readonly fields: SatuSehatWebhookLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SatuSehatWebhookLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SatuSehatWebhookLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SatuSehatWebhookLog model
+   */
+  interface SatuSehatWebhookLogFieldRefs {
+    readonly id: FieldRef<"SatuSehatWebhookLog", 'String'>
+    readonly studyInstanceUid: FieldRef<"SatuSehatWebhookLog", 'String'>
+    readonly patientName: FieldRef<"SatuSehatWebhookLog", 'String'>
+    readonly status: FieldRef<"SatuSehatWebhookLog", 'String'>
+    readonly message: FieldRef<"SatuSehatWebhookLog", 'String'>
+    readonly errorDetail: FieldRef<"SatuSehatWebhookLog", 'Json'>
+    readonly rawPayload: FieldRef<"SatuSehatWebhookLog", 'Json'>
+    readonly createdAt: FieldRef<"SatuSehatWebhookLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SatuSehatWebhookLog findUnique
+   */
+  export type SatuSehatWebhookLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatWebhookLog to fetch.
+     */
+    where: SatuSehatWebhookLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatWebhookLog findUniqueOrThrow
+   */
+  export type SatuSehatWebhookLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatWebhookLog to fetch.
+     */
+    where: SatuSehatWebhookLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatWebhookLog findFirst
+   */
+  export type SatuSehatWebhookLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatWebhookLog to fetch.
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatWebhookLogs to fetch.
+     */
+    orderBy?: SatuSehatWebhookLogOrderByWithRelationInput | SatuSehatWebhookLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatWebhookLogs.
+     */
+    cursor?: SatuSehatWebhookLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatWebhookLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatWebhookLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatWebhookLogs.
+     */
+    distinct?: SatuSehatWebhookLogScalarFieldEnum | SatuSehatWebhookLogScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatWebhookLog findFirstOrThrow
+   */
+  export type SatuSehatWebhookLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatWebhookLog to fetch.
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatWebhookLogs to fetch.
+     */
+    orderBy?: SatuSehatWebhookLogOrderByWithRelationInput | SatuSehatWebhookLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatWebhookLogs.
+     */
+    cursor?: SatuSehatWebhookLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatWebhookLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatWebhookLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatWebhookLogs.
+     */
+    distinct?: SatuSehatWebhookLogScalarFieldEnum | SatuSehatWebhookLogScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatWebhookLog findMany
+   */
+  export type SatuSehatWebhookLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatWebhookLogs to fetch.
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatWebhookLogs to fetch.
+     */
+    orderBy?: SatuSehatWebhookLogOrderByWithRelationInput | SatuSehatWebhookLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SatuSehatWebhookLogs.
+     */
+    cursor?: SatuSehatWebhookLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatWebhookLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatWebhookLogs.
+     */
+    skip?: number
+    distinct?: SatuSehatWebhookLogScalarFieldEnum | SatuSehatWebhookLogScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatWebhookLog create
+   */
+  export type SatuSehatWebhookLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SatuSehatWebhookLog.
+     */
+    data: XOR<SatuSehatWebhookLogCreateInput, SatuSehatWebhookLogUncheckedCreateInput>
+  }
+
+  /**
+   * SatuSehatWebhookLog createMany
+   */
+  export type SatuSehatWebhookLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SatuSehatWebhookLogs.
+     */
+    data: SatuSehatWebhookLogCreateManyInput | SatuSehatWebhookLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatWebhookLog createManyAndReturn
+   */
+  export type SatuSehatWebhookLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many SatuSehatWebhookLogs.
+     */
+    data: SatuSehatWebhookLogCreateManyInput | SatuSehatWebhookLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatWebhookLog update
+   */
+  export type SatuSehatWebhookLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SatuSehatWebhookLog.
+     */
+    data: XOR<SatuSehatWebhookLogUpdateInput, SatuSehatWebhookLogUncheckedUpdateInput>
+    /**
+     * Choose, which SatuSehatWebhookLog to update.
+     */
+    where: SatuSehatWebhookLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatWebhookLog updateMany
+   */
+  export type SatuSehatWebhookLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SatuSehatWebhookLogs.
+     */
+    data: XOR<SatuSehatWebhookLogUpdateManyMutationInput, SatuSehatWebhookLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatWebhookLogs to update
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * Limit how many SatuSehatWebhookLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatWebhookLog updateManyAndReturn
+   */
+  export type SatuSehatWebhookLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * The data used to update SatuSehatWebhookLogs.
+     */
+    data: XOR<SatuSehatWebhookLogUpdateManyMutationInput, SatuSehatWebhookLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatWebhookLogs to update
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * Limit how many SatuSehatWebhookLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatWebhookLog upsert
+   */
+  export type SatuSehatWebhookLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SatuSehatWebhookLog to update in case it exists.
+     */
+    where: SatuSehatWebhookLogWhereUniqueInput
+    /**
+     * In case the SatuSehatWebhookLog found by the `where` argument doesn't exist, create a new SatuSehatWebhookLog with this data.
+     */
+    create: XOR<SatuSehatWebhookLogCreateInput, SatuSehatWebhookLogUncheckedCreateInput>
+    /**
+     * In case the SatuSehatWebhookLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SatuSehatWebhookLogUpdateInput, SatuSehatWebhookLogUncheckedUpdateInput>
+  }
+
+  /**
+   * SatuSehatWebhookLog delete
+   */
+  export type SatuSehatWebhookLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+    /**
+     * Filter which SatuSehatWebhookLog to delete.
+     */
+    where: SatuSehatWebhookLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatWebhookLog deleteMany
+   */
+  export type SatuSehatWebhookLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatWebhookLogs to delete
+     */
+    where?: SatuSehatWebhookLogWhereInput
+    /**
+     * Limit how many SatuSehatWebhookLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatWebhookLog without action
+   */
+  export type SatuSehatWebhookLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatWebhookLog
+     */
+    select?: SatuSehatWebhookLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatWebhookLog
+     */
+    omit?: SatuSehatWebhookLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model SatuSehatSetting
    */
 
@@ -10299,6 +11416,20 @@ export namespace Prisma {
   export type SatuSehatIntegrationScalarFieldEnum = (typeof SatuSehatIntegrationScalarFieldEnum)[keyof typeof SatuSehatIntegrationScalarFieldEnum]
 
 
+  export const SatuSehatWebhookLogScalarFieldEnum: {
+    id: 'id',
+    studyInstanceUid: 'studyInstanceUid',
+    patientName: 'patientName',
+    status: 'status',
+    message: 'message',
+    errorDetail: 'errorDetail',
+    rawPayload: 'rawPayload',
+    createdAt: 'createdAt'
+  };
+
+  export type SatuSehatWebhookLogScalarFieldEnum = (typeof SatuSehatWebhookLogScalarFieldEnum)[keyof typeof SatuSehatWebhookLogScalarFieldEnum]
+
+
   export const SatuSehatSettingScalarFieldEnum: {
     id: 'id',
     organizationId: 'organizationId',
@@ -10921,6 +12052,73 @@ export namespace Prisma {
     syncedAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatIntegration"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatIntegration"> | Date | string
+  }
+
+  export type SatuSehatWebhookLogWhereInput = {
+    AND?: SatuSehatWebhookLogWhereInput | SatuSehatWebhookLogWhereInput[]
+    OR?: SatuSehatWebhookLogWhereInput[]
+    NOT?: SatuSehatWebhookLogWhereInput | SatuSehatWebhookLogWhereInput[]
+    id?: StringFilter<"SatuSehatWebhookLog"> | string
+    studyInstanceUid?: StringNullableFilter<"SatuSehatWebhookLog"> | string | null
+    patientName?: StringNullableFilter<"SatuSehatWebhookLog"> | string | null
+    status?: StringFilter<"SatuSehatWebhookLog"> | string
+    message?: StringNullableFilter<"SatuSehatWebhookLog"> | string | null
+    errorDetail?: JsonNullableFilter<"SatuSehatWebhookLog">
+    rawPayload?: JsonNullableFilter<"SatuSehatWebhookLog">
+    createdAt?: DateTimeFilter<"SatuSehatWebhookLog"> | Date | string
+  }
+
+  export type SatuSehatWebhookLogOrderByWithRelationInput = {
+    id?: SortOrder
+    studyInstanceUid?: SortOrderInput | SortOrder
+    patientName?: SortOrderInput | SortOrder
+    status?: SortOrder
+    message?: SortOrderInput | SortOrder
+    errorDetail?: SortOrderInput | SortOrder
+    rawPayload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatWebhookLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SatuSehatWebhookLogWhereInput | SatuSehatWebhookLogWhereInput[]
+    OR?: SatuSehatWebhookLogWhereInput[]
+    NOT?: SatuSehatWebhookLogWhereInput | SatuSehatWebhookLogWhereInput[]
+    studyInstanceUid?: StringNullableFilter<"SatuSehatWebhookLog"> | string | null
+    patientName?: StringNullableFilter<"SatuSehatWebhookLog"> | string | null
+    status?: StringFilter<"SatuSehatWebhookLog"> | string
+    message?: StringNullableFilter<"SatuSehatWebhookLog"> | string | null
+    errorDetail?: JsonNullableFilter<"SatuSehatWebhookLog">
+    rawPayload?: JsonNullableFilter<"SatuSehatWebhookLog">
+    createdAt?: DateTimeFilter<"SatuSehatWebhookLog"> | Date | string
+  }, "id">
+
+  export type SatuSehatWebhookLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    studyInstanceUid?: SortOrderInput | SortOrder
+    patientName?: SortOrderInput | SortOrder
+    status?: SortOrder
+    message?: SortOrderInput | SortOrder
+    errorDetail?: SortOrderInput | SortOrder
+    rawPayload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SatuSehatWebhookLogCountOrderByAggregateInput
+    _max?: SatuSehatWebhookLogMaxOrderByAggregateInput
+    _min?: SatuSehatWebhookLogMinOrderByAggregateInput
+  }
+
+  export type SatuSehatWebhookLogScalarWhereWithAggregatesInput = {
+    AND?: SatuSehatWebhookLogScalarWhereWithAggregatesInput | SatuSehatWebhookLogScalarWhereWithAggregatesInput[]
+    OR?: SatuSehatWebhookLogScalarWhereWithAggregatesInput[]
+    NOT?: SatuSehatWebhookLogScalarWhereWithAggregatesInput | SatuSehatWebhookLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SatuSehatWebhookLog"> | string
+    studyInstanceUid?: StringNullableWithAggregatesFilter<"SatuSehatWebhookLog"> | string | null
+    patientName?: StringNullableWithAggregatesFilter<"SatuSehatWebhookLog"> | string | null
+    status?: StringWithAggregatesFilter<"SatuSehatWebhookLog"> | string
+    message?: StringNullableWithAggregatesFilter<"SatuSehatWebhookLog"> | string | null
+    errorDetail?: JsonNullableWithAggregatesFilter<"SatuSehatWebhookLog">
+    rawPayload?: JsonNullableWithAggregatesFilter<"SatuSehatWebhookLog">
+    createdAt?: DateTimeWithAggregatesFilter<"SatuSehatWebhookLog"> | Date | string
   }
 
   export type SatuSehatSettingWhereInput = {
@@ -11551,6 +12749,83 @@ export namespace Prisma {
     syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatWebhookLogCreateInput = {
+    id?: string
+    studyInstanceUid?: string | null
+    patientName?: string | null
+    status: string
+    message?: string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SatuSehatWebhookLogUncheckedCreateInput = {
+    id?: string
+    studyInstanceUid?: string | null
+    patientName?: string | null
+    status: string
+    message?: string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SatuSehatWebhookLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatWebhookLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatWebhookLogCreateManyInput = {
+    id?: string
+    studyInstanceUid?: string | null
+    patientName?: string | null
+    status: string
+    message?: string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SatuSehatWebhookLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatWebhookLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    errorDetail?: NullableJsonNullValueInput | InputJsonValue
+    rawPayload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SatuSehatSettingCreateInput = {
@@ -12244,6 +13519,35 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type SatuSehatWebhookLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    studyInstanceUid?: SortOrder
+    patientName?: SortOrder
+    status?: SortOrder
+    message?: SortOrder
+    errorDetail?: SortOrder
+    rawPayload?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatWebhookLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    studyInstanceUid?: SortOrder
+    patientName?: SortOrder
+    status?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatWebhookLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    studyInstanceUid?: SortOrder
+    patientName?: SortOrder
+    status?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type IntFilter<$PrismaModel = never> = {

@@ -93,7 +93,19 @@ model SatuSehatIntegration {
   updatedAt        DateTime @updatedAt
 }
 
+model SatuSehatWebhookLog {
+  id               String   @id @default(cuid())
+  studyInstanceUid String?
+  patientName      String?
+  status           String   // SUCCESS, FAILED
+  message          String?  @db.Text
+  errorDetail      Json?    // Detailed error from router
+  rawPayload       Json?    // Complete incoming JSON
+  createdAt        DateTime @default(now())
+}
+
 model SatuSehatSetting {
+
   id               Int      @id @default(1)
   organizationId   String   @default("")
   clientId         String   @default("")

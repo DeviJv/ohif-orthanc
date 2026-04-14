@@ -99,5 +99,39 @@ export async function POST(req: NextRequest) {
         create: { id: 1, ...payload }
     });
 
+    // --- AUTO INJECT KE DICOM-ROUTER .ENV ---
+    try {
+        const fs = require("fs").promises;
+        const path = require("path");
+        const { exec } = require("child_process");
+
+        // Deteksi enviroment: apakah berjalan jalan lokal atau di docker production
+        const isProd = process.env.NODE_ENV === "production";
+        const envPath = isProd 
+            ? path.join(process.cwd(), "dicom-router", ".env") // Dalam docker jika di-mount
+            : path.join(process.cwd(), "..", "dicom-router", ".env"); // Folder lokal
+
+        const satuSehatUrl = payload.environment === "production" 
+            ? "https://api-satusehat.kemkes.go.id" 
+            : "https://api-satusehat-stg.dto.kemkes.go.id";
+
+        const envContent = `ORG_ID=${payload.organizationId}\nCLIENT_ID=${payload.clientId}\nCLIENT_SECRET=${payload.clientSecret}\nSATUSEHAT_URL=${satuSehatUrl}\nNEXT_PUBLIC_APP_URL=http://pacs-web:3001\nINTERNAL_PACS_KEY=${process.env.INTERNAL_PACS_KEY || 'pacs_secret_token_2026'}\n`;
+
+        await fs.writeFile(envPath, envContent, "utf8");
+        console.log(`[DICOM-ROUTER] Berhasil menimpa file .env di ${envPath}`);
+
+        // Coba restart layanannya secara gaib
+        exec("docker restart dicom-router", (err: any) => {
+            if (err) {
+                console.log("[DICOM-ROUTER] Restart otomatis dilewati (Docker tidak tersedia/tidak terhubung socket). Harap restart manual container dicom-router jika Anda baru saja merubah Credentials Prod.");
+            } else {
+                console.log("[DICOM-ROUTER] Container dicom-router berhasil di-restart otomatis!");
+            }
+        });
+    } catch (injectErr) {
+        console.error("[DICOM-ROUTER] Gagal melakukan auto-inject .env", injectErr);
+    }
+
     return NextResponse.json({ success: true });
 }
+

@@ -68,30 +68,26 @@ export function SatuSehatToolbar<TData>({
 
                 <div className="flex items-center gap-2 shrink-0 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
                     <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className={`gap-2 h-8 px-3 font-medium ${
-                                    dateRange?.from || dateRange?.to
-                                        ? "bg-primary/5 text-primary"
-                                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                                }`}
-                            >
-                                <HugeiconsIcon icon={Calendar03Icon} className="size-4" />
-                                {dateRange?.from ? (
-                                    dateRange.to ? (
-                                        <>
-                                            {format(dateRange.from, "LLL dd")} -{" "}
-                                            {format(dateRange.to, "LLL dd")}
-                                        </>
-                                    ) : (
-                                        format(dateRange.from, "LLL dd")
-                                    )
+                        <PopoverTrigger 
+                            className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 px-3 gap-2 font-medium ${
+                                dateRange?.from || dateRange?.to
+                                    ? "bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary"
+                                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 bg-transparent"
+                            }`}
+                        >
+                            <HugeiconsIcon icon={Calendar03Icon} className="size-4" />
+                            {dateRange?.from ? (
+                                dateRange.to ? (
+                                    <>
+                                        {format(dateRange.from, "LLL dd")} -{" "}
+                                        {format(dateRange.to, "LLL dd")}
+                                    </>
                                 ) : (
-                                    <span>Date Filter</span>
-                                )}
-                            </Button>
+                                    format(dateRange.from, "LLL dd")
+                                )
+                            ) : (
+                                <span>Date Filter</span>
+                            )}
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
@@ -131,47 +127,35 @@ export function SatuSehatToolbar<TData>({
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
-                {hasSelection ? (
-                    <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-4 duration-200">
-                        <span className="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200 border-dashed">
-                            {selectedRows.length} selected
+                <div className="flex items-center gap-2">
+                    {hasSelection && (
+                        <span className="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200 border-dashed animate-in fade-in slide-in-from-right-2">
+                            {selectedRows.length} terpilih
                         </span>
-                        
-                        <Button 
-                            variant="default" 
-                            className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20"
-                            onClick={onBulkSyncClick}
-                        >
-                            <HugeiconsIcon icon={SentIcon} className="size-4" />
-                            Bulk Sync
-                        </Button>
-                        
+                    )}
+                    
+                    <Button 
+                        variant="default" 
+                        className="gap-2 bg-slate-900 hover:bg-slate-800 text-white shadow-md shadow-slate-900/10 h-9"
+                        onClick={onBulkSyncClick}
+                    >
+                        <HugeiconsIcon icon={SentIcon} className="size-4" />
+                        {hasSelection ? "Sync Terpilih" : "Bulk Sync (Semua)"}
+                    </Button>
+                    
+                    {hasSelection && (
                         <Button 
                             variant="secondary" 
-                            className="gap-2 shadow-sm"
+                            className="gap-2 shadow-sm h-9 animate-in fade-in slide-in-from-right-2"
                             onClick={handleBulkDownload}
                         >
                             <HugeiconsIcon icon={Download01Icon} className="size-4" />
                             Bulk Download
                         </Button>
-                    </div>
-                ) : (
-                    <div className="h-9 flex items-center gap-2">
-                        <span className="text-sm text-slate-400 font-medium italic hidden lg:inline-block">
-                            Pilih data untuk melakukan Bulk Sync
-                        </span>
-                        <div className="h-full w-px bg-slate-200 hidden lg:block mx-1"></div>
-                        <Button
-                            variant="outline"
-                            className="gap-2 bg-white shadow-sm border-slate-200 text-slate-500 opacity-50 cursor-not-allowed"
-                            disabled
-                        >
-                            <HugeiconsIcon icon={SentIcon} className="size-4" />
-                            Bulk Sync
-                        </Button>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
+
         </div>
     );
 }

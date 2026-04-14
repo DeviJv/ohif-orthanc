@@ -43,6 +43,8 @@ import {
 import { toast } from "sonner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DockerServices } from "./components/docker-services";
+
 
 interface ClinicConfig {
     clinicName: string;
@@ -154,10 +156,21 @@ export default function SettingsPage() {
                         <HugeiconsIcon icon={HealthIcon} className="size-4" />
                         Integrasi Satu Sehat
                     </TabsTrigger>
+                    <TabsTrigger value="docker" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
+                        <HugeiconsIcon icon={CpuIcon} className="size-4" />
+                        Layanan Server
+                    </TabsTrigger>
+
                 </TabsList>
+
+                {/* ── Tab: Layanan Server (Docker) ── */}
+                <TabsContent value="docker" className="mt-6">
+                    <DockerServices />
+                </TabsContent>
 
                 {/* ── Tab: Profil Klinik ── */}
                 <TabsContent value="clinic" className="mt-6">
+
                     {isLoading ? (
                         <div className="flex items-center justify-center py-16">
                             <HugeiconsIcon icon={Building04Icon} className="size-8 animate-pulse text-primary/40" />

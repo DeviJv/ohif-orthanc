@@ -32,7 +32,9 @@ import { SentIcon } from "@hugeicons/core-free-icons";
 import { useSatuSehatWorklist } from "./hooks/use-satusehat-worklist";
 import { getColumns } from "./components/columns";
 import { SatuSehatToolbar } from "./components/satusehat-toolbar";
+import { WebhookMonitor } from "./components/webhook-monitor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+
 import { handleBulkDownloadStudy } from "../worklist/utils/actions";
 import { useTaskActions } from "@/context/task-context";
 import { BridgeSatuSehatDialog } from "../worklist/components/bridge-satusehat-dialog";
@@ -125,6 +127,8 @@ function SatuSehatContent() {
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900">SatuSehat Sync</h1>
                 <p className="text-muted-foreground">Monitoring dan sinkronisasi manual data DICOM ke platform SatuSehat Kemenkes.</p>
             </div>
+
+            <WebhookMonitor />
 
             <SatuSehatToolbar 
                 table={table}

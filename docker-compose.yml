@@ -56,13 +56,17 @@ services:
       - pacs
 
   frontend:
+    user: root
     build:
+
       context: ./frontend
       dockerfile: Dockerfile
     image: quantum-pacs-frontend:latest
     container_name: pacs-web
     volumes:
       - ./logo.png:/app/public/logo.png:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dicom-router/.env:/app/dicom-router/.env
     # Port 3001 is now handled by Nginx, but keeping mapping for local access if needed
     ports:
       - 3001:3001
@@ -76,6 +80,10 @@ services:
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
       - AI_BACKEND_URL=http://ai-engine:8000
+      - INTERNAL_PACS_KEY=${INTERNAL_PACS_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - NEXT_PUBLIC_ORTHANC_URL=${NEXT_PUBLIC_ORTHANC_URL}
     depends_on:
       - app-db
       - pacs

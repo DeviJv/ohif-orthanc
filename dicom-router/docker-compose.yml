@@ -12,7 +12,7 @@ services:
       - ORG_ID=${ORG_ID}
       - CLIENT=${CLIENT_ID}
       - SECRET=${CLIENT_SECRET}
-      - WEBHOOK_URL=${NEXT_PUBLIC_APP_URL}/api/dicom/webhook
+      - WEBHOOK_URL=http://pacs-web:3001/api/dicom/webhook
       - WEBHOOK_USER=admin
       - WEBHOOK_PASSWORD=${INTERNAL_PACS_KEY}
       - URL=${SATUSEHAT_URL}

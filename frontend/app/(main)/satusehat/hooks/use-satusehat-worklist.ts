@@ -101,18 +101,28 @@ export function useSatuSehatWorklist() {
     }, [studies, fetchStudies]);
 
     const handleBulkSync = useCallback(async (studyIds: string[]) => {
-        if (studyIds.length === 0) return;
-        toast.info(`Memulai sinkronisasi massal untuk ${studyIds.length} pasien...`);
-
-        for (const studyId of studyIds) {
-             const study = studies.find(s => s.ID === studyId);
-             
-             // Optionally auto map NIK if the bridge needs it, 
-             // but bridge route attempts to use patient tags or fails gracefully.
-             await handleBridgeSatuSehat(studyId);
+        let idsToSync = studyIds;
+        
+        // If no IDs provided, sync all that are NOT SUCCESS
+        if (studyIds.length === 0) {
+            idsToSync = studies
+                .filter(s => s.satuSehat.status !== "SUCCESS")
+                .map(s => s.ID);
+            
+            if (idsToSync.length === 0) {
+                toast.info("Semua data sudah terkirim (Status: Terkirim).");
+                return;
+            }
+            toast.info(`Memulai sinkronisasi massal untuk SEMUA data yang belum terkirim (${idsToSync.length} pasien)...`);
+        } else {
+            toast.info(`Memulai sinkronisasi massal untuk ${idsToSync.length} pasien pilihan...`);
         }
 
+        for (const studyId of idsToSync) {
+             await handleBridgeSatuSehat(studyId);
+        }
     }, [studies, handleBridgeSatuSehat]);
+
 
     return {
         studies,

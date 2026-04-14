@@ -28,7 +28,20 @@ export async function POST(req: NextRequest) {
 
         console.log(`[WEBHOOK] Received from router: ${studyInstanceUid} - Status: ${status}`);
 
-        // 2. Optional: Trigger Telegram Notification on FAILURE
+        // 2. Update SatuSehatIntegration record with syncedAt timestamp
+        if (studyInstanceUid) {
+            try {
+                await db.satuSehatIntegration.updateMany({
+                    where: { studyInstanceUid },
+                    data: { syncedAt: new Date() }
+                });
+            } catch (dbErr) {
+                // Non-fatal: log but don't fail the webhook response
+                console.warn(`[WEBHOOK] Could not update syncedAt for ${studyInstanceUid}:`, dbErr);
+            }
+        }
+
+        // 3. Optional: Trigger Telegram Notification on FAILURE
         if (!status) {
             await triggerTelegramNotification(body);
         }

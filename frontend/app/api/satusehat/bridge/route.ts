@@ -93,11 +93,12 @@ export async function POST(req: NextRequest) {
             });
         } catch (e: any) {
             console.error("[SATUSEHAT BRIDGE] Detail Error:", e.message);
-            // Update DB dengan status gagal
+            // Use accessionNumber as stable key; fallback to studyInstanceUid if empty
+            const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
             await db.satuSehatIntegration.upsert({
-                where: { studyInstanceUid: tags.StudyInstanceUID },
-                update: { status: "FAILED", error: e.message, patientNik: nik },
-                create: { studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: e.message, patientNik: nik }
+                where: { accessionNumber: lookupKey },
+                update: { status: "FAILED", error: e.message, patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: e.message, patientNik: nik }
             });
             
             return NextResponse.json({ 
@@ -106,12 +107,13 @@ export async function POST(req: NextRequest) {
             }, { status: 500 });
         }
 
-        // 5. Simpan status sukses ke DB
+        // 5. Simpan status sukses ke DB (key by accessionNumber for stability across metadata edits)
         const ssId = result.id;
+        const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
         await db.satuSehatIntegration.upsert({
-            where: { studyInstanceUid: tags.StudyInstanceUID },
-            update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik, syncedAt: new Date() },
-            create: { studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik, syncedAt: new Date() }
+            where: { accessionNumber: lookupKey },
+            update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik, syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
+            create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik, syncedAt: new Date() }
         });
 
         // 6. TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER (Kemenkes Dicom Router)
@@ -162,18 +164,20 @@ export async function PUT(req: NextRequest) {
     }
 }
 
-// GET status
+// GET status by accessionNumber
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
+    const accessionNumber = searchParams.get("accessionNumber");
     const studyInstanceUid = searchParams.get("studyInstanceUid");
 
-    if (!studyInstanceUid) {
-        return NextResponse.json({ error: "studyInstanceUid is required" }, { status: 400 });
+    if (!accessionNumber && !studyInstanceUid) {
+        return NextResponse.json({ error: "accessionNumber or studyInstanceUid is required" }, { status: 400 });
     }
 
-    const status = await db.satuSehatIntegration.findUnique({
-        where: { studyInstanceUid }
-    });
+    // Prefer accessionNumber lookup; fallback to studyInstanceUid for legacy
+    const status = accessionNumber
+        ? await db.satuSehatIntegration.findUnique({ where: { accessionNumber } })
+        : await db.satuSehatIntegration.findFirst({ where: { studyInstanceUid: studyInstanceUid! } });
 
     return NextResponse.json(status || { status: "NOT_SYNCED" });
 }

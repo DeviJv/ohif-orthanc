@@ -180,6 +180,7 @@ exports.Prisma.AiResultScalarFieldEnum = {
 };
 
 exports.Prisma.SatuSehatIntegrationScalarFieldEnum = {
+  accessionNumber: 'accessionNumber',
   studyInstanceUid: 'studyInstanceUid',
   satusehatId: 'satusehatId',
   patientNik: 'patientNik',

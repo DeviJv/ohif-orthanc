@@ -8016,6 +8016,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationMinAggregateOutputType = {
+    accessionNumber: string | null
     studyInstanceUid: string | null
     satusehatId: string | null
     patientNik: string | null
@@ -8027,6 +8028,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationMaxAggregateOutputType = {
+    accessionNumber: string | null
     studyInstanceUid: string | null
     satusehatId: string | null
     patientNik: string | null
@@ -8038,6 +8040,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationCountAggregateOutputType = {
+    accessionNumber: number
     studyInstanceUid: number
     satusehatId: number
     patientNik: number
@@ -8052,6 +8055,7 @@ export namespace Prisma {
 
 
   export type SatuSehatIntegrationMinAggregateInputType = {
+    accessionNumber?: true
     studyInstanceUid?: true
     satusehatId?: true
     patientNik?: true
@@ -8063,6 +8067,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationMaxAggregateInputType = {
+    accessionNumber?: true
     studyInstanceUid?: true
     satusehatId?: true
     patientNik?: true
@@ -8074,6 +8079,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationCountAggregateInputType = {
+    accessionNumber?: true
     studyInstanceUid?: true
     satusehatId?: true
     patientNik?: true
@@ -8159,7 +8165,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationGroupByOutputType = {
-    studyInstanceUid: string
+    accessionNumber: string
+    studyInstanceUid: string | null
     satusehatId: string | null
     patientNik: string | null
     status: string
@@ -8188,6 +8195,7 @@ export namespace Prisma {
 
 
   export type SatuSehatIntegrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    accessionNumber?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -8200,6 +8208,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["satuSehatIntegration"]>
 
   export type SatuSehatIntegrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    accessionNumber?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -8212,6 +8221,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["satuSehatIntegration"]>
 
   export type SatuSehatIntegrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    accessionNumber?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -8224,6 +8234,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["satuSehatIntegration"]>
 
   export type SatuSehatIntegrationSelectScalar = {
+    accessionNumber?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -8235,13 +8246,14 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "bundleResponse" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
+  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"accessionNumber" | "studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "bundleResponse" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
 
   export type $SatuSehatIntegrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatIntegration"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
-      studyInstanceUid: string
+      accessionNumber: string
+      studyInstanceUid: string | null
       satusehatId: string | null
       patientNik: string | null
       status: string
@@ -8333,8 +8345,8 @@ export namespace Prisma {
      * // Get first 10 SatuSehatIntegrations
      * const satuSehatIntegrations = await prisma.satuSehatIntegration.findMany({ take: 10 })
      * 
-     * // Only select the `studyInstanceUid`
-     * const satuSehatIntegrationWithStudyInstanceUidOnly = await prisma.satuSehatIntegration.findMany({ select: { studyInstanceUid: true } })
+     * // Only select the `accessionNumber`
+     * const satuSehatIntegrationWithAccessionNumberOnly = await prisma.satuSehatIntegration.findMany({ select: { accessionNumber: true } })
      * 
      */
     findMany<T extends SatuSehatIntegrationFindManyArgs>(args?: SelectSubset<T, SatuSehatIntegrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatIntegrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -8378,9 +8390,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many SatuSehatIntegrations and only return the `studyInstanceUid`
-     * const satuSehatIntegrationWithStudyInstanceUidOnly = await prisma.satuSehatIntegration.createManyAndReturn({
-     *   select: { studyInstanceUid: true },
+     * // Create many SatuSehatIntegrations and only return the `accessionNumber`
+     * const satuSehatIntegrationWithAccessionNumberOnly = await prisma.satuSehatIntegration.createManyAndReturn({
+     *   select: { accessionNumber: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -8469,9 +8481,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more SatuSehatIntegrations and only return the `studyInstanceUid`
-     * const satuSehatIntegrationWithStudyInstanceUidOnly = await prisma.satuSehatIntegration.updateManyAndReturn({
-     *   select: { studyInstanceUid: true },
+     * // Update zero or more SatuSehatIntegrations and only return the `accessionNumber`
+     * const satuSehatIntegrationWithAccessionNumberOnly = await prisma.satuSehatIntegration.updateManyAndReturn({
+     *   select: { accessionNumber: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -8673,6 +8685,7 @@ export namespace Prisma {
    * Fields of the SatuSehatIntegration model
    */
   interface SatuSehatIntegrationFieldRefs {
+    readonly accessionNumber: FieldRef<"SatuSehatIntegration", 'String'>
     readonly studyInstanceUid: FieldRef<"SatuSehatIntegration", 'String'>
     readonly satusehatId: FieldRef<"SatuSehatIntegration", 'String'>
     readonly patientNik: FieldRef<"SatuSehatIntegration", 'String'>
@@ -11402,6 +11415,7 @@ export namespace Prisma {
 
 
   export const SatuSehatIntegrationScalarFieldEnum: {
+    accessionNumber: 'accessionNumber',
     studyInstanceUid: 'studyInstanceUid',
     satusehatId: 'satusehatId',
     patientNik: 'patientNik',
@@ -11986,7 +12000,8 @@ export namespace Prisma {
     AND?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
     OR?: SatuSehatIntegrationWhereInput[]
     NOT?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
-    studyInstanceUid?: StringFilter<"SatuSehatIntegration"> | string
+    accessionNumber?: StringFilter<"SatuSehatIntegration"> | string
+    studyInstanceUid?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     satusehatId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     status?: StringFilter<"SatuSehatIntegration"> | string
@@ -11998,7 +12013,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationOrderByWithRelationInput = {
-    studyInstanceUid?: SortOrder
+    accessionNumber?: SortOrder
+    studyInstanceUid?: SortOrderInput | SortOrder
     satusehatId?: SortOrderInput | SortOrder
     patientNik?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -12010,10 +12026,11 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationWhereUniqueInput = Prisma.AtLeast<{
-    studyInstanceUid?: string
+    accessionNumber?: string
     AND?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
     OR?: SatuSehatIntegrationWhereInput[]
     NOT?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
+    studyInstanceUid?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     satusehatId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     status?: StringFilter<"SatuSehatIntegration"> | string
@@ -12022,10 +12039,11 @@ export namespace Prisma {
     syncedAt?: DateTimeNullableFilter<"SatuSehatIntegration"> | Date | string | null
     createdAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
     updatedAt?: DateTimeFilter<"SatuSehatIntegration"> | Date | string
-  }, "studyInstanceUid">
+  }, "accessionNumber">
 
   export type SatuSehatIntegrationOrderByWithAggregationInput = {
-    studyInstanceUid?: SortOrder
+    accessionNumber?: SortOrder
+    studyInstanceUid?: SortOrderInput | SortOrder
     satusehatId?: SortOrderInput | SortOrder
     patientNik?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -12043,7 +12061,8 @@ export namespace Prisma {
     AND?: SatuSehatIntegrationScalarWhereWithAggregatesInput | SatuSehatIntegrationScalarWhereWithAggregatesInput[]
     OR?: SatuSehatIntegrationScalarWhereWithAggregatesInput[]
     NOT?: SatuSehatIntegrationScalarWhereWithAggregatesInput | SatuSehatIntegrationScalarWhereWithAggregatesInput[]
-    studyInstanceUid?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
+    accessionNumber?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
+    studyInstanceUid?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     satusehatId?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     patientNik?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     status?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
@@ -12668,7 +12687,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationCreateInput = {
-    studyInstanceUid: string
+    accessionNumber: string
+    studyInstanceUid?: string | null
     satusehatId?: string | null
     patientNik?: string | null
     status?: string
@@ -12680,7 +12700,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationUncheckedCreateInput = {
-    studyInstanceUid: string
+    accessionNumber: string
+    studyInstanceUid?: string | null
     satusehatId?: string | null
     patientNik?: string | null
     status?: string
@@ -12692,7 +12713,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationUpdateInput = {
-    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    accessionNumber?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -12704,7 +12726,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationUncheckedUpdateInput = {
-    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    accessionNumber?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -12716,7 +12739,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationCreateManyInput = {
-    studyInstanceUid: string
+    accessionNumber: string
+    studyInstanceUid?: string | null
     satusehatId?: string | null
     patientNik?: string | null
     status?: string
@@ -12728,7 +12752,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationUpdateManyMutationInput = {
-    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    accessionNumber?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -12740,7 +12765,8 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationUncheckedUpdateManyInput = {
-    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    accessionNumber?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -13462,6 +13488,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationCountOrderByAggregateInput = {
+    accessionNumber?: SortOrder
     studyInstanceUid?: SortOrder
     satusehatId?: SortOrder
     patientNik?: SortOrder
@@ -13474,6 +13501,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationMaxOrderByAggregateInput = {
+    accessionNumber?: SortOrder
     studyInstanceUid?: SortOrder
     satusehatId?: SortOrder
     patientNik?: SortOrder
@@ -13485,6 +13513,7 @@ export namespace Prisma {
   }
 
   export type SatuSehatIntegrationMinOrderByAggregateInput = {
+    accessionNumber?: SortOrder
     studyInstanceUid?: SortOrder
     satusehatId?: SortOrder
     patientNik?: SortOrder

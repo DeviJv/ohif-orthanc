@@ -26,17 +26,22 @@ export async function GET() {
         // 2. Fetch SatuSehat sync logs from locally hosted DB
         const integrations = await db.satuSehatIntegration.findMany();
         
-        // Convert to a Map for O(1) lookups using studyInstanceUid
+        // Convert to a Map keyed by accessionNumber for O(1) lookups
+        // This is stable across metadata edits (unlike studyInstanceUid)
         const integrationMap = new Map();
         for (const record of integrations) {
-            integrationMap.set(record.studyInstanceUid, record);
+            // Key by accessionNumber; fallback to studyInstanceUid for legacy records
+            const mapKey = record.accessionNumber;
+            integrationMap.set(mapKey, record);
         }
 
         // 3. Merge data
         const mergedStudies = studies.map(study => {
-            const dicomStudyUid = study.MainDicomTags?.StudyInstanceUID;
+            const dicomTags = study.MainDicomTags;
+            // Use accessionNumber as primary match key; fallback to StudyInstanceUID
+            const matchKey = dicomTags?.AccessionNumber || dicomTags?.StudyInstanceUID;
             
-            const integrationRecord = dicomStudyUid ? integrationMap.get(dicomStudyUid) : null;
+            const integrationRecord = matchKey ? integrationMap.get(matchKey) : null;
             
             return {
                 ...study,

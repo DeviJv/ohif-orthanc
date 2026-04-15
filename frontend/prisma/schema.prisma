@@ -82,13 +82,14 @@ model AiResult {
 }
 
 model SatuSehatIntegration {
-  studyInstanceUid String   @id
-  satusehatId      String?  // UUID from Kemenkes
-  patientNik       String?  // NIK used for this integration
+  accessionNumber  String   @id               // Stable key — does not change on metadata edit
+  studyInstanceUid String?                    // For reference only (may change on modify)
+  satusehatId      String?                    // UUID from Kemenkes
+  patientNik       String?                    // NIK used for this integration
   status           String   @default("PENDING") // SUCCESS, FAILED
   error            String?  @db.Text
-  bundleResponse   Json?    // Full response from SatuSehat
-  syncedAt         DateTime? // Time of successful sync
+  bundleResponse   Json?                       // Full response from SatuSehat
+  syncedAt         DateTime?                   // Time of successful sync
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

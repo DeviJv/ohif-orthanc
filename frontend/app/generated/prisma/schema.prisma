@@ -82,7 +82,8 @@ model AiResult {
 }
 
 model SatuSehatIntegration {
-  studyInstanceUid String    @id
+  accessionNumber  String    @id // Stable key — does not change on metadata edit
+  studyInstanceUid String? // For reference only (may change on modify)
   satusehatId      String? // UUID from Kemenkes
   patientNik       String? // NIK used for this integration
   status           String    @default("PENDING") // SUCCESS, FAILED

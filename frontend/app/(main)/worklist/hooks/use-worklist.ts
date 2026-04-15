@@ -286,24 +286,28 @@ export function useWorklist() {
     }, []);
 
     const handleEditStudy = useCallback(async (studyId: string, modifications: Record<string, string>) => {
-        const taskId = addTask({ id: `edit-study-${studyId}`, description: "Updating study data...", type: "modify" });
+        const taskId = addTask({ id: `edit-study-${studyId}`, description: "Mengupdate metadata...", type: "modify" });
         try {
+            // modifyStudy returns instantly (async Orthanc job submitted)
             await orthancApi.modifyStudy(studyId, modifications);
             updateTask(taskId, "success");
-            // Auto dismiss toast after success
-            setTimeout(() => {
-                toast.dismiss(taskId);
-            }, 3000);
-            
-            fetchStudies();
+            setTimeout(() => toast.dismiss(taskId), 3000);
+
+            // Close dialog immediately — Orthanc processes in background
             setIsEditDialogOpen(false);
             setStudyToEdit(null);
+
+            // Refresh worklist after a short delay to pick up the modified study
+            setTimeout(() => fetchStudies(), 3000);
+
         } catch (error) {
             console.error("Edit study error:", error);
             updateTask(taskId, "error");
-            toast.error("Gagal Buka File/Edit", { description: "Terjadi kesalahan saat mengupdate metadata." });
+            toast.error("Gagal Edit", { description: "Terjadi kesalahan saat mengupdate metadata." });
         }
     }, [fetchStudies, addTask, updateTask]);
+
+
 
     const handleAnonymize = useCallback(async (id: string, type: "study" | "series") => {
         if (!confirm(`Anonymize ${type}? This will create a new anonymized ${type}.`)) return;

@@ -43,10 +43,15 @@ export const orthancApi = {
         return response.json();
     },
 
-    modifyStudy: async (studyId: string, modifications: Record<string, string>) => {
+    /**
+     * Submits a study modify job to Orthanc asynchronously.
+     * Returns immediately — the actual processing happens in background.
+     * UI can close the dialog right away without waiting ~10s.
+     */
+    modifyStudy: async (studyId: string, modifications: Record<string, string>): Promise<{ newStudyId: string | null }> => {
         const replaceTags: Record<string, string> = {};
         const removeTags: string[] = [];
-        
+
         Object.entries(modifications).forEach(([key, value]) => {
             if (value && value.trim() !== "") {
                 replaceTags[key] = value.trim();
@@ -55,7 +60,8 @@ export const orthancApi = {
             }
         });
 
-        const payload: any = { Force: true, KeepSource: false };
+        // Asynchronous: true → Orthanc returns a job ID instantly, no waiting
+        const payload: any = { Force: true, KeepSource: false, Asynchronous: true };
         if (Object.keys(replaceTags).length > 0) payload.Replace = replaceTags;
         if (removeTags.length > 0) payload.Remove = removeTags;
 
@@ -64,8 +70,65 @@ export const orthancApi = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
-        if (!response.ok) throw new Error("Failed to modify study");
-        return response;
+        if (!response.ok) {
+            const errJson = await response.json().catch(() => ({}));
+            console.error("[modifyStudy] Orthanc Error:", errJson);
+            throw new Error(errJson.Message || "Failed to modify study");
+        }
+
+        const jobData = await response.json();
+        const jobId: string | null = jobData?.ID ?? null;
+
+        // Fire-and-forget: poll job in background then tag metadata
+        // UI does NOT wait for this
+        if (jobId) {
+            orthancApi._pollJobAndTag(jobId, studyId).catch(e =>
+                console.warn("[modifyStudy] Background job polling failed:", e)
+            );
+        }
+
+        // Return immediately so the calling code (dialog close, worklist refresh) runs instantly
+        return { newStudyId: null };
+    },
+
+    /** Internal helper: poll a job until success/failure, then set anti-refire metadata */
+    _pollJobAndTag: async (jobId: string, originalStudyId: string): Promise<void> => {
+        const maxAttempts = 60; // 60 × 500ms = max 30s
+        for (let i = 0; i < maxAttempts; i++) {
+            await new Promise(r => setTimeout(r, 500));
+            try {
+                const res = await fetch(`/api/orthanc/jobs/${jobId}`);
+                if (!res.ok) continue;
+                const job = await res.json();
+
+                if (job.State === "Success") {
+                    const newStudyId: string = job.Output?.ID ?? originalStudyId;
+                    // Prevent Lua StableStudy from firing Telegram/SatuSehat re-sync
+                    await Promise.all([
+                        fetch(`/api/orthanc/studies/${newStudyId}/metadata/AI_Processed`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "text/plain" },
+                            body: "true"
+                        }).catch(() => {}),
+                        fetch(`/api/orthanc/studies/${newStudyId}/metadata/SatuSehat_Sent`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "text/plain" },
+                            body: "true"
+                        }).catch(() => {}),
+                    ]);
+                    return;
+                }
+
+                if (job.State === "Failure") {
+                    console.error("[modifyStudy] Async job failed:", job.ErrorMessage);
+                    return;
+                }
+                // State: "Running" | "Pending" → continue polling
+            } catch (_) {
+                // Network hiccup, retry next iteration
+            }
+        }
+        console.warn("[modifyStudy] Job polling timed out:", jobId);
     },
 
     anonymize: async (id: string, type: "study" | "series") => {

@@ -12,8 +12,7 @@ interface OhifViewerProps {
  * then fades out once the iframe content has fully loaded.
  */
 export default function OhifViewer({ studyInstanceUIDs }: OhifViewerProps) {
-    const viewerHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-    const viewerUrl = `http://${viewerHost}:3000/viewer/dicomweb?StudyInstanceUIDs=${studyInstanceUIDs}`;
+    const viewerUrl = `/viewer/dicomweb?StudyInstanceUIDs=${studyInstanceUIDs}`;
     const [loaded, setLoaded] = useState(false);
 
     return (

@@ -4,13 +4,33 @@ import { db } from "@/lib/db";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const authKey = req.headers.get("x-pacs-key");
 
-        // Simple auth check using the shared secret
-        if (authKey !== process.env.INTERNAL_PACS_KEY) {
+        // Support two auth methods:
+        // 1. Basic Auth: dicom-router sends WEBHOOK_USER/WEBHOOK_PASSWORD as Basic Auth
+        // 2. x-pacs-key: legacy custom header
+        const internalKey = process.env.INTERNAL_PACS_KEY;
+        let authorized = false;
+
+        const authHeader = req.headers.get("authorization");
+        if (authHeader?.startsWith("Basic ")) {
+            try {
+                const base64 = authHeader.slice(6);
+                const decoded = Buffer.from(base64, "base64").toString("utf-8");
+                const password = decoded.split(":").slice(1).join(":"); // handle colons in password
+                authorized = password === internalKey;
+            } catch { /* invalid base64, fall through */ }
+        }
+
+        if (!authorized) {
+            const xPacsKey = req.headers.get("x-pacs-key");
+            authorized = xPacsKey === internalKey;
+        }
+
+        if (!authorized) {
             console.error("[WEBHOOK] Unauthorized access attempt");
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+
 
         const { studyInstanceUid, status, message, errorDetail, patientName } = body;
 

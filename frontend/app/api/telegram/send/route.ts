@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
         const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
         const viewerHost = new URL(publicUrl).hostname;
-        const viewerUrl = `http://${viewerHost}:3000/viewer/dicomweb?StudyInstanceUIDs=${studyUID}`;
+        const viewerUrl = `http://${viewerHost}/worklist?viewer=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
 
         const formData = new FormData();

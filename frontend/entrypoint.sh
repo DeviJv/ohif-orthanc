@@ -4,9 +4,10 @@
 echo "Syncing database with Prisma schema..."
 npx prisma db push
 
-# Check if the sync was successful
 if [ $? -eq 0 ]; then
-  echo "Database is in sync. Starting the application..."
+  echo "Database is in sync. Seeding data..."
+  npx prisma db seed
+  echo "Seeding completed. Starting the application..."
 else
   echo "Database sync failed. Attempting to start the application anyway..."
 fi

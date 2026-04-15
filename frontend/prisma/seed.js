@@ -1,7 +1,25 @@
 const { PrismaClient } = require('../app/generated/prisma');
+const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log('🌱 Seeding administrative user...');
+  const adminEmail = 'admin@pacs.com';
+  // Standard default password
+  const hashedPassword = bcrypt.hashSync('admin123', 10);
+
+  const admin = await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: {}, // Don't overwrite existing password on re-seed
+    create: {
+      email: adminEmail,
+      name: 'Administrator',
+      password: hashedPassword,
+      role: 'ADMIN',
+    },
+  });
+  console.log('✅ Admin user ready:', admin.email);
+
   console.log('🌱 Seeding SatuSehat settings with full granular defaults...');
 
   const STG_BASE = 'https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1';

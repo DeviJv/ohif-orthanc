@@ -113,7 +113,9 @@ def send_telegram_notification(study_uid, patient_name, patient_id, study_desc, 
         print("Telegram bot not configured in DB or ENV. Skipping notification.")
         return
 
-    viewer_url = f"{PUBLIC_APP_URL}/orthanc/ohif/viewer?StudyInstanceUIDs={study_uid}"
+    # Calculate viewer host from public app URL
+    viewer_host = PUBLIC_APP_URL.split("//")[-1].split(":")[0]
+    viewer_url = f"http://{viewer_host}:3000/viewer/dicomweb?StudyInstanceUIDs={study_uid}"
     export_url = f"{PUBLIC_APP_URL}/worklist?export={study_uid}"
     
     analysis_type = "🫁 Chest X-Ray Analysis" if modality in ["DX", "CR"] else f"🧠 {modality} Volumetric Analysis"

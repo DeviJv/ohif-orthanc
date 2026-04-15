@@ -76,26 +76,7 @@
 })();
 
 window.config = {
-  extensions: [
-    {
-      id: '@ohif/extension-dicom-sr',
-      configuration: {
-        // Add mapping for complex tools
-        mappableTools: [
-          'Length',
-          'Bidirectional',
-          'Ellipse',
-          'Rectangle',
-          'Circle',
-          'ArrowAnnotate',
-          'Angle',
-          'FreehandROI',
-          'SplineROI',
-          'LivewireTool',
-        ],
-      },
-    },
-  ],
+  extensions: [],
   modes: [],
   customizationService: {},
   showStudyList: true,
@@ -226,7 +207,7 @@ window.config = {
   ],
 };
 
-window.config.routerBasename = '/orthanc/ohif/';
+window.config.routerBasename = '/';
 
 if (true) {
   window.config.dataSources = [
@@ -236,10 +217,10 @@ if (true) {
       sourceName: 'dicomweb',
       configuration: {
         name: 'orthanc',
-        wadoRoot: '/dicom-web',
-        qidoRoot: '/dicom-web',
-        stowRoot: '/dicom-web',
-        wadoUriRoot: '/dicom-web',
+        wadoRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
+        qidoRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
+        stowRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
+        wadoUriRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
         qidoSupportsIncludeField: false,
         supportsReject: false,
         allowMultiSelectExport: true,

@@ -115,9 +115,13 @@ services:
       - ohif-viewer
 
   ohif-viewer:
-    build: ./ohif
+    image: ohif/viewer:v3.9.0
     container_name: ohif-viewer
     restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./ohif/app-config.js:/usr/share/nginx/html/app-config.js
     networks:
       - pacs
 

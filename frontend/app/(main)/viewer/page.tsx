@@ -32,7 +32,8 @@ function ViewerContent() {
     }
 
     const getOhifUrl = () => {
-        return `/orthanc/ohif/${mode}?StudyInstanceUIDs=${studyId}`;
+        const viewerHost = window.location.hostname;
+        return `http://${viewerHost}:3000/viewer/dicomweb?StudyInstanceUIDs=${studyId}`;
     };
 
     const ohifUrl = getOhifUrl();

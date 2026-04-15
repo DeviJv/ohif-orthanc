@@ -191,6 +191,12 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
         return clinic.doctors.filter((d) => d.toLowerCase().includes(lower));
     }, [clinic?.doctors, searchValue]);
 
+    // Modalities that have no pixel data and cannot be previewed as images
+    const NON_IMAGE_MODALITIES = ["SR", "PR", "KO", "SEG", "DOC", "REG", "PLAN", "RWV"];
+    const imageSeriesData = React.useMemo(() => 
+        seriesData.filter(s => !NON_IMAGE_MODALITIES.includes(s.MainDicomTags.Modality))
+    , [seriesData]);
+
     const set = (key: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
         setFormData((prev) => ({ ...prev, [key]: e.target.value }));
 
@@ -534,7 +540,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                     Sertakan Gambar Series <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Multi-select)</span>
                                                 </Label>
                                                 <Popover>
-                                                    <PopoverTrigger asChild>
+                                                    <PopoverTrigger >
                                                         <div role="button" className="w-full flex items-center justify-between h-10 px-3 font-normal bg-background border rounded-md cursor-pointer hover:bg-muted/50 transition-colors text-sm">
                                                             <div className="flex items-center gap-2 truncate">
                                                                 <HugeiconsIcon icon={Image01Icon} className="size-4 text-primary" />
@@ -561,12 +567,13 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                                     <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
                                                                     Memuat data series...
                                                                 </div>
-                                                            ) : seriesData.length === 0 ? (
+                                                            ) : imageSeriesData.length === 0 ? (
                                                                 <div className="p-8 text-center text-sm text-muted-foreground italic">
-                                                                    Tidak ada series ditemukan untuk study ini.
+                                                                    Tidak ada series gambar ditemukan.<br/>
+                                                                    <span className="text-xs">(Series SR/PR/KO tidak dapat di-export sebagai gambar)</span>
                                                                 </div>
                                                             ) : (
-                                                                seriesData.map((s) => (
+                                                                imageSeriesData.map((s) => (
                                                                     <div 
                                                                         key={s.ID} 
                                                                         className="flex items-center space-x-3 p-3 hover:bg-accent rounded-md cursor-pointer transition-colors"

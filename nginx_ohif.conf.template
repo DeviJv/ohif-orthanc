@@ -114,7 +114,7 @@ server {
     # OHIF shell/assets from Orthanc. Keep this separate so the browser can
     # reuse the large JS/CSS bundles across repeated viewer opens.
     location /orthanc/ohif/ {
-        proxy_pass http://orthanc_upstream/ohif/;
+        proxy_pass http://ohif-viewer:80/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

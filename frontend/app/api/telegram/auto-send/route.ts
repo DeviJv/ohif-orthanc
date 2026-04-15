@@ -208,11 +208,11 @@ export async function POST(req: NextRequest) {
 
         // 5. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
+        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
         
         // Use carefully configured variable from root .env/compose
-        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
-        
-        const viewerUrl = `${publicUrl}/orthanc/ohif/viewer?StudyInstanceUIDs=${studyUID}`;
+        const viewerHost = new URL(publicUrl).hostname;
+        const viewerUrl = `http://${viewerHost}:3000/viewer/dicomweb?StudyInstanceUIDs=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
         const thumbUrl = `${publicUrl}/api/orthanc/instances/${selectedInstanceId}/preview`;
 

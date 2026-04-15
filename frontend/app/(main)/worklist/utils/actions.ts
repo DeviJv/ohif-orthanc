@@ -153,7 +153,9 @@ export const handleOpenOrthancViewer = (id: string, type: "study" | "series" | "
 };
 
 export const getOhifUrl = (uid: string, mode: string) => {
-    return `/orthanc/ohif/${mode}?StudyInstanceUIDs=${uid}`;
+    const viewerHost = window.location.hostname;
+    // For standalone OHIF v3, the path usually needs to include the data source name
+    return `http://${viewerHost}:3000/viewer/dicomweb?StudyInstanceUIDs=${uid}`;
 };
 
 export const handleBulkDownloadStudy = async (ids: string[], callbacks?: TaskCallbacks) => {

@@ -68,6 +68,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [seriesData, setSeriesData] = useState<Series[]>([]);
     const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
     const [isFetchingSeries, setIsFetchingSeries] = useState(false);
+    const [measurementImages, setMeasurementImages] = useState<{file: File, base64: string}[]>([]);
 
     const studyMainTags = study?.MainDicomTags as any;
     const patientTags = study?.PatientMainDicomTags as any;
@@ -169,6 +170,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             setSearchValue("");
             setSeriesData([]);
             setSelectedSeriesIds([]);
+            setMeasurementImages([]);
             
             if (study?.ID) {
                 setIsFetchingSeries(true);
@@ -199,6 +201,25 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
 
     const set = (key: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
         setFormData((prev) => ({ ...prev, [key]: e.target.value }));
+
+    const handleMeasurementUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const files = Array.from(e.target.files);
+        
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setMeasurementImages(prev => [...prev, { file, base64: reader.result as string }]);
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        if (e.target) e.target.value = '';
+    };
+
+    const removeMeasurementImage = (index: number) => {
+        setMeasurementImages(prev => prev.filter((_, i) => i !== index));
+    };
 
     const handleGenerate = async () => {
         // Basic validation
@@ -388,6 +409,52 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                     } catch (e) {
                         console.error(`Error adding series ${seriesId} to PDF:`, e);
                         toast.error(`Gagal memuat gambar untuk series: ${seriesId}`);
+                    }
+                }
+            }
+
+            // --- APPEND UPLOADED MEASUREMENT IMAGES ---
+            if (measurementImages.length > 0) {
+                for (let i = 0; i < measurementImages.length; i++) {
+                    try {
+                        const imgData = measurementImages[i];
+                        pdf.addPage();
+                        
+                        const img = new Image();
+                        img.src = imgData.base64;
+                        await new Promise((resolve) => { img.onload = resolve; });
+                        
+                        const imgWidth = img.width;
+                        const imgHeight = img.height;
+                        const ratio = imgWidth / imgHeight;
+                        
+                        const pdfPageWidth = pdf.internal.pageSize.getWidth();
+                        const pdfPageHeight = pdf.internal.pageSize.getHeight();
+                        
+                        let drawWidth = pdfPageWidth;
+                        let drawHeight = pdfPageWidth / ratio;
+                        
+                        if (drawHeight > pdfPageHeight) {
+                            drawHeight = pdfPageHeight;
+                            drawWidth = pdfPageHeight * ratio;
+                        }
+                        
+                        const xOffset = (pdfPageWidth - drawWidth) / 2;
+                        const yOffset = (pdfPageHeight - drawHeight) / 2;
+                        
+                        const imgType = imgData.file.type === "image/png" ? "PNG" : "JPEG";
+                        pdf.addImage(imgData.base64, imgType, xOffset, yOffset, drawWidth, drawHeight);
+                        
+                        pdf.setFont("helvetica", "bold");
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(255, 255, 255);
+                        pdf.setDrawColor(0);
+                        pdf.setFillColor(0, 0, 0, 0.5);
+                        pdf.rect(0, pdfPageHeight - 15, pdfPageWidth, 15, "F");
+                        pdf.text(`Hasil Measurement / Anotasi ${i + 1}`, 10, pdfPageHeight - 6);
+                        pdf.setTextColor(0, 0, 0); 
+                    } catch (e) {
+                        console.error("Error adding measurement image to PDF", e);
                     }
                 }
             }
@@ -624,6 +691,38 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                         )}
                                                     </PopoverContent>
                                                 </Popover>
+                                            </div>
+
+                                            {/* Measurement Upload Region */}
+                                            <div className="space-y-3 pt-2">
+                                                <Label className="font-bold text-base text-foreground flex items-center gap-2">
+                                                    Upload Screenshot Measurement <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span>
+                                                </Label>
+                                                <div className="flex flex-col gap-3">
+                                                    <Input 
+                                                        type="file" 
+                                                        accept="image/jpeg,image/png" 
+                                                        multiple 
+                                                        onChange={handleMeasurementUpload} 
+                                                        className="bg-background file:text-sm file:font-semibold h-10 cursor-pointer" 
+                                                    />
+                                                    {measurementImages.length > 0 && (
+                                                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 mt-2">
+                                                            {measurementImages.map((img, i) => (
+                                                                <div key={i} className="relative group rounded-md border border-slate-200 dark:border-slate-800 overflow-hidden bg-muted">
+                                                                    <img src={img.base64} alt="Measurement" className="w-full h-16 object-cover" />
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => removeMeasurementImage(i)}
+                                                                        className="absolute top-1 right-1 bg-destructive/90 hover:bg-destructive text-white rounded pr-0 pl-0 size-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                    >
+                                                                        ✕
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

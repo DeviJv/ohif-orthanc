@@ -212,7 +212,7 @@ export async function POST(req: NextRequest) {
         
         // Use carefully configured variable from root .env/compose
         const viewerHost = new URL(publicUrl).hostname;
-        const viewerUrl = `http://${viewerHost}worklist?viewer=${studyUID}`;
+        const viewerUrl = `http://${viewerHost}/worklist?viewer=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
         const thumbUrl = `${publicUrl}/api/orthanc/instances/${selectedInstanceId}/preview`;
 

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Study } from "../types";
+import { Study, Series } from "../types";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -22,6 +22,10 @@ import {
     ComboboxItem, 
     ComboboxList 
 } from "@/components/ui/combobox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Image01Icon, ArrowDown01Icon, RefreshIcon } from "@hugeicons/core-free-icons";
 
 interface ClinicConfig {
     clinicName: string;
@@ -61,6 +65,9 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [clinic, setClinic] = useState<ClinicConfig | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [searchValue, setSearchValue] = useState("");
+    const [seriesData, setSeriesData] = useState<Series[]>([]);
+    const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
+    const [isFetchingSeries, setIsFetchingSeries] = useState(false);
 
     const studyMainTags = study?.MainDicomTags as any;
     const patientTags = study?.PatientMainDicomTags as any;
@@ -160,8 +167,23 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             }
 
             setSearchValue("");
+            setSeriesData([]);
+            setSelectedSeriesIds([]);
+            
+            if (study?.ID) {
+                setIsFetchingSeries(true);
+                fetch(`/api/orthanc/studies/${study.ID}/series`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            setSeriesData(data);
+                        }
+                    })
+                    .catch(err => console.error("Error fetching series:", err))
+                    .finally(() => setIsFetchingSeries(false));
+            }
         }
-    }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName, study?.MainDicomTags?.StudyInstanceUID]);
+    }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName, study?.MainDicomTags?.StudyInstanceUID, study?.ID]);
 
     const filteredDoctors = React.useMemo(() => {
         if (!clinic?.doctors || !searchValue) return clinic?.doctors || [];
@@ -304,6 +326,66 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             const signatureCenterX = rightEdgeX - (dateWidth / 2);
             pdf.text(`( ${formData.doctor} )`, signatureCenterX, currentY, { align: "center" });
 
+            // --- APPEND SELECTED SERIES IMAGES ---
+            if (selectedSeriesIds.length > 0) {
+                for (const seriesId of selectedSeriesIds) {
+                    const series = seriesData.find(s => s.ID === seriesId);
+                    if (!series || !series.Instances?.[0]) continue;
+
+                    const instanceId = series.Instances[0];
+                    try {
+                        const imgResp = await fetch(`/api/orthanc/instances/${instanceId}/preview`);
+                        if (!imgResp.ok) throw new Error("Failed to fetch image");
+                        const blob = await imgResp.blob();
+                        const base64 = await new Promise<string>((resolve) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result as string);
+                            reader.readAsDataURL(blob);
+                        });
+
+                        pdf.addPage();
+                        
+                        // Full page image (maintaining aspect ratio)
+                        const img = new Image();
+                        img.src = base64;
+                        await new Promise((resolve) => { img.onload = resolve; });
+                        
+                        const imgWidth = img.width;
+                        const imgHeight = img.height;
+                        const ratio = imgWidth / imgHeight;
+                        
+                        const pdfPageWidth = pdf.internal.pageSize.getWidth();
+                        const pdfPageHeight = pdf.internal.pageSize.getHeight();
+                        
+                        let drawWidth = pdfPageWidth;
+                        let drawHeight = pdfPageWidth / ratio;
+                        
+                        if (drawHeight > pdfPageHeight) {
+                            drawHeight = pdfPageHeight;
+                            drawWidth = pdfPageHeight * ratio;
+                        }
+                        
+                        const xOffset = (pdfPageWidth - drawWidth) / 2;
+                        const yOffset = (pdfPageHeight - drawHeight) / 2;
+                        
+                        pdf.addImage(base64, "JPEG", xOffset, yOffset, drawWidth, drawHeight);
+                        
+                        // Add Footer label on image page
+                        pdf.setFont("helvetica", "bold");
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(255, 255, 255);
+                        pdf.setDrawColor(0);
+                        pdf.setFillColor(0, 0, 0, 0.5);
+                        pdf.rect(0, pdfPageHeight - 15, pdfPageWidth, 15, "F");
+                        pdf.text(`${series.MainDicomTags.SeriesDescription || "Series"} - ${series.MainDicomTags.Modality} (${series.MainDicomTags.SeriesNumber})`, 10, pdfPageHeight - 6);
+                        pdf.setTextColor(0, 0, 0); // Reset
+                    } catch (e) {
+                        console.error(`Error adding series ${seriesId} to PDF:`, e);
+                        toast.error(`Gagal memuat gambar untuk series: ${seriesId}`);
+                    }
+                }
+            }
+
             const filename = `Laporan_${modalityName}_${patientName.replace(/\s+/g, "_") || "Pasien"}.pdf`;
             pdf.save(filename);
             toast.success("PDF berhasil di-generate secara manual!");
@@ -445,6 +527,96 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                     placeholder="-" 
                                                     className="bg-background border h-10"
                                                 />
+                                            </div>
+
+                                            <div className="space-y-3">
+                                                <Label className="font-bold text-base text-foreground flex items-center gap-2">
+                                                    Sertakan Gambar Series <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Multi-select)</span>
+                                                </Label>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <div role="button" className="w-full flex items-center justify-between h-10 px-3 font-normal bg-background border rounded-md cursor-pointer hover:bg-muted/50 transition-colors text-sm">
+                                                            <div className="flex items-center gap-2 truncate">
+                                                                <HugeiconsIcon icon={Image01Icon} className="size-4 text-primary" />
+                                                                {selectedSeriesIds.length > 0 ? (
+                                                                    <div className="flex gap-1 overflow-hidden">
+                                                                        <Badge variant="secondary" className="rounded-sm px-1.5 font-bold bg-primary/10 text-primary border-primary/20">
+                                                                            {selectedSeriesIds.length} Series Terpilih
+                                                                        </Badge>
+                                                                    </div>
+                                                                ) : (
+                                                                    <span className="text-muted-foreground">Pilih series untuk di-export ke PDF...</span>
+                                                                )}
+                                                            </div>
+                                                            <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 opacity-50 shrink-0" />
+                                                        </div>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-[400px] p-0" align="start">
+                                                        <div className="p-3 border-b bg-muted/30">
+                                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Daftar Series</p>
+                                                        </div>
+                                                        <div className="max-h-[300px] overflow-y-auto p-1">
+                                                            {isFetchingSeries ? (
+                                                                <div className="flex items-center justify-center p-8 gap-3 text-sm text-muted-foreground">
+                                                                    <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
+                                                                    Memuat data series...
+                                                                </div>
+                                                            ) : seriesData.length === 0 ? (
+                                                                <div className="p-8 text-center text-sm text-muted-foreground italic">
+                                                                    Tidak ada series ditemukan untuk study ini.
+                                                                </div>
+                                                            ) : (
+                                                                seriesData.map((s) => (
+                                                                    <div 
+                                                                        key={s.ID} 
+                                                                        className="flex items-center space-x-3 p-3 hover:bg-accent rounded-md cursor-pointer transition-colors"
+                                                                        onClick={() => {
+                                                                            setSelectedSeriesIds(prev => 
+                                                                                prev.includes(s.ID) 
+                                                                                    ? prev.filter(id => id !== s.ID) 
+                                                                                    : [...prev, s.ID]
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <Checkbox 
+                                                                            id={`series-${s.ID}`}
+                                                                            checked={selectedSeriesIds.includes(s.ID)}
+                                                                            onCheckedChange={() => {}} // Handled by div onClick for better UX
+                                                                        />
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <p className="text-sm font-bold leading-none truncate">
+                                                                                {s.MainDicomTags.SeriesDescription || "No Description"}
+                                                                            </p>
+                                                                            <div className="flex items-center gap-2 mt-1">
+                                                                                <Badge variant="outline" className="text-[10px] h-4 px-1 bg-muted/50 font-mono">
+                                                                                    #{s.MainDicomTags.SeriesNumber}
+                                                                                </Badge>
+                                                                                <Badge variant="outline" className="text-[10px] h-4 px-1 bg-primary/5 text-primary border-primary/20">
+                                                                                    {s.MainDicomTags.Modality}
+                                                                                </Badge>
+                                                                                <span className="text-[10px] text-muted-foreground italic">
+                                                                                    {s.Instances?.length || 0} Images
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))
+                                                            )}
+                                                        </div>
+                                                        {selectedSeriesIds.length > 0 && (
+                                                            <div className="p-2 border-t bg-muted/20 flex gap-2">
+                                                                <Button 
+                                                                    variant="ghost" 
+                                                                    size="xs" 
+                                                                    className="w-full text-[10px] h-7"
+                                                                    onClick={() => setSelectedSeriesIds([])}
+                                                                >
+                                                                    Reset Pilihan
+                                                                </Button>
+                                                            </div>
+                                                        )}
+                                                    </PopoverContent>
+                                                </Popover>
                                             </div>
                                         </div>
                                     </div>

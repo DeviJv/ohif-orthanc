@@ -119,7 +119,7 @@ export function SendTelegramDialog({
                         </div>
                     </div>
 
-                    <div className="flex items-start space-x-3 p-3 rounded-lg border bg-slate-50/50 border-slate-200">
+                    {/* <div className="flex items-start space-x-3 p-3 rounded-lg border bg-slate-50/50 border-slate-200">
                         <Checkbox 
                             id="patient" 
                             checked={sendToPatient} 
@@ -136,7 +136,7 @@ export function SendTelegramDialog({
                                 <span className="ml-1 font-medium text-slate-700">{patientName} ({patientPhone || "No Phone"})</span>
                             </p>
                         </div>
-                    </div>
+                    </div> */}
 
                     {!patientPhone && sendToPatient && (
                         <div className="flex items-center gap-2 p-2 text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded-md">

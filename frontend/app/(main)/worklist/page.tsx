@@ -157,6 +157,9 @@ function WorklistContent() {
         });
     }, []);
 
+    const handleSetGlobalFilter = useCallback((value: string) => {
+        setGlobalFilter(value);
+    }, []);
 
     const selectedStudy = useMemo(() => {
         if (!viewerStudyUID) return null;
@@ -248,7 +251,7 @@ function WorklistContent() {
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
+        onGlobalFilterChange: handleSetGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -398,49 +401,45 @@ function WorklistContent() {
                 <p className="text-muted-foreground">Manage and view medical imaging studies from Orthanc PACS.</p>
             </div>
 
-            <div className="mt-8 border border-slate-200 bg-white shadow-sm rounded-xl overflow-hidden flex flex-col">
-                <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
-                    <WorklistToolbar 
-                        table={table}
-                        globalFilter={globalFilter}
-                        setGlobalFilter={setGlobalFilter}
-                        dateRange={dateRange}
-                        setDateRange={handleSetDateRange}
-                        uploading={uploading}
-                        handleFileUpload={handleFileUpload}
-                        fetchStudies={fetchStudies}
-                        handleBulkDelete={handleBulkDelete}
-                        handleBulkDownload={handleBulkDownload}
-                    />
-                </div>
+            <WorklistToolbar 
+                table={table}
+                globalFilter={globalFilter}
+                setGlobalFilter={handleSetGlobalFilter}
+                dateRange={dateRange}
+                setDateRange={handleSetDateRange}
+                uploading={uploading}
+                handleFileUpload={handleFileUpload}
+                fetchStudies={fetchStudies}
+                handleBulkDelete={handleBulkDelete}
+                handleBulkDownload={handleBulkDownload}
+            />
 
-                <WorklistTable 
-                        table={table}
-                        loading={loading}
-                        studies={studies}
-                        rowSelection={rowSelection}
-                        expandedStudies={expandedStudies}
-                        seriesData={seriesData}
-                        instancesData={instancesData}
-                        tagsData={tagsData}
-                        expandedSeries={expandedSeries}
-                        expandedInstances={expandedInstances}
-                        toggleSeriesExpansion={toggleSeriesExpansion}
-                        toggleInstanceExpansion={toggleInstanceExpansion}
-                        handleAnonymize={handleAnonymize}
-                        handleOpenOrthancViewer={handleOpenOrthancViewer}
-                        handleDownloadSeries={handleDownloadSeries}
-                        handleDeleteSeries={handleDeleteSeries}
-                        handleDownloadInstance={handleDownloadInstance}
-                        handleDeleteInstance={handleDeleteInstance}
-                        handleAddLabel={handleAddLabel}
-                        handleRemoveLabel={handleRemoveLabel}
-                        handleUploadSeries={handleUploadSeries}
-                        columns={columns}
-                        addTask={addTask}
-                        updateTask={updateTask}
-                    />
-            </div>
+            <MemoizedWorklistTable 
+                table={table}
+                loading={loading}
+                studies={studies}
+                rowSelection={rowSelection}
+                expandedStudies={expandedStudies}
+                seriesData={seriesData}
+                instancesData={instancesData}
+                tagsData={tagsData}
+                expandedSeries={expandedSeries}
+                expandedInstances={expandedInstances}
+                toggleSeriesExpansion={toggleSeriesExpansion}
+                toggleInstanceExpansion={toggleInstanceExpansion}
+                handleAnonymize={handleAnonymize}
+                handleOpenOrthancViewer={handleOpenOrthancViewer}
+                handleDownloadSeries={handleDownloadSeries}
+                handleDeleteSeries={handleDeleteSeries}
+                handleDownloadInstance={handleDownloadInstance}
+                handleDeleteInstance={handleDeleteInstance}
+                handleAddLabel={handleAddLabel}
+                handleRemoveLabel={handleRemoveLabel}
+                handleUploadSeries={handleUploadSeries}
+                columns={columns}
+                addTask={addTask}
+                updateTask={updateTask}
+            />
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
                 <div className="flex items-center gap-4">
@@ -584,7 +583,7 @@ const WorklistTable = ({
     handleAddLabel, handleRemoveLabel, handleUploadSeries, columns, addTask, updateTask
 }: WorklistTableProps) => {
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="rounded-md border bg-white shadow-sm overflow-hidden">
             <Table>
                 <TableHeader className="bg-slate-50/50">
                     {table.getHeaderGroups().map((headerGroup: any) => (
@@ -688,3 +687,4 @@ const WorklistTable = ({
     );
 };
 
+const MemoizedWorklistTable = React.memo(WorklistTable);

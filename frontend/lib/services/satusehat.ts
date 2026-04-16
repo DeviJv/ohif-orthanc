@@ -109,7 +109,7 @@ export class SatuSehatService {
 
         const response = await fetch(authUrl, {
             method: "POST",
-            headers: {
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Content-Type": "application/x-www-form-urlencoded",
             },
             body: params.toString(),
@@ -217,7 +217,7 @@ export class SatuSehatService {
 
         console.log(`[SATUSEHAT] GET Patient: ${url}`);
         const response = await fetch(url, {
-            headers: {
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Authorization": `Bearer ${token}`,
                 "X-Organization-Id": config.organizationId
             }
@@ -261,7 +261,7 @@ export class SatuSehatService {
         console.log(`[SATUSEHAT] GET Location by Org: ${url}`);
 
         const response = await fetch(url, {
-            headers: {
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Authorization": `Bearer ${token}`,
                 "X-Organization-Id": config.organizationId
             }
@@ -318,7 +318,7 @@ export class SatuSehatService {
 
         const response = await fetch(url, {
             method: "POST",
-            headers: {
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
                 "X-Organization-Id": config.organizationId
@@ -708,7 +708,7 @@ export class SatuSehatService {
 
         const response = await fetch(baseUrl, {
             method: "POST",
-            headers: {
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
                 "X-Organization-Id": config.organizationId
@@ -874,7 +874,7 @@ export class SatuSehatService {
 
         const response = await fetch(baseUrl, {
             method: "POST",
-            headers: {
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
                 "X-Organization-Id": config.organizationId
@@ -962,7 +962,7 @@ export class SatuSehatService {
         const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}`;
         
         logs.push(`[RADIOLOGY RESULT BUNDLE] Mencari ServiceRequest di Kemenkes: Accession ${params.accessionNumber}`);
-        const srRes = await fetch(srSearchUrl, { headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId } });
+        const srRes = await fetch(srSearchUrl, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId } });
         
         if (!srRes.ok) throw new Error(`[SatuSehat] Gagal mencari ServiceRequest HTTP ${srRes.status}`);
         const srData = await srRes.json();
@@ -1092,7 +1092,7 @@ export class SatuSehatService {
         const bundleUrl = `${config.environment === 'production' ? 'https://api-satusehat.kemkes.go.id' : 'https://api-satusehat-stg.dto.kemkes.go.id'}/fhir-r4/v1`;
         const postRes = await fetch(bundleUrl, {
             method: 'POST',
-            headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
             body: JSON.stringify(bundle)
         });
 
@@ -1146,7 +1146,7 @@ export class SatuSehatService {
             const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${accessionNumber}`;
             
             const srRes = await fetch(srSearchUrl, {
-                headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
+                headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
             });
 
             if (srRes.ok) {
@@ -1169,7 +1169,7 @@ export class SatuSehatService {
             const isSearchUrl = `${isUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${accessionNumber}`;
             
             const isRes = await fetch(isSearchUrl, {
-                headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
+                headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
             });
 
             if (isRes.ok) {

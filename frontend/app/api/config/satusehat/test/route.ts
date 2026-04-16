@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json",
             },
             body: params.toString(),
         });
@@ -56,7 +58,9 @@ export async function POST(req: NextRequest) {
             const fhirResponse = await fetch(fhirUrl, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                    "X-Organization-Id": organizationId
+                    "X-Organization-Id": organizationId,
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "application/json"
                 }
             });
 

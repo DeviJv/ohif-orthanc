@@ -147,7 +147,7 @@ function WorklistContent() {
         window.history.replaceState(window.history.state, "", buildWorklistUrl(params));
     }, [buildWorklistUrl]);
 
-    // Unified Filter Handlers
+    // Unified Filter Handlers handled directly in state setters or table options
     const handleSetDateRange = useCallback((range: DateRange | undefined) => {
         setDateRange(range);
         setColumnFilters(prev => {
@@ -155,10 +155,6 @@ function WorklistContent() {
             if (!range) return others;
             return [...others, { id: "studyDate", value: range }];
         });
-    }, []);
-
-    const handleSetGlobalFilter = useCallback((value: string) => {
-        setGlobalFilter(value);
     }, []);
 
     const selectedStudy = useMemo(() => {
@@ -251,7 +247,7 @@ function WorklistContent() {
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: handleSetGlobalFilter,
+        onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -259,6 +255,7 @@ function WorklistContent() {
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
         onPaginationChange: setPagination,
+        autoResetPageIndex: true,
         meta: tableMeta,
         state: {
             sorting,
@@ -404,7 +401,7 @@ function WorklistContent() {
             <WorklistToolbar 
                 table={table}
                 globalFilter={globalFilter}
-                setGlobalFilter={handleSetGlobalFilter}
+                setGlobalFilter={setGlobalFilter}
                 dateRange={dateRange}
                 setDateRange={handleSetDateRange}
                 uploading={uploading}
@@ -414,32 +411,107 @@ function WorklistContent() {
                 handleBulkDownload={handleBulkDownload}
             />
 
-            <MemoizedWorklistTable 
-                table={table}
-                loading={loading}
-                studies={studies}
-                rowSelection={rowSelection}
-                expandedStudies={expandedStudies}
-                seriesData={seriesData}
-                instancesData={instancesData}
-                tagsData={tagsData}
-                expandedSeries={expandedSeries}
-                expandedInstances={expandedInstances}
-                toggleSeriesExpansion={toggleSeriesExpansion}
-                toggleInstanceExpansion={toggleInstanceExpansion}
-                handleAnonymize={handleAnonymize}
-                handleOpenOrthancViewer={handleOpenOrthancViewer}
-                handleDownloadSeries={handleDownloadSeries}
-                handleDeleteSeries={handleDeleteSeries}
-                handleDownloadInstance={handleDownloadInstance}
-                handleDeleteInstance={handleDeleteInstance}
-                handleAddLabel={handleAddLabel}
-                handleRemoveLabel={handleRemoveLabel}
-                handleUploadSeries={handleUploadSeries}
-                columns={columns}
-                addTask={addTask}
-                updateTask={updateTask}
-            />
+            <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+                <Table>
+                    <TableHeader className="bg-slate-50/50">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="font-bold text-slate-700">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            Array.from({ length: 10 }).map((_, i) => (
+                                <TableRow key={i} className="hover:bg-transparent border-b">
+                                    <TableCell className="py-4">
+                                        <div className="flex items-center justify-center pr-2">
+                                            <Skeleton className="size-4 rounded" />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="size-8 rounded-md" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-32" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-24" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-28" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <Skeleton className="h-4 w-48" />
+                                    </TableCell>
+                                    <TableCell className="py-4">
+                                        <div className="flex justify-end gap-2">
+                                            <Skeleton className="h-8 w-16 rounded-md" />
+                                            <Skeleton className="h-8 w-16 rounded-md" />
+                                            <Skeleton className="h-8 w-16 rounded-md" />
+                                            <Skeleton className="size-8 rounded-md" />
+                                            <Skeleton className="size-8 rounded-md" />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <React.Fragment key={row.id}>
+                                    <TableRow
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id} className="py-4 relative z-10">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                    {expandedStudies[row.original.ID] && (
+                                        <StudyDetailRow
+                                            study={row.original}
+                                            studies={studies}
+                                            seriesData={seriesData}
+                                            instancesData={instancesData}
+                                            tagsData={tagsData}
+                                            expandedSeries={expandedSeries}
+                                            expandedInstances={expandedInstances}
+                                            toggleSeriesExpansion={toggleSeriesExpansion}
+                                            toggleInstanceExpansion={toggleInstanceExpansion}
+                                            handleAnonymize={handleAnonymize}
+                                            handleOpenOrthancViewer={handleOpenOrthancViewer}
+                                            handleDownloadSeries={(id, desc) => handleDownloadSeries(id, desc, { addTask, updateTask })}
+                                            handleDeleteSeries={handleDeleteSeries}
+                                            handleDownloadInstance={(id, num) => handleDownloadInstance(id, num, { addTask, updateTask })}
+                                            handleDeleteInstance={handleDeleteInstance}
+                                            handleAddLabel={handleAddLabel}
+                                            handleRemoveLabel={handleRemoveLabel}
+                                            handleUploadSeries={handleUploadSeries}
+                                            columnsCount={columns.length}
+                                        />
+                                    )}
+                                </React.Fragment>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
+                                    No studies found.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
                 <div className="flex items-center gap-4">
@@ -547,144 +619,3 @@ function WorklistContent() {
     );
 }
 
-// --- Memoized Components for Performance ---
-
-interface WorklistTableProps {
-    table: any;
-    loading: boolean;
-    studies: Study[];
-    rowSelection: Record<string, any>;
-    expandedStudies: Record<string, boolean>;
-    seriesData: Record<string, any>;
-    instancesData: Record<string, any>;
-    tagsData: Record<string, any>;
-    expandedSeries: Record<string, boolean>;
-    expandedInstances: Record<string, boolean>;
-    toggleSeriesExpansion: (id: string) => void;
-    toggleInstanceExpansion: (id: string) => void;
-    handleAnonymize: (id: string, type: "study" | "series") => Promise<void>;
-    handleOpenOrthancViewer: (id: string, type: "study" | "series" | "instance") => void;
-    handleDownloadSeries: (id: string, desc: string) => void;
-    handleDeleteSeries: (id: string, studyId: string) => Promise<void>;
-    handleDownloadInstance: (id: string, num: string) => void;
-    handleDeleteInstance: (id: string, seriesId: string) => Promise<void>;
-    handleAddLabel: (id: string) => Promise<void>;
-    handleRemoveLabel: (id: string, label: string) => Promise<void>;
-    handleUploadSeries: (files: FileList, studyId: string) => Promise<void>;
-    columns: any[];
-    addTask: any;
-    updateTask: any;
-}
-
-const WorklistTable = ({
-    table, loading, studies, rowSelection, expandedStudies, seriesData, instancesData, tagsData,
-    expandedSeries, expandedInstances, toggleSeriesExpansion, toggleInstanceExpansion,
-    handleAnonymize, handleOpenOrthancViewer, handleDeleteSeries, handleDeleteInstance,
-    handleAddLabel, handleRemoveLabel, handleUploadSeries, columns, addTask, updateTask
-}: WorklistTableProps) => {
-    return (
-        <div className="rounded-md border bg-white shadow-sm overflow-hidden">
-            <Table>
-                <TableHeader className="bg-slate-50/50">
-                    {table.getHeaderGroups().map((headerGroup: any) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header: any) => (
-                                <TableHead key={header.id} className="font-bold text-slate-700">
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext()
-                                        )}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {loading ? (
-                        Array.from({ length: 10 }).map((_, i) => (
-                            <TableRow key={i} className="hover:bg-transparent border-b">
-                                <TableCell className="py-4">
-                                    <div className="flex items-center justify-center pr-2">
-                                        <Skeleton className="size-4 rounded" />
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-4">
-                                    <Skeleton className="size-8 rounded-md" />
-                                </TableCell>
-                                <TableCell className="py-4">
-                                    <Skeleton className="h-4 w-32" />
-                                </TableCell>
-                                <TableCell className="py-4">
-                                    <Skeleton className="h-4 w-24" />
-                                </TableCell>
-                                <TableCell className="py-4">
-                                    <Skeleton className="h-4 w-28" />
-                                </TableCell>
-                                <TableCell className="py-4">
-                                    <Skeleton className="h-4 w-48" />
-                                </TableCell>
-                                <TableCell className="py-4">
-                                    <div className="flex justify-end gap-2">
-                                        <Skeleton className="h-8 w-16 rounded-md" />
-                                        <Skeleton className="h-8 w-16 rounded-md" />
-                                        <Skeleton className="h-8 w-16 rounded-md" />
-                                        <Skeleton className="size-8 rounded-md" />
-                                        <Skeleton className="size-8 rounded-md" />
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row: any) => (
-                            <React.Fragment key={row.id}>
-                                <TableRow
-                                    data-state={row.getIsSelected() && "selected"}
-                                    className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
-                                >
-                                    {row.getVisibleCells().map((cell: any) => (
-                                        <TableCell key={cell.id} className="py-4 relative z-10">
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                                {expandedStudies[row.original.ID] && (
-                                    <StudyDetailRow
-                                    study={row.original}
-                                    studies={studies}
-                                    seriesData={seriesData}
-                                    instancesData={instancesData}
-                                    tagsData={tagsData}
-                                    expandedSeries={expandedSeries}
-                                    expandedInstances={expandedInstances}
-                                    toggleSeriesExpansion={toggleSeriesExpansion}
-                                    toggleInstanceExpansion={toggleInstanceExpansion}
-                                    handleAnonymize={handleAnonymize}
-                                    handleOpenOrthancViewer={handleOpenOrthancViewer}
-                                    handleDownloadSeries={(id, desc) => handleDownloadSeries(id, desc, { addTask, updateTask })}
-                                    handleDeleteSeries={handleDeleteSeries}
-                                    handleDownloadInstance={(id, num) => handleDownloadInstance(id, num, { addTask, updateTask })}
-                                    handleDeleteInstance={handleDeleteInstance}
-                                    handleAddLabel={handleAddLabel}
-                                    handleRemoveLabel={handleRemoveLabel}
-                                    handleUploadSeries={handleUploadSeries}
-                                    columnsCount={columns.length}
-                                />
-                                )}
-                            </React.Fragment>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
-                                No studies found.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
-    );
-};
-
-const MemoizedWorklistTable = React.memo(WorklistTable);

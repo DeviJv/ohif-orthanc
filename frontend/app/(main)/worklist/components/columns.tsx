@@ -11,6 +11,7 @@ import {
     LayersLogoIcon,
     FileExportIcon,
     AiCloud01Icon,
+    AiVideoIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -143,35 +144,36 @@ export const getColumns = ({
         id: "phone",
         header: "Phone",
         cell: ({ getValue }) => getValue() || "-",
+        enableGlobalFilter: true,
     },
     {
         accessorKey: "MainDicomTags.StudyDate",
         id: "studyDate",
         header: "Study Date",
         cell: ({ getValue }) => formatDicomDate(getValue() as string),
-        filterFn: (row, columnId, value) => {
-            const dateStr = row.getValue(columnId) as string;
-            const range = value as DateRange | undefined;
-            if (!range || (!range.from && !range.to)) return true;
-            if (!dateStr) return false;
+        filterFn: (row, columnId, value: DateRange | undefined) => {
+            if (!value || (!value.from && !value.to)) return true;
+            
+            const rawDateStr = row.getValue(columnId) as string;
+            if (!rawDateStr) return false;
             
             // DICOM Date is YYYYMMDD
-            const year = parseInt(dateStr.slice(0, 4), 10);
-            const month = parseInt(dateStr.slice(4, 6), 10) - 1;
-            const day = parseInt(dateStr.slice(6, 8), 10);
-            
-            // Create date at 00:00:00 local time
-            const studyDate = new Date(year, month, day);
+            const year = parseInt(rawDateStr.slice(0, 4), 10);
+            const month = parseInt(rawDateStr.slice(4, 6), 10) - 1;
+            const day = parseInt(rawDateStr.slice(6, 8), 10);
+            const rowDate = new Date(year, month, day);
+            rowDate.setHours(0, 0, 0, 0);
 
-            // Normalize range dates to 00:00:00 local time for fair comparison
-            if (range.from) {
-                const fromDate = new Date(range.from.getFullYear(), range.from.getMonth(), range.from.getDate());
-                if (studyDate < fromDate) return false;
-            }
-            
-            if (range.to) {
-                const toDate = new Date(range.to.getFullYear(), range.to.getMonth(), range.to.getDate());
-                if (studyDate > toDate) return false;
+            if (value.from && value.to) {
+                const fromDate = new Date(value.from);
+                fromDate.setHours(0, 0, 0, 0);
+                const toDate = new Date(value.to);
+                toDate.setHours(0, 0, 0, 0);
+                return rowDate >= fromDate && rowDate <= toDate;
+            } else if (value.from) {
+                const fromDate = new Date(value.from);
+                fromDate.setHours(0, 0, 0, 0);
+                return rowDate >= fromDate;
             }
             
             return true;
@@ -186,6 +188,7 @@ export const getColumns = ({
                 {getValue() as string || "-"}
             </div>
         ),
+        enableGlobalFilter: true,
     },
     {
         id: "aiResult",
@@ -235,60 +238,59 @@ export const getColumns = ({
                 <div className="flex justify-end gap-2">
                     <Button
                         size="sm"
-                        variant="secondary"
-                        className="gap-2"
-                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID)}
-                    >
-                        <HugeiconsIcon icon={ViewIcon} className="size-4" />
-                        View
-                    </Button>
-
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-2 border-purple-300 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
-                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmented")}
+                        variant="ghost"
+                        className="size-8 p-0 text-primary hover:bg-primary/5"
+                        onClick={() => window.open(`/ohif/viewer?StudyInstanceUIDs=${study.MainDicomTags.StudyInstanceUID}`, "_blank")}
                         title="Open Segmented Viewer"
                     >
-                        <HugeiconsIcon icon={LayersLogoIcon} className="size-4" />
-                        Segmented
+                        <HugeiconsIcon icon={AiVideoIcon} className="size-4" />
                     </Button>
 
                     {handleRunAi && (
                         <Button
                             size="sm"
-                            variant="outline"
-                            className="gap-2 border-primary/30 text-primary hover:bg-primary/5 hover:text-primary animate-pulse"
+                            variant="ghost"
+                            className="size-8 p-0 text-primary hover:bg-primary/5 animate-pulse"
                             onClick={() => handleRunAi?.(study.ID)}
                             title="Run AI Analysis Manually"
                             disabled={aiMode === "OFF"}
                         >
-                            <HugeiconsIcon icon={AiCloud01Icon} className="size-4" strokeWidth={2.5} />
-                            Run AI
+                            <HugeiconsIcon icon={AiCloud01Icon} className="size-4" />
                         </Button>
                     )}
 
                     <Button
                         size="sm"
-                        variant="outline"
-                        className="gap-2"
-                        onClick={() => handleDownload(study.ID, patientName)}
+                        variant="ghost"
+                        className="size-8 p-0 text-slate-600 hover:text-primary hover:bg-primary/5"
+                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID)}
+                        title="View DICOM Study"
                     >
-                        <HugeiconsIcon icon={Download01Icon} className="size-4" />
-                        ZIP
+                        <HugeiconsIcon icon={ViewIcon} className="size-4" />
                     </Button>
 
                     <Button
                         size="sm"
-                        variant="destructive"
-                        className="gap-2"
-                        onClick={() => {
+                        variant="ghost"
+                        className="size-8 p-0 text-slate-600 hover:text-primary hover:bg-primary/5"
+                        onClick={() => handleDownload(study.ID, patientName)}
+                        title="Download ZIP"
+                    >
+                        <HugeiconsIcon icon={Download01Icon} className="size-4" />
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                        onClick={(e) => {
+                            e.stopPropagation();
                             setStudyToDelete(study);
                             setIsDeleteDialogOpen(true);
                         }}
+                        title="Delete Study"
                     >
                         <HugeiconsIcon icon={Delete01Icon} className="size-4" />
-                        Delete
                     </Button>
 
                     <Button

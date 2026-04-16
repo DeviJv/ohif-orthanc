@@ -39,6 +39,8 @@ import {
     RoboticIcon,
     HealthIcon,
     Link01Icon,
+    Download01Icon,
+    ArrowReloadHorizontalIcon,
 } from "@hugeicons/core-free-icons";
 import { toast } from "sonner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -1250,6 +1252,11 @@ function SatuSehatSettingsTab() {
 
                 <Separator className="my-6" />
 
+                {/* DICOM Router Deployment Tools */}
+                <DicomRouterDeployTools />
+
+                <Separator className="my-6" />
+
                 {/* DICOM Router Tester Section */}
                 <SatuSehatIntegrationTester />
             </div>
@@ -1545,5 +1552,211 @@ function SatuSehatIntegrationTester() {
                 </div>
             )}
         </Card>
+    );
+}
+
+function DicomRouterDeployTools() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [composeContent, setComposeContent] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [tokenPreview, setTokenPreview] = useState<string | null>(null);
+    const [envUsed, setEnvUsed] = useState<string | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const fetchCompose = async () => {
+        setIsLoading(true);
+        setError(null);
+        setComposeContent(null);
+        try {
+            const res = await fetch("/api/config/satusehat/dicom-router-compose");
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                setError(data.error || "Gagal mengunduh dari Kemenkes");
+                toast.error(data.error || "Gagal mengunduh docker-compose.yml");
+                return;
+            }
+            setComposeContent(data.content);
+            setTokenPreview(data.tokenPrefix);
+            setEnvUsed(data.env);
+            setIsDialogOpen(true);
+            toast.success("docker-compose.yml berhasil diunduh dari Kemenkes!");
+        } catch (e: any) {
+            setError(e.message);
+            toast.error("Terjadi kesalahan jaringan.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCopy = () => {
+        if (!composeContent) return;
+        navigator.clipboard.writeText(composeContent);
+        setCopied(true);
+        toast.success("docker-compose.yml disalin ke clipboard!");
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleDownload = () => {
+        if (!composeContent) return;
+        const blob = new Blob([composeContent], { type: "text/yaml" });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = "docker-compose.yml";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success("File docker-compose.yml diunduh!");
+    };
+
+    return (
+        <>
+            <Card className="border-2 border-sky-200/70 shadow-md bg-sky-50/20 overflow-hidden">
+                <CardHeader className="bg-sky-50/60 border-b border-sky-100 pb-4">
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-sky-500 rounded-lg text-white shadow-sm ring-4 ring-sky-500/10">
+                                <HugeiconsIcon icon={CpuIcon} className="size-5" strokeWidth={2.5} />
+                            </div>
+                            <div>
+                                <CardTitle className="text-lg font-bold text-sky-900">DICOM Router — Deployment Tools</CardTitle>
+                                <CardDescription className="text-sky-700/70 text-xs">
+                                    Unduh docker-compose.yml resmi dari Kemenkes dengan satu klik.
+                                    Kredensial diambil otomatis dari konfigurasi di atas.
+                                </CardDescription>
+                            </div>
+                        </div>
+                        <Button
+                            onClick={fetchCompose}
+                            disabled={isLoading}
+                            className="shrink-0 gap-2 bg-sky-600 hover:bg-sky-700 text-white font-bold shadow-lg shadow-sky-600/20 h-10 px-6"
+                        >
+                            <HugeiconsIcon
+                                icon={isLoading ? ArrowReloadHorizontalIcon : Download01Icon}
+                                className={cn("size-4", isLoading && "animate-spin")}
+                                strokeWidth={2.5}
+                            />
+                            {isLoading ? "Mengambil dari Kemenkes..." : "Unduh docker-compose.yml"}
+                        </Button>
+                    </div>
+                </CardHeader>
+
+                <CardContent className="pt-6 space-y-5">
+                    {/* Error state */}
+                    {error && (
+                        <div className="flex gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 animate-in slide-in-from-top-2">
+                            <HugeiconsIcon icon={CircleIcon} className="size-5 shrink-0 mt-0.5 text-rose-500" />
+                            <div className="space-y-1">
+                                <p className="font-bold text-sm">Gagal mengunduh</p>
+                                <p className="text-xs leading-relaxed">{error}</p>
+                                <p className="text-xs text-rose-600/70 mt-1">Pastikan Client ID &amp; Secret sudah disimpan dan koneksi internet tersedia.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* How it works */}
+                    <div className="space-y-3">
+                        <p className="text-xs font-bold text-sky-700 uppercase tracking-widest">Cara Kerja</p>
+                        <ol className="space-y-2 text-sm text-slate-600">
+                            {[
+                                { step: 1, text: "Sistem otomatis mengambil Bearer Token menggunakan Client ID & Secret yang sudah disimpan di atas.", color: "bg-sky-500" },
+                                { step: 2, text: "Token digunakan untuk mengunduh docker-compose.yml resmi dari endpoint Kemenkes SATUSEHAT.", color: "bg-indigo-500" },
+                                { step: 3, text: "File ditampilkan di dialog dengan tombol copy & download langsung ke lokal.", color: "bg-purple-500" },
+                                { step: 4, text: "Upload file ke VPS via SCP atau paste manual, lalu jalankan: docker compose up -d", color: "bg-emerald-500" },
+                            ].map(({ step, text, color }) => (
+                                <li key={step} className="flex items-start gap-3">
+                                    <span className={`shrink-0 size-5 rounded-full ${color} text-white flex items-center justify-center text-[10px] font-bold mt-0.5`}>{step}</span>
+                                    <span className="leading-relaxed">{text}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+
+                    {/* Info note */}
+                    <div className="flex gap-3 p-4 bg-amber-50/80 border border-amber-100 rounded-xl text-amber-800">
+                        <HugeiconsIcon icon={InformationCircleIcon} className="size-5 shrink-0 text-amber-500" strokeWidth={2} />
+                        <p className="text-xs leading-relaxed">
+                            <strong>Catatan:</strong> File docker-compose.yml dari Kemenkes bersifat <strong>TERBATAS</strong>.
+                            Jangan mendistribusikannya. Setelah diunduh, isi variabel <code className="bg-amber-100 px-1 rounded">WEBHOOK_URL</code>,{" "}
+                            <code className="bg-amber-100 px-1 rounded">WEBHOOK_USER</code>, dan{" "}
+                            <code className="bg-amber-100 px-1 rounded">WEBHOOK_PASSWORD</code> sesuai konfigurasi server Anda.
+                        </p>
+                    </div>
+
+                    {/* SCP transfer hint */}
+                    <div className="space-y-2">
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Transfer ke VPS (Contoh)</p>
+                        <div className="bg-slate-900 rounded-xl p-4 border border-slate-700 flex items-start gap-3">
+                            <pre className="text-xs text-emerald-400 font-mono leading-relaxed flex-1 overflow-x-auto whitespace-pre">{`# Upload ke VPS setelah download\nscp docker-compose.yml root@IP_VPS:/var/www/ohif-orthanc/dicom-router/\n\n# Jalankan di VPS\ncd /var/www/ohif-orthanc\ndocker compose -f dicom-router/docker-compose.yml up -d`}</pre>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-slate-400 hover:text-emerald-400 h-7 px-2 shrink-0"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        "scp docker-compose.yml root@IP_VPS:/var/www/ohif-orthanc/dicom-router/\n" +
+                                        "cd /var/www/ohif-orthanc\n" +
+                                        "docker compose -f dicom-router/docker-compose.yml up -d"
+                                    );
+                                    toast.success("Command disalin!");
+                                }}
+                            >
+                                <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                            </Button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Preview Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col">
+                    <DialogHeader className="shrink-0">
+                        <DialogTitle className="flex items-center gap-2 text-sky-800">
+                            <HugeiconsIcon icon={CpuIcon} className="size-5 text-sky-600" strokeWidth={2.5} />
+                            docker-compose.yml Official — DICOM Router
+                        </DialogTitle>
+                        <DialogDescription className="text-xs">
+                            Sumber: Kemenkes SATUSEHAT API ({envUsed === "production" ? "Production" : "Staging"})
+                            {tokenPreview && <span className="ml-2 font-mono text-slate-400">Token: {tokenPreview}</span>}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {/* File content */}
+                    <div className="flex-1 overflow-hidden min-h-0 my-4" style={{ minHeight: "300px", maxHeight: "50vh" }}>
+                        <div className="relative h-full">
+                            <div className="h-full bg-slate-950 rounded-xl border border-slate-700 overflow-auto">
+                                <pre className="p-5 text-xs font-mono text-emerald-300 leading-relaxed whitespace-pre">
+                                    {composeContent}
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="shrink-0 flex gap-2 flex-wrap">
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="text-slate-600">
+                            Tutup
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={handleCopy}
+                            className={cn("gap-2 border-sky-200 text-sky-700 hover:bg-sky-50", copied && "bg-emerald-50 border-emerald-200 text-emerald-700")}
+                        >
+                            <HugeiconsIcon icon={copied ? CheckmarkCircle02Icon : Copy01Icon} className="size-4" />
+                            {copied ? "Disalin!" : "Copy ke Clipboard"}
+                        </Button>
+                        <Button
+                            onClick={handleDownload}
+                            className="gap-2 bg-sky-600 hover:bg-sky-700 text-white font-bold"
+                        >
+                            <HugeiconsIcon icon={Download01Icon} className="size-4" strokeWidth={2.5} />
+                            Download docker-compose.yml
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 }

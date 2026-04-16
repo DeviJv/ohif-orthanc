@@ -207,7 +207,7 @@ window.config = {
   ],
 };
 
-window.config.routerBasename = '/';
+window.config.routerBasename = '/ohif';
 
 if (true) {
   window.config.dataSources = [
@@ -217,10 +217,10 @@ if (true) {
       sourceName: 'dicomweb',
       configuration: {
         name: 'orthanc',
-        wadoRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
-        qidoRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
-        stowRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
-        wadoUriRoot: window.location.protocol + '//' + window.location.hostname + '/dicom-web',
+        wadoRoot: window.location.protocol + '//' + window.location.host + '/dicom-web',
+        qidoRoot: window.location.protocol + '//' + window.location.host + '/dicom-web',
+        stowRoot: window.location.protocol + '//' + window.location.host + '/dicom-web',
+        wadoUriRoot: window.location.protocol + '//' + window.location.host + '/dicom-web',
         qidoSupportsIncludeField: false,
         supportsReject: false,
         allowMultiSelectExport: true,

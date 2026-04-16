@@ -232,73 +232,48 @@ export const getColumns = ({
             const study = row.original;
             const patientName = study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName;
             return (
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-1.5">
                     <Button
                         size="sm"
-                        variant="secondary"
-                        className="gap-2"
+                        variant="ghost"
+                        className="size-8 p-0 text-primary hover:text-primary hover:bg-primary/5"
                         onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID)}
+                        title="View Study"
                     >
                         <HugeiconsIcon icon={ViewIcon} className="size-4" />
-                        View
-                    </Button>
-
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-2 border-purple-300 text-purple-700 hover:bg-purple-50 hover:text-purple-800"
-                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmented")}
-                        title="Open Segmented Viewer"
-                    >
-                        <HugeiconsIcon icon={LayersLogoIcon} className="size-4" />
-                        Segmented
-                    </Button>
-
-                    {handleRunAi && (
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            className="gap-2 border-primary/30 text-primary hover:bg-primary/5 hover:text-primary animate-pulse"
-                            onClick={() => handleRunAi?.(study.ID)}
-                            title="Run AI Analysis Manually"
-                            disabled={aiMode === "OFF"}
-                        >
-                            <HugeiconsIcon icon={AiCloud01Icon} className="size-4" strokeWidth={2.5} />
-                            Run AI
-                        </Button>
-                    )}
-
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-2"
-                        onClick={() => handleDownload(study.ID, patientName)}
-                    >
-                        <HugeiconsIcon icon={Download01Icon} className="size-4" />
-                        ZIP
-                    </Button>
-
-                    <Button
-                        size="sm"
-                        variant="destructive"
-                        className="gap-2"
-                        onClick={() => {
-                            setStudyToDelete(study);
-                            setIsDeleteDialogOpen(true);
-                        }}
-                    >
-                        <HugeiconsIcon icon={Delete01Icon} className="size-4" />
-                        Delete
                     </Button>
 
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                        onClick={() => openEditDialog(study)}
-                        title="Edit Study Metadata"
+                        className="size-8 p-0 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                        onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmented")}
+                        title="Open MPR Segmented Viewer"
                     >
-                        <HugeiconsIcon icon={PencilEdit01Icon} className="size-4" />
+                        <HugeiconsIcon icon={LayersLogoIcon} className="size-4" />
+                    </Button>
+
+                    {handleRunAi && (
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            className="size-8 p-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 disabled:opacity-30"
+                            onClick={() => handleRunAi?.(study.ID)}
+                            title="Run AI Analysis Manually"
+                            disabled={aiMode === "OFF"}
+                        >
+                            <HugeiconsIcon icon={AiCloud01Icon} className="size-4" />
+                        </Button>
+                    )}
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-slate-600 hover:text-slate-700 hover:bg-slate-100"
+                        onClick={() => handleDownload(study.ID, patientName)}
+                        title="Download ZIP"
+                    >
+                        <HugeiconsIcon icon={Download01Icon} className="size-4" />
                     </Button>
 
                     <Button
@@ -327,7 +302,7 @@ export const getColumns = ({
                         className={cn(
                             "size-8 p-0 transition-all",
                             ssIntegrationStatus?.[study.MainDicomTags.StudyInstanceUID]?.status === "SUCCESS"
-                                ? "text-emerald-500 hover:text-emerald-600 bg-emerald-50"
+                                ? "text-emerald-500 bg-emerald-50/50"
                                 : "text-slate-400 hover:text-primary hover:bg-primary/5"
                         )}
                         onClick={() => openBridgeDialog?.(study)}
@@ -344,6 +319,31 @@ export const getColumns = ({
                                 ssIntegrationStatus?.[study.MainDicomTags.StudyInstanceUID]?.status === "PROCESSING" && "animate-spin"
                             )} 
                         />
+                    </Button>
+
+                    <div className="h-4 w-px bg-slate-200 self-center mx-0.5" />
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                        onClick={() => openEditDialog(study)}
+                        title="Edit Study Metadata"
+                    >
+                        <HugeiconsIcon icon={PencilEdit01Icon} className="size-4" />
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                        onClick={() => {
+                            setStudyToDelete(study);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                        title="Delete Study"
+                    >
+                        <HugeiconsIcon icon={Delete01Icon} className="size-4" />
                     </Button>
                 </div>
             );

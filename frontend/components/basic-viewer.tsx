@@ -12,7 +12,7 @@ interface BasicViewerProps {
  * then fades out once the iframe content has fully loaded.
  */
 export default function BasicViewer({ studyInstanceUID }: BasicViewerProps) {
-    const viewerUrl = `/viewer/dicomweb?StudyInstanceUIDs=${studyInstanceUID}`;
+    const viewerUrl = `/ohif/viewer?StudyInstanceUIDs=${studyInstanceUID}`;
     const [loaded, setLoaded] = useState(false);
 
     return (

@@ -13,7 +13,7 @@ interface SegmentedViewerProps {
  * Shows an instant skeleton overlay until the iframe is ready.
  */
 export default function SegmentedViewer({ studyInstanceUIDs }: SegmentedViewerProps) {
-    const viewerUrl = `/viewer/dicomweb?StudyInstanceUIDs=${studyInstanceUIDs}&hangingprotocolId=mpr`;
+    const viewerUrl = `/ohif/viewer?StudyInstanceUIDs=${studyInstanceUIDs}&hangingprotocolId=mpr`;
     const [loaded, setLoaded] = useState(false);
 
     return (

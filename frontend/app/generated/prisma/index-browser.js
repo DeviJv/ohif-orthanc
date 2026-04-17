@@ -205,10 +205,20 @@ exports.Prisma.SatuSehatWebhookLogScalarFieldEnum = {
 
 exports.Prisma.SatuSehatSettingScalarFieldEnum = {
   id: 'id',
+  environment: 'environment',
+  stgOrganizationId: 'stgOrganizationId',
+  stgClientId: 'stgClientId',
+  stgClientSecret: 'stgClientSecret',
+  stgAuthUrl: 'stgAuthUrl',
+  stgBaseUrl: 'stgBaseUrl',
+  prdOrganizationId: 'prdOrganizationId',
+  prdClientId: 'prdClientId',
+  prdClientSecret: 'prdClientSecret',
+  prdAuthUrl: 'prdAuthUrl',
+  prdBaseUrl: 'prdBaseUrl',
   organizationId: 'organizationId',
   clientId: 'clientId',
   clientSecret: 'clientSecret',
-  environment: 'environment',
   authUrl: 'authUrl',
   baseUrl: 'baseUrl',
   encounterUrl: 'encounterUrl',
@@ -225,6 +235,20 @@ exports.Prisma.SatuSehatSettingScalarFieldEnum = {
   defaultPractitionerId: 'defaultPractitionerId',
   isActive: 'isActive',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SatuSehatResourceLogScalarFieldEnum = {
+  id: 'id',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  accessionNumber: 'accessionNumber',
+  studyInstanceUid: 'studyInstanceUid',
+  method: 'method',
+  status: 'status',
+  responseCode: 'responseCode',
+  responseBody: 'responseBody',
+  environment: 'environment',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -271,7 +295,8 @@ exports.Prisma.ModelName = {
   AiResult: 'AiResult',
   SatuSehatIntegration: 'SatuSehatIntegration',
   SatuSehatWebhookLog: 'SatuSehatWebhookLog',
-  SatuSehatSetting: 'SatuSehatSetting'
+  SatuSehatSetting: 'SatuSehatSetting',
+  SatuSehatResourceLog: 'SatuSehatResourceLog'
 };
 
 /**

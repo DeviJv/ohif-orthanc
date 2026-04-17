@@ -23,38 +23,52 @@ async function main() {
   console.log('🌱 Seeding SatuSehat settings with full granular defaults...');
 
   const STG_BASE = 'https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1';
+  const PRD_BASE = 'https://api-satusehat.kemkes.go.id/fhir-r4/v1';
 
-  const payload = {
-    organizationId: process.env.SATUSEHAT_ORG_ID || 'bf3d3d7d-620a-406a-b790-80d501a1f821',
-    clientId: process.env.SATUSEHAT_CLIENT_ID || '',
-    clientSecret: process.env.SATUSEHAT_CLIENT_SECRET || '',
-    environment: 'staging',
-    authUrl: 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
-    baseUrl: STG_BASE,
-    
-    // Full granular defaults from the start
-    encounterUrl: `${STG_BASE}/Encounter`,
-    conditionUrl: `${STG_BASE}/Condition`,
-    serviceRequestUrl: `${STG_BASE}/ServiceRequest`,
-    imagingStudyUrl: `${STG_BASE}/ImagingStudy`,
-    observationUrl: `${STG_BASE}/Observation`,
-    diagnosticReportUrl: `${STG_BASE}/DiagnosticReport`,
-    compositionUrl: `${STG_BASE}/Composition`,
-    patientUrl: `${STG_BASE}/Patient`,
-    locationUrl: `${STG_BASE}/Location`,
-    practitionerUrl: `${STG_BASE}/Practitioner`,
-    
-    defaultPatientId: 'P02478375538',
-    defaultPractitionerId: '10009880728',
-    isActive: true,
-  };
-
+  // We use an empty update to avoid overwriting user changes on every restart
   const setting = await prisma.satuSehatSetting.upsert({
     where: { id: 1 },
-    update: payload,
+    update: {}, 
     create: {
       id: 1,
-      ...payload,
+      environment: 'staging',
+      
+      // Default Staging Config
+      stgOrganizationId: process.env.SATUSEHAT_ORG_ID || 'bf3d3d7d-620a-406a-b790-80d501a1f821',
+      stgClientId: process.env.SATUSEHAT_CLIENT_ID || '',
+      stgClientSecret: process.env.SATUSEHAT_CLIENT_SECRET || '',
+      stgAuthUrl: 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
+      stgBaseUrl: STG_BASE,
+
+      // Default Production Config
+      prdOrganizationId: '',
+      prdClientId: '',
+      prdClientSecret: '',
+      prdAuthUrl: 'https://api-satusehat.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
+      prdBaseUrl: PRD_BASE,
+
+      // Initial Active Config (Legacy fields)
+      organizationId: process.env.SATUSEHAT_ORG_ID || 'bf3d3d7d-620a-406a-b790-80d501a1f821',
+      clientId: process.env.SATUSEHAT_CLIENT_ID || '',
+      clientSecret: process.env.SATUSEHAT_CLIENT_SECRET || '',
+      authUrl: 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
+      baseUrl: STG_BASE,
+      
+      // Full granular defaults
+      encounterUrl: `${STG_BASE}/Encounter`,
+      conditionUrl: `${STG_BASE}/Condition`,
+      serviceRequestUrl: `${STG_BASE}/ServiceRequest`,
+      imagingStudyUrl: `${STG_BASE}/ImagingStudy`,
+      observationUrl: `${STG_BASE}/Observation`,
+      diagnosticReportUrl: `${STG_BASE}/DiagnosticReport`,
+      compositionUrl: `${STG_BASE}/Composition`,
+      patientUrl: `${STG_BASE}/Patient`,
+      locationUrl: `${STG_BASE}/Location`,
+      practitionerUrl: `${STG_BASE}/Practitioner`,
+      
+      defaultPatientId: 'P02478375538',
+      defaultPractitionerId: '10009880728',
+      isActive: true,
     },
   });
 

@@ -108,12 +108,26 @@ model SatuSehatWebhookLog {
 model SatuSehatSetting {
 
   id               Int      @id @default(1)
+  environment      String   @default("staging") // staging, production
+  
+  // Staging Credentials & URLs
+  stgOrganizationId String   @default("")
+  stgClientId       String   @default("")
+  stgClientSecret   String   @default("") @db.Text
+  stgAuthUrl        String   @default("") @db.Text
+  stgBaseUrl        String   @default("") @db.Text
+
+  // Production Credentials & URLs
+  prdOrganizationId String   @default("")
+  prdClientId       String   @default("")
+  prdClientSecret   String   @default("") @db.Text
+  prdAuthUrl        String   @default("") @db.Text
+  prdBaseUrl        String   @default("") @db.Text
+
+  // Legacy / Active URLs (Synced based on environment)
   organizationId   String   @default("")
   clientId         String   @default("")
   clientSecret     String   @default("") @db.Text
-  environment      String   @default("staging") // staging, production
-  
-  // Global URLs
   authUrl          String   @default("") @db.Text
   baseUrl          String   @default("") @db.Text
   
@@ -135,4 +149,18 @@ model SatuSehatSetting {
   
   isActive         Boolean  @default(true)
   updatedAt        DateTime @updatedAt
+}
+
+model SatuSehatResourceLog {
+  id               String   @id @default(cuid())
+  resourceType     String   // Encounter, Condition, Observation, etc.
+  resourceId       String?  // UUID from SatuSehat
+  accessionNumber  String?
+  studyInstanceUid String?
+  method           String   @default("POST") // POST, PUT, DELETE
+  status           String   // SUCCESS, FAILED
+  responseCode     Int?
+  responseBody     Json?
+  environment      String   // staging, production
+  createdAt        DateTime @default(now())
 }

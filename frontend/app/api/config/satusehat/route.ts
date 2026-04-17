@@ -26,6 +26,20 @@ export async function GET() {
             env: dbSetting.environment,
             authUrl: dbSetting.authUrl,
             baseUrl: dbSetting.baseUrl,
+
+            // New Environment specific fields
+            stgOrgId: dbSetting.stgOrganizationId,
+            stgClientId: dbSetting.stgClientId,
+            stgClientSecret: dbSetting.stgClientSecret,
+            stgAuthUrl: dbSetting.stgAuthUrl,
+            stgBaseUrl: dbSetting.stgBaseUrl,
+
+            prdOrgId: dbSetting.prdOrganizationId,
+            prdClientId: dbSetting.prdClientId,
+            prdClientSecret: dbSetting.prdClientSecret,
+            prdAuthUrl: dbSetting.prdAuthUrl,
+            prdBaseUrl: dbSetting.prdBaseUrl,
+
             defaultPatientId: dbSetting.defaultPatientId,
             defaultPractitionerId: dbSetting.defaultPractitionerId,
             encounterUrl: dbSetting.encounterUrl,
@@ -70,15 +84,38 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     
-    // Mapping from frontend field names to DB field names if they differ
-    // (Existing frontend uses orgId, clientId, clientSecret, env)
+    // Choose active credentials based on selected environment
+    const isActiveStaging = body.env === "staging";
+    const activeOrgId = isActiveStaging ? body.stgOrgId : body.prdOrgId;
+    const activeClientId = isActiveStaging ? body.stgClientId : body.prdClientId;
+    const activeClientSecret = isActiveStaging ? body.stgClientSecret : body.prdClientSecret;
+    const activeAuthUrl = isActiveStaging ? body.stgAuthUrl : body.prdAuthUrl;
+    const activeBaseUrl = isActiveStaging ? body.stgBaseUrl : body.prdBaseUrl;
+
     const payload = {
-        organizationId: body.orgId,
-        clientId: body.clientId,
-        clientSecret: body.clientSecret,
         environment: body.env,
-        authUrl: body.authUrl || "",
-        baseUrl: body.baseUrl || "",
+        
+        // Staging
+        stgOrganizationId: body.stgOrgId || "",
+        stgClientId: body.stgClientId || "",
+        stgClientSecret: body.stgClientSecret || "",
+        stgAuthUrl: body.stgAuthUrl || "https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials",
+        stgBaseUrl: body.stgBaseUrl || "https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1",
+
+        // Production
+        prdOrganizationId: body.prdOrgId || "",
+        prdClientId: body.prdClientId || "",
+        prdClientSecret: body.prdClientSecret || "",
+        prdAuthUrl: body.prdAuthUrl || "https://api-satusehat.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials",
+        prdBaseUrl: body.prdBaseUrl || "https://api-satusehat.kemkes.go.id/fhir-r4/v1",
+
+        // SYNC ACTIVE CONFIG (Legacy compatibility)
+        organizationId: activeOrgId || "",
+        clientId: activeClientId || "",
+        clientSecret: activeClientSecret || "",
+        authUrl: activeAuthUrl || "",
+        baseUrl: activeBaseUrl || "",
+
         defaultPatientId: body.defaultPatientId || "",
         defaultPractitionerId: body.defaultPractitionerId || "",
         encounterUrl: body.encounterUrl || null,
@@ -105,25 +142,30 @@ export async function POST(req: NextRequest) {
         const path = require("path");
         const { exec } = require("child_process");
 
-        // Deteksi enviroment: apakah berjalan jalan lokal atau di docker production
         const isProd = process.env.NODE_ENV === "production";
         const envPath = isProd 
-            ? path.join(process.cwd(), "dicom-router", ".env") // Dalam docker jika di-mount
-            : path.join(process.cwd(), "..", "dicom-router", ".env"); // Folder lokal
+            ? path.join(process.cwd(), "dicom-router", ".env") 
+            : path.join(process.cwd(), "..", "dicom-router", ".env");
 
-        const satuSehatUrl = payload.environment === "production" 
-            ? "https://api-satusehat.kemkes.go.id" 
-            : "https://api-satusehat-stg.dto.kemkes.go.id";
+        // Use the actual Base URL for the router, ensuring it doesn't have the /fhir-r4/v1 suffix if possible
+        // but typically SATUSEHAT_URL in router is the root.
+        let routerUrl = activeBaseUrl;
+        if (routerUrl.includes("/fhir-r4/v1")) {
+            routerUrl = routerUrl.split("/fhir-r4/v1")[0];
+        } else if (!routerUrl) {
+            routerUrl = body.env === "production" 
+                ? "https://api-satusehat.kemkes.go.id" 
+                : "https://api-satusehat-stg.dto.kemkes.go.id";
+        }
 
-        const envContent = `ORG_ID=${payload.organizationId}\nCLIENT_ID=${payload.clientId}\nCLIENT_SECRET=${payload.clientSecret}\nSATUSEHAT_URL=${satuSehatUrl}\nNEXT_PUBLIC_APP_URL=http://pacs-web:3001\nINTERNAL_PACS_KEY=${process.env.INTERNAL_PACS_KEY || 'pacs_secret_token_2026'}\n`;
+        const envContent = `ORG_ID=${activeOrgId}\nCLIENT_ID=${activeClientId}\nCLIENT_SECRET=${activeClientSecret}\nSATUSEHAT_URL=${routerUrl}\nNEXT_PUBLIC_APP_URL=http://pacs-web:3001\nINTERNAL_PACS_KEY=${process.env.INTERNAL_PACS_KEY || 'pacs_secret_token_2026'}\n`;
 
         await fs.writeFile(envPath, envContent, "utf8");
         console.log(`[DICOM-ROUTER] Berhasil menimpa file .env di ${envPath}`);
 
-        // Coba restart layanannya secara gaib
         exec("docker restart dicom-router", (err: any) => {
             if (err) {
-                console.log("[DICOM-ROUTER] Restart otomatis dilewati (Docker tidak tersedia/tidak terhubung socket). Harap restart manual container dicom-router jika Anda baru saja merubah Credentials Prod.");
+                console.log("[DICOM-ROUTER] Restart otomatis dilewati (Docker tidak tersedia).");
             } else {
                 console.log("[DICOM-ROUTER] Container dicom-router berhasil di-restart otomatis!");
             }

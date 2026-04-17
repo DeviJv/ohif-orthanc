@@ -58,6 +58,11 @@ export type SatuSehatWebhookLog = $Result.DefaultSelection<Prisma.$SatuSehatWebh
  * 
  */
 export type SatuSehatSetting = $Result.DefaultSelection<Prisma.$SatuSehatSettingPayload>
+/**
+ * Model SatuSehatResourceLog
+ * 
+ */
+export type SatuSehatResourceLog = $Result.DefaultSelection<Prisma.$SatuSehatResourceLogPayload>
 
 /**
  * Enums
@@ -284,6 +289,16 @@ export class PrismaClient<
     * ```
     */
   get satuSehatSetting(): Prisma.SatuSehatSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.satuSehatResourceLog`: Exposes CRUD operations for the **SatuSehatResourceLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SatuSehatResourceLogs
+    * const satuSehatResourceLogs = await prisma.satuSehatResourceLog.findMany()
+    * ```
+    */
+  get satuSehatResourceLog(): Prisma.SatuSehatResourceLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -733,7 +748,8 @@ export namespace Prisma {
     AiResult: 'AiResult',
     SatuSehatIntegration: 'SatuSehatIntegration',
     SatuSehatWebhookLog: 'SatuSehatWebhookLog',
-    SatuSehatSetting: 'SatuSehatSetting'
+    SatuSehatSetting: 'SatuSehatSetting',
+    SatuSehatResourceLog: 'SatuSehatResourceLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -752,7 +768,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1422,6 +1438,80 @@ export namespace Prisma {
           }
         }
       }
+      SatuSehatResourceLog: {
+        payload: Prisma.$SatuSehatResourceLogPayload<ExtArgs>
+        fields: Prisma.SatuSehatResourceLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SatuSehatResourceLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SatuSehatResourceLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>
+          }
+          findFirst: {
+            args: Prisma.SatuSehatResourceLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SatuSehatResourceLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>
+          }
+          findMany: {
+            args: Prisma.SatuSehatResourceLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>[]
+          }
+          create: {
+            args: Prisma.SatuSehatResourceLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>
+          }
+          createMany: {
+            args: Prisma.SatuSehatResourceLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SatuSehatResourceLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>[]
+          }
+          delete: {
+            args: Prisma.SatuSehatResourceLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>
+          }
+          update: {
+            args: Prisma.SatuSehatResourceLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.SatuSehatResourceLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SatuSehatResourceLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SatuSehatResourceLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.SatuSehatResourceLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatResourceLogPayload>
+          }
+          aggregate: {
+            args: Prisma.SatuSehatResourceLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSatuSehatResourceLog>
+          }
+          groupBy: {
+            args: Prisma.SatuSehatResourceLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatResourceLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SatuSehatResourceLogCountArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatResourceLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1527,6 +1617,7 @@ export namespace Prisma {
     satuSehatIntegration?: SatuSehatIntegrationOmit
     satuSehatWebhookLog?: SatuSehatWebhookLogOmit
     satuSehatSetting?: SatuSehatSettingOmit
+    satuSehatResourceLog?: SatuSehatResourceLogOmit
   }
 
   /* Types for Logging */
@@ -10109,10 +10200,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingMinAggregateOutputType = {
     id: number | null
+    environment: string | null
+    stgOrganizationId: string | null
+    stgClientId: string | null
+    stgClientSecret: string | null
+    stgAuthUrl: string | null
+    stgBaseUrl: string | null
+    prdOrganizationId: string | null
+    prdClientId: string | null
+    prdClientSecret: string | null
+    prdAuthUrl: string | null
+    prdBaseUrl: string | null
     organizationId: string | null
     clientId: string | null
     clientSecret: string | null
-    environment: string | null
     authUrl: string | null
     baseUrl: string | null
     encounterUrl: string | null
@@ -10133,10 +10234,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingMaxAggregateOutputType = {
     id: number | null
+    environment: string | null
+    stgOrganizationId: string | null
+    stgClientId: string | null
+    stgClientSecret: string | null
+    stgAuthUrl: string | null
+    stgBaseUrl: string | null
+    prdOrganizationId: string | null
+    prdClientId: string | null
+    prdClientSecret: string | null
+    prdAuthUrl: string | null
+    prdBaseUrl: string | null
     organizationId: string | null
     clientId: string | null
     clientSecret: string | null
-    environment: string | null
     authUrl: string | null
     baseUrl: string | null
     encounterUrl: string | null
@@ -10157,10 +10268,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingCountAggregateOutputType = {
     id: number
+    environment: number
+    stgOrganizationId: number
+    stgClientId: number
+    stgClientSecret: number
+    stgAuthUrl: number
+    stgBaseUrl: number
+    prdOrganizationId: number
+    prdClientId: number
+    prdClientSecret: number
+    prdAuthUrl: number
+    prdBaseUrl: number
     organizationId: number
     clientId: number
     clientSecret: number
-    environment: number
     authUrl: number
     baseUrl: number
     encounterUrl: number
@@ -10191,10 +10312,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingMinAggregateInputType = {
     id?: true
+    environment?: true
+    stgOrganizationId?: true
+    stgClientId?: true
+    stgClientSecret?: true
+    stgAuthUrl?: true
+    stgBaseUrl?: true
+    prdOrganizationId?: true
+    prdClientId?: true
+    prdClientSecret?: true
+    prdAuthUrl?: true
+    prdBaseUrl?: true
     organizationId?: true
     clientId?: true
     clientSecret?: true
-    environment?: true
     authUrl?: true
     baseUrl?: true
     encounterUrl?: true
@@ -10215,10 +10346,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingMaxAggregateInputType = {
     id?: true
+    environment?: true
+    stgOrganizationId?: true
+    stgClientId?: true
+    stgClientSecret?: true
+    stgAuthUrl?: true
+    stgBaseUrl?: true
+    prdOrganizationId?: true
+    prdClientId?: true
+    prdClientSecret?: true
+    prdAuthUrl?: true
+    prdBaseUrl?: true
     organizationId?: true
     clientId?: true
     clientSecret?: true
-    environment?: true
     authUrl?: true
     baseUrl?: true
     encounterUrl?: true
@@ -10239,10 +10380,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingCountAggregateInputType = {
     id?: true
+    environment?: true
+    stgOrganizationId?: true
+    stgClientId?: true
+    stgClientSecret?: true
+    stgAuthUrl?: true
+    stgBaseUrl?: true
+    prdOrganizationId?: true
+    prdClientId?: true
+    prdClientSecret?: true
+    prdAuthUrl?: true
+    prdBaseUrl?: true
     organizationId?: true
     clientId?: true
     clientSecret?: true
-    environment?: true
     authUrl?: true
     baseUrl?: true
     encounterUrl?: true
@@ -10350,10 +10501,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingGroupByOutputType = {
     id: number
+    environment: string
+    stgOrganizationId: string
+    stgClientId: string
+    stgClientSecret: string
+    stgAuthUrl: string
+    stgBaseUrl: string
+    prdOrganizationId: string
+    prdClientId: string
+    prdClientSecret: string
+    prdAuthUrl: string
+    prdBaseUrl: string
     organizationId: string
     clientId: string
     clientSecret: string
-    environment: string
     authUrl: string
     baseUrl: string
     encounterUrl: string | null
@@ -10393,10 +10554,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    environment?: boolean
+    stgOrganizationId?: boolean
+    stgClientId?: boolean
+    stgClientSecret?: boolean
+    stgAuthUrl?: boolean
+    stgBaseUrl?: boolean
+    prdOrganizationId?: boolean
+    prdClientId?: boolean
+    prdClientSecret?: boolean
+    prdAuthUrl?: boolean
+    prdBaseUrl?: boolean
     organizationId?: boolean
     clientId?: boolean
     clientSecret?: boolean
-    environment?: boolean
     authUrl?: boolean
     baseUrl?: boolean
     encounterUrl?: boolean
@@ -10417,10 +10588,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    environment?: boolean
+    stgOrganizationId?: boolean
+    stgClientId?: boolean
+    stgClientSecret?: boolean
+    stgAuthUrl?: boolean
+    stgBaseUrl?: boolean
+    prdOrganizationId?: boolean
+    prdClientId?: boolean
+    prdClientSecret?: boolean
+    prdAuthUrl?: boolean
+    prdBaseUrl?: boolean
     organizationId?: boolean
     clientId?: boolean
     clientSecret?: boolean
-    environment?: boolean
     authUrl?: boolean
     baseUrl?: boolean
     encounterUrl?: boolean
@@ -10441,10 +10622,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    environment?: boolean
+    stgOrganizationId?: boolean
+    stgClientId?: boolean
+    stgClientSecret?: boolean
+    stgAuthUrl?: boolean
+    stgBaseUrl?: boolean
+    prdOrganizationId?: boolean
+    prdClientId?: boolean
+    prdClientSecret?: boolean
+    prdAuthUrl?: boolean
+    prdBaseUrl?: boolean
     organizationId?: boolean
     clientId?: boolean
     clientSecret?: boolean
-    environment?: boolean
     authUrl?: boolean
     baseUrl?: boolean
     encounterUrl?: boolean
@@ -10465,10 +10656,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingSelectScalar = {
     id?: boolean
+    environment?: boolean
+    stgOrganizationId?: boolean
+    stgClientId?: boolean
+    stgClientSecret?: boolean
+    stgAuthUrl?: boolean
+    stgBaseUrl?: boolean
+    prdOrganizationId?: boolean
+    prdClientId?: boolean
+    prdClientSecret?: boolean
+    prdAuthUrl?: boolean
+    prdBaseUrl?: boolean
     organizationId?: boolean
     clientId?: boolean
     clientSecret?: boolean
-    environment?: boolean
     authUrl?: boolean
     baseUrl?: boolean
     encounterUrl?: boolean
@@ -10487,17 +10688,27 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "clientId" | "clientSecret" | "environment" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "isActive" | "updatedAt", ExtArgs["result"]["satuSehatSetting"]>
+  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "isActive" | "updatedAt", ExtArgs["result"]["satuSehatSetting"]>
 
   export type $SatuSehatSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatSetting"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
+      environment: string
+      stgOrganizationId: string
+      stgClientId: string
+      stgClientSecret: string
+      stgAuthUrl: string
+      stgBaseUrl: string
+      prdOrganizationId: string
+      prdClientId: string
+      prdClientSecret: string
+      prdAuthUrl: string
+      prdBaseUrl: string
       organizationId: string
       clientId: string
       clientSecret: string
-      environment: string
       authUrl: string
       baseUrl: string
       encounterUrl: string | null
@@ -10938,10 +11149,20 @@ export namespace Prisma {
    */
   interface SatuSehatSettingFieldRefs {
     readonly id: FieldRef<"SatuSehatSetting", 'Int'>
+    readonly environment: FieldRef<"SatuSehatSetting", 'String'>
+    readonly stgOrganizationId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly stgClientId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly stgClientSecret: FieldRef<"SatuSehatSetting", 'String'>
+    readonly stgAuthUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly stgBaseUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly prdOrganizationId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly prdClientId: FieldRef<"SatuSehatSetting", 'String'>
+    readonly prdClientSecret: FieldRef<"SatuSehatSetting", 'String'>
+    readonly prdAuthUrl: FieldRef<"SatuSehatSetting", 'String'>
+    readonly prdBaseUrl: FieldRef<"SatuSehatSetting", 'String'>
     readonly organizationId: FieldRef<"SatuSehatSetting", 'String'>
     readonly clientId: FieldRef<"SatuSehatSetting", 'String'>
     readonly clientSecret: FieldRef<"SatuSehatSetting", 'String'>
-    readonly environment: FieldRef<"SatuSehatSetting", 'String'>
     readonly authUrl: FieldRef<"SatuSehatSetting", 'String'>
     readonly baseUrl: FieldRef<"SatuSehatSetting", 'String'>
     readonly encounterUrl: FieldRef<"SatuSehatSetting", 'String'>
@@ -11325,6 +11546,1109 @@ export namespace Prisma {
 
 
   /**
+   * Model SatuSehatResourceLog
+   */
+
+  export type AggregateSatuSehatResourceLog = {
+    _count: SatuSehatResourceLogCountAggregateOutputType | null
+    _avg: SatuSehatResourceLogAvgAggregateOutputType | null
+    _sum: SatuSehatResourceLogSumAggregateOutputType | null
+    _min: SatuSehatResourceLogMinAggregateOutputType | null
+    _max: SatuSehatResourceLogMaxAggregateOutputType | null
+  }
+
+  export type SatuSehatResourceLogAvgAggregateOutputType = {
+    responseCode: number | null
+  }
+
+  export type SatuSehatResourceLogSumAggregateOutputType = {
+    responseCode: number | null
+  }
+
+  export type SatuSehatResourceLogMinAggregateOutputType = {
+    id: string | null
+    resourceType: string | null
+    resourceId: string | null
+    accessionNumber: string | null
+    studyInstanceUid: string | null
+    method: string | null
+    status: string | null
+    responseCode: number | null
+    environment: string | null
+    createdAt: Date | null
+  }
+
+  export type SatuSehatResourceLogMaxAggregateOutputType = {
+    id: string | null
+    resourceType: string | null
+    resourceId: string | null
+    accessionNumber: string | null
+    studyInstanceUid: string | null
+    method: string | null
+    status: string | null
+    responseCode: number | null
+    environment: string | null
+    createdAt: Date | null
+  }
+
+  export type SatuSehatResourceLogCountAggregateOutputType = {
+    id: number
+    resourceType: number
+    resourceId: number
+    accessionNumber: number
+    studyInstanceUid: number
+    method: number
+    status: number
+    responseCode: number
+    responseBody: number
+    environment: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SatuSehatResourceLogAvgAggregateInputType = {
+    responseCode?: true
+  }
+
+  export type SatuSehatResourceLogSumAggregateInputType = {
+    responseCode?: true
+  }
+
+  export type SatuSehatResourceLogMinAggregateInputType = {
+    id?: true
+    resourceType?: true
+    resourceId?: true
+    accessionNumber?: true
+    studyInstanceUid?: true
+    method?: true
+    status?: true
+    responseCode?: true
+    environment?: true
+    createdAt?: true
+  }
+
+  export type SatuSehatResourceLogMaxAggregateInputType = {
+    id?: true
+    resourceType?: true
+    resourceId?: true
+    accessionNumber?: true
+    studyInstanceUid?: true
+    method?: true
+    status?: true
+    responseCode?: true
+    environment?: true
+    createdAt?: true
+  }
+
+  export type SatuSehatResourceLogCountAggregateInputType = {
+    id?: true
+    resourceType?: true
+    resourceId?: true
+    accessionNumber?: true
+    studyInstanceUid?: true
+    method?: true
+    status?: true
+    responseCode?: true
+    responseBody?: true
+    environment?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SatuSehatResourceLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatResourceLog to aggregate.
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatResourceLogs to fetch.
+     */
+    orderBy?: SatuSehatResourceLogOrderByWithRelationInput | SatuSehatResourceLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SatuSehatResourceLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatResourceLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatResourceLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SatuSehatResourceLogs
+    **/
+    _count?: true | SatuSehatResourceLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SatuSehatResourceLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SatuSehatResourceLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SatuSehatResourceLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SatuSehatResourceLogMaxAggregateInputType
+  }
+
+  export type GetSatuSehatResourceLogAggregateType<T extends SatuSehatResourceLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateSatuSehatResourceLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSatuSehatResourceLog[P]>
+      : GetScalarType<T[P], AggregateSatuSehatResourceLog[P]>
+  }
+
+
+
+
+  export type SatuSehatResourceLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatuSehatResourceLogWhereInput
+    orderBy?: SatuSehatResourceLogOrderByWithAggregationInput | SatuSehatResourceLogOrderByWithAggregationInput[]
+    by: SatuSehatResourceLogScalarFieldEnum[] | SatuSehatResourceLogScalarFieldEnum
+    having?: SatuSehatResourceLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SatuSehatResourceLogCountAggregateInputType | true
+    _avg?: SatuSehatResourceLogAvgAggregateInputType
+    _sum?: SatuSehatResourceLogSumAggregateInputType
+    _min?: SatuSehatResourceLogMinAggregateInputType
+    _max?: SatuSehatResourceLogMaxAggregateInputType
+  }
+
+  export type SatuSehatResourceLogGroupByOutputType = {
+    id: string
+    resourceType: string
+    resourceId: string | null
+    accessionNumber: string | null
+    studyInstanceUid: string | null
+    method: string
+    status: string
+    responseCode: number | null
+    responseBody: JsonValue | null
+    environment: string
+    createdAt: Date
+    _count: SatuSehatResourceLogCountAggregateOutputType | null
+    _avg: SatuSehatResourceLogAvgAggregateOutputType | null
+    _sum: SatuSehatResourceLogSumAggregateOutputType | null
+    _min: SatuSehatResourceLogMinAggregateOutputType | null
+    _max: SatuSehatResourceLogMaxAggregateOutputType | null
+  }
+
+  type GetSatuSehatResourceLogGroupByPayload<T extends SatuSehatResourceLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SatuSehatResourceLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SatuSehatResourceLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SatuSehatResourceLogGroupByOutputType[P]>
+            : GetScalarType<T[P], SatuSehatResourceLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SatuSehatResourceLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    resourceType?: boolean
+    resourceId?: boolean
+    accessionNumber?: boolean
+    studyInstanceUid?: boolean
+    method?: boolean
+    status?: boolean
+    responseCode?: boolean
+    responseBody?: boolean
+    environment?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["satuSehatResourceLog"]>
+
+  export type SatuSehatResourceLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    resourceType?: boolean
+    resourceId?: boolean
+    accessionNumber?: boolean
+    studyInstanceUid?: boolean
+    method?: boolean
+    status?: boolean
+    responseCode?: boolean
+    responseBody?: boolean
+    environment?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["satuSehatResourceLog"]>
+
+  export type SatuSehatResourceLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    resourceType?: boolean
+    resourceId?: boolean
+    accessionNumber?: boolean
+    studyInstanceUid?: boolean
+    method?: boolean
+    status?: boolean
+    responseCode?: boolean
+    responseBody?: boolean
+    environment?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["satuSehatResourceLog"]>
+
+  export type SatuSehatResourceLogSelectScalar = {
+    id?: boolean
+    resourceType?: boolean
+    resourceId?: boolean
+    accessionNumber?: boolean
+    studyInstanceUid?: boolean
+    method?: boolean
+    status?: boolean
+    responseCode?: boolean
+    responseBody?: boolean
+    environment?: boolean
+    createdAt?: boolean
+  }
+
+  export type SatuSehatResourceLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resourceType" | "resourceId" | "accessionNumber" | "studyInstanceUid" | "method" | "status" | "responseCode" | "responseBody" | "environment" | "createdAt", ExtArgs["result"]["satuSehatResourceLog"]>
+
+  export type $SatuSehatResourceLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SatuSehatResourceLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      resourceType: string
+      resourceId: string | null
+      accessionNumber: string | null
+      studyInstanceUid: string | null
+      method: string
+      status: string
+      responseCode: number | null
+      responseBody: Prisma.JsonValue | null
+      environment: string
+      createdAt: Date
+    }, ExtArgs["result"]["satuSehatResourceLog"]>
+    composites: {}
+  }
+
+  type SatuSehatResourceLogGetPayload<S extends boolean | null | undefined | SatuSehatResourceLogDefaultArgs> = $Result.GetResult<Prisma.$SatuSehatResourceLogPayload, S>
+
+  type SatuSehatResourceLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SatuSehatResourceLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SatuSehatResourceLogCountAggregateInputType | true
+    }
+
+  export interface SatuSehatResourceLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SatuSehatResourceLog'], meta: { name: 'SatuSehatResourceLog' } }
+    /**
+     * Find zero or one SatuSehatResourceLog that matches the filter.
+     * @param {SatuSehatResourceLogFindUniqueArgs} args - Arguments to find a SatuSehatResourceLog
+     * @example
+     * // Get one SatuSehatResourceLog
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SatuSehatResourceLogFindUniqueArgs>(args: SelectSubset<T, SatuSehatResourceLogFindUniqueArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SatuSehatResourceLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SatuSehatResourceLogFindUniqueOrThrowArgs} args - Arguments to find a SatuSehatResourceLog
+     * @example
+     * // Get one SatuSehatResourceLog
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SatuSehatResourceLogFindUniqueOrThrowArgs>(args: SelectSubset<T, SatuSehatResourceLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatResourceLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogFindFirstArgs} args - Arguments to find a SatuSehatResourceLog
+     * @example
+     * // Get one SatuSehatResourceLog
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SatuSehatResourceLogFindFirstArgs>(args?: SelectSubset<T, SatuSehatResourceLogFindFirstArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatResourceLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogFindFirstOrThrowArgs} args - Arguments to find a SatuSehatResourceLog
+     * @example
+     * // Get one SatuSehatResourceLog
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SatuSehatResourceLogFindFirstOrThrowArgs>(args?: SelectSubset<T, SatuSehatResourceLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SatuSehatResourceLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SatuSehatResourceLogs
+     * const satuSehatResourceLogs = await prisma.satuSehatResourceLog.findMany()
+     * 
+     * // Get first 10 SatuSehatResourceLogs
+     * const satuSehatResourceLogs = await prisma.satuSehatResourceLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const satuSehatResourceLogWithIdOnly = await prisma.satuSehatResourceLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SatuSehatResourceLogFindManyArgs>(args?: SelectSubset<T, SatuSehatResourceLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SatuSehatResourceLog.
+     * @param {SatuSehatResourceLogCreateArgs} args - Arguments to create a SatuSehatResourceLog.
+     * @example
+     * // Create one SatuSehatResourceLog
+     * const SatuSehatResourceLog = await prisma.satuSehatResourceLog.create({
+     *   data: {
+     *     // ... data to create a SatuSehatResourceLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends SatuSehatResourceLogCreateArgs>(args: SelectSubset<T, SatuSehatResourceLogCreateArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SatuSehatResourceLogs.
+     * @param {SatuSehatResourceLogCreateManyArgs} args - Arguments to create many SatuSehatResourceLogs.
+     * @example
+     * // Create many SatuSehatResourceLogs
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SatuSehatResourceLogCreateManyArgs>(args?: SelectSubset<T, SatuSehatResourceLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SatuSehatResourceLogs and returns the data saved in the database.
+     * @param {SatuSehatResourceLogCreateManyAndReturnArgs} args - Arguments to create many SatuSehatResourceLogs.
+     * @example
+     * // Create many SatuSehatResourceLogs
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SatuSehatResourceLogs and only return the `id`
+     * const satuSehatResourceLogWithIdOnly = await prisma.satuSehatResourceLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SatuSehatResourceLogCreateManyAndReturnArgs>(args?: SelectSubset<T, SatuSehatResourceLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SatuSehatResourceLog.
+     * @param {SatuSehatResourceLogDeleteArgs} args - Arguments to delete one SatuSehatResourceLog.
+     * @example
+     * // Delete one SatuSehatResourceLog
+     * const SatuSehatResourceLog = await prisma.satuSehatResourceLog.delete({
+     *   where: {
+     *     // ... filter to delete one SatuSehatResourceLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SatuSehatResourceLogDeleteArgs>(args: SelectSubset<T, SatuSehatResourceLogDeleteArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SatuSehatResourceLog.
+     * @param {SatuSehatResourceLogUpdateArgs} args - Arguments to update one SatuSehatResourceLog.
+     * @example
+     * // Update one SatuSehatResourceLog
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SatuSehatResourceLogUpdateArgs>(args: SelectSubset<T, SatuSehatResourceLogUpdateArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SatuSehatResourceLogs.
+     * @param {SatuSehatResourceLogDeleteManyArgs} args - Arguments to filter SatuSehatResourceLogs to delete.
+     * @example
+     * // Delete a few SatuSehatResourceLogs
+     * const { count } = await prisma.satuSehatResourceLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SatuSehatResourceLogDeleteManyArgs>(args?: SelectSubset<T, SatuSehatResourceLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatResourceLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SatuSehatResourceLogs
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SatuSehatResourceLogUpdateManyArgs>(args: SelectSubset<T, SatuSehatResourceLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatResourceLogs and returns the data updated in the database.
+     * @param {SatuSehatResourceLogUpdateManyAndReturnArgs} args - Arguments to update many SatuSehatResourceLogs.
+     * @example
+     * // Update many SatuSehatResourceLogs
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SatuSehatResourceLogs and only return the `id`
+     * const satuSehatResourceLogWithIdOnly = await prisma.satuSehatResourceLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SatuSehatResourceLogUpdateManyAndReturnArgs>(args: SelectSubset<T, SatuSehatResourceLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SatuSehatResourceLog.
+     * @param {SatuSehatResourceLogUpsertArgs} args - Arguments to update or create a SatuSehatResourceLog.
+     * @example
+     * // Update or create a SatuSehatResourceLog
+     * const satuSehatResourceLog = await prisma.satuSehatResourceLog.upsert({
+     *   create: {
+     *     // ... data to create a SatuSehatResourceLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SatuSehatResourceLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SatuSehatResourceLogUpsertArgs>(args: SelectSubset<T, SatuSehatResourceLogUpsertArgs<ExtArgs>>): Prisma__SatuSehatResourceLogClient<$Result.GetResult<Prisma.$SatuSehatResourceLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SatuSehatResourceLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogCountArgs} args - Arguments to filter SatuSehatResourceLogs to count.
+     * @example
+     * // Count the number of SatuSehatResourceLogs
+     * const count = await prisma.satuSehatResourceLog.count({
+     *   where: {
+     *     // ... the filter for the SatuSehatResourceLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends SatuSehatResourceLogCountArgs>(
+      args?: Subset<T, SatuSehatResourceLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SatuSehatResourceLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SatuSehatResourceLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SatuSehatResourceLogAggregateArgs>(args: Subset<T, SatuSehatResourceLogAggregateArgs>): Prisma.PrismaPromise<GetSatuSehatResourceLogAggregateType<T>>
+
+    /**
+     * Group by SatuSehatResourceLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatResourceLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SatuSehatResourceLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SatuSehatResourceLogGroupByArgs['orderBy'] }
+        : { orderBy?: SatuSehatResourceLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SatuSehatResourceLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSatuSehatResourceLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SatuSehatResourceLog model
+   */
+  readonly fields: SatuSehatResourceLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SatuSehatResourceLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SatuSehatResourceLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SatuSehatResourceLog model
+   */
+  interface SatuSehatResourceLogFieldRefs {
+    readonly id: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly resourceType: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly resourceId: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly accessionNumber: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly studyInstanceUid: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly method: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly status: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly responseCode: FieldRef<"SatuSehatResourceLog", 'Int'>
+    readonly responseBody: FieldRef<"SatuSehatResourceLog", 'Json'>
+    readonly environment: FieldRef<"SatuSehatResourceLog", 'String'>
+    readonly createdAt: FieldRef<"SatuSehatResourceLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SatuSehatResourceLog findUnique
+   */
+  export type SatuSehatResourceLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatResourceLog to fetch.
+     */
+    where: SatuSehatResourceLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatResourceLog findUniqueOrThrow
+   */
+  export type SatuSehatResourceLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatResourceLog to fetch.
+     */
+    where: SatuSehatResourceLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatResourceLog findFirst
+   */
+  export type SatuSehatResourceLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatResourceLog to fetch.
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatResourceLogs to fetch.
+     */
+    orderBy?: SatuSehatResourceLogOrderByWithRelationInput | SatuSehatResourceLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatResourceLogs.
+     */
+    cursor?: SatuSehatResourceLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatResourceLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatResourceLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatResourceLogs.
+     */
+    distinct?: SatuSehatResourceLogScalarFieldEnum | SatuSehatResourceLogScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatResourceLog findFirstOrThrow
+   */
+  export type SatuSehatResourceLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatResourceLog to fetch.
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatResourceLogs to fetch.
+     */
+    orderBy?: SatuSehatResourceLogOrderByWithRelationInput | SatuSehatResourceLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatResourceLogs.
+     */
+    cursor?: SatuSehatResourceLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatResourceLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatResourceLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatResourceLogs.
+     */
+    distinct?: SatuSehatResourceLogScalarFieldEnum | SatuSehatResourceLogScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatResourceLog findMany
+   */
+  export type SatuSehatResourceLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatResourceLogs to fetch.
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatResourceLogs to fetch.
+     */
+    orderBy?: SatuSehatResourceLogOrderByWithRelationInput | SatuSehatResourceLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SatuSehatResourceLogs.
+     */
+    cursor?: SatuSehatResourceLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatResourceLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatResourceLogs.
+     */
+    skip?: number
+    distinct?: SatuSehatResourceLogScalarFieldEnum | SatuSehatResourceLogScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatResourceLog create
+   */
+  export type SatuSehatResourceLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SatuSehatResourceLog.
+     */
+    data: XOR<SatuSehatResourceLogCreateInput, SatuSehatResourceLogUncheckedCreateInput>
+  }
+
+  /**
+   * SatuSehatResourceLog createMany
+   */
+  export type SatuSehatResourceLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SatuSehatResourceLogs.
+     */
+    data: SatuSehatResourceLogCreateManyInput | SatuSehatResourceLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatResourceLog createManyAndReturn
+   */
+  export type SatuSehatResourceLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many SatuSehatResourceLogs.
+     */
+    data: SatuSehatResourceLogCreateManyInput | SatuSehatResourceLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatResourceLog update
+   */
+  export type SatuSehatResourceLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SatuSehatResourceLog.
+     */
+    data: XOR<SatuSehatResourceLogUpdateInput, SatuSehatResourceLogUncheckedUpdateInput>
+    /**
+     * Choose, which SatuSehatResourceLog to update.
+     */
+    where: SatuSehatResourceLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatResourceLog updateMany
+   */
+  export type SatuSehatResourceLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SatuSehatResourceLogs.
+     */
+    data: XOR<SatuSehatResourceLogUpdateManyMutationInput, SatuSehatResourceLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatResourceLogs to update
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * Limit how many SatuSehatResourceLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatResourceLog updateManyAndReturn
+   */
+  export type SatuSehatResourceLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * The data used to update SatuSehatResourceLogs.
+     */
+    data: XOR<SatuSehatResourceLogUpdateManyMutationInput, SatuSehatResourceLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatResourceLogs to update
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * Limit how many SatuSehatResourceLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatResourceLog upsert
+   */
+  export type SatuSehatResourceLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SatuSehatResourceLog to update in case it exists.
+     */
+    where: SatuSehatResourceLogWhereUniqueInput
+    /**
+     * In case the SatuSehatResourceLog found by the `where` argument doesn't exist, create a new SatuSehatResourceLog with this data.
+     */
+    create: XOR<SatuSehatResourceLogCreateInput, SatuSehatResourceLogUncheckedCreateInput>
+    /**
+     * In case the SatuSehatResourceLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SatuSehatResourceLogUpdateInput, SatuSehatResourceLogUncheckedUpdateInput>
+  }
+
+  /**
+   * SatuSehatResourceLog delete
+   */
+  export type SatuSehatResourceLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+    /**
+     * Filter which SatuSehatResourceLog to delete.
+     */
+    where: SatuSehatResourceLogWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatResourceLog deleteMany
+   */
+  export type SatuSehatResourceLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatResourceLogs to delete
+     */
+    where?: SatuSehatResourceLogWhereInput
+    /**
+     * Limit how many SatuSehatResourceLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatResourceLog without action
+   */
+  export type SatuSehatResourceLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatResourceLog
+     */
+    select?: SatuSehatResourceLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatResourceLog
+     */
+    omit?: SatuSehatResourceLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11446,10 +12770,20 @@ export namespace Prisma {
 
   export const SatuSehatSettingScalarFieldEnum: {
     id: 'id',
+    environment: 'environment',
+    stgOrganizationId: 'stgOrganizationId',
+    stgClientId: 'stgClientId',
+    stgClientSecret: 'stgClientSecret',
+    stgAuthUrl: 'stgAuthUrl',
+    stgBaseUrl: 'stgBaseUrl',
+    prdOrganizationId: 'prdOrganizationId',
+    prdClientId: 'prdClientId',
+    prdClientSecret: 'prdClientSecret',
+    prdAuthUrl: 'prdAuthUrl',
+    prdBaseUrl: 'prdBaseUrl',
     organizationId: 'organizationId',
     clientId: 'clientId',
     clientSecret: 'clientSecret',
-    environment: 'environment',
     authUrl: 'authUrl',
     baseUrl: 'baseUrl',
     encounterUrl: 'encounterUrl',
@@ -11469,6 +12803,23 @@ export namespace Prisma {
   };
 
   export type SatuSehatSettingScalarFieldEnum = (typeof SatuSehatSettingScalarFieldEnum)[keyof typeof SatuSehatSettingScalarFieldEnum]
+
+
+  export const SatuSehatResourceLogScalarFieldEnum: {
+    id: 'id',
+    resourceType: 'resourceType',
+    resourceId: 'resourceId',
+    accessionNumber: 'accessionNumber',
+    studyInstanceUid: 'studyInstanceUid',
+    method: 'method',
+    status: 'status',
+    responseCode: 'responseCode',
+    responseBody: 'responseBody',
+    environment: 'environment',
+    createdAt: 'createdAt'
+  };
+
+  export type SatuSehatResourceLogScalarFieldEnum = (typeof SatuSehatResourceLogScalarFieldEnum)[keyof typeof SatuSehatResourceLogScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12145,10 +13496,20 @@ export namespace Prisma {
     OR?: SatuSehatSettingWhereInput[]
     NOT?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
     id?: IntFilter<"SatuSehatSetting"> | number
+    environment?: StringFilter<"SatuSehatSetting"> | string
+    stgOrganizationId?: StringFilter<"SatuSehatSetting"> | string
+    stgClientId?: StringFilter<"SatuSehatSetting"> | string
+    stgClientSecret?: StringFilter<"SatuSehatSetting"> | string
+    stgAuthUrl?: StringFilter<"SatuSehatSetting"> | string
+    stgBaseUrl?: StringFilter<"SatuSehatSetting"> | string
+    prdOrganizationId?: StringFilter<"SatuSehatSetting"> | string
+    prdClientId?: StringFilter<"SatuSehatSetting"> | string
+    prdClientSecret?: StringFilter<"SatuSehatSetting"> | string
+    prdAuthUrl?: StringFilter<"SatuSehatSetting"> | string
+    prdBaseUrl?: StringFilter<"SatuSehatSetting"> | string
     organizationId?: StringFilter<"SatuSehatSetting"> | string
     clientId?: StringFilter<"SatuSehatSetting"> | string
     clientSecret?: StringFilter<"SatuSehatSetting"> | string
-    environment?: StringFilter<"SatuSehatSetting"> | string
     authUrl?: StringFilter<"SatuSehatSetting"> | string
     baseUrl?: StringFilter<"SatuSehatSetting"> | string
     encounterUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
@@ -12169,10 +13530,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingOrderByWithRelationInput = {
     id?: SortOrder
+    environment?: SortOrder
+    stgOrganizationId?: SortOrder
+    stgClientId?: SortOrder
+    stgClientSecret?: SortOrder
+    stgAuthUrl?: SortOrder
+    stgBaseUrl?: SortOrder
+    prdOrganizationId?: SortOrder
+    prdClientId?: SortOrder
+    prdClientSecret?: SortOrder
+    prdAuthUrl?: SortOrder
+    prdBaseUrl?: SortOrder
     organizationId?: SortOrder
     clientId?: SortOrder
     clientSecret?: SortOrder
-    environment?: SortOrder
     authUrl?: SortOrder
     baseUrl?: SortOrder
     encounterUrl?: SortOrderInput | SortOrder
@@ -12196,10 +13567,20 @@ export namespace Prisma {
     AND?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
     OR?: SatuSehatSettingWhereInput[]
     NOT?: SatuSehatSettingWhereInput | SatuSehatSettingWhereInput[]
+    environment?: StringFilter<"SatuSehatSetting"> | string
+    stgOrganizationId?: StringFilter<"SatuSehatSetting"> | string
+    stgClientId?: StringFilter<"SatuSehatSetting"> | string
+    stgClientSecret?: StringFilter<"SatuSehatSetting"> | string
+    stgAuthUrl?: StringFilter<"SatuSehatSetting"> | string
+    stgBaseUrl?: StringFilter<"SatuSehatSetting"> | string
+    prdOrganizationId?: StringFilter<"SatuSehatSetting"> | string
+    prdClientId?: StringFilter<"SatuSehatSetting"> | string
+    prdClientSecret?: StringFilter<"SatuSehatSetting"> | string
+    prdAuthUrl?: StringFilter<"SatuSehatSetting"> | string
+    prdBaseUrl?: StringFilter<"SatuSehatSetting"> | string
     organizationId?: StringFilter<"SatuSehatSetting"> | string
     clientId?: StringFilter<"SatuSehatSetting"> | string
     clientSecret?: StringFilter<"SatuSehatSetting"> | string
-    environment?: StringFilter<"SatuSehatSetting"> | string
     authUrl?: StringFilter<"SatuSehatSetting"> | string
     baseUrl?: StringFilter<"SatuSehatSetting"> | string
     encounterUrl?: StringNullableFilter<"SatuSehatSetting"> | string | null
@@ -12220,10 +13601,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingOrderByWithAggregationInput = {
     id?: SortOrder
+    environment?: SortOrder
+    stgOrganizationId?: SortOrder
+    stgClientId?: SortOrder
+    stgClientSecret?: SortOrder
+    stgAuthUrl?: SortOrder
+    stgBaseUrl?: SortOrder
+    prdOrganizationId?: SortOrder
+    prdClientId?: SortOrder
+    prdClientSecret?: SortOrder
+    prdAuthUrl?: SortOrder
+    prdBaseUrl?: SortOrder
     organizationId?: SortOrder
     clientId?: SortOrder
     clientSecret?: SortOrder
-    environment?: SortOrder
     authUrl?: SortOrder
     baseUrl?: SortOrder
     encounterUrl?: SortOrderInput | SortOrder
@@ -12252,10 +13643,20 @@ export namespace Prisma {
     OR?: SatuSehatSettingScalarWhereWithAggregatesInput[]
     NOT?: SatuSehatSettingScalarWhereWithAggregatesInput | SatuSehatSettingScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"SatuSehatSetting"> | number
+    environment?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    stgOrganizationId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    stgClientId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    stgClientSecret?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    stgAuthUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    stgBaseUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    prdOrganizationId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    prdClientId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    prdClientSecret?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    prdAuthUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    prdBaseUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     organizationId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     clientId?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     clientSecret?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
-    environment?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     authUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     baseUrl?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     encounterUrl?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
@@ -12272,6 +13673,90 @@ export namespace Prisma {
     defaultPractitionerId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
     isActive?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatSetting"> | Date | string
+  }
+
+  export type SatuSehatResourceLogWhereInput = {
+    AND?: SatuSehatResourceLogWhereInput | SatuSehatResourceLogWhereInput[]
+    OR?: SatuSehatResourceLogWhereInput[]
+    NOT?: SatuSehatResourceLogWhereInput | SatuSehatResourceLogWhereInput[]
+    id?: StringFilter<"SatuSehatResourceLog"> | string
+    resourceType?: StringFilter<"SatuSehatResourceLog"> | string
+    resourceId?: StringNullableFilter<"SatuSehatResourceLog"> | string | null
+    accessionNumber?: StringNullableFilter<"SatuSehatResourceLog"> | string | null
+    studyInstanceUid?: StringNullableFilter<"SatuSehatResourceLog"> | string | null
+    method?: StringFilter<"SatuSehatResourceLog"> | string
+    status?: StringFilter<"SatuSehatResourceLog"> | string
+    responseCode?: IntNullableFilter<"SatuSehatResourceLog"> | number | null
+    responseBody?: JsonNullableFilter<"SatuSehatResourceLog">
+    environment?: StringFilter<"SatuSehatResourceLog"> | string
+    createdAt?: DateTimeFilter<"SatuSehatResourceLog"> | Date | string
+  }
+
+  export type SatuSehatResourceLogOrderByWithRelationInput = {
+    id?: SortOrder
+    resourceType?: SortOrder
+    resourceId?: SortOrderInput | SortOrder
+    accessionNumber?: SortOrderInput | SortOrder
+    studyInstanceUid?: SortOrderInput | SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    responseCode?: SortOrderInput | SortOrder
+    responseBody?: SortOrderInput | SortOrder
+    environment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatResourceLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SatuSehatResourceLogWhereInput | SatuSehatResourceLogWhereInput[]
+    OR?: SatuSehatResourceLogWhereInput[]
+    NOT?: SatuSehatResourceLogWhereInput | SatuSehatResourceLogWhereInput[]
+    resourceType?: StringFilter<"SatuSehatResourceLog"> | string
+    resourceId?: StringNullableFilter<"SatuSehatResourceLog"> | string | null
+    accessionNumber?: StringNullableFilter<"SatuSehatResourceLog"> | string | null
+    studyInstanceUid?: StringNullableFilter<"SatuSehatResourceLog"> | string | null
+    method?: StringFilter<"SatuSehatResourceLog"> | string
+    status?: StringFilter<"SatuSehatResourceLog"> | string
+    responseCode?: IntNullableFilter<"SatuSehatResourceLog"> | number | null
+    responseBody?: JsonNullableFilter<"SatuSehatResourceLog">
+    environment?: StringFilter<"SatuSehatResourceLog"> | string
+    createdAt?: DateTimeFilter<"SatuSehatResourceLog"> | Date | string
+  }, "id">
+
+  export type SatuSehatResourceLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    resourceType?: SortOrder
+    resourceId?: SortOrderInput | SortOrder
+    accessionNumber?: SortOrderInput | SortOrder
+    studyInstanceUid?: SortOrderInput | SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    responseCode?: SortOrderInput | SortOrder
+    responseBody?: SortOrderInput | SortOrder
+    environment?: SortOrder
+    createdAt?: SortOrder
+    _count?: SatuSehatResourceLogCountOrderByAggregateInput
+    _avg?: SatuSehatResourceLogAvgOrderByAggregateInput
+    _max?: SatuSehatResourceLogMaxOrderByAggregateInput
+    _min?: SatuSehatResourceLogMinOrderByAggregateInput
+    _sum?: SatuSehatResourceLogSumOrderByAggregateInput
+  }
+
+  export type SatuSehatResourceLogScalarWhereWithAggregatesInput = {
+    AND?: SatuSehatResourceLogScalarWhereWithAggregatesInput | SatuSehatResourceLogScalarWhereWithAggregatesInput[]
+    OR?: SatuSehatResourceLogScalarWhereWithAggregatesInput[]
+    NOT?: SatuSehatResourceLogScalarWhereWithAggregatesInput | SatuSehatResourceLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SatuSehatResourceLog"> | string
+    resourceType?: StringWithAggregatesFilter<"SatuSehatResourceLog"> | string
+    resourceId?: StringNullableWithAggregatesFilter<"SatuSehatResourceLog"> | string | null
+    accessionNumber?: StringNullableWithAggregatesFilter<"SatuSehatResourceLog"> | string | null
+    studyInstanceUid?: StringNullableWithAggregatesFilter<"SatuSehatResourceLog"> | string | null
+    method?: StringWithAggregatesFilter<"SatuSehatResourceLog"> | string
+    status?: StringWithAggregatesFilter<"SatuSehatResourceLog"> | string
+    responseCode?: IntNullableWithAggregatesFilter<"SatuSehatResourceLog"> | number | null
+    responseBody?: JsonNullableWithAggregatesFilter<"SatuSehatResourceLog">
+    environment?: StringWithAggregatesFilter<"SatuSehatResourceLog"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"SatuSehatResourceLog"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -12856,10 +14341,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingCreateInput = {
     id?: number
+    environment?: string
+    stgOrganizationId?: string
+    stgClientId?: string
+    stgClientSecret?: string
+    stgAuthUrl?: string
+    stgBaseUrl?: string
+    prdOrganizationId?: string
+    prdClientId?: string
+    prdClientSecret?: string
+    prdAuthUrl?: string
+    prdBaseUrl?: string
     organizationId?: string
     clientId?: string
     clientSecret?: string
-    environment?: string
     authUrl?: string
     baseUrl?: string
     encounterUrl?: string | null
@@ -12880,10 +14375,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingUncheckedCreateInput = {
     id?: number
+    environment?: string
+    stgOrganizationId?: string
+    stgClientId?: string
+    stgClientSecret?: string
+    stgAuthUrl?: string
+    stgBaseUrl?: string
+    prdOrganizationId?: string
+    prdClientId?: string
+    prdClientSecret?: string
+    prdAuthUrl?: string
+    prdBaseUrl?: string
     organizationId?: string
     clientId?: string
     clientSecret?: string
-    environment?: string
     authUrl?: string
     baseUrl?: string
     encounterUrl?: string | null
@@ -12904,10 +14409,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
+    environment?: StringFieldUpdateOperationsInput | string
+    stgOrganizationId?: StringFieldUpdateOperationsInput | string
+    stgClientId?: StringFieldUpdateOperationsInput | string
+    stgClientSecret?: StringFieldUpdateOperationsInput | string
+    stgAuthUrl?: StringFieldUpdateOperationsInput | string
+    stgBaseUrl?: StringFieldUpdateOperationsInput | string
+    prdOrganizationId?: StringFieldUpdateOperationsInput | string
+    prdClientId?: StringFieldUpdateOperationsInput | string
+    prdClientSecret?: StringFieldUpdateOperationsInput | string
+    prdAuthUrl?: StringFieldUpdateOperationsInput | string
+    prdBaseUrl?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     clientSecret?: StringFieldUpdateOperationsInput | string
-    environment?: StringFieldUpdateOperationsInput | string
     authUrl?: StringFieldUpdateOperationsInput | string
     baseUrl?: StringFieldUpdateOperationsInput | string
     encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12928,10 +14443,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
+    environment?: StringFieldUpdateOperationsInput | string
+    stgOrganizationId?: StringFieldUpdateOperationsInput | string
+    stgClientId?: StringFieldUpdateOperationsInput | string
+    stgClientSecret?: StringFieldUpdateOperationsInput | string
+    stgAuthUrl?: StringFieldUpdateOperationsInput | string
+    stgBaseUrl?: StringFieldUpdateOperationsInput | string
+    prdOrganizationId?: StringFieldUpdateOperationsInput | string
+    prdClientId?: StringFieldUpdateOperationsInput | string
+    prdClientSecret?: StringFieldUpdateOperationsInput | string
+    prdAuthUrl?: StringFieldUpdateOperationsInput | string
+    prdBaseUrl?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     clientSecret?: StringFieldUpdateOperationsInput | string
-    environment?: StringFieldUpdateOperationsInput | string
     authUrl?: StringFieldUpdateOperationsInput | string
     baseUrl?: StringFieldUpdateOperationsInput | string
     encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12952,10 +14477,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingCreateManyInput = {
     id?: number
+    environment?: string
+    stgOrganizationId?: string
+    stgClientId?: string
+    stgClientSecret?: string
+    stgAuthUrl?: string
+    stgBaseUrl?: string
+    prdOrganizationId?: string
+    prdClientId?: string
+    prdClientSecret?: string
+    prdAuthUrl?: string
+    prdBaseUrl?: string
     organizationId?: string
     clientId?: string
     clientSecret?: string
-    environment?: string
     authUrl?: string
     baseUrl?: string
     encounterUrl?: string | null
@@ -12976,10 +14511,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingUpdateManyMutationInput = {
     id?: IntFieldUpdateOperationsInput | number
+    environment?: StringFieldUpdateOperationsInput | string
+    stgOrganizationId?: StringFieldUpdateOperationsInput | string
+    stgClientId?: StringFieldUpdateOperationsInput | string
+    stgClientSecret?: StringFieldUpdateOperationsInput | string
+    stgAuthUrl?: StringFieldUpdateOperationsInput | string
+    stgBaseUrl?: StringFieldUpdateOperationsInput | string
+    prdOrganizationId?: StringFieldUpdateOperationsInput | string
+    prdClientId?: StringFieldUpdateOperationsInput | string
+    prdClientSecret?: StringFieldUpdateOperationsInput | string
+    prdAuthUrl?: StringFieldUpdateOperationsInput | string
+    prdBaseUrl?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     clientSecret?: StringFieldUpdateOperationsInput | string
-    environment?: StringFieldUpdateOperationsInput | string
     authUrl?: StringFieldUpdateOperationsInput | string
     baseUrl?: StringFieldUpdateOperationsInput | string
     encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13000,10 +14545,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
+    environment?: StringFieldUpdateOperationsInput | string
+    stgOrganizationId?: StringFieldUpdateOperationsInput | string
+    stgClientId?: StringFieldUpdateOperationsInput | string
+    stgClientSecret?: StringFieldUpdateOperationsInput | string
+    stgAuthUrl?: StringFieldUpdateOperationsInput | string
+    stgBaseUrl?: StringFieldUpdateOperationsInput | string
+    prdOrganizationId?: StringFieldUpdateOperationsInput | string
+    prdClientId?: StringFieldUpdateOperationsInput | string
+    prdClientSecret?: StringFieldUpdateOperationsInput | string
+    prdAuthUrl?: StringFieldUpdateOperationsInput | string
+    prdBaseUrl?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     clientSecret?: StringFieldUpdateOperationsInput | string
-    environment?: StringFieldUpdateOperationsInput | string
     authUrl?: StringFieldUpdateOperationsInput | string
     baseUrl?: StringFieldUpdateOperationsInput | string
     encounterUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13020,6 +14575,104 @@ export namespace Prisma {
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatResourceLogCreateInput = {
+    id?: string
+    resourceType: string
+    resourceId?: string | null
+    accessionNumber?: string | null
+    studyInstanceUid?: string | null
+    method?: string
+    status: string
+    responseCode?: number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment: string
+    createdAt?: Date | string
+  }
+
+  export type SatuSehatResourceLogUncheckedCreateInput = {
+    id?: string
+    resourceType: string
+    resourceId?: string | null
+    accessionNumber?: string | null
+    studyInstanceUid?: string | null
+    method?: string
+    status: string
+    responseCode?: number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment: string
+    createdAt?: Date | string
+  }
+
+  export type SatuSehatResourceLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    responseCode?: NullableIntFieldUpdateOperationsInput | number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatResourceLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    responseCode?: NullableIntFieldUpdateOperationsInput | number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatResourceLogCreateManyInput = {
+    id?: string
+    resourceType: string
+    resourceId?: string | null
+    accessionNumber?: string | null
+    studyInstanceUid?: string | null
+    method?: string
+    status: string
+    responseCode?: number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment: string
+    createdAt?: Date | string
+  }
+
+  export type SatuSehatResourceLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    responseCode?: NullableIntFieldUpdateOperationsInput | number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatuSehatResourceLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    resourceType?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
+    method?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    responseCode?: NullableIntFieldUpdateOperationsInput | number | null
+    responseBody?: NullableJsonNullValueInput | InputJsonValue
+    environment?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -13592,10 +15245,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingCountOrderByAggregateInput = {
     id?: SortOrder
+    environment?: SortOrder
+    stgOrganizationId?: SortOrder
+    stgClientId?: SortOrder
+    stgClientSecret?: SortOrder
+    stgAuthUrl?: SortOrder
+    stgBaseUrl?: SortOrder
+    prdOrganizationId?: SortOrder
+    prdClientId?: SortOrder
+    prdClientSecret?: SortOrder
+    prdAuthUrl?: SortOrder
+    prdBaseUrl?: SortOrder
     organizationId?: SortOrder
     clientId?: SortOrder
     clientSecret?: SortOrder
-    environment?: SortOrder
     authUrl?: SortOrder
     baseUrl?: SortOrder
     encounterUrl?: SortOrder
@@ -13620,10 +15283,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingMaxOrderByAggregateInput = {
     id?: SortOrder
+    environment?: SortOrder
+    stgOrganizationId?: SortOrder
+    stgClientId?: SortOrder
+    stgClientSecret?: SortOrder
+    stgAuthUrl?: SortOrder
+    stgBaseUrl?: SortOrder
+    prdOrganizationId?: SortOrder
+    prdClientId?: SortOrder
+    prdClientSecret?: SortOrder
+    prdAuthUrl?: SortOrder
+    prdBaseUrl?: SortOrder
     organizationId?: SortOrder
     clientId?: SortOrder
     clientSecret?: SortOrder
-    environment?: SortOrder
     authUrl?: SortOrder
     baseUrl?: SortOrder
     encounterUrl?: SortOrder
@@ -13644,10 +15317,20 @@ export namespace Prisma {
 
   export type SatuSehatSettingMinOrderByAggregateInput = {
     id?: SortOrder
+    environment?: SortOrder
+    stgOrganizationId?: SortOrder
+    stgClientId?: SortOrder
+    stgClientSecret?: SortOrder
+    stgAuthUrl?: SortOrder
+    stgBaseUrl?: SortOrder
+    prdOrganizationId?: SortOrder
+    prdClientId?: SortOrder
+    prdClientSecret?: SortOrder
+    prdAuthUrl?: SortOrder
+    prdBaseUrl?: SortOrder
     organizationId?: SortOrder
     clientId?: SortOrder
     clientSecret?: SortOrder
-    environment?: SortOrder
     authUrl?: SortOrder
     baseUrl?: SortOrder
     encounterUrl?: SortOrder
@@ -13684,6 +15367,54 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type SatuSehatResourceLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    resourceType?: SortOrder
+    resourceId?: SortOrder
+    accessionNumber?: SortOrder
+    studyInstanceUid?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    responseCode?: SortOrder
+    responseBody?: SortOrder
+    environment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatResourceLogAvgOrderByAggregateInput = {
+    responseCode?: SortOrder
+  }
+
+  export type SatuSehatResourceLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    resourceType?: SortOrder
+    resourceId?: SortOrder
+    accessionNumber?: SortOrder
+    studyInstanceUid?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    responseCode?: SortOrder
+    environment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatResourceLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    resourceType?: SortOrder
+    resourceId?: SortOrder
+    accessionNumber?: SortOrder
+    studyInstanceUid?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    responseCode?: SortOrder
+    environment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SatuSehatResourceLogSumOrderByAggregateInput = {
+    responseCode?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {

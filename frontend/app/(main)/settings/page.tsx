@@ -885,12 +885,28 @@ function AiSettingsTab() {
 
 function SatuSehatSettingsTab() {
     const [config, setConfig] = useState<any>({
+        env: "staging",
+        // Legacy fields (synced by API)
         orgId: "",
         clientId: "",
         clientSecret: "",
-        env: "staging",
         authUrl: "",
         baseUrl: "",
+
+        // Staging Fields
+        stgOrgId: "",
+        stgClientId: "",
+        stgClientSecret: "",
+        stgAuthUrl: "",
+        stgBaseUrl: "",
+
+        // Production Fields
+        prdOrgId: "",
+        prdClientId: "",
+        prdClientSecret: "",
+        prdAuthUrl: "",
+        prdBaseUrl: "",
+
         defaultPatientId: "",
         defaultPractitionerId: "",
         encounterUrl: "",
@@ -905,18 +921,13 @@ function SatuSehatSettingsTab() {
         practitionerUrl: "",
     });
     
-    const [showSecret, setShowSecret] = useState(false);
+    const [showSecretStg, setShowSecretStg] = useState(false);
+    const [showSecretPrd, setShowSecretPrd] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isTesting, setIsTesting] = useState(false);
     const [debugResult, setDebugResult] = useState<any>(null);
     
-    // Track dirty states for fields that were in the original tab (for backward compatibility if needed)
-    const [orgIdDirty, setOrgIdDirty] = useState(false);
-    const [clientIdDirty, setClientIdDirty] = useState(false);
-    const [secretDirty, setSecretDirty] = useState(false);
-    const [envDirty, setEnvDirty] = useState(false);
-
     useEffect(() => {
         const fetchConfig = async () => {
             try {
@@ -948,16 +959,12 @@ function SatuSehatSettingsTab() {
             
             if (res.ok) {
                 toast.success("Konfigurasi Satu Sehat berhasil disimpan");
-                setOrgIdDirty(false);
-                setClientIdDirty(false);
-                setSecretDirty(false);
-                setEnvDirty(false);
                 
-                // Refresh to get masked secret
+                // Refresh to get masked secrets if needed
                 const refreshRes = await fetch("/api/config/satusehat");
                 if (refreshRes.ok) {
                     const data = await refreshRes.json();
-                    setConfig((prev: any) => ({ ...prev, clientSecret: data.clientSecret }));
+                    setConfig((prev: any) => ({ ...prev, ...data }));
                 }
             } else {
                 toast.error("Gagal menyimpan konfigurasi");
@@ -972,17 +979,22 @@ function SatuSehatSettingsTab() {
     const handleTest = async () => {
         setIsTesting(true);
         setDebugResult(null);
+        
+        // Use active values for testing
+        const isActiveStaging = config.env === "staging";
+        const testPayload = {
+            clientId: isActiveStaging ? config.stgClientId : config.prdClientId,
+            clientSecret: isActiveStaging ? config.stgClientSecret : config.prdClientSecret,
+            env: config.env,
+            organizationId: isActiveStaging ? config.stgOrgId : config.prdOrgId,
+            authUrl: isActiveStaging ? config.stgAuthUrl : config.prdAuthUrl
+        };
+
         try {
             const res = await fetch("/api/config/satusehat/test", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    clientId: config.clientId, 
-                    clientSecret: config.clientSecret, 
-                    env: config.env, 
-                    organizationId: config.orgId,
-                    authUrl: config.authUrl
-                }),
+                body: JSON.stringify(testPayload),
             });
             
             const data = await res.json();
@@ -1001,19 +1013,7 @@ function SatuSehatSettingsTab() {
 
     const handleChange = (key: string, value: string) => {
         setConfig((prev: any) => ({ ...prev, [key]: value }));
-        if (key === "orgId") setOrgIdDirty(true);
-        if (key === "clientId") setClientIdDirty(true);
-        if (key === "clientSecret") setSecretDirty(true);
-        if (key === "env") setEnvDirty(true);
     };
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center py-16">
-                <HugeiconsIcon icon={HealthIcon} className="size-8 animate-pulse text-primary/40" />
-            </div>
-        );
-    }
 
     if (isLoading) {
         return (
@@ -1028,279 +1028,352 @@ function SatuSehatSettingsTab() {
 
     return (
         <div className="space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Main Configuration Card - Full Width */}
-            <div className="space-y-6">
-                <Card className="border-2 border-primary/20 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
-                    <CardHeader className="bg-primary/5 pb-6 border-b border-primary/10">
+            {/* Environment Selection & Action Bar */}
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between bg-white/40 p-6 rounded-2xl border-2 border-primary/10 backdrop-blur-md shadow-sm">
+                <div className="space-y-1">
+                    <h3 className="text-lg font-bold flex items-center gap-2">
+                        <HugeiconsIcon icon={HealthIcon} className="size-5 text-primary" />
+                        Mode Integrasi Aktif
+                    </h3>
+                    <p className="text-xs text-slate-500">Pilih lingkungan yang akan digunakan oleh sistem saat ini.</p>
+                </div>
+
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    <div className="flex-1 md:w-64">
+                        <Select value={config.env} onValueChange={(v) => handleChange("env", v)}>
+                            <SelectTrigger className="w-full bg-white border-primary/20 focus:ring-primary shadow-sm h-11">
+                                <SelectValue placeholder="Pilih Environment" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white">
+                                <SelectItem value="staging">Staging (Sandbox)</SelectItem>
+                                <SelectItem value="production">Production</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm"
+                            onClick={handleTest}
+                            disabled={isTesting || isSaving}
+                        >
+                            <HugeiconsIcon icon={Link01Icon} className={cn("size-4", isTesting && "animate-bounce")} strokeWidth={2} />
+                            {isTesting ? "Testing..." : "Test"}
+                        </Button>
+                        <Button 
+                            className="gap-2 h-11 px-6 font-semibold shadow-md active:scale-95 transition-all bg-primary hover:bg-primary/90"
+                            onClick={handleSave}
+                            disabled={isSaving || isTesting}
+                        >
+                            <HugeiconsIcon icon={FloppyDiskIcon} className={cn("size-4", isSaving && "animate-spin")} strokeWidth={2} />
+                            {isSaving ? "Saving..." : "Simpan"}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Dual Grid for Staging and Production */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                {/* ── STAGING SECTION ── */}
+                <Card className={cn(
+                    "border-2 transition-all duration-300 overflow-hidden",
+                    config.env === "staging" ? "border-primary shadow-lg ring-4 ring-primary/5" : "border-slate-200 opacity-80"
+                )}>
+                    <CardHeader className={cn(
+                        "pb-6 border-b",
+                        config.env === "staging" ? "bg-primary/5 border-primary/10" : "bg-slate-50 border-slate-100"
+                    )}>
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <CardTitle className="text-xl flex items-center gap-2">
-                                    <HugeiconsIcon icon={HealthIcon} className="size-6 text-primary" strokeWidth={2.5} />
-                                    SatuSehat Core Configuration
+                                <CardTitle className="text-base flex items-center gap-2">
+                                    <div className="size-2 rounded-full bg-blue-500 animate-pulse" />
+                                    Staging (Sandbox) Config
                                 </CardTitle>
-                                <CardDescription className="text-sm font-medium text-slate-500">
-                                    Kelola kredensial utama untuk otentikasi dan akses platform SatuSehat Kemenkes RI.
+                                <CardDescription className="text-[10px] font-medium uppercase tracking-wider opacity-60">
+                                    Environment untuk Pengembangan & Testing
                                 </CardDescription>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <Button 
-                                    variant="outline" 
-                                    className="gap-2 shrink-0 h-10 px-6 font-medium border-primary/20 hover:bg-primary/5"
-                                    onClick={handleTest}
-                                    disabled={isTesting || isSaving}
-                                >
-                                    <HugeiconsIcon icon={Link01Icon} className={cn("size-4", isTesting && "animate-bounce")} strokeWidth={2} />
-                                    {isTesting ? "Testing Connection..." : "Test Connection"}
-                                </Button>
-                                <Button 
-                                    className="gap-2 shrink-0 h-10 px-8 font-semibold shadow-md active:scale-95 transition-all bg-primary hover:bg-primary/90"
-                                    onClick={handleSave}
-                                    disabled={isSaving || isTesting}
-                                >
-                                    <HugeiconsIcon icon={FloppyDiskIcon} className={cn("size-4", isSaving && "animate-spin")} strokeWidth={2} />
-                                    {isSaving ? "Saving..." : "Simpan Perubahan"}
-                                </Button>
-                            </div>
+                            {config.env === "staging" && <Badge className="bg-primary hover:bg-primary uppercase text-[9px] px-1.5 h-5 flex items-center gap-1"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" /> Active</Badge>}
                         </div>
                     </CardHeader>
-                    <CardContent className="pt-8 space-y-8">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-3">
-                                <Label htmlFor="env" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Environment</Label>
-                                <Select 
-                                    value={config.env}
-                                    onValueChange={(v) => handleChange("env", v)}
-                                    
-                                >
-                                    <SelectTrigger className="w-full bg-white border-slate-200 focus:ring-primary shadow-sm">
-                                        <SelectValue placeholder="Pilih Environment" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white border-slate-200">
-                                        <SelectItem value="staging">Staging (Sandbox)</SelectItem>
-                                        <SelectItem value="production">Production</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                    <CardContent className="pt-8 space-y-6 bg-white/50">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="stgOrgId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Staging Organization ID</Label>
+                            <Input
+                                id="stgOrgId"
+                                placeholder="IHS ID Staging"
+                                value={config.stgOrgId}
+                                onChange={(e) => handleChange("stgOrgId", e.target.value)}
+                                className="font-mono text-sm shadow-sm"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="stgClientId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Staging Client ID</Label>
+                            <Input
+                                id="stgClientId"
+                                placeholder="Client ID Staging"
+                                value={config.stgClientId}
+                                onChange={(e) => handleChange("stgClientId", e.target.value)}
+                                className="font-mono text-sm shadow-sm"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="stgClientSecret" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Staging Client Secret</Label>
+                                <Button variant="ghost" size="sm" className="h-4 p-0 px-1 text-[9px] text-primary" onClick={() => setShowSecretStg(!showSecretStg)}>
+                                    {showSecretStg ? "Sembunyikan" : "Tampilkan"}
+                                </Button>
                             </div>
-                            <div className="md:col-span-2 space-y-3">
-                                <Label htmlFor="orgId" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Organization ID (IHS ID)</Label>
-                                <Input
-                                    id="orgId"
-                                    placeholder="Ex: bf3d3d7d-620a-406a-b790-..."
-                                    value={config.orgId}
-                                    onChange={(e) => handleChange("orgId", e.target.value)}
-                                    className="bg-white border-slate-200 focus:ring-primary shadow-sm font-mono"
+                            <Input
+                                id="stgClientSecret"
+                                type={showSecretStg ? "text" : "password"}
+                                placeholder="Client Secret Staging"
+                                value={config.stgClientSecret}
+                                onChange={(e) => handleChange("stgClientSecret", e.target.value)}
+                                className="font-mono text-sm shadow-sm"
+                            />
+                        </div>
+                        <div className="space-y-1.5 pt-2">
+                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Staging Auth URL</Label>
+                            <Input
+                                value={config.stgAuthUrl}
+                                onChange={(e) => handleChange("stgAuthUrl", e.target.value)}
+                                placeholder="https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken..."
+                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Staging Base FHIR URL</Label>
+                            <Input
+                                value={config.stgBaseUrl}
+                                onChange={(e) => handleChange("stgBaseUrl", e.target.value)}
+                                placeholder="https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1"
+                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* ── PRODUCTION SECTION ── */}
+                <Card className={cn(
+                    "border-2 transition-all duration-300 overflow-hidden",
+                    config.env === "production" ? "border-emerald-500 shadow-lg ring-4 ring-emerald-500/5" : "border-slate-200 opacity-80"
+                )}>
+                    <CardHeader className={cn(
+                        "pb-6 border-b",
+                        config.env === "production" ? "bg-emerald-50 border-emerald-100" : "bg-slate-50 border-slate-100"
+                    )}>
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <CardTitle className="text-base flex items-center gap-2">
+                                    <div className="size-2 rounded-full bg-emerald-500" />
+                                    Production Config
+                                </CardTitle>
+                                <CardDescription className="text-[10px] font-medium uppercase tracking-wider opacity-60">
+                                    Environment untuk Operasional Klinik / RS
+                                </CardDescription>
+                            </div>
+                            {config.env === "production" && <Badge className="bg-emerald-600 hover:bg-emerald-600 uppercase text-[9px] px-1.5 h-5 flex items-center gap-1"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" /> Active</Badge>}
+                        </div>
+                    </CardHeader>
+                    <CardContent className="pt-8 space-y-6 bg-white/50">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="prdOrgId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Production Organization ID</Label>
+                            <Input
+                                id="prdOrgId"
+                                placeholder="IHS ID Production"
+                                value={config.prdOrgId}
+                                onChange={(e) => handleChange("prdOrgId", e.target.value)}
+                                className="font-mono text-sm shadow-sm border-emerald-100 focus:ring-emerald-500"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="prdClientId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Production Client ID</Label>
+                            <Input
+                                id="prdClientId"
+                                placeholder="Client ID Production"
+                                value={config.prdClientId}
+                                onChange={(e) => handleChange("prdClientId", e.target.value)}
+                                className="font-mono text-sm shadow-sm border-emerald-100 focus:ring-emerald-500"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="prdClientSecret" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Production Client Secret</Label>
+                                <Button variant="ghost" size="sm" className="h-4 p-0 px-1 text-[9px] text-emerald-600" onClick={() => setShowSecretPrd(!showSecretPrd)}>
+                                    {showSecretPrd ? "Sembunyikan" : "Tampilkan"}
+                                </Button>
+                            </div>
+                            <Input
+                                id="prdClientSecret"
+                                type={showSecretPrd ? "text" : "password"}
+                                placeholder="Client Secret Production"
+                                value={config.prdClientSecret}
+                                onChange={(e) => handleChange("prdClientSecret", e.target.value)}
+                                className="font-mono text-sm shadow-sm border-emerald-100 focus:ring-emerald-500"
+                            />
+                        </div>
+                        <div className="space-y-1.5 pt-2">
+                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Production Auth URL</Label>
+                            <Input
+                                value={config.prdAuthUrl}
+                                onChange={(e) => handleChange("prdAuthUrl", e.target.value)}
+                                placeholder="https://api-satusehat.kemkes.go.id/oauth2/v1/accesstoken..."
+                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Production Base FHIR URL</Label>
+                            <Input
+                                value={config.prdBaseUrl}
+                                onChange={(e) => handleChange("prdBaseUrl", e.target.value)}
+                                placeholder="https://api-satusehat.kemkes.go.id/fhir-r4/v1"
+                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {debugResult && (
+                <Card className="border-2 border-emerald-200 bg-emerald-50/30 shadow-inner overflow-hidden animate-in zoom-in-95 duration-300">
+                    <CardHeader className="py-3 px-4 bg-emerald-100/50 border-b border-emerald-200">
+                        <CardTitle className="text-xs font-bold text-emerald-800 flex items-center gap-2 uppercase tracking-widest">
+                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3.5 text-emerald-600" strokeWidth={3} />
+                            Auth Debug Output ({config.env.toUpperCase()})
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 space-y-4 font-mono text-[11px]">
+                        <div className="space-y-1.5">
+                            <Label className="text-[10px] text-emerald-600/70 font-bold uppercase">Active Access Token (Bearer)</Label>
+                            <div className="group relative">
+                                <div className="bg-slate-900 text-slate-100 p-3 rounded-md break-all leading-relaxed shadow-lg max-h-32 overflow-y-auto border border-slate-800">
+                                    {debugResult.token}
+                                </div>
+                                <Button 
+                                    variant="secondary" 
+                                    size="sm" 
+                                    className="absolute top-2 right-2 h-7 px-2 bg-white/10 hover:bg-white/20 text-white border-none backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(debugResult.token);
+                                        toast.success("Token disalin");
+                                    }}
+                                >
+                                    <HugeiconsIcon icon={Copy01Icon} className="size-3 mr-1" />
+                                    Copy
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-2 bg-white/60 rounded border border-emerald-100">
+                                <span className="text-emerald-600/70 font-bold mr-2 uppercase">Application:</span>
+                                <span className="text-emerald-900">{debugResult.application_name}</span>
+                            </div>
+                            <div className="p-2 bg-white/60 rounded border border-emerald-100">
+                                <span className="text-emerald-600/70 font-bold mr-2 uppercase">Org Verify:</span>
+                                <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-none h-4 px-1 text-[9px]">
+                                    {debugResult.organization_verified ? "SUCCESS" : "SKIPPED"}
+                                </Badge>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* 2-Column Grid for Identity and Advanced Overrides */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+                {/* Column 1: Global Identity */}
+                <Card className="border-2 border-slate-200/60 shadow-sm bg-white/30 backdrop-blur-sm">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="text-base flex items-center gap-2">
+                            <HugeiconsIcon icon={UserIcon} className="size-4 text-primary" strokeWidth={2.5} />
+                            Dummy Personas (Testing)
+                        </CardTitle>
+                        <CardDescription className="text-xs">ID virtual untuk keperluan simulasi integrasi.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1.5">
+                                <Label htmlFor="defPat" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">Default Patient ID</Label>
+                                <Input 
+                                    id="defPat"
+                                    value={config.defaultPatientId || ""}
+                                    onChange={(e) => handleChange("defaultPatientId", e.target.value)}
+                                    className="text-[13px] bg-white border-slate-200 shadow-sm"
+                                    placeholder="Ex: P000001"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <Label htmlFor="defPrac" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">Default Practitioner ID</Label>
+                                <Input 
+                                    id="defPrac"
+                                    value={config.defaultPractitionerId || ""}
+                                    onChange={(e) => handleChange("defaultPractitionerId", e.target.value)}
+                                    className="text-[13px] bg-white border-slate-200 shadow-sm"
+                                    placeholder="Ex: 1000001"
                                 />
                             </div>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label htmlFor="clientId" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Client ID</Label>
-                                <Input
-                                    id="clientId"
-                                    placeholder="Dapatkan dari portal SATUSEHAT"
-                                    value={config.clientId}
-                                    onChange={(e) => handleChange("clientId", e.target.value)}
-                                    className="font-mono text-sm bg-white border-slate-200 focus:ring-primary shadow-sm"
-                                />
-                            </div>
-
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="clientSecret" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Client Secret</Label>
-                                    <Button 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        className="h-7 px-2 text-[10px] gap-1 text-slate-500 hover:text-primary transition-colors font-bold uppercase"
-                                        onClick={() => setShowSecret(!showSecret)}
-                                    >
-                                        <HugeiconsIcon icon={showSecret ? ViewOffSlashIcon : ViewIcon} className="size-3" />
-                                        {showSecret ? "Hide" : "Show"}
-                                    </Button>
+                        
+                        <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
+                            <div className="flex gap-3">
+                                <div className="size-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                                    <HugeiconsIcon icon={InformationCircleIcon} className="size-4" strokeWidth={3} />
                                 </div>
-                                <div className="flex gap-2">
-                                    <Input
-                                        id="clientSecret"
-                                        type={showSecret ? "text" : "password"}
-                                        placeholder="Masukkan Client Secret Anda"
-                                        value={config.clientSecret}
-                                        onChange={(e) => handleChange("clientSecret", e.target.value)}
-                                        className="font-mono text-sm flex-1 bg-white border-slate-200 focus:ring-primary shadow-sm"
-                                    />
-                                    <Button 
-                                        variant="outline" 
-                                        size="icon" 
-                                        className="shrink-0 size-8 border-slate-200 hover:bg-slate-50"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(config.clientSecret);
-                                            toast.success("Client Secret disalin");
-                                        }}
-                                    >
-                                        <HugeiconsIcon icon={Copy01Icon} className="size-4" />
-                                    </Button>
+                                <div className="space-y-1">
+                                    <h4 className="text-xs font-bold text-primary uppercase">Legacy Compatibility</h4>
+                                    <p className="text-[10px] text-slate-500 leading-relaxed">
+                                        Sistem secara otomatis menyesuaikan kredensial aktif backend dengan pilihan environment di atas agar kompatibel dengan modul lama.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                {debugResult && (
-                    <Card className="border-2 border-emerald-200 bg-emerald-50/30 shadow-inner overflow-hidden animate-in zoom-in-95 duration-300">
-                        <CardHeader className="py-3 px-4 bg-emerald-100/50 border-b border-emerald-200">
-                            <CardTitle className="text-xs font-bold text-emerald-800 flex items-center gap-2 uppercase tracking-widest">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3.5 text-emerald-600" strokeWidth={3} />
-                                Auth Debug Output
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4 space-y-4 font-mono text-[11px]">
-                            <div className="space-y-1.5">
-                                <Label className="text-[10px] text-emerald-600/70 font-bold uppercase">Access Token (Bearer)</Label>
-                                <div className="group relative">
-                                    <div className="bg-slate-900 text-slate-100 p-3 rounded-md break-all leading-relaxed shadow-lg max-h-32 overflow-y-auto border border-slate-800">
-                                        {debugResult.token}
-                                    </div>
-                                    <Button 
-                                        variant="secondary" 
-                                        size="sm" 
-                                        className="absolute top-2 right-2 h-7 px-2 bg-white/10 hover:bg-white/20 text-white border-none backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(debugResult.token);
-                                            toast.success("Token disalin");
-                                        }}
-                                    >
-                                        <HugeiconsIcon icon={Copy01Icon} className="size-3 mr-1" />
-                                        Copy
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="p-2 bg-white/60 rounded border border-emerald-100">
-                                    <span className="text-emerald-600/70 font-bold mr-2 uppercase">Application:</span>
-                                    <span className="text-emerald-900">{debugResult.application_name}</span>
-                                </div>
-                                <div className="p-2 bg-white/60 rounded border border-emerald-100">
-                                    <span className="text-emerald-600/70 font-bold mr-2 uppercase">Org Verify:</span>
-                                    <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-none h-4 px-1 text-[9px]">
-                                        {debugResult.organization_verified ? "SUCCESS" : "SKIPPED"}
-                                    </Badge>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* 2-Column Grid for Identity and Advanced Overrides */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Column 1: Global Identity */}
-                    <Card className="border-2 border-slate-200/60 shadow-sm bg-white/50 backdrop-blur-sm">
-                        <CardHeader className="pb-4">
-                            <CardTitle className="text-base flex items-center gap-2">
-                                <HugeiconsIcon icon={UserIcon} className="size-4.5 text-primary" strokeWidth={2} />
-                                Global Identity & Base URLs
-                            </CardTitle>
-                            <CardDescription className="text-xs">Konfigurasi base endpoint dan dummy identity untuk testing.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="space-y-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-xs font-bold text-slate-500 uppercase">Auth URL Override</Label>
+                {/* Column 2: Advanced Resource Overrides */}
+                <Card className="border-2 border-slate-200/60 shadow-sm bg-white/30 backdrop-blur-sm">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="text-base flex items-center gap-2">
+                            <HugeiconsIcon icon={Settings05Icon} className="size-4 text-primary" strokeWidth={2.5} />
+                            Advanced Resource Overrides
+                        </CardTitle>
+                        <CardDescription className="text-xs">URL spesifik per resource (Jangan ganti jika tidak perlu).</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            {[
+                                { id: "encounterUrl", label: "Encounter" },
+                                { id: "conditionUrl", label: "Condition" },
+                                { id: "serviceRequestUrl", label: "Service Request" },
+                                { id: "imagingStudyUrl", label: "Imaging Study" },
+                                { id: "observationUrl", label: "Observation" },
+                                { id: "diagnosticReportUrl", label: "Diagnostic Report" },
+                                { id: "compositionUrl", label: "Composition" },
+                                { id: "patientUrl", label: "Patient" },
+                                { id: "locationUrl", label: "Location" },
+                                { id: "practitionerUrl", label: "Practitioner" },
+                            ].map((resource) => (
+                                <div key={resource.id} className="space-y-1">
+                                    <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">{resource.label}</Label>
                                     <Input 
-                                        value={config.authUrl || ""}
-                                        onChange={(e) => handleChange("authUrl", e.target.value)}
-                                        placeholder="Default: OAuth2 Token Endpoint"
-                                        className="text-[13px] font-mono bg-white border-slate-200 shadow-sm"
+                                        value={config[resource.id] || ""}
+                                        onChange={(e) => handleChange(resource.id, e.target.value)}
+                                        className="text-[10px] font-mono bg-white border-slate-200 shadow-sm py-1 h-8"
+                                        placeholder="Auto-derived"
                                     />
                                 </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-xs font-bold text-slate-500 uppercase">Base FHIR URL Override</Label>
-                                    <Input 
-                                        value={config.baseUrl || ""}
-                                        onChange={(e) => handleChange("baseUrl", e.target.value)}
-                                        placeholder="Default: FHIR R4 API Endpoint"
-                                        className="text-[13px] font-mono bg-white border-slate-200 shadow-sm"
-                                    />
-                                </div>
-                                <Separator className="my-2" />
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <Label className="text-xs font-bold text-slate-500 uppercase">Default Patient ID (Dummy)</Label>
-                                        <Input 
-                                            value={config.defaultPatientId || ""}
-                                            onChange={(e) => handleChange("defaultPatientId", e.target.value)}
-                                            className="text-[13px] bg-white border-slate-200 shadow-sm"
-                                        />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <Label className="text-xs font-bold text-slate-500 uppercase">Default Practitioner ID (Dummy)</Label>
-                                        <Input 
-                                            value={config.defaultPractitionerId || ""}
-                                            onChange={(e) => handleChange("defaultPractitionerId", e.target.value)}
-                                            className="text-[13px] bg-white border-slate-200 shadow-sm"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Column 2: Advanced Resource Overrides */}
-                    <Card className="border-2 border-slate-200/60 shadow-sm bg-white/50 backdrop-blur-sm">
-                        <CardHeader className="pb-4">
-                            <CardTitle className="text-base flex items-center gap-2">
-                                <HugeiconsIcon icon={Settings05Icon} className="size-4.5 text-primary" strokeWidth={2} />
-                                Advanced Resource Overrides
-                            </CardTitle>
-                            <CardDescription className="text-xs">Tentukan URL spesifik per resource untuk kustomisasi versi FHIR.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                                {[
-                                    { id: "encounterUrl", label: "Encounter URL" },
-                                    { id: "conditionUrl", label: "Condition URL" },
-                                    { id: "serviceRequestUrl", label: "Service Request URL" },
-                                    { id: "imagingStudyUrl", label: "Imaging Study URL" },
-                                    { id: "observationUrl", label: "Observation URL" },
-                                    { id: "diagnosticReportUrl", label: "Diagnostic Report URL" },
-                                    { id: "compositionUrl", label: "Composition URL" },
-                                    { id: "patientUrl", label: "Patient URL" },
-                                    { id: "locationUrl", label: "Location URL" },
-                                    { id: "practitionerUrl", label: "Practitioner URL" },
-                                ].map((resource) => (
-                                    <div key={resource.id} className="space-y-1">
-                                        <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">{resource.label}</Label>
-                                        <Input 
-                                            value={config[resource.id] || ""}
-                                            onChange={(e) => handleChange(resource.id, e.target.value)}
-                                            className="text-[11px] font-mono bg-white border-slate-200 shadow-sm"
-                                            placeholder="https://.../Resource"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Final Safety Info */}
-                <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-6 flex gap-4 text-amber-900 shadow-sm backdrop-blur-sm">
-                    <div className="bg-amber-500 text-white rounded-xl p-3 h-fit shrink-0 shadow-lg shadow-amber-500/20">
-                        <HugeiconsIcon icon={InformationCircleIcon} className="size-5" strokeWidth={3} />
-                    </div>
-                    <div className="space-y-1">
-                        <h4 className="text-base font-bold leading-tight">Keamanan & Integritas Data</h4>
-                        <p className="text-sm text-amber-800/80 leading-relaxed max-w-3xl">
-                            Pastikan kredensial yang dimasukkan sesuai dengan yang terdaftar di Portal SatuSehat. 
-                            Gunakan mode **Staging** untuk pengujian sebelum pindah ke **Production**. Data URL di atas sudah terisi otomatis 
-                            melalui seeder untuk mempermudah pelacakan versi API yang digunakan.
-                        </p>
-                    </div>
-                </div>
-
-                <Separator className="my-6" />
-
-                {/* DICOM Router Tester Section */}
-                <SatuSehatIntegrationTester />
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
+
+            <Separator className="my-6" />
+
+            {/* DICOM Router Tester Section */}
+            <SatuSehatIntegrationTester />
         </div>
     );
 }

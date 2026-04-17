@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { Prisma } from "@/app/generated/prisma";
 
 export interface SatuSehatConfig {
     organizationId: string;
@@ -27,17 +28,19 @@ export class SatuSehatService {
     static async getConfig(): Promise<SatuSehatConfig | null> {
         // 1. Try to get from the new dynamic SatuSehatSetting table
         const dbSetting = await db.satuSehatSetting.findFirst({
-            where: { isActive: true }
+            where: { id: 1 }
         });
 
         if (dbSetting) {
+            const isActiveStaging = dbSetting.environment === "staging";
+            
             return {
-                organizationId: dbSetting.organizationId.trim(),
-                clientId: dbSetting.clientId.trim(),
-                clientSecret: dbSetting.clientSecret.trim(),
+                organizationId: (isActiveStaging ? dbSetting.stgOrganizationId : dbSetting.prdOrganizationId) || dbSetting.organizationId,
+                clientId: (isActiveStaging ? dbSetting.stgClientId : dbSetting.prdClientId) || dbSetting.clientId,
+                clientSecret: (isActiveStaging ? dbSetting.stgClientSecret : dbSetting.prdClientSecret) || dbSetting.clientSecret,
                 environment: dbSetting.environment as "staging" | "production",
-                authUrl: dbSetting.authUrl?.trim() || undefined,
-                baseUrl: dbSetting.baseUrl?.trim() || undefined,
+                authUrl: (isActiveStaging ? dbSetting.stgAuthUrl : dbSetting.prdAuthUrl) || dbSetting.authUrl,
+                baseUrl: (isActiveStaging ? dbSetting.stgBaseUrl : dbSetting.prdBaseUrl) || dbSetting.baseUrl,
                 defaultPatientId: dbSetting.defaultPatientId?.trim() || undefined,
                 defaultPractitionerId: dbSetting.defaultPractitionerId?.trim() || undefined,
                 encounterUrl: dbSetting.encounterUrl?.trim() || undefined,
@@ -96,8 +99,6 @@ export class SatuSehatService {
             return this.cachedToken;
         }
 
-        // Use dynamic authUrl if provided in DB, otherwise use default based on environment
-        // Use dynamic authUrl if provided in DB and looks complete, otherwise use default
         let authUrl = config.authUrl;
         if (!authUrl || !authUrl.includes("accesstoken")) {
             const defaultAuthBase = config.environment === "production"
@@ -123,36 +124,25 @@ export class SatuSehatService {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Gagal mendapatkan token dari ${authUrl}: ${errorText}`);
+            throw new Error(`Gagal mendapatkan token: ${errorText}`);
         }
 
-        const responseText = await response.text();
-        let data: any;
-        try {
-            data = JSON.parse(responseText);
-        } catch (e) {
-            throw new Error(`Respon token bukan JSON: ${responseText.substring(0, 100)} (URL: ${authUrl})`);
-        }
+        const data = await response.json();
         
-        // Update cache: data.expires_in is usually in seconds (e.g. 3600)
         this.cachedToken = data.access_token;
         this.cachedClientId = currentClientId;
         const expiresInMs = parseInt(data.expires_in || "3600") * 1000;
         this.tokenExpiry = now + expiresInMs;
 
-        console.log(`[SATUSEHAT] New token acquired (Environment: ${config.environment})`);
         return this.cachedToken as string;
     }
 
     static getBaseUrl(environment: "staging" | "production", customBaseUrl?: string): string {
-        // FORCE PRODUCTION if we see production credentials or user wants it
-        // Since the user is struggling with DB settings, we prioritize the standard Production URL
+        if (customBaseUrl) return customBaseUrl;
+        
         if (environment === "production") {
             return "https://api-satusehat.kemkes.go.id/fhir-r4/v1";
         }
-        
-        if (customBaseUrl) return customBaseUrl;
-        
         return "https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1";
     }
 
@@ -410,6 +400,138 @@ export class SatuSehatService {
     static async getPatientIdByNik(nik: string): Promise<string | null> {
         const patient = await this.getPatientByNik(nik);
         return patient?.id || null;
+    }
+
+    /**
+     * Helper to record individual resource transactions for the dashboard.
+     */
+    static async recordResourceLog(data: {
+        resourceType: string;
+        resourceId?: string;
+        accessionNumber?: string;
+        studyInstanceUid?: string;
+        method: string;
+        status: string;
+        responseCode?: number;
+        responseBody?: any;
+        environment: string;
+        createdAt?: Date;
+    }) {
+        try {
+            await (db.satuSehatResourceLog as any).create({
+                data: {
+                    resourceType: data.resourceType,
+                    resourceId: data.resourceId,
+                    accessionNumber: data.accessionNumber,
+                    studyInstanceUid: data.studyInstanceUid,
+                    method: data.method,
+                    status: data.status,
+                    responseCode: data.responseCode,
+                    responseBody: data.responseBody as any,
+                    environment: data.environment,
+                    ...((data as any).createdAt ? { createdAt: (data as any).createdAt } : {})
+                }
+            });
+        } catch (e) {
+            console.error(`[SATUSEHAT-LOG] Failed to record log for ${data.resourceType}:`, e);
+        }
+    }
+
+    /**
+     * Parses a Bundle response and records each entry in the resource log.
+     */
+    static async recordBundleResults(params: {
+        bundleResponse: any;
+        accessionNumber?: string;
+        studyInstanceUid?: string;
+        environment: string;
+        bundleRequest: any;
+    }) {
+        if (!params.bundleResponse || !params.bundleResponse.entry) return;
+
+        const entries = params.bundleResponse.entry;
+        const requestEntries = params.bundleRequest.entry || [];
+
+        for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
+            const requestEntry = requestEntries[i];
+            
+            const status = entry.response?.status || "Unknown";
+            const isSuccess = status.startsWith("201") || status.startsWith("200") || status.startsWith("204");
+            const location = entry.response?.location || "";
+            const resourceId = location.split("/").pop();
+            const resourceType = requestEntry?.resource?.resourceType || location.split("/")[0] || "Unknown";
+
+            await this.recordResourceLog({
+                resourceType,
+                resourceId: isSuccess ? resourceId : undefined,
+                accessionNumber: params.accessionNumber,
+                studyInstanceUid: params.studyInstanceUid,
+                method: requestEntry?.request?.method || "POST",
+                status: isSuccess ? "SUCCESS" : "FAILED",
+                responseCode: parseInt(status.split(" ")[0]) || 0,
+                responseBody: entry.response || entry.outcome,
+                environment: params.environment
+            });
+        }
+    }
+
+    /**
+     * Backfills logs from existing SatuSehatIntegration records.
+     */
+    static async backfillLogsFromIntegrations() {
+        const integrations = await db.satuSehatIntegration.findMany({
+            where: { 
+                bundleResponse: { not: Prisma.DbNull } as any
+            }
+        } as any);
+
+        const config = await this.getConfig();
+        const env = config?.environment || "staging";
+
+        console.log(`[SATUSEHAT-BACKFILL] Starting backfill for ${integrations.length} records...`);
+
+        let count = 0;
+        for (const integration of integrations) {
+            try {
+                const response = integration.bundleResponse as any;
+                if (!response || !response.entry) continue;
+
+                // Check if we already have logs for this study to avoid duplicates
+                const existing = await db.satuSehatResourceLog.findFirst({
+                    where: { accessionNumber: integration.accessionNumber }
+                });
+                if (existing) continue;
+
+                // For backfill, we don't have the original request bundle easily, 
+                // so we parse what we can from the response location
+                for (const entry of response.entry) {
+                    const loc = entry.response?.location || "";
+                    if (!loc) continue;
+
+                    const parts = loc.split("/");
+                    // Location usually looks like: ResourceType/id/_history/1
+                    const resourceType = parts[0];
+                    const resourceId = parts[1];
+
+                    await this.recordResourceLog({
+                        resourceType,
+                        resourceId,
+                        accessionNumber: integration.accessionNumber,
+                        studyInstanceUid: integration.studyInstanceUid || undefined,
+                        method: "POST", // Assume POST for initial backfill
+                        status: "SUCCESS",
+                        responseCode: 201,
+                        environment: env,
+                        createdAt: integration.syncedAt || integration.createdAt // Use original sync time
+                    });
+                    count++;
+                }
+            } catch (e) {
+                console.error(`[SATUSEHAT-BACKFILL] Error for ${integration.accessionNumber}:`, e);
+            }
+        }
+        return count;
     }
 
     /**
@@ -745,6 +867,15 @@ export class SatuSehatService {
 
         const data = await response.json();
 
+        // LOG INDIVIDUAL RESOURCES
+        await this.recordBundleResults({
+            bundleResponse: data,
+            bundleRequest: bundle,
+            accessionNumber: params.accessionNumber,
+            studyInstanceUid: params.studyInstanceUid,
+            environment: config.environment
+        });
+
         if (!response.ok) {
             logs.push(`[MEGA-BUNDLE] ERROR: ${response.status}`);
             let errorMessage = "Unknown Error";
@@ -910,6 +1041,15 @@ export class SatuSehatService {
         });
 
         const data = await response.json();
+
+        // LOG INDIVIDUAL RESOURCES (Testing)
+        await this.recordBundleResults({
+            bundleResponse: data,
+            bundleRequest: bundle,
+            accessionNumber: params.accessionNumber,
+            environment: config.environment
+        });
+
         if (!response.ok) {
             console.error("[TEST-ORDER] Error:", data);
             throw new Error(data.issue?.[0]?.details?.text || "Gagal membuat Test Order");
@@ -1125,6 +1265,15 @@ export class SatuSehatService {
 
         const postData = await postRes.json();
         
+        // LOG INDIVIDUAL RESOURCES
+        await this.recordBundleResults({
+            bundleResponse: postData,
+            bundleRequest: bundle,
+            accessionNumber: params.accessionNumber,
+            studyInstanceUid: params.studyInstanceUid,
+            environment: config.environment
+        });
+
         if (!postRes.ok) {
             logs.push(`[RADIOLOGY RESULT BUNDLE] ERROR ${postRes.status}: ${JSON.stringify(postData)}`);
             const err: any = new Error(postData.issue?.[0]?.diagnostics || "Gagal mengirim bundle Satu Sehat");
@@ -1411,6 +1560,15 @@ export class SatuSehatService {
         });
 
         const data = await response.json();
+
+        // LOG INDIVIDUAL RESOURCES
+        await this.recordBundleResults({
+            bundleResponse: data,
+            bundleRequest: bundle,
+            accessionNumber: params.accessionNumber,
+            environment: config.environment
+        });
+
         if (!response.ok) {
             console.error("[SATUSEHAT] Bundle Error:", JSON.stringify(data, null, 2));
             const issue = data.issue?.[0]?.diagnostics || data.issue?.[0]?.details?.text || "Gagal membuat Prep Bundle";

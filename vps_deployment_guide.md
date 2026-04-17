@@ -1,67 +1,62 @@
 # VPS Deployment Guide (Ubuntu 24.04)
 
-Follow these steps to deploy Quantum PACS to your Ubuntu 24.04 VPS.
+Ikuti langkah-langkah ini untuk deploy Quantum PACS ke VPS Ubuntu 24.04 Anda.
 
 ---
 
-## 1. Prerequisites (on VPS)
+## 1. Persiapan VPS
 
-Run these commands on your fresh Ubuntu VPS to install Docker and Git:
+Jalankan perintah ini di VPS untuk install Docker dan Certbot:
 
 ```bash
-# Update system
-sudo apt update && sudo apt upgrade -y
-
-# Install Docker & Docker Compose
-sudo apt install -y docker.io docker-compose-v2 git certbot
-
-# Ensure user can run docker (optional)
+sudo apt update && sudo apt install -y docker.io docker-compose-v2 git certbot
 sudo usermod -aG docker $USER
 ```
 
 ---
 
-## 2. Point Your Domain
+## 2. Hubungkan Domain
 
-Ensure your domain (e.g., `pacs.yourdomain.com`) A-Record points to your VPS IP address.
+Pastikan A-Record domain Anda (misal: `pacs.domainanda.com`) sudah mengarah ke IP VPS.
 
 ---
 
-## 3. Clone and Configure
+## 3. Clone & Konfigurasi
 
 ```bash
-# Clone repo
-git clone <your-repo-url>
+# Clone repo (Lakukan di VPS)
+cd /var/www/
+git clone <url-repo-anda> ohif-orthanc
 cd ohif-orthanc
 
-# Create .env
-cp .env.example .env # or edit your existing .env
+# Opsional: Jika sudah ada, langsung git pull
+git pull
 ```
 
-**Edit `.env` and set these critical production values:**
-- `DOMAIN_NAME`: `pacs.yourdomain.com`
-- `NEXT_PUBLIC_APP_URL`: `https://pacs.yourdomain.com`
+**Edit `.env` di VPS:**
+```bash
+nano .env
+```
+Set nilai berikut:
+- `DOMAIN_NAME`: `pacs.domainanda.com`
+- `NEXT_PUBLIC_APP_URL`: `https://pacs.domainanda.com`
 - `PROTOCOL`: `https`
-- `SATU_SEHAT`: `sandbox` (or `production`)
 
 ---
 
-## 4. Get SSL Certificates (Let's Encrypt)
+## 4. Generate SSL (Certbot)
 
-Before starting the containers, you need to generate the SSL certificates. Use Certbot in standalone mode:
+Jalankan ini di VPS **sebelum** menyalakan Docker:
 
 ```bash
-sudo certbot certonly --standalone -d yourdomain.com
+sudo certbot certonly --standalone -d pacs.domainanda.com
 ```
-
-> [!IMPORTANT]
-> Change the paths in `nginx_prod.conf` to match your domain. If your domain is `example.com`, the paths should be `/etc/nginx/ssl/live/example.com/...`.
 
 ---
 
-## 5. Launch in Production
+## 5. Jalankan Stack Produksi
 
-Run the project using both the main compose and the production override:
+Gunakan perintah ini untuk memicu build mode produksi:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
@@ -69,17 +64,18 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 ---
 
-## 6. Maintenance
+## 6. Sinkronisasi Database
 
-- **View Logs**: `docker compose logs -f`
-- **Rebuild Frontend**: `docker compose up -d --build frontend`
-- **Restart Nginx**: `docker compose restart nginx`
+Setelah container jalan (`Started`), jalankan perintah ini satu kali:
+
+```bash
+docker exec pacs-web npx prisma db push
+```
 
 ---
 
-## 7. Troubleshooting
+## Troubleshooting
 
-If the viewer is black:
-1. Check that `nginx_prod.conf` has the correct `localhost` vs `domain` logic.
-2. Ensure `PROTOCOL=https` is set in `.env`.
-3. Verify that ports 80 and 443 are open in your VPS firewall (UFW or Security Group).
+- **Cek Log**: `docker compose logs -f`
+- **Restart Nginx**: `docker compose restart nginx`
+- **Error Network**: Jika muncul error "network pacs not found", jalankan `docker network create pacs` secara manual.

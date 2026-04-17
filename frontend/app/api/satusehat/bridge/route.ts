@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
         const patientTags = study.PatientMainDicomTags;
 
         // Gunakan manualNik jika ada, jika tidak ambil dari DICOM PatientID
-        const nik = manualNik || patientTags?.PatientID || tags?.PatientID;
+        // USER REQUEST: Fallback ke StudyDescription jika PatientID kosong
+        const nik = manualNik || patientTags?.PatientID || tags?.PatientID || tags?.StudyDescription;
         
         if (!nik) {
             return NextResponse.json({ error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }, { status: 400 });

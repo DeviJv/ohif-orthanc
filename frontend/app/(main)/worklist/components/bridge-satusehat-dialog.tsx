@@ -64,7 +64,7 @@ export function BridgeSatuSehatDialog({
 
     useEffect(() => {
         if (study && open) {
-            const initialNik = study.PatientMainDicomTags?.PatientID || study.MainDicomTags.PatientID || "";
+            const initialNik = study.PatientMainDicomTags?.PatientID || study.MainDicomTags.PatientID || study.MainDicomTags.StudyDescription || "";
             setNik(initialNik);
             setPatientInfo(null);
             setError(null);

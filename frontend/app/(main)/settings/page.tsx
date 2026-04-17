@@ -909,6 +909,7 @@ function SatuSehatSettingsTab() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isTesting, setIsTesting] = useState(false);
+    const [debugResult, setDebugResult] = useState<any>(null);
     
     // Track dirty states for fields that were in the original tab (for backward compatibility if needed)
     const [orgIdDirty, setOrgIdDirty] = useState(false);
@@ -970,6 +971,7 @@ function SatuSehatSettingsTab() {
 
     const handleTest = async () => {
         setIsTesting(true);
+        setDebugResult(null);
         try {
             const res = await fetch("/api/config/satusehat/test", {
                 method: "POST",
@@ -986,6 +988,7 @@ function SatuSehatSettingsTab() {
             const data = await res.json();
             if (res.ok) {
                 toast.success(data.message || "Koneksi berhasil!");
+                setDebugResult(data.data);
             } else {
                 toast.error(data.error || "Gagal menghubungi API Satu Sehat");
             }
@@ -1140,6 +1143,51 @@ function SatuSehatSettingsTab() {
                         </div>
                     </CardContent>
                 </Card>
+
+                {debugResult && (
+                    <Card className="border-2 border-emerald-200 bg-emerald-50/30 shadow-inner overflow-hidden animate-in zoom-in-95 duration-300">
+                        <CardHeader className="py-3 px-4 bg-emerald-100/50 border-b border-emerald-200">
+                            <CardTitle className="text-xs font-bold text-emerald-800 flex items-center gap-2 uppercase tracking-widest">
+                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3.5 text-emerald-600" strokeWidth={3} />
+                                Auth Debug Output
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4 space-y-4 font-mono text-[11px]">
+                            <div className="space-y-1.5">
+                                <Label className="text-[10px] text-emerald-600/70 font-bold uppercase">Access Token (Bearer)</Label>
+                                <div className="group relative">
+                                    <div className="bg-slate-900 text-slate-100 p-3 rounded-md break-all leading-relaxed shadow-lg max-h-32 overflow-y-auto border border-slate-800">
+                                        {debugResult.token}
+                                    </div>
+                                    <Button 
+                                        variant="secondary" 
+                                        size="sm" 
+                                        className="absolute top-2 right-2 h-7 px-2 bg-white/10 hover:bg-white/20 text-white border-none backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(debugResult.token);
+                                            toast.success("Token disalin");
+                                        }}
+                                    >
+                                        <HugeiconsIcon icon={Copy01Icon} className="size-3 mr-1" />
+                                        Copy
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-2 bg-white/60 rounded border border-emerald-100">
+                                    <span className="text-emerald-600/70 font-bold mr-2 uppercase">Application:</span>
+                                    <span className="text-emerald-900">{debugResult.application_name}</span>
+                                </div>
+                                <div className="p-2 bg-white/60 rounded border border-emerald-100">
+                                    <span className="text-emerald-600/70 font-bold mr-2 uppercase">Org Verify:</span>
+                                    <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-none h-4 px-1 text-[9px]">
+                                        {debugResult.organization_verified ? "SUCCESS" : "SKIPPED"}
+                                    </Badge>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* 2-Column Grid for Identity and Advanced Overrides */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

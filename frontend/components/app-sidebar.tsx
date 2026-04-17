@@ -83,6 +83,10 @@ const data = {
           url: "/settings",
         },
         {
+          title: "Cek Request Resource Pasient by NIK",
+          url: "/settings/resource-check",
+        },
+        {
           title: "Testing Integrasi",
           url: "/settings/testing",
         },

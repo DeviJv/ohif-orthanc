@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
             success: true, 
             message: "Koneksi Berhasil! Token diperoleh dan akses FHIR divalidasi.",
             data: {
+                token: token,
                 issued_at: authData.issued_at,
                 application_name: authData.application_name,
                 organization_verified: !!organizationId

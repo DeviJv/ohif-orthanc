@@ -4,6 +4,8 @@ services:
     image: registry.dto.kemkes.go.id/pub/dicom-router:latest
     container_name: dicom-router
     restart: always
+    env_file:
+      - .env
     ports:
       - "11112:11112"
       - "18080:8080" # Mapping to avoided conflict if 8080 is used

@@ -169,13 +169,16 @@ export class SatuSehatService {
 
     /**
      * Resolves a full System URL for an identifier.
+     * Supports detecting if the orgId is a UUID or a Numerical ID.
      */
     static getSystemUrl(type: "acsn" | "encounter" | "imagingstudy" | "nik" | "location", orgId?: string): string {
         if (type === "nik") return "https://fhir.kemkes.go.id/id/nik";
         
         const root = this.getSystemRoot();
         if (!orgId) return `${root}/${type}`;
-        return `${root}/${type}/${orgId}`;
+        
+        // Ensure no double slashes and handles both UUID and numerical formats
+        return `${root.replace(/\/$/, '')}/${type}/${orgId.trim()}`;
     }
 
     /**
@@ -1444,7 +1447,8 @@ export class SatuSehatService {
      * Digunakan ketika SIMRS belum mengirim data order ke SatuSehat.
      */
     static async createPrepBundle(params: {
-        patientId: string,
+        patientId?: string,
+        patientNik?: string, // Priority if provided
         patientName: string,
         accessionNumber: string,
         encounterId?: string,
@@ -1457,6 +1461,27 @@ export class SatuSehatService {
         const locationId = await this.getOrCreateLocationId(config);
         const token = await this.getAccessToken(config);
         const logs: string[] = ["[PREP-BUNDLE] Menyiapkan resource hulu (Order)..."];
+
+        // 0. Resolve Patient
+        let finalPatientId = params.patientId;
+        if (params.patientNik) {
+            logs.push(`[PREP-BUNDLE] Mencari pasien dengan NIK: ${params.patientNik}`);
+            const patients = await this.searchResources("Patient", { identifier: `https://fhir.kemkes.go.id/id/nik|${params.patientNik}` });
+            if (patients.length > 0) {
+                finalPatientId = patients[0].id;
+                logs.push(`[PREP-BUNDLE] Pasien ditemukan: ${finalPatientId}`);
+            } else {
+                logs.push(`[PREP-BUNDLE] Pasien NIK ${params.patientNik} tidak ditemukan di SatuSehat.`);
+                // We fallback to default or throw error depending on intent. 
+                // For test order helper, we might want to fail if special NIK requested.
+                if (!finalPatientId) throw new Error(`Pasien dengan NIK ${params.patientNik} tidak ditemukan.`);
+            }
+        }
+
+        if (!finalPatientId) {
+            finalPatientId = config.defaultPatientId || "P02458022627";
+            logs.push(`[PREP-BUNDLE] Menggunakan Patient ID default: ${finalPatientId}`);
+        }
 
         const generateUuid = () => 'urn:uuid:' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
             const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);

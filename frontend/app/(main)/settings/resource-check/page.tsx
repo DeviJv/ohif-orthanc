@@ -139,16 +139,26 @@ export default function ResourceCheckPage() {
     
     setPrepping(true);
     setPrepResult(null);
+
+    // Extract dynamic IDs from selected resources
+    const selectedEncounter = encounters.find(e => e.id === selectedEncounterId);
+    const selectedCondition = conditions.find(c => c.id === selectedConditionId);
+    
+    // Follow the references from the selected encounter
+    const practitionerId = selectedEncounter?.participant?.[0]?.individual?.reference;
+    const dynamicPatientId = selectedEncounter?.subject?.reference || selectedCondition?.subject?.reference || patient.id;
+
     try {
       const res = await fetch("/api/satusehat/prep-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          patientId: patient.id,
+          patientId: dynamicPatientId,
           patientName: patient.name,
           accessionNumber: accessionNumber,
           encounterId: selectedEncounterId,
-          conditionId: selectedConditionId
+          conditionId: selectedConditionId,
+          practitionerId: practitionerId
         })
       });
       

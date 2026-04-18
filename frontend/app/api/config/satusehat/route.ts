@@ -142,10 +142,8 @@ export async function POST(req: NextRequest) {
         const path = require("path");
         const { exec } = require("child_process");
 
-        const isProd = process.env.NODE_ENV === "production";
-        const envPath = isProd 
-            ? path.join(process.cwd(), "dicom-router", ".env") 
-            : path.join(process.cwd(), "..", "dicom-router", ".env");
+        const envPath = path.join(process.cwd(), "dicom-router", ".env");
+        const composeDir = path.join(process.cwd(), "dicom-router");
 
         // Use the actual Base URL for the router, ensuring it doesn't have the /fhir-r4/v1 suffix if possible
         // but typically SATUSEHAT_URL in router is the root.
@@ -163,11 +161,11 @@ export async function POST(req: NextRequest) {
         await fs.writeFile(envPath, envContent, "utf8");
         console.log(`[DICOM-ROUTER] Berhasil menimpa file .env di ${envPath}`);
 
-        exec("docker restart dicom-router", (err: any) => {
+        exec(`docker compose -f ${path.join(composeDir, "docker-compose.yml")} up -d --force-recreate`, (err: any) => {
             if (err) {
-                console.log("[DICOM-ROUTER] Restart otomatis dilewati (Docker tidak tersedia).");
+                console.log("[DICOM-ROUTER] Recreate otomatis gagal (Docker Compose tidak tersedia atau error):", err);
             } else {
-                console.log("[DICOM-ROUTER] Container dicom-router berhasil di-restart otomatis!");
+                console.log("[DICOM-ROUTER] Container dicom-router berhasil di-recreate otomatis dengan env baru!");
             }
         });
     } catch (injectErr) {

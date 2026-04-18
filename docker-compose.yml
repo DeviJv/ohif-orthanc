@@ -66,7 +66,7 @@ services:
     volumes:
       - ./logo.png:/app/public/logo.png:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./dicom-router/.env:/app/dicom-router/.env
+      - ./dicom-router:/app/dicom-router
     # Port 3001 is now handled by Nginx, but keeping mapping for local access if needed
     ports:
       - 3001:3001

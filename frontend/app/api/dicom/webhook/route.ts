@@ -61,10 +61,8 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // 3. Optional: Trigger Telegram Notification on FAILURE
-        if (!status) {
-            await triggerTelegramNotification(body);
-        }
+        // 3. Trigger Telegram Notification
+        await triggerTelegramNotification(body);
 
         return NextResponse.json({ success: true, logId: log.id });
     } catch (error: any) {
@@ -83,12 +81,25 @@ async function triggerTelegramNotification(data: any) {
         const emoji = data.status ? "✅" : "🚨";
         const title = data.status ? "Upload Gambar Berhasil" : "Gagal Upload Gambar";
         
+        // Format timestamp in Asia/Jakarta
+        const now = new Date();
+        const formattedDate = now.toLocaleString("id-ID", { 
+            timeZone: "Asia/Jakarta",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+
         let message = `${emoji} *${title}*\n\n`;
+        message += `*Waktu:* ${formattedDate} WIB\n`;
         message += `*Pasien:* ${data.patientName || "Unknown"}\n`;
         message += `*Study UID:* ${data.studyInstanceUid || "N/A"}\n`;
         
         if (data.message) {
-            message += `*Info:* ${data.message}\n`;
+            message += `\n*Info:* ${data.message}\n`;
         }
         
         if (data.errorDetail) {

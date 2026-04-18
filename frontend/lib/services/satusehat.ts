@@ -171,14 +171,40 @@ export class SatuSehatService {
      * Resolves a full System URL for an identifier.
      * Supports detecting if the orgId is a UUID or a Numerical ID.
      */
-    static getSystemUrl(type: "acsn" | "encounter" | "imagingstudy" | "nik" | "location", orgId?: string): string {
+    static getSystemUrl(type: "acsn" | "encounter" | "imagingstudy" | "nik" | "location" | "servicerequest", orgId?: string): string {
         if (type === "nik") return "https://fhir.kemkes.go.id/id/nik";
         
         const root = this.getSystemRoot();
         if (!orgId) return `${root}/${type}`;
         
-        // Ensure no double slashes and handles both UUID and numerical formats
         return `${root.replace(/\/$/, '')}/${type}/${orgId.trim()}`;
+    }
+
+    /**
+     * Generates a triplet of identifiers for an Accession Number to ensure 
+     * compatibility with various Kemenkes DTO tools (including dicom-router).
+     */
+    static getAccessionIdentifiers(accessionNumber: string, orgId: string): Array<any> {
+        return [
+            {
+                use: "usual",
+                type: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0203", code: "ACSN" }] },
+                system: this.getSystemUrl("servicerequest", orgId),
+                value: accessionNumber
+            },
+            {
+                use: "usual",
+                type: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0203", code: "ACSN" }] },
+                system: this.getSystemUrl("acsn", orgId),
+                value: accessionNumber
+            },
+            {
+                use: "official",
+                type: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0203", code: "ACSN" }] },
+                system: "https://fhir.kemkes.go.id/id/acsn",
+                value: accessionNumber
+            }
+        ];
     }
 
     /**
@@ -385,6 +411,14 @@ export class SatuSehatService {
             .replace(/[^\x20-\x7E]/g, '')
             .replace(/\s+/g, ' ')
             .trim();
+    }
+
+    /**
+     * Helper untuk mengambil hanya ID dari sebuah referensi (misal: "Patient/123" -> "123")
+     */
+    private static extractId(ref: string | undefined | null): string {
+        if (!ref) return "";
+        return ref.split("/").pop() || "";
     }
 
     /**
@@ -616,7 +650,7 @@ export class SatuSehatService {
                                     code: "ACSN"
                                 }]
                             },
-                            system: this.getSystemUrl("acsn", config.organizationId),
+                            system: this.getSystemUrl("servicerequest", config.organizationId),
                             value: params.accessionNumber
                         }],
                         status: "active",
@@ -625,7 +659,7 @@ export class SatuSehatService {
                             coding: [{ system: "http://snomed.info/sct", code: "363679005", display: "Imaging" }]
                         }],
                         code: {
-                            coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }],
+                            coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }],
                             text: "Pemeriksaan Radiologi"
                         },
                         subject: { reference: `Patient/${activePatientId}`, display: cleanPatientName },
@@ -742,7 +776,7 @@ export class SatuSehatService {
                         numberOfSeries: params.numberOfSeries || 1,
                         numberOfInstances: params.numberOfInstances || 1,
                         procedureCode: [{
-                            coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }],
+                            coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }],
                             text: "Pemeriksaan Radiologi"
                         }],
                         description: sanitizedDescription,
@@ -785,7 +819,7 @@ export class SatuSehatService {
                             coding: [{ system: "http://terminology.hl7.org/CodeSystem/observation-category", code: "imaging", display: "Imaging" }]
                         }],
                         code: {
-                            coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }]
+                            coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }]
                         },
                         subject: { reference: `Patient/${activePatientId}`, display: cleanPatientName },
                         encounter: { reference: encounterUuid },
@@ -946,24 +980,16 @@ export class SatuSehatService {
                     resource: {
                         resourceType: "ServiceRequest",
                         meta: { profile: [this.getProfileUrl("ServiceRequest")] },
-                        identifier: [{
-                            use: "usual",
-                            type: {
-                                coding: [{
-                                    system: "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    code: "ACSN"
-                                }]
-                            },
-                            system: this.getSystemUrl("acsn", config.organizationId),
-                            value: params.accessionNumber
-                        }],
+                        identifier: [
+                            ...this.getAccessionIdentifiers(params.accessionNumber, config.organizationId)
+                        ],
                         status: "active",
                         intent: "order",
                         category: [{
                             coding: [{ system: "http://snomed.info/sct", code: "363679005", display: "Imaging" }]
                         }],
                         code: {
-                            coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }],
+                            coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }],
                             text: "Pemeriksaan Radiologi (Test)"
                         },
                         subject: { reference: `Patient/${activePatientId}`, display: patientName },
@@ -1129,7 +1155,7 @@ export class SatuSehatService {
 
         // 1. Cari ServiceRequest dari SIMRS
         const srUrl = this.getResourceUrl("ServiceRequest", config);
-        const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}`;
+        const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("servicerequest", config.organizationId)}|${params.accessionNumber}`;
         
         logs.push(`[RADIOLOGY RESULT BUNDLE] Mencari ServiceRequest di Kemenkes: Accession ${params.accessionNumber}`);
         const srRes = await fetch(srSearchUrl, { headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId } });
@@ -1186,10 +1212,13 @@ export class SatuSehatService {
                 resource: {
                     resourceType: "ImagingStudy",
                     meta: { profile: [this.getProfileUrl("ImagingStudy")] },
-                    identifier: [{
-                        system: this.getSystemUrl("imagingstudy", config.organizationId),
-                        value: params.studyInstanceUid
-                    }],
+                    identifier: [
+                        {
+                            system: this.getSystemUrl("imagingstudy", config.organizationId),
+                            value: params.studyInstanceUid
+                        },
+                        ...this.getAccessionIdentifiers(params.accessionNumber, config.organizationId)
+                    ],
                     status: "available",
                     subject: { reference: patientRef },
                     encounter: { reference: encounterRef },
@@ -1198,7 +1227,7 @@ export class SatuSehatService {
                     started: validStartedTime,
                     numberOfSeries: params.numberOfSeries || 1,
                     numberOfInstances: params.numberOfInstances || 1,
-                    procedureCode: [{ coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }], text: "Pemeriksaan Radiologi" }],
+                    procedureCode: [{ coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }], text: "Pemeriksaan Radiologi" }],
                     description: sanitizedDescription,
                     series: params.seriesList?.length ? params.seriesList.map((s) => ({
                         uid: s.uid,
@@ -1225,7 +1254,7 @@ export class SatuSehatService {
                     meta: { profile: [this.getProfileUrl("Observation")] },
                     status: "final",
                     category: [{ coding: [{ system: "http://terminology.hl7.org/CodeSystem/observation-category", code: "imaging", display: "Imaging" }] }],
-                    code: { coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }] },
+                    code: { coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }] },
                     subject: { reference: patientRef },
                     encounter: { reference: encounterRef },
                     effectiveDateTime: startTime,
@@ -1322,7 +1351,7 @@ export class SatuSehatService {
         // 1. Cari ServiceRequest
         try {
             const srUrl = this.getResourceUrl("ServiceRequest", config);
-            const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${accessionNumber}`;
+            const srSearchUrl = `${srUrl}?identifier=${this.getSystemUrl("servicerequest", config.organizationId)}|${accessionNumber}`;
             
             const srRes = await fetch(srSearchUrl, {
                 headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
@@ -1345,7 +1374,7 @@ export class SatuSehatService {
         // 2. Cari ImagingStudy
         try {
             const isUrl = this.getResourceUrl("ImagingStudy", config);
-            const isSearchUrl = `${isUrl}?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${accessionNumber}`;
+            const isSearchUrl = `${isUrl}?identifier=${this.getSystemUrl("servicerequest", config.organizationId)}|${accessionNumber}`;
             
             const isRes = await fetch(isSearchUrl, {
                 headers: { "Authorization": `Bearer ${token}`, "X-Organization-Id": config.organizationId }
@@ -1428,7 +1457,7 @@ export class SatuSehatService {
         const config = await this.getConfig();
         if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
         
-        const system = this.getSystemUrl("acsn", config.organizationId);
+        const system = this.getSystemUrl("servicerequest", config.organizationId);
         return this.searchResources("ServiceRequest", { identifier: `${system}|${accessionNumber}` });
     }
 
@@ -1452,17 +1481,42 @@ export class SatuSehatService {
         patientName: string,
         accessionNumber: string,
         encounterId?: string,
-        conditionId?: string 
+        conditionId?: string,
+        practitionerId?: string
     }): Promise<{ ids: Record<string, string>, logs: string[] }> {
         const config = await this.getConfig();
         if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
 
-        const activePractitionerId = config.defaultPractitionerId || "10009880728";
+        let activePractitionerId = this.extractId(params.practitionerId) || config.defaultPractitionerId || "10009880728";
         const locationId = await this.getOrCreateLocationId(config);
         const token = await this.getAccessToken(config);
         const logs: string[] = ["[PREP-BUNDLE] Menyiapkan resource hulu (Order)..."];
+        
+        logs.push(`[PREP-BUNDLE] Practitioner Initial: ${activePractitionerId}`);
 
-        // 0. Resolve Patient
+        // 0. Smart Resource Linking: Extract ID from Encounter if provided
+        if (params.encounterId) {
+            try {
+                const enc = await this.getResourceRecord("Encounter", this.extractId(params.encounterId));
+                if (enc) {
+                    const pId = this.extractId(enc.subject?.reference);
+                    if (pId) {
+                        params.patientId = pId;
+                        logs.push(`[PREP-BUNDLE] Auto-linked Patient from Encounter: ${pId}`);
+                    }
+                    
+                    const prId = this.extractId(enc.participant?.[0]?.individual?.reference);
+                    if (prId) {
+                        activePractitionerId = prId;
+                        logs.push(`[PREP-BUNDLE] Auto-linked Practitioner from Encounter: ${prId}`);
+                    }
+                }
+            } catch (e) {
+                logs.push(`[PREP-BUNDLE] Warning: Gagal mengambil detail Encounter, menggunakan defaults.`);
+            }
+        }
+
+        // 1. Resolve Patient
         let finalPatientId = params.patientId;
         if (params.patientNik) {
             logs.push(`[PREP-BUNDLE] Mencari pasien dengan NIK: ${params.patientNik}`);
@@ -1472,8 +1526,6 @@ export class SatuSehatService {
                 logs.push(`[PREP-BUNDLE] Pasien ditemukan: ${finalPatientId}`);
             } else {
                 logs.push(`[PREP-BUNDLE] Pasien NIK ${params.patientNik} tidak ditemukan di SatuSehat.`);
-                // We fallback to default or throw error depending on intent. 
-                // For test order helper, we might want to fail if special NIK requested.
                 if (!finalPatientId) throw new Error(`Pasien dengan NIK ${params.patientNik} tidak ditemukan.`);
             }
         }
@@ -1491,8 +1543,8 @@ export class SatuSehatService {
         const startTime = new Date(now.getTime() - 15 * 60 * 1000).toISOString();
         const endTime = now.toISOString();
 
-        const encounterUuid = params.encounterId ? `Encounter/${params.encounterId}` : generateUuid();
-        const conditionUuid = params.conditionId ? `Condition/${params.conditionId}` : generateUuid();
+        const encounterUuid = params.encounterId ? `Encounter/${this.extractId(params.encounterId)}` : generateUuid();
+        const conditionUuid = params.conditionId ? `Condition/${this.extractId(params.conditionId)}` : generateUuid();
         const serviceRequestUuid = generateUuid();
 
         const entries: any[] = [];
@@ -1503,20 +1555,17 @@ export class SatuSehatService {
             resource: {
                 resourceType: "ServiceRequest",
                 meta: { profile: [this.getProfileUrl("ServiceRequest")] },
-                identifier: [{
-                    use: "usual",
-                    type: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0203", code: "ACSN" }] },
-                    system: this.getSystemUrl("acsn", config.organizationId),
-                    value: params.accessionNumber
-                }],
+                identifier: [
+                    ...this.getAccessionIdentifiers(params.accessionNumber, config.organizationId)
+                ],
                 status: "active",
                 intent: "order",
                 category: [{ coding: [{ system: "http://snomed.info/sct", code: "363679005", display: "Imaging" }] }],
                 code: {
-                    coding: [{ system: "http://loinc.org", code: "24648-8", display: "XR Chest PA upr" }],
+                    coding: [{ system: "http://loinc.org", code: "24683-5", display: "XR Femur - 2 views" }],
                     text: "Pemeriksaan Radiologi"
                 },
-                subject: { reference: `Patient/${params.patientId}`, display: params.patientName },
+                subject: { reference: `Patient/${this.extractId(finalPatientId)}`, display: params.patientName },
                 encounter: { reference: encounterUuid },
                 reasonReference: [{ reference: conditionUuid }],
                 authoredOn: startTime,
@@ -1540,7 +1589,7 @@ export class SatuSehatService {
                     }],
                     status: "finished",
                     class: { system: "http://terminology.hl7.org/CodeSystem/v3-ActCode", code: "AMB", display: "ambulatory" },
-                    subject: { reference: `Patient/${params.patientId}`, display: params.patientName },
+                    subject: { reference: `Patient/${this.extractId(finalPatientId)}`, display: params.patientName },
                     period: { start: startTime, end: endTime },
                     location: [{ location: { reference: `Location/${locationId}` } }],
                     serviceProvider: { reference: `Organization/${config.organizationId}` },
@@ -1564,7 +1613,7 @@ export class SatuSehatService {
                     clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active" }] },
                     category: [{ coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-category", code: "encounter-diagnosis", display: "Encounter Diagnosis" }] }],
                     code: { coding: [{ system: "http://hl7.org/fhir/sid/icd-10", code: "Z00.0", display: "General medical examination" }] },
-                    subject: { reference: `Patient/${params.patientId}`, display: params.patientName },
+                    subject: { reference: `Patient/${this.extractId(finalPatientId)}`, display: params.patientName },
                     encounter: { reference: encounterUuid }
                 },
                 request: { method: "POST", url: "Condition" }
@@ -1614,5 +1663,35 @@ export class SatuSehatService {
 
         logs.push("[PREP-BUNDLE] Sukses!");
         return { ids: generatedIds, logs };
+    }
+
+    /**
+     * Mengambil satu resource FHIR berdasarkan ID
+     */
+    static async getResourceRecord(resourceType: string, id: string): Promise<any> {
+        const config = await this.getConfig();
+        if (!config) throw new Error("Konfigurasi Satu Sehat tidak ditemukan");
+
+        const token = await this.getAccessToken(config);
+        const resourceUrl = this.getResourceUrl(resourceType, config);
+        const url = `${resourceUrl}/${id}`;
+
+        const response = await fetch(url, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "X-Organization-Id": config.organizationId
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const error: any = new Error(data.issue?.[0]?.details?.text || `Gagal mengambil ${resourceType} ID ${id}`);
+            error.status = response.status;
+            error.details = data;
+            throw error;
+        }
+
+        return data;
     }
 }

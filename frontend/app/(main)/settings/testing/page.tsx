@@ -5,11 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function TestingPage() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [inspectLoading, setInspectLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+
+  // Inspector State
+  const [inspectType, setInspectType] = useState("ServiceRequest");
+  const [inspectId, setInspectId] = useState("");
 
   // Default Kemenkes Sandbox Hardcodes
   const [formData, setFormData] = useState({
@@ -36,6 +42,22 @@ export default function TestingPage() {
       setResult({ error: error.message });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleInspect = async () => {
+    if (!inspectId) return;
+    setInspectLoading(true);
+    setResult(null);
+
+    try {
+      const res = await fetch(`/api/satusehat/inspect?type=${inspectType}&id=${inspectId}`);
+      const data = await res.json();
+      setResult(data);
+    } catch (error: any) {
+      setResult({ error: error.message });
+    } finally {
+      setInspectLoading(false);
     }
   };
 
@@ -109,6 +131,52 @@ export default function TestingPage() {
                 </form>
               </DialogContent>
             </Dialog>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm mt-4">
+            <h3 className="font-semibold mb-2">FHIR Resource Inspector</h3>
+            <p className="text-xs text-gray-500 mb-4">Masukkan Resource ID untuk melihat payload asli di server Kemenkes.</p>
+            
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-[10px] uppercase text-gray-400 font-bold">Resource Type</Label>
+                <Select value={inspectType} onValueChange={(val) => setInspectType(val ?? "")}>
+                  <SelectTrigger className="w-full h-9 text-sm">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Encounter">Encounter</SelectItem>
+                    <SelectItem value="ServiceRequest">ServiceRequest</SelectItem>
+                    <SelectItem value="Condition">Condition</SelectItem>
+                    <SelectItem value="ImagingStudy">ImagingStudy</SelectItem>
+                    <SelectItem value="Observation">Observation</SelectItem>
+                    <SelectItem value="DiagnosticReport">DiagnosticReport</SelectItem>
+                    <SelectItem value="Patient">Patient</SelectItem>
+                    <SelectItem value="Practitioner">Practitioner</SelectItem>
+                    <SelectItem value="Organization">Organization</SelectItem>
+                    <SelectItem value="Location">Location</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-[10px] uppercase text-gray-400 font-bold">Resource ID</Label>
+                <Input 
+                  placeholder="e.g. 5243..."
+                  value={inspectId}
+                  onChange={(e) => setInspectId(e.target.value)}
+                  className="h-9 text-sm"
+                />
+              </div>
+
+              <Button 
+                onClick={handleInspect} 
+                disabled={inspectLoading || !inspectId}
+                className="w-full bg-slate-800 hover:bg-slate-900 text-white h-9 text-sm"
+              >
+                {inspectLoading ? "Fetching..." : "🔍 Fetch Payload"}
+              </Button>
+            </div>
           </div>
         </div>
 

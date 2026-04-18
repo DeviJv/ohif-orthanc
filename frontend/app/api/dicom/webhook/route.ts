@@ -64,7 +64,12 @@ export async function POST(req: NextRequest) {
         // 3. Trigger Telegram Notification
         await triggerTelegramNotification(body);
 
-        return NextResponse.json({ success: true, logId: log.id });
+        return NextResponse.json({ 
+            success: true, 
+            status: true, // Standard response for dicom-router
+            logId: log.id,
+            message: "Webhook processed successfully"
+        });
     } catch (error: any) {
         console.error("[WEBHOOK] Error processing webhook:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -78,8 +83,15 @@ async function triggerTelegramNotification(data: any) {
 
         if (!botToken || !chatId) return;
 
-        const emoji = data.status ? "✅" : "🚨";
-        const title = data.status ? "Upload Gambar Berhasil" : "Gagal Upload Gambar";
+        const isSuccess = 
+            data.status === true || 
+            data.status === "true" || 
+            data.status === "success" || 
+            data.status === "SUCCESS" ||
+            data.success === true;
+
+        const emoji = isSuccess ? "✅" : "🚨";
+        const title = isSuccess ? "Upload Gambar Berhasil" : "Gagal Upload Gambar";
         
         // Format timestamp in Asia/Jakarta
         const now = new Date();
@@ -99,11 +111,16 @@ async function triggerTelegramNotification(data: any) {
         message += `*Study UID:* ${data.studyInstanceUid || "N/A"}\n`;
         
         if (data.message) {
-            message += `\n*Info:* ${data.message}\n`;
+            message += `\n💬 *Info:* ${data.message}\n`;
         }
         
-        if (data.errorDetail) {
-            message += `\n*Detail Error:* \`${JSON.stringify(data.errorDetail).substring(0, 100)}...\``;
+        // Show Resource ID if present in 'data'
+        if (data.data?.id) {
+            message += `🆔 *Resource ID:* \`${data.data.id}\` (SatuSehat)\n`;
+        }
+
+        if (data.errorDetail && Object.keys(data.errorDetail).length > 0) {
+            message += `\n❌ *Detail Error:* \`${JSON.stringify(data.errorDetail)}\``;
         }
 
         const url = `https://api.telegram.org/bot${botToken}/sendMessage`;

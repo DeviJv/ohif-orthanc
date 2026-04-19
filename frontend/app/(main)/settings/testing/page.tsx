@@ -62,23 +62,23 @@ export default function TestingPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center gap-3 border-b pb-4">
-        <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+    <div className="flex flex-col gap-6 p-6 min-h-screen bg-slate-50/30 dark:bg-slate-900">
+      <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flask-conical"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 18.223A1.994 1.994 0 0 0 6.5 22h11a1.994 1.994 0 0 0 1.78-3.777l-5.069-7.8A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Isolated API Testing Suite</h1>
-          <p className="text-gray-500 text-sm">Mode verbose untuk menginvestigasi kegagalan bridging spesifik di Kemenkes.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Isolated API Testing Suite</h1>
+          <p className="text-gray-500 dark:text-slate-400 text-sm">Mode verbose untuk menginvestigasi kegagalan bridging spesifik di Kemenkes.</p>
         </div>
       </div>
 
       <div className="flex items-start gap-6">
         {/* Left Side - Tools */}
-        <div className="w-1/3 flex flex-col gap-4">
-          <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-            <h3 className="font-semibold mb-2">Atomic Resource Builder</h3>
-            <p className="text-xs text-gray-500 mb-4">Uji pembuatan resource secara independen untuk melihat respons murni dari API Kemenkes sebelum digabungkan ke Mega-Bundle.</p>
+        <div className="w-full md:w-1/3 flex flex-col gap-4">
+          <div className="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm">
+            <h3 className="font-semibold mb-2 dark:text-slate-100">Atomic Resource Builder</h3>
+            <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">Uji pembuatan resource secara independen untuk melihat respons murni dari API Kemenkes sebelum digabungkan ke Mega-Bundle.</p>
             
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger >
@@ -88,39 +88,43 @@ export default function TestingPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                  <DialogTitle>Buat Resource: Encounter</DialogTitle>
+                  <DialogTitle className="dark:text-slate-100">Buat Resource: Encounter</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-4">
+                 <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-4">
                   <div className="flex flex-col gap-2">
-                    <Label>Patient IHS ID (Khusus Sandbox)</Label>
+                    <Label className="dark:text-slate-300">Patient IHS ID (Khusus Sandbox)</Label>
                     <Input 
                       value={formData.patientId} 
                       onChange={(e) => setFormData({...formData, patientId: e.target.value})} 
                       required 
+                      className="dark:bg-slate-950 dark:border-slate-800"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label>Patient Name</Label>
+                    <Label className="dark:text-slate-300">Patient Name</Label>
                     <Input 
                       value={formData.patientName} 
                       onChange={(e) => setFormData({...formData, patientName: e.target.value})} 
                       required 
+                      className="dark:bg-slate-950 dark:border-slate-800"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label>Practitioner IHS ID (Khusus Sandbox)</Label>
+                    <Label className="dark:text-slate-300">Practitioner IHS ID (Khusus Sandbox)</Label>
                     <Input 
                       value={formData.practitionerId} 
                       onChange={(e) => setFormData({...formData, practitionerId: e.target.value})} 
                       required 
+                      className="dark:bg-slate-950 dark:border-slate-800"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label>Start Time (ISO 8601)</Label>
+                    <Label className="dark:text-slate-300">Start Time (ISO 8601)</Label>
                     <Input 
                       value={formData.startTime} 
                       onChange={(e) => setFormData({...formData, startTime: e.target.value})} 
                       required 
+                      className="dark:bg-slate-950 dark:border-slate-800"
                     />
                   </div>
                   <div className="flex justify-end pt-4">
@@ -133,18 +137,18 @@ export default function TestingPage() {
             </Dialog>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm mt-4">
-            <h3 className="font-semibold mb-2">FHIR Resource Inspector</h3>
-            <p className="text-xs text-gray-500 mb-4">Masukkan Resource ID untuk melihat payload asli di server Kemenkes.</p>
+          <div className="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm mt-4">
+            <h3 className="font-semibold mb-2 dark:text-slate-100">FHIR Resource Inspector</h3>
+            <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">Masukkan Resource ID untuk melihat payload asli di server Kemenkes.</p>
             
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
-                <Label className="text-[10px] uppercase text-gray-400 font-bold">Resource Type</Label>
+                <Label className="text-[10px] uppercase text-gray-400 dark:text-slate-500 font-bold">Resource Type</Label>
                 <Select value={inspectType} onValueChange={(val) => setInspectType(val ?? "")}>
-                  <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectTrigger className="w-full h-9 text-sm dark:bg-slate-950 dark:border-slate-800 dark:text-slate-200">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dark:bg-slate-900 dark:border-slate-800">
                     <SelectItem value="Encounter">Encounter</SelectItem>
                     <SelectItem value="ServiceRequest">ServiceRequest</SelectItem>
                     <SelectItem value="Condition">Condition</SelectItem>
@@ -160,19 +164,19 @@ export default function TestingPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label className="text-[10px] uppercase text-gray-400 font-bold">Resource ID</Label>
+                <Label className="text-[10px] uppercase text-gray-400 dark:text-slate-500 font-bold">Resource ID</Label>
                 <Input 
                   placeholder="e.g. 5243..."
                   value={inspectId}
                   onChange={(e) => setInspectId(e.target.value)}
-                  className="h-9 text-sm"
+                  className="h-9 text-sm dark:bg-slate-950 dark:border-slate-800 dark:text-slate-200"
                 />
               </div>
 
               <Button 
                 onClick={handleInspect} 
                 disabled={inspectLoading || !inspectId}
-                className="w-full bg-slate-800 hover:bg-slate-900 text-white h-9 text-sm"
+                className="w-full bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-600 text-white h-9 text-sm"
               >
                 {inspectLoading ? "Fetching..." : "🔍 Fetch Payload"}
               </Button>
@@ -181,8 +185,8 @@ export default function TestingPage() {
         </div>
 
         {/* Right Side - Logs */}
-        <div className="w-2/3 bg-gray-900 rounded-xl min-h-[500px] border border-gray-800 flex flex-col overflow-hidden text-gray-300">
-          <div className="bg-gray-950 px-4 py-2 border-b border-gray-800 flex justify-between items-center text-xs text-gray-500 font-mono">
+        <div className="w-full md:w-2/3 bg-gray-900 dark:bg-slate-950 rounded-xl min-h-[500px] border border-gray-800 dark:border-slate-800 flex flex-col overflow-hidden text-gray-300">
+          <div className="bg-gray-950 dark:bg-slate-900/50 px-4 py-2 border-b border-gray-800 dark:border-slate-800 flex justify-between items-center text-xs text-gray-500 font-mono">
             <span>Terminal: Response Kemenkes (Verbose) {loading && " - AWAITING..."}</span>
             {result && (
               <span className={result.success ? "text-green-500" : "text-red-500"}>

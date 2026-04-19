@@ -53,29 +53,29 @@ export default function OrthancApiDocsPage() {
     };
 
     return (
-        <div className="flex flex-col h-full overflow-hidden bg-slate-50/30">
+        <div className="flex flex-col h-full overflow-hidden bg-slate-50/30 dark:bg-slate-900">
             {/* Header */}
-            <header className="flex flex-col gap-4 p-6 md:p-8 bg-white border-b shadow-sm shrink-0">
+            <header className="flex flex-col gap-4 p-6 md:p-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 max-w-7xl mx-auto w-full">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-                            <div className="bg-primary/10 p-2 rounded-xl">
-                                <HugeiconsIcon icon={BookOpen02Icon} className="size-6 text-primary" strokeWidth={2.5} />
+                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-3">
+                            <div className="bg-primary/10 dark:bg-primary/20 p-2 rounded-xl">
+                                <HugeiconsIcon icon={BookOpen02Icon} className="size-6 text-primary dark:text-primary" strokeWidth={2.5} />
                             </div>
                             Orthanc API Documentation
                         </h1>
-                        <p className="text-slate-500 font-medium">
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">
                             Referensi lengkap REST API dan DICOMweb untuk integrasi PACS Quantum.
                         </p>
                     </div>
                     <div className="relative w-full md:w-80 group">
                         <HugeiconsIcon 
                             icon={Search01Icon} 
-                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-primary transition-colors" 
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 dark:text-slate-500 group-focus-within:text-primary transition-colors" 
                         />
                         <Input
                             placeholder="Cari endpoint (misal: /studies)..."
-                            className="pl-10 h-11 bg-slate-50 border-slate-200 focus:bg-white transition-all shadow-inner"
+                            className="pl-10 h-11 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 transition-all shadow-inner dark:text-slate-100"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -85,10 +85,10 @@ export default function OrthancApiDocsPage() {
 
             <div className="flex-1 overflow-hidden flex flex-col md:flex-row max-w-7xl mx-auto w-full">
                 {/* Sidebar Navigation */}
-                <aside className="w-full md:w-64 p-6 overflow-y-auto border-r bg-white/50 shrink-0 hidden md:block">
+                <aside className="w-full md:w-64 p-6 overflow-y-auto border-r border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 shrink-0 hidden md:block">
                     <nav className="space-y-6">
                         <div className="space-y-2">
-                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-2 mb-4">Categories</h3>
+                            <h3 className="text-xs font-bold text-slate-400 dark:text-slate-600 uppercase tracking-widest px-2 mb-4">Categories</h3>
                             {categories.map((cat) => (
                                 <button
                                     key={cat}
@@ -97,7 +97,7 @@ export default function OrthancApiDocsPage() {
                                         "w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2.5",
                                         activeCategory === cat 
                                             ? "bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]" 
-                                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
                                     )}
                                 >
                                     {getCategoryIcon(cat)}
@@ -121,12 +121,12 @@ export default function OrthancApiDocsPage() {
                             ))
                         ) : (
                             <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                                <div className="bg-slate-100 p-6 rounded-full">
-                                    <HugeiconsIcon icon={Search01Icon} className="size-10 text-slate-300" />
+                                <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-full">
+                                    <HugeiconsIcon icon={Search01Icon} className="size-10 text-slate-300 dark:text-slate-700" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="text-lg font-bold text-slate-900">Endpoint tidak ditemukan</h3>
-                                    <p className="text-slate-500">Coba gunakan kata kunci pencarian yang lain.</p>
+                                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Endpoint tidak ditemukan</h3>
+                                    <p className="text-slate-500 dark:text-slate-400">Coba gunakan kata kunci pencarian yang lain.</p>
                                 </div>
                                 <Button variant="outline" onClick={() => { setSearchQuery(""); setActiveCategory("All"); }}>
                                     Reset semua filter
@@ -168,8 +168,8 @@ const data = await response.json();`;
 
     return (
         <section id={endpoint.id} className="scroll-mt-8 transition-all hover:-translate-y-1">
-            <Card className="shadow-sm border-slate-200 hover:shadow-xl hover:border-primary/20 transition-all overflow-hidden duration-300">
-                <CardHeader className="pb-4 bg-slate-50/50">
+            <Card className="shadow-sm border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-primary/20 dark:bg-slate-900/50 transition-all overflow-hidden duration-300">
+                <CardHeader className="pb-4 bg-slate-50/50 dark:bg-slate-800/20">
                     <div className="flex flex-wrap items-center gap-3 mb-2">
                         <Badge className={cn(
                             "font-bold px-2 py-0.5 rounded-sm tracking-wider text-[10px]",
@@ -179,30 +179,30 @@ const data = await response.json();`;
                         )}>
                             {endpoint.method}
                         </Badge>
-                        <code className="text-sm font-mono font-bold text-slate-800 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm">
+                        <code className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-md shadow-sm">
                             {endpoint.path}
                         </code>
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-auto">
+                        <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-auto">
                             {endpoint.category}
                         </span>
                     </div>
-                    <CardTitle className="text-xl font-bold text-slate-900 mt-2">
+                    <CardTitle className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2">
                         {endpoint.id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                     </CardTitle>
-                    <CardDescription className="text-slate-600 leading-relaxed text-sm font-medium mt-1">
+                    <CardDescription className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm font-medium mt-1">
                         {endpoint.description}
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6 pt-6 bg-white">
+                <CardContent className="space-y-6 pt-6 bg-white dark:bg-slate-900/50">
                     {endpoint.parameters && endpoint.parameters.length > 0 && (
                         <div className="space-y-3">
-                            <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                            <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-600 flex items-center gap-2">
                                 <HugeiconsIcon icon={InformationCircleIcon} className="size-3.5" />
                                 Parameters
                             </h4>
-                            <div className="border rounded-xl overflow-hidden bg-slate-50/20 shadow-inner">
+                            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/20 dark:bg-slate-950/20 shadow-inner">
                                 <table className="w-full text-xs text-left">
-                                    <thead className="bg-slate-100/80 text-slate-500 font-bold border-b">
+                                    <thead className="bg-slate-100/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800">
                                         <tr>
                                             <th className="px-4 py-3">Name</th>
                                             <th className="px-4 py-3">Type</th>
@@ -210,13 +210,13 @@ const data = await response.json();`;
                                             <th className="px-4 py-3">Description</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y text-slate-700">
+                                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                                         {endpoint.parameters.map((p) => (
-                                            <tr key={p.name} className="hover:bg-slate-50/50 transition-colors">
-                                                <td className="px-4 py-3 font-mono font-bold text-primary">{p.name}</td>
-                                                <td className="px-4 py-3"><Badge variant="outline" className="text-[10px] font-mono">{p.type}</Badge></td>
-                                                <td className="px-4 py-3">{p.required ? <Badge className="bg-amber-100 text-amber-700 border-none text-[9px]">YES</Badge> : "No"}</td>
-                                                <td className="px-4 py-3 text-slate-500 italic">{p.description}</td>
+                                            <tr key={p.name} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
+                                                <td className="px-4 py-3 font-mono font-bold text-primary dark:text-primary-foreground">{p.name}</td>
+                                                <td className="px-4 py-3"><Badge variant="outline" className="text-[10px] font-mono dark:border-slate-700">{p.type}</Badge></td>
+                                                <td className="px-4 py-3">{p.required ? <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-none text-[9px]">YES</Badge> : "No"}</td>
+                                                <td className="px-4 py-3 text-slate-500 dark:text-slate-400 italic">{p.description}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -226,18 +226,18 @@ const data = await response.json();`;
                     )}
 
                     <div className="space-y-3">
-                        <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                        <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-600 flex items-center gap-2">
                             <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
                             Example Implementation
                         </h4>
                         
                         <div className="w-full">
-                            <div className="flex bg-slate-100/50 p-1 h-9 gap-1 shadow-inner rounded-lg mb-2 w-fit">
+                            <div className="flex bg-slate-100/50 dark:bg-slate-800/50 p-1 h-9 gap-1 shadow-inner rounded-lg mb-2 w-fit">
                                 <button 
                                     onClick={() => setActiveTab("curl")}
                                     className={cn(
                                         "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                        activeTab === "curl" ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:text-slate-700"
+                                        activeTab === "curl" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                                     )}
                                 >
                                     CURL
@@ -246,7 +246,7 @@ const data = await response.json();`;
                                     onClick={() => setActiveTab("fetch")}
                                     className={cn(
                                         "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                        activeTab === "fetch" ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:text-slate-700"
+                                        activeTab === "fetch" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                                     )}
                                 >
                                     FETCH (JS)
@@ -256,7 +256,7 @@ const data = await response.json();`;
                                         onClick={() => setActiveTab("response")}
                                         className={cn(
                                             "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                            activeTab === "response" ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:text-slate-700"
+                                            activeTab === "response" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                                         )}
                                     >
                                         RESPONSE
@@ -299,13 +299,13 @@ const data = await response.json();`;
 
                                 {activeTab === "response" && endpoint.response && (
                                     <div className="relative animate-in fade-in duration-300">
-                                        <div className="bg-slate-50 text-slate-600 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto border border-slate-200 shadow-inner italic">
+                                        <div className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto border border-slate-200 dark:border-slate-800 shadow-inner italic">
                                             {endpoint.response}
                                         </div>
                                         <Button 
                                             variant="ghost" 
                                             size="icon-xs" 
-                                            className="absolute right-3 top-3 text-slate-400 hover:text-primary transition-all rounded-lg"
+                                            className="absolute right-3 top-3 text-slate-400 dark:text-slate-600 hover:text-primary transition-all rounded-lg"
                                             onClick={() => onCopy(endpoint.response || "")}
                                         >
                                             <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />

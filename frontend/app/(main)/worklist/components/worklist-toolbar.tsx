@@ -62,8 +62,8 @@ export function WorklistToolbar({
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
     return (
-        <Card className="mb-6 shadow-sm border-slate-200">
-            <CardHeader className="pb-3 border-b">
+        <Card className="mb-6 shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 backdrop-blur-sm">
+            <CardHeader className="pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex flex-1 items-center gap-4">
                         {/* ... existing bulk actions dropdown ... */}
@@ -98,10 +98,10 @@ export function WorklistToolbar({
                         </div>
                         
                         <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1 border rounded-md px-2 py-1 bg-muted/20">
+                            <div className="flex items-center gap-1 border border-slate-200 dark:border-slate-800 rounded-md px-2 py-1 bg-slate-50 dark:bg-slate-950">
                                 <Popover>
-                                    <PopoverTrigger className="inline-flex items-center gap-2 text-xs font-medium hover:bg-muted/30 transition-colors px-1 rounded-sm">
-                                        <HugeiconsIcon icon={Calendar01Icon} className="size-4 text-muted-foreground" />
+                                    <PopoverTrigger className="inline-flex items-center gap-2 text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-1 rounded-sm">
+                                        <HugeiconsIcon icon={Calendar01Icon} className="size-4 text-muted-foreground dark:text-slate-500" />
                                         {dateRange?.from ? (
                                             dateRange.to ? (
                                                 <>

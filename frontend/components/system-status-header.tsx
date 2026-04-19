@@ -64,23 +64,23 @@ export function SystemStatusHeader() {
     const downCount = totalContainers - runningContainers.length;
 
     return (
-        <div className="flex items-center gap-4 px-4 py-1.5 rounded-2xl bg-slate-50/50 border border-slate-200/40 shadow-sm transition-all hover:shadow-md hover:bg-white group">
+        <div className="flex items-center gap-4 px-4 py-1.5 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200/40 dark:border-slate-800 shadow-sm transition-all hover:shadow-md hover:bg-white dark:hover:bg-slate-800 group">
             {/* Environment Indicator */}
-            <div className="flex items-center gap-2 border-r border-slate-200 pr-4">
+            <div className="flex items-center gap-2 border-r border-slate-200 dark:border-slate-800 pr-4">
                 <Badge 
                     variant={env === 'production' ? 'default' : 'secondary'}
                     className={`${
                         env === 'production' 
                             ? "bg-orange-600 hover:bg-orange-600 shadow-sm shadow-orange-200" 
                             : "bg-blue-600 hover:bg-blue-600 shadow-sm shadow-blue-200 text-white"
-                    } text-[9px] font-black tracking-tighter h-4 px-1.5 rounded-md uppercase transition-transform group-hover:scale-105`}
+                    } text-[9px] font-semibold tracking-tighter h-4 px-1.5 rounded-md uppercase transition-transform group-hover:scale-105`}
                 >
                     {env}
                 </Badge>
             </div>
 
             {/* Docker Status */}
-            <div className="flex items-center gap-2.5 border-r border-slate-200 pr-4 transition-all">
+            <div className="flex items-center gap-2.5 border-r border-slate-200 dark:border-slate-800 pr-4 transition-all">
                 <div className="relative flex items-center justify-center">
                     <div className={`size-2 rounded-full ${allRunning ? 'bg-emerald-500' : 'bg-rose-500'} ${allRunning ? 'animate-pulse' : ''}`} />
                     {allRunning && (
@@ -89,11 +89,11 @@ export function SystemStatusHeader() {
                 </div>
                 
                 <div className="flex flex-col -space-y-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                    <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1">
                         <HugeiconsIcon icon={Database02Icon} className="size-2.5" />
-                        System Docker
+                        System Services
                     </span>
-                    <span className={`text-xs font-black tracking-tight ${allRunning ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    <span className={`text-xs font-semibold tracking-tight ${allRunning ? 'text-emerald-600' : 'text-rose-600'}`}>
                         {isLoading ? "Checking..." : (
                             allRunning ? "All services running" : `${downCount} services not running`
                         )}
@@ -103,12 +103,12 @@ export function SystemStatusHeader() {
 
             {/* System Online */}
             <div className="flex items-center gap-2.5">
-                <div className="p-1.5 bg-slate-100 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                <div className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                     <HugeiconsIcon icon={Calendar01Icon} className="size-3.5" />
                 </div>
                 <div className="flex flex-col -space-y-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Online</span>
-                    <span className="text-xs font-black text-slate-700 tracking-tight">
+                    <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">System Online</span>
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
                         {format(new Date(), "dd MMMM yyyy", { locale: id })}
                     </span>
                 </div>

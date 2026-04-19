@@ -12,6 +12,7 @@ import {
     BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
 import { SystemStatusHeader } from "@/components/system-status-header"
+import { ModeToggle } from "@/components/mode-toggle"
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export default async function MainLayout({
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b bg-white/80 backdrop-blur-md">
+                <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b bg-white/80 backdrop-blur-md dark:bg-slate-950/80 dark:border-slate-800">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1" />
                         <Separator
@@ -35,7 +36,7 @@ export default async function MainLayout({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="flex items-center gap-2 font-black text-slate-900 tracking-tight">
+                                    <BreadcrumbPage className="flex items-center gap-2 font-medium text-slate-900 dark:text-slate-100 tracking-tight">
                                         Hospital PACS Dashboard
                                     </BreadcrumbPage>
                                 </BreadcrumbItem>
@@ -43,7 +44,8 @@ export default async function MainLayout({
                         </Breadcrumb>
                     </div>
 
-                    <div className="px-4">
+                    <div className="flex items-center gap-3 px-4">
+                        <ModeToggle />
                         <SystemStatusHeader />
                     </div>
                 </header>

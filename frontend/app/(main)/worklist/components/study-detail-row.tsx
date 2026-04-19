@@ -68,11 +68,11 @@ export function StudyDetailRow({
     const [isUploadSeriesOpen, setIsUploadSeriesOpen] = useState(false);
     const patientName = study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName;
     return (
-        <TableRow className="bg-muted/30 hover:bg-muted/30 border-none">
+        <TableRow className="bg-slate-50/30 dark:bg-slate-900/40 hover:bg-slate-50/30 dark:hover:bg-slate-900/40 border-none transition-colors">
             <TableCell colSpan={columnsCount} className="p-0">
                 <div className="p-6 space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
                     {/* Labels Section */}
-                    <div className="flex flex-wrap gap-2 items-center bg-muted/20 p-3 rounded-lg border border-dashed border-slate-300">
+                    <div className="flex flex-wrap gap-2 items-center bg-muted/20 dark:bg-slate-800/20 p-3 rounded-lg border border-dashed border-slate-300 dark:border-slate-700">
                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground mr-2">
                             <HugeiconsIcon icon={Tag01Icon} className="size-3" />
                             LABELS:
@@ -91,7 +91,7 @@ export function StudyDetailRow({
                         <Button 
                             variant="ghost" 
                             size="xs" 
-                            className="h-6 gap-1 text-[10px] border border-dashed border-slate-400 hover:border-primary hover:text-primary"
+                            className="h-6 gap-1 text-[10px] border border-dashed border-slate-400 dark:border-slate-600 hover:border-primary hover:text-primary dark:text-slate-400"
                             onClick={() => handleAddLabel(study.ID)}
                         >
                             + Add Label
@@ -99,12 +99,12 @@ export function StudyDetailRow({
                     </div>
 
                     {/* Study Metadata Grid */}
-                    <div className="grid grid-cols-2 gap-8 bg-background p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden mb-8">
-                        <div className="absolute bottom-0 right-0 p-4 flex gap-1 bg-muted/30 rounded-tl-xl border-l border-t backdrop-blur-sm z-10">
-                            <Button variant="ghost" size="icon-sm" className="size-8 hover:bg-background" title="Anonymize Study" onClick={() => handleAnonymize(study.ID, "study")}>
+                    <div className="grid grid-cols-2 gap-8 bg-white dark:bg-slate-950 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden mb-8">
+                        <div className="absolute bottom-0 right-0 p-4 flex gap-1 bg-slate-50/80 dark:bg-slate-900/80 rounded-tl-xl border-l border-t border-slate-200 dark:border-slate-800 backdrop-blur-sm z-10">
+                            <Button variant="ghost" size="icon-sm" className="size-8 hover:bg-background dark:hover:bg-slate-800" title="Anonymize Study" onClick={() => handleAnonymize(study.ID, "study")}>
                                 <HugeiconsIcon icon={ShieldIcon} className="size-4 text-primary" />
                             </Button>
-                            <Button variant="ghost" size="icon-sm" className="size-8 hover:bg-background" title="View in Orthanc Explorer" onClick={() => handleOpenOrthancViewer(study.ID, "study")}>
+                            <Button variant="ghost" size="icon-sm" className="size-8 hover:bg-background dark:hover:bg-slate-800" title="View in Orthanc Explorer" onClick={() => handleOpenOrthancViewer(study.ID, "study")}>
                                 <HugeiconsIcon icon={Search01Icon} className="size-4 text-primary" />
                             </Button>
                         </div>
@@ -124,12 +124,12 @@ export function StudyDetailRow({
                              <MetadataItem label="Patient Birth Date" value={study.PatientMainDicomTags?.PatientBirthDate} />
                              <MetadataItem label="Patient Sex" value={study.PatientMainDicomTags?.PatientSex} />
                             
-                            <div className="mt-6 pt-4 border-t border-slate-100">
+                            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
                                 <div className="text-[11px] text-muted-foreground flex items-center gap-2 mb-2">
                                     <HugeiconsIcon icon={UserIcon} className="size-3" />
                                     Other studies for this patient:
                                 </div>
-                                <div className="text-[11px] italic text-slate-400">
+                                <div className="text-[11px] italic text-slate-400 dark:text-slate-500">
                                     {studies.filter(s => s.MainDicomTags.PatientID === study.MainDicomTags.PatientID && s.ID !== study.ID).length === 0 
                                         ? "This patient has no other studies." 
                                         : `${studies.filter(s => s.MainDicomTags.PatientID === study.MainDicomTags.PatientID && s.ID !== study.ID).length} other studies found.`}
@@ -155,9 +155,9 @@ export function StudyDetailRow({
                                 Add Series
                             </Button>
                         </div>
-                        <div className="rounded-lg border bg-background overflow-hidden">
+                        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden shadow-sm">
                             <Table>
-                                <TableHeader className="bg-muted/50">
+                                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
                                     <TableRow>
                                         <TableHead className="w-10"></TableHead>
                                         <TableHead className="text-[11px] font-bold uppercase">Series Number</TableHead>
@@ -245,11 +245,11 @@ export function StudyDetailRow({
                                                     </TableCell>
                                                 </TableRow>
                                                 {expandedSeries[series.ID] && (
-                                                    <TableRow className="bg-muted/10 hover:bg-muted/10 border-none">
+                                                    <TableRow className="bg-slate-50/20 dark:bg-slate-800/10 hover:bg-slate-50/20 dark:hover:bg-slate-800/10 border-none">
                                                         <TableCell colSpan={6} className="p-4 pt-0">
                                                             <div className="space-y-4 pl-10 border-l-2 border-primary/20 ml-3">
                                                                 {/* Series Metadata */}
-                                                                 <div className="grid grid-cols-2 gap-4 text-[11px] bg-background/30 p-3 rounded-lg border">
+                                                                 <div className="grid grid-cols-2 gap-4 text-[11px] bg-slate-50/50 dark:bg-slate-900/30 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
                                                                      <div className="space-y-1">
                                                                          <MetadataItem label="Series Date" value={formatDicomDate(series.MainDicomTags.SeriesDate)} small />
                                                                          <MetadataItem label="Series Time" value={formatDicomTime(series.MainDicomTags.SeriesTime)} small />
@@ -262,9 +262,9 @@ export function StudyDetailRow({
                                                                  </div>
 
                                                                 {/* Instances Table */}
-                                                                <div className="rounded border bg-background overflow-hidden">
+                                                                <div className="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
                                                                     <Table>
-                                                                        <TableHeader className="bg-muted/30">
+                                                                        <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50">
                                                                             <TableRow>
                                                                                  <TableHead className="w-8 h-8"></TableHead>
                                                                                  <TableHead className="text-[10px] font-bold h-8">Instance #</TableHead>
@@ -319,7 +319,7 @@ export function StudyDetailRow({
                                                                                             {expandedInstances[instance.ID] && (
                                                                                                 <TableRow className="bg-muted/5 hover:bg-muted/5 border-none">
                                                                                                     <TableCell colSpan={5} className="p-4 pt-0">
-                                                                                                        <div className="space-y-2 bg-slate-50/50 p-4 rounded-lg border border-slate-100 font-mono text-[10px] overflow-auto max-h-[400px]">
+                                                                                                        <div className="space-y-2 bg-slate-50/50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-800 font-mono text-[10px] overflow-auto max-h-[400px]">
                                                                                                             <div className="flex items-center justify-between border-b pb-2 mb-2">
                                                                                                                 <span className="font-bold text-slate-500 uppercase">DICOM Tags (Full)</span>
                                                                                                                 <Button variant="ghost" size="icon-xs" className="size-5" onClick={() => navigator.clipboard.writeText(JSON.stringify(tagsData[instance.ID], null, 2))}>
@@ -333,14 +333,14 @@ export function StudyDetailRow({
                                                                                  </div>
                                                                              ) : (
                                                                                  <div className="grid grid-cols-[100px_1fr_2fr] gap-x-6 gap-y-1">
-                                                                                     <div className="text-[10px] font-bold text-slate-400 border-b pb-1">Tag</div>
-                                                                                     <div className="text-[10px] font-bold text-slate-400 border-b pb-1">Name</div>
-                                                                                     <div className="text-[10px] font-bold text-slate-400 border-b pb-1">Value</div>
+                                                                                     <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800 pb-1">Tag</div>
+                                                                                     <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800 pb-1">Name</div>
+                                                                                     <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800 pb-1">Value</div>
                                                                                      {Object.entries(tagsData[instance.ID]).map(([key, value]) => (
                                                                                          <React.Fragment key={key}>
-                                                                                             <div className="text-slate-400 font-mono">{key}</div>
-                                                                                             <div className="text-slate-600 font-medium truncate" title={value.Name}>{value.Name}</div>
-                                                                                             <div className="text-slate-800 break-all truncate" title={String(value.Value)}>{typeof value.Value === 'object' ? JSON.stringify(value.Value) : String(value.Value || "-")}</div>
+                                                                                             <div className="text-slate-400 dark:text-slate-500 font-mono">{key}</div>
+                                                                                             <div className="text-slate-600 dark:text-slate-400 font-medium truncate" title={value.Name}>{value.Name}</div>
+                                                                                             <div className="text-slate-800 dark:text-slate-200 break-all truncate" title={String(value.Value)}>{typeof value.Value === 'object' ? JSON.stringify(value.Value) : String(value.Value || "-")}</div>
                                                                                          </React.Fragment>
                                                                                      ))}
                                                                                  </div>

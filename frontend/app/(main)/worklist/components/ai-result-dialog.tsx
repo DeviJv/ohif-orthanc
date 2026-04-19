@@ -65,16 +65,16 @@ export const AiResultDialog = React.memo(({
                     </div>
 
                     {/* Right Side: Analysis Findings */}
-                    <div className="md:w-1/2 flex flex-col bg-white overflow-hidden">
-                        <DialogHeader className="p-6 border-b border-slate-100">
+                    <div className="md:w-1/2 flex flex-col bg-white dark:bg-slate-900 overflow-hidden">
+                        <DialogHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
                             <div className="flex items-center gap-3 mb-2 text-left">
                                 <div className={`p-2 rounded-xl shrink-0 ${result.isUrgent ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600'}`}>
                                     <HugeiconsIcon icon={AiCloud01Icon} className="size-6" />
                                 </div>
                                 <div>
-                                    <DialogTitle className="text-xl">AI Analysis Result</DialogTitle>
-                                    <DialogDescription className="text-xs">
-                                        Detail temuan untuk pasien <span className="font-bold text-foreground">{patientName || 'N/A'}</span>
+                                    <DialogTitle className="text-xl dark:text-slate-100">AI Analysis Result</DialogTitle>
+                                    <DialogDescription className="text-xs dark:text-slate-400">
+                                        Detail temuan untuk pasien <span className="font-bold text-foreground dark:text-slate-200">{patientName || 'N/A'}</span>
                                     </DialogDescription>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@ export const AiResultDialog = React.memo(({
 
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
                             {/* Summary & Conclusion */}
-                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                                 <h4 className="text-[10px] font-bold uppercase text-slate-500 mb-2 flex items-center gap-2 tracking-wider">
                                     <HugeiconsIcon icon={InformationCircleIcon} className="size-3" />
                                     Kesimpulan AI
@@ -116,13 +116,13 @@ export const AiResultDialog = React.memo(({
                                             if (percent < 1) return null; // Only show significant findings
                                             return (
                                                 <div key={key} className="p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50/50 transition-colors">
-                                                    <div className="flex justify-between text-[11px] font-semibold mb-1.5">
-                                                        <span className="capitalize text-slate-700">{key.replace(/_/g, ' ')}</span>
-                                                        <span className={percent > 50 ? 'text-rose-600 font-bold' : 'text-emerald-600'}>
+                                                     <div className="flex justify-between text-[11px] font-semibold mb-1.5">
+                                                        <span className="capitalize text-slate-700 dark:text-slate-300">{key.replace(/_/g, ' ')}</span>
+                                                        <span className={percent > 50 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400'}>
                                                             {(percent).toFixed(1)}%
                                                         </span>
                                                     </div>
-                                                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                         <div 
                                                             className={`h-full rounded-full transition-all duration-1000 ${percent > 50 ? 'bg-rose-500' : 'bg-emerald-500'}`}
                                                             style={{ width: `${percent}%` }}
@@ -132,7 +132,7 @@ export const AiResultDialog = React.memo(({
                                             );
                                         })
                                     ) : (
-                                        <div className="text-center py-8 text-slate-400 text-xs italic">
+                                        <div className="text-center py-8 text-slate-400 dark:text-slate-600 text-xs italic">
                                             No detailed findings available.
                                         </div>
                                     )}
@@ -140,7 +140,7 @@ export const AiResultDialog = React.memo(({
                             </div>
                         </div>
 
-                        <div className="p-4 bg-slate-50 border-t border-slate-100">
+                        <div className="p-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
                             <div className="text-[10px] text-slate-400 italic leading-relaxed">
                                 <strong>Disclaimer:</strong> AI-Generated Preliminary Report. Hasil ini adalah prediksi algoritma dan harus divalidasi oleh Radiolog.
                             </div>

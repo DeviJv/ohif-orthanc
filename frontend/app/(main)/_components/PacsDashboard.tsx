@@ -85,24 +85,24 @@ export function PacsDashboard() {
                     value={stats?.summary.totalStudies || 0} 
                     icon={Files01Icon} 
                     trend="+12% from last month"
-                    color="text-blue-600"
-                    bgColor="bg-blue-50"
+                    color="text-blue-600 dark:text-blue-400"
+                    bgColor="bg-blue-50 dark:bg-blue-950/30"
                 />
                 <StatCard 
                     title="Total Patients" 
                     value={stats?.summary.totalPatients || 0} 
                     icon={UserIcon} 
                     trend="New patients today"
-                    color="text-purple-600"
-                    bgColor="bg-purple-50"
+                    color="text-purple-600 dark:text-purple-400"
+                    bgColor="bg-purple-50 dark:bg-purple-950/30"
                 />
                 <StatCard 
                     title="Studies Today" 
                     value={stats?.summary.studiesToday || 0} 
                     icon={ActivityIcon} 
                     trend="Active examination"
-                    color="text-green-600"
-                    bgColor="bg-green-50"
+                    color="text-green-600 dark:text-green-400"
+                    bgColor="bg-green-50 dark:bg-green-950/30"
                     highlight
                 />
                 <StatCard 
@@ -110,27 +110,27 @@ export function PacsDashboard() {
                     value={`${stats?.summary.diskSize || 0} MB`} 
                     icon={Database01Icon} 
                     trend="Cloud Orthanc Storage"
-                    color="text-slate-600"
-                    bgColor="bg-slate-50"
+                    color="text-slate-600 dark:text-slate-400"
+                    bgColor="bg-slate-50 dark:bg-slate-900/50"
                 />
             </div>
 
             {/* Main Content Grid */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
                 {/* Modality Distribution */}
-                <Card className="lg:col-span-4 border border-slate-200/60 shadow-2xl shadow-slate-200/40 rounded-[2.5rem] overflow-hidden group bg-white/50 backdrop-blur-sm">
-                    <CardHeader className="border-b border-slate-100 bg-white/50 p-8">
+                <Card className="lg:col-span-4 border border-slate-200/60 dark:border-slate-800 shadow-2xl shadow-slate-200/40 dark:shadow-none rounded-[2.5rem] overflow-hidden group bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                    <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-8">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-2.5 bg-primary/10 rounded-xl">
                                     <HugeiconsIcon icon={DashboardCircleIcon} className="size-5 text-primary" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl font-black tracking-tight">Modality Units</CardTitle>
-                                    <p className="text-xs font-medium text-slate-400 mt-1">Distribusi volume data berdasarkan modalitas.</p>
+                                    <CardTitle className="text-xl font-black tracking-tight dark:text-slate-100">Modality Units</CardTitle>
+                                    <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1">Distribusi volume data berdasarkan modalitas.</p>
                                 </div>
                             </div>
-                            <Button variant="outline" size="icon" className="size-10 rounded-xl border-slate-200 shadow-sm opacity-0 group-hover:opacity-100 transition-all">
+                            <Button variant="outline" size="icon" className="size-10 rounded-xl border-slate-200 dark:border-slate-800 shadow-sm opacity-0 group-hover:opacity-100 transition-all dark:bg-slate-800 dark:hover:bg-slate-700">
                                 <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                             </Button>
                         </div>
@@ -138,10 +138,10 @@ export function PacsDashboard() {
                     <CardContent className="p-8">
                         <div className="flex flex-col xl:flex-row items-center justify-between gap-12">
                             <div className="relative size-64 flex items-center justify-center">
-                                <div className="absolute inset-0 rounded-full border-[20px] border-slate-50 shadow-inner" />
+                                <div className="absolute inset-0 rounded-full border-[20px] border-slate-50 dark:border-slate-800/50 shadow-inner" />
                                 <div className="z-10 text-center">
-                                    <span className="block text-5xl font-black text-slate-900 tracking-tighter leading-none">{stats?.summary.totalStudies}</span>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 block">Dicom Total</span>
+                                    <span className="block text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tighter leading-none">{stats?.summary.totalStudies}</span>
+                                    <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-2 block">Dicom Total</span>
                                 </div>
                                 <svg className="absolute inset-0 size-full -rotate-90">
                                     <circle
@@ -172,11 +172,11 @@ export function PacsDashboard() {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className={`size-2.5 rounded-full ${modalityColors[name] || modalityColors.OTHER} shadow-lg`} />
-                                                <span className="text-xs font-black text-slate-700 tracking-wider uppercase">{name}</span>
+                                                <span className="text-xs font-black text-slate-700 dark:text-slate-300 tracking-wider uppercase">{name}</span>
                                             </div>
-                                            <span className="text-sm font-black text-slate-900">{count} <span className="text-[11px] text-slate-400 font-bold ml-1">Studies</span></span>
+                                            <span className="text-sm font-black text-slate-900 dark:text-slate-100">{count} <span className="text-[11px] text-slate-400 font-bold ml-1">Studies</span></span>
                                         </div>
-                                        <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                        <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                             <div 
                                                 className={`h-full ${modalityColors[name] || modalityColors.OTHER} transition-all duration-1000 ease-out shadow-sm`} 
                                                 style={{ width: `${(count / (stats?.summary.totalStudies || 1)) * 100}%` }}
@@ -185,7 +185,7 @@ export function PacsDashboard() {
                                     </div>
                                 ))}
                                 {Object.keys(stats?.modalities || {}).length === 0 && (
-                                    <div className="flex flex-col items-center justify-center py-6 text-slate-300">
+                                    <div className="flex flex-col items-center justify-center py-6 text-slate-300 dark:text-slate-700">
                                         <HugeiconsIcon icon={Files01Icon} className="size-12 mb-2" />
                                         <p className="text-xs font-bold italic uppercase tracking-widest">No modalities found</p>
                                     </div>
@@ -196,40 +196,40 @@ export function PacsDashboard() {
                 </Card>
 
                 {/* Recent Activity */}
-                <Card className="lg:col-span-3 border border-slate-200/60 shadow-2xl shadow-slate-200/40 rounded-[2.5rem] overflow-hidden bg-white/50 backdrop-blur-sm">
-                    <CardHeader className="border-b border-slate-100 bg-white/50 p-8">
+                <Card className="lg:col-span-3 border border-slate-200/60 dark:border-slate-800 shadow-2xl shadow-slate-200/40 dark:shadow-none rounded-[2.5rem] overflow-hidden bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                    <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-8">
                         <div className="flex items-center gap-4">
                             <div className="p-2.5 bg-blue-500/10 rounded-xl">
-                                <HugeiconsIcon icon={Clock01Icon} className="size-5 text-blue-600" />
+                                <HugeiconsIcon icon={Clock01Icon} className="size-5 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div>
-                                <CardTitle className="text-xl font-black tracking-tight">Recent Activity</CardTitle>
-                                <p className="text-xs font-medium text-slate-400 mt-1">Studi terbaru yang diterima sistem.</p>
+                                <CardTitle className="text-xl font-black tracking-tight dark:text-slate-100">Recent Activity</CardTitle>
+                                <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1">Studi terbaru yang diterima sistem.</p>
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="divide-y divide-slate-50">
+                        <div className="divide-y divide-slate-50 dark:divide-slate-800">
                             {stats?.recentActivity.map((activity) => (
-                                <div key={activity.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all group">
+                                <div key={activity.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all group">
                                     <div className="flex items-center gap-5">
-                                        <div className="size-12 rounded-[1.25rem] bg-slate-100 flex items-center justify-center group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-300">
-                                            <HugeiconsIcon icon={Folder01Icon} className="size-5 text-slate-400 group-hover:text-primary transition-colors" />
+                                        <div className="size-12 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-300">
+                                            <HugeiconsIcon icon={Folder01Icon} className="size-5 text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors" />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-black text-slate-900 group-hover:text-primary transition-colors">{activity.patientName}</span>
+                                            <span className="text-sm font-black text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">{activity.patientName}</span>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <Badge variant="outline" className="text-[10px] font-black h-4 px-1.5 rounded uppercase border-slate-200 text-slate-400">
+                                                <Badge variant="outline" className="text-[10px] font-black h-4 px-1.5 rounded uppercase border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500">
                                                     {activity.modality}
                                                 </Badge>
-                                                <span className="text-[10px] font-bold text-slate-400 tracking-tighter">
+                                                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-tighter">
                                                     {formatDicomDate(activity.studyDate)}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <Link href={`/worklist`}>
-                                        <Button variant="outline" size="icon" className="size-9 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white hover:border-primary border-slate-200 shadow-sm">
+                                        <Button variant="outline" size="icon" className="size-9 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white hover:border-primary border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
                                             <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                                         </Button>
                                     </Link>
@@ -237,15 +237,15 @@ export function PacsDashboard() {
                             ))}
                             {stats?.recentActivity.length === 0 && (
                                 <div className="p-16 text-center flex flex-col items-center gap-4">
-                                    <HugeiconsIcon icon={Files01Icon} className="size-16 text-slate-100" />
-                                    <p className="text-xs font-black uppercase text-slate-400 tracking-widest">No Recent Studies</p>
+                                    <HugeiconsIcon icon={Files01Icon} className="size-16 text-slate-100 dark:text-slate-800" />
+                                    <p className="text-xs font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest">No Recent Studies</p>
                                 </div>
                             )}
                         </div>
                         {stats?.recentActivity.length ? (
-                            <div className="p-6 bg-slate-50/30 border-t border-slate-50">
+                            <div className="p-6 bg-slate-50/30 dark:bg-slate-900/30 border-t border-slate-50 dark:border-slate-800">
                                 <Link href="/worklist" className="w-full block">
-                                    <Button variant="ghost" className="w-full text-slate-400 text-xs font-black uppercase tracking-widest hover:text-primary hover:bg-transparent">
+                                    <Button variant="ghost" className="w-full text-slate-400 dark:text-slate-500 text-xs font-black uppercase tracking-widest hover:text-primary hover:bg-transparent">
                                         View Worklist
                                         <HugeiconsIcon icon={ArrowRight01Icon} className="size-3.5 ml-2" />
                                     </Button>
@@ -262,21 +262,21 @@ export function PacsDashboard() {
 function StatCard({ title, value, icon: Icon, trend, color, bgColor, highlight = false }: any) {
     return (
         <Card className={cn(
-            "border border-slate-200/60 shadow-2xl shadow-slate-200/40 rounded-[2rem] overflow-hidden hover:scale-[1.02] transition-all duration-500 bg-white group",
+            "border border-slate-200/60 dark:border-slate-800 shadow-2xl shadow-slate-200/40 dark:shadow-none rounded-[2rem] overflow-hidden hover:scale-[1.02] transition-all duration-500 bg-white dark:bg-slate-900 group",
             highlight && "border-primary/20 ring-1 ring-primary/5 shadow-primary/10"
         )}>
             <CardContent className="p-8">
                 <div className="flex items-start justify-between">
                     <div className="space-y-4">
                         <div className="flex flex-col">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{title}</p>
+                            <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-1">{title}</p>
                             <h3 className={cn(
                                 "text-4xl font-black tracking-tight leading-none transition-colors",
-                                highlight ? 'text-primary' : 'text-slate-900 group-hover:text-primary/70'
+                                highlight ? 'text-primary' : 'text-slate-900 dark:text-slate-100 group-hover:text-primary/70'
                             )}>{value}</h3>
                         </div>
-                        <p className="text-[11px] font-bold text-slate-400 flex items-center gap-2 uppercase tracking-tighter bg-slate-50 px-3 py-1.5 rounded-full w-fit group-hover:bg-primary group-hover:text-white transition-all">
-                            <span className={cn("size-1.5 rounded-full", highlight ? "bg-primary animate-pulse" : "bg-slate-300")} />
+                        <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 flex items-center gap-2 uppercase tracking-tighter bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-full w-fit group-hover:bg-primary group-hover:text-white transition-all">
+                            <span className={cn("size-1.5 rounded-full", highlight ? "bg-primary animate-pulse" : "bg-slate-300 dark:bg-slate-700")} />
                             {trend}
                         </p>
                     </div>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
 import { TaskProvider } from "@/context/task-context";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,26 +27,43 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('quantum-pacs-theme') || 'system';
+                  const dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  document.documentElement.classList.toggle('dark', dark);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TaskProvider>
-          <TooltipProvider>
-            {children}
-            <Toaster 
-              position="top-right" 
-              toastOptions={{
-                classNames: {
-                  toast: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-                  description: "group-[.toast]:text-muted-foreground",
-                  actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground font-medium",
-                  cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
-                },
-              }}
-            />
-          </TooltipProvider>
-        </TaskProvider>
+        <ThemeProvider>
+          <TaskProvider>
+            <TooltipProvider>
+              {children}
+              <Toaster 
+                position="top-right" 
+                toastOptions={{
+                  classNames: {
+                    toast: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+                    description: "group-[.toast]:text-muted-foreground",
+                    actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground font-medium",
+                    cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+                  },
+                }}
+              />
+            </TooltipProvider>
+          </TaskProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

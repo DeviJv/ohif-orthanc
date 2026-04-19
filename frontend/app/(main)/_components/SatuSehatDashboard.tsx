@@ -112,47 +112,47 @@ export function SatuSehatDashboard() {
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Unified Toolbar */}
-            <div className="bg-white/50 backdrop-blur-xl border border-slate-200/60 rounded-[2rem] p-4 shadow-xl shadow-slate-200/30 flex flex-col xl:flex-row items-center justify-between gap-6">
+            <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800 rounded-[2rem] p-4 shadow-xl shadow-slate-200/30 dark:shadow-none flex flex-col xl:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-6">
-                    <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200/50">
+                    <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200/50 dark:border-slate-700">
                         <button 
                             onClick={() => setEnvironment("staging")}
                             className={cn(
                                 "flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black transition-all",
-                                environment === "staging" ? "bg-white text-primary shadow-lg shadow-primary/5" : "text-slate-400 hover:text-slate-600"
+                                environment === "staging" ? "bg-white dark:bg-slate-900 text-primary shadow-lg shadow-primary/5" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                             )}
                         >
-                            <div className={cn("size-2 rounded-full", environment === "staging" ? "bg-primary animate-pulse" : "bg-slate-300")} />
+                            <div className={cn("size-2 rounded-full", environment === "staging" ? "bg-primary animate-pulse" : "bg-slate-300 dark:bg-slate-600")} />
                             STAGING
                         </button>
                         <button 
                             onClick={() => setEnvironment("production")}
                             className={cn(
                                 "flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black transition-all",
-                                environment === "production" ? "bg-white text-amber-600 shadow-lg shadow-amber-600/5" : "text-slate-400 hover:text-slate-600"
+                                environment === "production" ? "bg-white dark:bg-slate-900 text-amber-600 shadow-lg shadow-amber-600/5" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                             )}
                         >
-                            <div className={cn("size-2 rounded-full", environment === "production" ? "bg-amber-500 animate-pulse" : "bg-slate-300")} />
+                            <div className={cn("size-2 rounded-full", environment === "production" ? "bg-amber-500 animate-pulse" : "bg-slate-300 dark:bg-slate-600")} />
                             PRODUCTION
                         </button>
                     </div>
 
                     <div className="hidden md:flex flex-col">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Organization ID</p>
-                        <p className="text-xs font-bold text-slate-900 mt-1">{stats?.orgId || "---"}</p>
+                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Organization ID</p>
+                        <p className="text-xs font-bold text-slate-900 dark:text-slate-100 mt-1">{stats?.orgId || "---"}</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 w-full xl:w-auto">
                     <DateRangePicker range={dateRange} setRange={setDateRange} />
                     
-                    <div className="h-8 w-px bg-slate-200 hidden md:block" />
+                    <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden md:block" />
                     
                     <div className="flex gap-2 ml-auto">
                         <Button 
                             variant="outline" 
                             size="sm" 
-                            className="h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 shadow-sm transition-all hover:bg-primary hover:text-white hover:border-primary"
+                            className="h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-primary hover:text-white dark:hover:text-primary hover:border-primary dark:bg-slate-900 dark:text-slate-300"
                             onClick={handleBackfill}
                         >
                             <HugeiconsIcon icon={Clock01Icon} className="size-4 mr-2" />
@@ -161,7 +161,7 @@ export function SatuSehatDashboard() {
                         <Button 
                             variant="outline" 
                             size="sm" 
-                            className="h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 shadow-sm transition-all hover:bg-slate-900 hover:text-white hover:border-slate-900"
+                            className="h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-900 hover:text-white dark:hover:text-slate-100 hover:border-slate-900 dark:bg-slate-900 dark:text-slate-300"
                         >
                             <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />
                             Export
@@ -172,17 +172,17 @@ export function SatuSehatDashboard() {
 
             <Tabs defaultValue="summary" className="w-full">
                 <div className="flex items-center justify-center mb-8">
-                    <TabsList className="bg-slate-100/50 p-1.5 rounded-[1.25rem] border border-slate-200/30">
+                    <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-[1.25rem] border border-slate-200/30 dark:border-slate-800">
                         <TabsTrigger 
                             value="summary" 
-                            className="rounded-xl px-10 py-2.5 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-xl shadow-primary/10 transition-all"
+                            className="rounded-xl px-10 py-2.5 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-primary data-[state=active]:shadow-xl shadow-primary/10 transition-all"
                         >
                             <HugeiconsIcon icon={DashboardCircleIcon} className="size-3.5 mr-2" />
                             Ringkasan Transaksi
                         </TabsTrigger>
                         <TabsTrigger 
                             value="logs" 
-                            className="rounded-xl px-10 py-2.5 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-xl shadow-primary/10 transition-all"
+                            className="rounded-xl px-10 py-2.5 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-primary data-[state=active]:shadow-xl shadow-primary/10 transition-all"
                         >
                             <HugeiconsIcon icon={CheckListIcon} className="size-3.5 mr-2" />
                             Aktivitas Real-time
@@ -192,54 +192,54 @@ export function SatuSehatDashboard() {
 
                 <TabsContent value="summary" className="space-y-8 mt-0 border-none p-0 outline-none">
                     {/* Info Alert - Slimmer version */}
-                    <div className="bg-slate-900 text-white rounded-[2rem] p-6 shadow-2xl flex flex-col md:flex-row gap-6 items-center">
+                    <div className="bg-slate-900 dark:bg-slate-950 text-white rounded-[2rem] p-6 shadow-2xl flex flex-col md:flex-row gap-6 items-center">
                         <div className="bg-primary shadow-lg shadow-primary/20 p-4 rounded-2xl">
                             <HugeiconsIcon icon={InformationCircleIcon} className="size-6 text-white" strokeWidth={3} />
                         </div>
                         <div className="flex-1 text-center md:text-left">
                             <h4 className="text-sm font-black uppercase tracking-widest text-primary-foreground/90">Insight Hari Ini</h4>
-                            <p className="text-xs text-slate-400 mt-1 font-medium leading-relaxed max-w-2xl">
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium leading-relaxed max-w-2xl">
                                 Kami memantau pengiriman data fhir ke <span className="text-white font-bold">Kementerian Kesehatan (SATUSEHAT)</span>. 
                                 Data yang ditampilkan mencakup transaksi sukses per-resource dengan filter periode terpilih.
                             </p>
                         </div>
-                        <div className="flex flex-col items-center md:items-end border-l border-slate-700 pl-6 hidden lg:flex">
+                        <div className="flex flex-col items-center md:items-end border-l border-slate-700 dark:border-slate-800 pl-6 hidden lg:flex">
                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Transaksi</p>
-                            <p className="text-2xl font-black text-white">{Object.values(stats?.summary || {}).reduce((a, b) => a + b, 0)}</p>
+                            <p className="text-2xl font-black text-white dark:text-slate-100">{Object.values(stats?.summary || {}).reduce((a, b) => a + b, 0)}</p>
                         </div>
                     </div>
 
                     {/* Test Router Helper */}
-                    <Card className="border-2 border-primary/20 bg-primary/[0.02] rounded-[2rem] overflow-hidden">
+                    <Card className="border-2 border-primary/20 bg-primary/[0.02] dark:bg-primary/[0.01] rounded-[2rem] overflow-hidden">
                         <CardHeader className="pb-4">
                             <div className="flex items-center gap-3">
                                 <div className="p-2.5 bg-primary/10 rounded-xl text-primary font-black text-xs">
                                     LAB
                                 </div>
                                 <div>
-                                    <CardTitle className="text-sm font-black tracking-tight uppercase">Test DICOM Router Helper</CardTitle>
-                                    <CardDescription className="text-[10px] font-medium uppercase tracking-tighter">Prime SatuSehat with a ServiceRequest for automated testing.</CardDescription>
+                                    <CardTitle className="text-sm font-black tracking-tight uppercase dark:text-slate-100">Test DICOM Router Helper</CardTitle>
+                                    <CardDescription className="text-[10px] font-medium uppercase tracking-tighter dark:text-slate-400">Prime SatuSehat with a ServiceRequest for automated testing.</CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex flex-wrap items-end gap-4 bg-white/50 p-4 rounded-2xl border border-slate-200/50">
+                            <div className="flex flex-wrap items-end gap-4 bg-white/50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800">
                                 <div className="space-y-1.5 flex-1 min-w-[200px]">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Accession Number</p>
+                                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Accession Number</p>
                                     <input 
                                         type="text" 
                                         id="testAcsn"
                                         placeholder="Ex: TEST-12345" 
-                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all uppercase"
+                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all uppercase dark:text-slate-100"
                                     />
                                 </div>
                                 <div className="space-y-1.5 flex-1 min-w-[200px]">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Patient Name</p>
+                                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Patient Name</p>
                                     <input 
                                         type="text" 
                                         id="testName"
                                         placeholder="Ex: John Doe" 
-                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-100"
                                     />
                                 </div>
                                 <Button 
@@ -277,21 +277,21 @@ export function SatuSehatDashboard() {
                         {Object.entries(stats?.summary || {}).map(([type, count]) => (
                             <div 
                                 key={type} 
-                                className="group relative bg-white border border-slate-200/60 rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1"
+                                className="group relative bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1"
                             >
-                                <div className="absolute top-4 right-4 text-xs font-black text-slate-100 group-hover:text-primary/10 transition-colors uppercase">
+                                <div className="absolute top-4 right-4 text-xs font-black text-slate-100 dark:text-slate-800 group-hover:text-primary/10 transition-colors uppercase">
                                     {type.substring(0, 3)}
                                 </div>
-                                <p className="text-[10px] font-black uppercase tracking-tighter text-slate-400 group-hover:text-primary transition-colors mb-4">{type}</p>
+                                <p className="text-[10px] font-black uppercase tracking-tighter text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors mb-4">{type}</p>
                                 <div className="flex items-end justify-between">
                                     <h3 className={cn(
                                         "text-4xl font-black tracking-tight",
-                                        count > 0 ? "text-slate-900" : "text-slate-200"
+                                        count > 0 ? "text-slate-900 dark:text-slate-100" : "text-slate-200 dark:text-slate-800"
                                     )}>
                                         {count > 0 ? count : "0"}
                                     </h3>
                                     {count > 0 && (
-                                        <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg">
+                                        <div className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 p-1.5 rounded-lg">
                                             <HugeiconsIcon icon={ActivityIcon} className="size-3.5" />
                                         </div>
                                     )}
@@ -302,20 +302,20 @@ export function SatuSehatDashboard() {
                 </TabsContent>
 
                 <TabsContent value="logs" className="mt-0 border-none p-0 outline-none">
-                    <Card className="border border-slate-200/60 shadow-2xl shadow-slate-200/40 rounded-[2.5rem] overflow-hidden">
-                        <CardHeader className="bg-white border-b border-slate-100 p-8">
+                    <Card className="border border-slate-200/60 dark:border-slate-800 shadow-2xl shadow-slate-200/40 dark:shadow-none rounded-[2.5rem] overflow-hidden bg-white dark:bg-slate-900/50 backdrop-blur-sm">
+                        <CardHeader className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 p-8">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-3">
                                         <div className="bg-primary/10 p-2 rounded-xl">
                                             <HugeiconsIcon icon={Clock01Icon} className="size-5 text-primary" />
                                         </div>
-                                        <CardTitle className="text-xl font-black tracking-tight">Activity Feeds</CardTitle>
+                                        <CardTitle className="text-xl font-black tracking-tight dark:text-slate-100">Activity Feeds</CardTitle>
                                     </div>
-                                    <CardDescription className="text-xs font-medium text-slate-500 ml-10">Real-time log transaksi per individu fhir resource.</CardDescription>
+                                    <CardDescription className="text-xs font-medium text-slate-500 dark:text-slate-400 ml-10">Real-time log transaksi per individu fhir resource.</CardDescription>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="h-6 px-3 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 border-slate-200">
+                                    <Badge variant="outline" className="h-6 px-3 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700">
                                         Showing {stats?.logs.length || 0} of {stats?.pagination?.total || 0} Records
                                     </Badge>
                                 </div>
@@ -323,32 +323,32 @@ export function SatuSehatDashboard() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader className="bg-slate-50/40">
+                                <TableHeader className="bg-slate-50/40 dark:bg-slate-800/40">
                                     <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 px-8 py-5 tracking-widest">Time & Date</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Resource Type</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Action</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Code</TableHead>
-                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 text-right pr-8 tracking-widest">Reference ID</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 px-8 py-5 tracking-widest">Time & Date</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest">Resource Type</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest">Action</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest">Status</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest">Code</TableHead>
+                                        <TableHead className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 text-right pr-8 tracking-widest">Reference ID</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {stats?.logs.map((log) => (
-                                        <TableRow key={log.id} className="group hover:bg-slate-50/50 transition-all border-slate-50">
+                                        <TableRow key={log.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all border-slate-50 dark:border-slate-800">
                                             <TableCell className="px-8 py-4">
                                                 <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-slate-900">{format(new Date(log.createdAt), "HH:mm:ss")}</span>
-                                                    <span className="text-[10px] font-medium text-slate-400 tracking-tighter">{format(new Date(log.createdAt), "dd MMM yyyy")}</span>
+                                                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{format(new Date(log.createdAt), "HH:mm:ss")}</span>
+                                                    <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 tracking-tighter">{format(new Date(log.createdAt), "dd MMM yyyy")}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <span className="text-sm font-black text-slate-900 tracking-tight">{log.resourceType}</span>
+                                                <span className="text-sm font-black text-slate-900 dark:text-slate-100 tracking-tight">{log.resourceType}</span>
                                             </TableCell>
                                             <TableCell>
                                                 <span className={cn(
                                                     "text-[10px] font-black px-2 py-1 rounded-md tracking-widest",
-                                                    log.method === "POST" ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"
+                                                    log.method === "POST" ? "bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400" : "bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400"
                                                 )}>
                                                     {log.method}
                                                 </span>
@@ -358,17 +358,17 @@ export function SatuSehatDashboard() {
                                                     <div className={cn("size-1.5 rounded-full shadow-sm", log.status === "SUCCESS" ? "bg-emerald-500 shadow-emerald-500/50" : "bg-red-500 shadow-red-500/50")} />
                                                     <span className={cn(
                                                         "text-xs font-bold",
-                                                        log.status === "SUCCESS" ? "text-emerald-600" : "text-red-600"
+                                                        log.status === "SUCCESS" ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
                                                     )}>
                                                         {log.status === "SUCCESS" ? "Success" : "Failed"}
                                                     </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{log.responseCode}</span>
+                                                <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">{log.responseCode}</span>
                                             </TableCell>
                                             <TableCell className="text-right pr-8">
-                                                <span className="text-xs font-mono text-slate-300 transition-colors group-hover:text-slate-900">{log.resourceId || "---"}</span>
+                                                <span className="text-xs font-mono text-slate-300 dark:text-slate-600 transition-colors group-hover:text-slate-900 dark:group-hover:text-slate-100">{log.resourceId || "---"}</span>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -376,12 +376,12 @@ export function SatuSehatDashboard() {
                                         <TableRow>
                                             <TableCell colSpan={6} className="h-96 text-center">
                                                 <div className="flex flex-col items-center justify-center gap-4">
-                                                    <div className="bg-slate-50 p-6 rounded-full">
-                                                        <HugeiconsIcon icon={Search01Icon} className="size-16 text-slate-200" />
+                                                    <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-full">
+                                                        <HugeiconsIcon icon={Search01Icon} className="size-16 text-slate-200 dark:text-slate-700" />
                                                     </div>
                                                     <div className="space-y-1">
-                                                        <p className="text-lg font-black text-slate-900 uppercase tracking-tight">No Transactions Logged</p>
-                                                        <p className="text-xs text-slate-400 font-medium">Try changing the date range or environment.</p>
+                                                        <p className="text-lg font-black text-slate-900 dark:text-slate-100 uppercase tracking-tight">No Transactions Logged</p>
+                                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Try changing the date range or environment.</p>
                                                     </div>
                                                 </div>
                                             </TableCell>
@@ -404,18 +404,18 @@ export function SatuSehatDashboard() {
 
                             {/* Pagination Controls */}
                             {stats?.pagination && stats.pagination.totalPages > 1 && (
-                                <div className="bg-slate-50/50 border-t border-slate-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                    <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none">
-                                        Page <span className="text-slate-900">{stats.pagination.page}</span> of <span className="text-slate-900">{stats.pagination.totalPages}</span> 
-                                        <span className="mx-2 text-slate-200">•</span>
-                                        Total <span className="text-slate-900">{stats.pagination.total}</span> entries
+                                <div className="bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest leading-none">
+                                        Page <span className="text-slate-900 dark:text-slate-100">{stats.pagination.page}</span> of <span className="text-slate-900 dark:text-slate-100">{stats.pagination.totalPages}</span> 
+                                        <span className="mx-2 text-slate-200 dark:text-slate-800">•</span>
+                                        Total <span className="text-slate-900 dark:text-slate-100">{stats.pagination.total}</span> entries
                                     </div>
                                     
                                     <div className="flex items-center gap-2">
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border-slate-200 shadow-sm transition-all hover:bg-white disabled:opacity-30"
+                                            className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-white dark:hover:bg-slate-800 dark:bg-slate-900 dark:text-slate-300 disabled:opacity-30"
                                             onClick={() => {
                                                 const newPage = page - 1;
                                                 setPage(newPage);
@@ -428,7 +428,6 @@ export function SatuSehatDashboard() {
                                         
                                         <div className="flex items-center gap-1">
                                             {[...Array(Math.min(5, stats.pagination.totalPages))].map((_, i) => {
-                                                // Simplified page numbers for now
                                                 const pageNum = i + 1;
                                                 return (
                                                     <button
@@ -442,7 +441,7 @@ export function SatuSehatDashboard() {
                                                             "size-9 rounded-xl text-[10px] font-black transition-all flex items-center justify-center",
                                                             page === pageNum 
                                                                 ? "bg-primary text-white shadow-lg shadow-primary/20" 
-                                                                : "text-slate-400 hover:bg-slate-200/50 hover:text-slate-900"
+                                                                : "text-slate-400 dark:text-slate-500 hover:bg-slate-200/50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
                                                         )}
                                                     >
                                                         {pageNum}
@@ -457,7 +456,7 @@ export function SatuSehatDashboard() {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border-slate-200 shadow-sm transition-all hover:bg-white disabled:opacity-30"
+                                            className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-white dark:hover:bg-slate-800 dark:bg-slate-900 dark:text-slate-300 disabled:opacity-30"
                                             onClick={() => {
                                                 const newPage = page + 1;
                                                 setPage(newPage);
@@ -475,7 +474,7 @@ export function SatuSehatDashboard() {
                 </TabsContent>
             </Tabs>
 
-            <div className="flex items-center justify-center gap-3 italic text-[10px] text-slate-400 font-bold bg-slate-50/50 py-3 rounded-full border border-slate-100 mt-12">
+            <div className="flex items-center justify-center gap-3 italic text-[10px] text-slate-400 dark:text-slate-500 font-bold bg-slate-50/50 dark:bg-slate-900/50 py-3 rounded-full border border-slate-100 dark:border-slate-800 mt-12">
                 <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Dihubungkan ke SATUSEHAT API • Terakhir diperbarui: {format(new Date(), "dd MMMM yyyy, HH:mm", { locale: id })} WIB
             </div>
@@ -487,10 +486,10 @@ function DateRangePicker({ range, setRange }: { range: DateRange | undefined, se
         <Popover>
             <PopoverTrigger className={cn(
                 buttonVariants({ variant: "outline" }),
-                "h-10 justify-start text-left font-bold text-xs bg-white rounded-xl border-slate-200 shadow-sm transition-all hover:bg-slate-50",
+                "h-10 justify-start text-left font-bold text-xs bg-white dark:bg-slate-900 rounded-xl border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-slate-100",
                 !range && "text-muted-foreground"
             )}>
-                <HugeiconsIcon icon={Calendar03Icon} className="mr-2 size-4 text-slate-400" />
+                <HugeiconsIcon icon={Calendar03Icon} className="mr-2 size-4 text-slate-400 dark:text-slate-500" />
                 {range?.from ? (
                     range.to ? (
                         <>
@@ -503,7 +502,7 @@ function DateRangePicker({ range, setRange }: { range: DateRange | undefined, se
                     <span>Pick a date</span>
                 )}
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl border-none overflow-hidden mt-2" align="end">
+            <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl dark:shadow-none border-none overflow-hidden mt-2" align="end">
                 <Calendar
                     initialFocus
                     mode="range"
@@ -511,7 +510,7 @@ function DateRangePicker({ range, setRange }: { range: DateRange | undefined, se
                     selected={range}
                     onSelect={setRange}
                     numberOfMonths={2}
-                    className="bg-white"
+                    className="bg-white dark:bg-slate-950"
                 />
             </PopoverContent>
         </Popover>

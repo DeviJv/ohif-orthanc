@@ -20,7 +20,7 @@ export default function DashboardPage() {
             {/* Header section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900">
+                    <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100">
                         Dashboard <span className="text-primary text-xl ml-2 font-bold bg-primary/10 px-3 py-1 rounded-full uppercase tracking-widest">Quantum PACS</span>
                     </h1>
                     <p className="text-muted-foreground font-medium">Monitoring performa sistem dan volume data radiologi secara real-time.</p>
@@ -29,17 +29,17 @@ export default function DashboardPage() {
 
             <Tabs defaultValue="pacs" className="w-full" onValueChange={setActiveTab}>
                 <div className="flex justify-center md:justify-start">
-                    <TabsList className="flex bg-slate-100/80 p-1 rounded-xl border border-slate-200/40 mb-4 h-11">
+                    <TabsList className="flex bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/40 dark:border-slate-800 mb-4 h-11">
                         <TabsTrigger 
                             value="pacs" 
-                            className="rounded-lg px-8 py-2 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-full"
+                            className="rounded-lg px-8 py-2 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-950 data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-full"
                         >
                             <HugeiconsIcon icon={DashboardCircleIcon} className="size-3.5 mr-2" />
                             PACS Dashboard
                         </TabsTrigger>
                         <TabsTrigger 
                             value="satusehat" 
-                            className="rounded-lg px-8 py-2 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-full"
+                            className="rounded-lg px-8 py-2 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-950 data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-full"
                         >
                             <HugeiconsIcon icon={ActivityIcon} className="size-3.5 mr-2" />
                             SatuSehat Dashboard

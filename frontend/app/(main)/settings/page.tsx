@@ -124,13 +124,13 @@ export default function SettingsPage() {
     return (
         <div className="flex flex-col gap-6 p-4 md:p-8 max-w-5xl mx-auto">
             <header className="flex flex-col gap-1">
-                <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                    <HugeiconsIcon icon={Settings05Icon} className="size-6 text-primary" strokeWidth={2} />
+                <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 dark:text-slate-100">
+                    <HugeiconsIcon icon={Settings05Icon} className="size-6 text-primary dark:text-primary" strokeWidth={2} />
                     Pengaturan
                 </h1>
                 <div className="flex items-center gap-4">
                     <p className="text-muted-foreground text-sm">Kelola konfigurasi sistem dan profil fasilitas kesehatan.</p>
-                    <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
+                    <Badge variant="outline" className="bg-primary/5 dark:bg-primary/10 text-primary border-primary/20 dark:border-primary/40">
                         AI Service: Active
                     </Badge>
                 </div>
@@ -139,8 +139,8 @@ export default function SettingsPage() {
             <Separator />
 
             <Tabs defaultValue="clinic" className="w-full overflow-hidden">
-                <TabsList className="flex w-full overflow-x-auto overflow-y-hidden no-scrollbar justify-start h-auto p-1 py-1.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    <TabsTrigger value="clinic" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none">
+                <TabsList className="flex w-full overflow-x-auto overflow-y-hidden no-scrollbar justify-start h-auto p-1 py-1.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-slate-100 dark:bg-slate-800/50">
+                    <TabsTrigger value="clinic" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-slate-900 dark:data-[state=active]:text-slate-100">
                         <HugeiconsIcon icon={Building04Icon} className="size-4" />
                         Profil Klinik / RS
                     </TabsTrigger>
@@ -179,13 +179,13 @@ export default function SettingsPage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             {/* Left: Info + Doctors */}
                             <div className="lg:col-span-2 space-y-6">
-                                <Card className="border-2 border-slate-200/60 shadow-sm">
+                                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
                                     <CardHeader>
-                                        <CardTitle className="text-base flex items-center gap-2">
+                                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                                             <HugeiconsIcon icon={Building04Icon} className="size-4.5 text-primary" strokeWidth={2} />
                                             Informasi Klinik / RS
                                         </CardTitle>
-                                        <CardDescription>Tampil di header laporan PDF hasil rontgen</CardDescription>
+                                        <CardDescription className="dark:text-slate-400">Tampil di header laporan PDF hasil rontgen</CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         <div className="space-y-1.5">
@@ -229,13 +229,13 @@ export default function SettingsPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-2 border-slate-200/60 shadow-sm">
+                                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
                                     <CardHeader>
-                                        <CardTitle className="text-base flex items-center gap-2">
+                                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                                             <HugeiconsIcon icon={UserIcon} className="size-4.5 text-primary" strokeWidth={2} />
                                             Daftar Dokter
                                         </CardTitle>
-                                        <CardDescription>Nama dokter bisa dipilih saat mengisi laporan PDF</CardDescription>
+                                        <CardDescription className="dark:text-slate-400">Nama dokter bisa dipilih saat mengisi laporan PDF</CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-3">
                                         {config.doctors.map((doc, idx) => (
@@ -266,17 +266,17 @@ export default function SettingsPage() {
 
                             {/* Right: Logo */}
                             <div className="flex flex-col gap-4">
-                                <Card className="h-fit border-2 border-slate-200/60 shadow-sm">
+                                <Card className="h-fit border-2 border-slate-200/60 dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
                                     <CardHeader>
-                                        <CardTitle className="text-base flex items-center gap-2">
+                                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                                             <HugeiconsIcon icon={ImageUploadIcon} className="size-4.5 text-primary" strokeWidth={2} />
                                             Logo Klinik
                                         </CardTitle>
-                                        <CardDescription>Maks. 500KB. Tampil di pojok kiri header PDF.</CardDescription>
+                                        <CardDescription className="dark:text-slate-400">Maks. 500KB. Tampil di pojok kiri header PDF.</CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         <div
-                                            className="border-2 border-dashed border-slate-200 rounded-xl aspect-square flex items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-slate-50 transition-all"
+                                            className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl aspect-square flex items-center justify-center cursor-pointer hover:border-primary/50 dark:hover:border-primary/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all bg-slate-50/30 dark:bg-slate-900/30"
                                             onClick={() => logoInputRef.current?.click()}
                                         >
                                             {config.clinicLogo ? (
@@ -286,7 +286,7 @@ export default function SettingsPage() {
                                                     className="max-h-full max-w-full object-contain p-4 rounded-lg"
                                                 />
                                             ) : (
-                                                <div className="text-center text-slate-400 space-y-2 p-6">
+                                                <div className="text-center text-slate-400 dark:text-slate-600 space-y-2 p-6">
                                                     <HugeiconsIcon icon={ImageUploadIcon} className="size-10 mx-auto opacity-40" />
                                                     <p className="text-xs">Klik untuk upload logo</p>
                                                     <p className="text-xs opacity-60">PNG, JPG, atau SVG</p>
@@ -465,15 +465,15 @@ function TelegramSettingsTab() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
             {/* Configuration Section */}
             <div className="lg:col-span-2 space-y-6">
-                <Card className="border-2 border-primary/20 shadow-sm overflow-hidden">
-                    <CardHeader className="bg-primary/5 pb-6">
+                <Card className="border-2 border-primary/20 dark:border-primary/40 shadow-sm overflow-hidden dark:bg-slate-900/50">
+                    <CardHeader className="bg-primary/5 dark:bg-primary/10 pb-6">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <CardTitle className="text-base flex items-center gap-2">
+                                <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                                     <HugeiconsIcon icon={RoboticIcon} className="size-4.5 text-primary" strokeWidth={2} />
                                     Telegram API Settings
                                 </CardTitle>
-                                <CardDescription className="text-xs">
+                                <CardDescription className="text-xs dark:text-slate-400">
                                     Konfigurasi bot Telegram untuk notifikasi hasil analisa AI.
                                 </CardDescription>
                             </div>
@@ -570,24 +570,24 @@ function TelegramSettingsTab() {
 
                 {/* Status Legend */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3 text-blue-900 shadow-sm">
+                    <div className="bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-xl p-4 flex gap-3 text-blue-900 dark:text-blue-300 shadow-sm">
                         <div className="bg-blue-500 text-white rounded-lg p-2 h-fit shrink-0">
                             <HugeiconsIcon icon={InformationCircleIcon} className="size-4" strokeWidth={3} />
                         </div>
                         <div className="space-y-1">
                             <h4 className="text-sm font-bold leading-tight">Database Priority</h4>
-                            <p className="text-xs text-blue-800/80 leading-relaxed">
+                            <p className="text-xs text-blue-800/80 dark:text-blue-300/80 leading-relaxed">
                                 Sistem membaca konfig dari Database terlebih dahulu sebelum mengambil dari file .env.
                             </p>
                         </div>
                     </div>
-                    <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-4 flex gap-3 text-amber-900 shadow-sm">
+                    <div className="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl p-4 flex gap-3 text-amber-900 dark:text-amber-300 shadow-sm">
                         <div className="bg-amber-500 text-white rounded-lg p-2 h-fit shrink-0">
                             <HugeiconsIcon icon={CircleIcon} className="size-4" strokeWidth={3} />
                         </div>
                         <div className="space-y-1">
                             <h4 className="text-sm font-bold leading-tight">Privacy Focus</h4>
-                            <p className="text-xs text-amber-800/80 leading-relaxed">
+                            <p className="text-xs text-amber-800/80 dark:text-amber-300/80 leading-relaxed">
                                 Token bot Anda di-mask secara otomatis. Pastikan bot sudah di-Start di Telegram.
                             </p>
                         </div>
@@ -597,31 +597,31 @@ function TelegramSettingsTab() {
 
             {/* Tutorial Section */}
             <div className="space-y-6">
-                <Card className="border-2 border-slate-200/60 shadow-sm">
+                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-bold flex items-center gap-2">
-                            <HugeiconsIcon icon={InformationCircleIcon} className="size-4 text-blue-500" strokeWidth={2.5} />
+                        <CardTitle className="text-sm font-bold flex items-center gap-2 dark:text-slate-100">
+                            <HugeiconsIcon icon={InformationCircleIcon} className="size-4 text-blue-500 dark:text-blue-400" strokeWidth={2.5} />
                             Langkah-langkah
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6 text-sm">
                         <div className="space-y-4">
                             <div className="flex gap-3 relative">
-                                <div className="absolute left-[9px] top-6 bottom-[-16px] w-[2px] bg-slate-100" />
-                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none">1</Badge>
+                                <div className="absolute left-[9px] top-6 bottom-[-16px] w-[2px] bg-slate-100 dark:bg-slate-800" />
+                                <Badge className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none">1</Badge>
                                 <div className="space-y-1">
-                                    <p className="font-bold text-xs uppercase tracking-tighter">Chat @BotFather</p>
+                                    <p className="font-bold text-xs uppercase tracking-tighter dark:text-slate-300">Chat @BotFather</p>
                                     <p className="text-xs text-muted-foreground leading-relaxed">
-                                        Ketik <code className="bg-slate-100 px-1 rounded">/newbot</code> di BotFather.
+                                        Ketik <code className="bg-slate-100 dark:bg-slate-800 px-1 rounded">/newbot</code> di BotFather.
                                     </p>
                                 </div>
                             </div>
 
                             <div className="flex gap-3 relative">
-                                <div className="absolute left-[9px] top-6 bottom-[-16px] w-[2px] bg-slate-100" />
-                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none">2</Badge>
+                                <div className="absolute left-[9px] top-6 bottom-[-16px] w-[2px] bg-slate-100 dark:bg-slate-800" />
+                                <Badge className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none">2</Badge>
                                 <div className="space-y-1">
-                                    <p className="font-bold text-xs uppercase tracking-tighter">Get API Token</p>
+                                    <p className="font-bold text-xs uppercase tracking-tighter dark:text-slate-300">Get API Token</p>
                                     <p className="text-xs text-muted-foreground leading-relaxed">
                                         Copy token dari BotFather dan paste di input samping.
                                     </p>
@@ -629,10 +629,10 @@ function TelegramSettingsTab() {
                             </div>
 
                             <div className="flex gap-3">
-                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" strokeWidth={4} /></Badge>
+                                <Badge className="bg-green-100 dark:bg-emerald-900/50 text-green-700 dark:text-emerald-300 hover:bg-green-100 dark:hover:bg-emerald-900/50 size-5 p-0 flex items-center justify-center rounded-sm shrink-0 font-bold z-10 border-none"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" strokeWidth={4} /></Badge>
                                 <div className="space-y-1">
-                                    <p className="font-bold text-xs uppercase tracking-tighter">Start Bot!</p>
-                                    <p className="text-xs text-muted-foreground leading-relaxed text-emerald-700">
+                                    <p className="font-bold text-xs uppercase tracking-tighter dark:text-emerald-400">Start Bot!</p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed text-emerald-700 dark:text-emerald-400 font-medium">
                                         Klik **Start** di bot baru Anda.
                                     </p>
                                 </div>
@@ -734,13 +734,13 @@ function AiSettingsTab() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-                <Card>
+                <Card className="dark:bg-slate-900/50 dark:border-slate-800">
                     <CardHeader>
-                        <CardTitle className="text-base flex items-center gap-2">
+                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                             <HugeiconsIcon icon={CpuIcon} className="size-4.5 text-primary" strokeWidth={2} />
                             Status Kecerdasan Buatan (AI)
                         </CardTitle>
-                        <CardDescription>Atur bagaimana sistem memproses DICOM menggunakan model AI.</CardDescription>
+                        <CardDescription className="dark:text-slate-400">Atur bagaimana sistem memproses DICOM menggunakan model AI.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 gap-4">
@@ -755,13 +755,13 @@ function AiSettingsTab() {
                                     className={cn(
                                         "flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all",
                                         mode === item.id 
-                                            ? "border-primary bg-primary/5 ring-2 ring-primary/10 shadow-sm" 
-                                            : "border-slate-100 hover:border-slate-200 hover:bg-slate-50"
+                                            ? "border-primary bg-primary/5 dark:bg-primary/10 ring-2 ring-primary/10 shadow-sm" 
+                                            : "border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50"
                                     )}
                                 >
                                     <div className={cn(
                                         "p-2.5 rounded-lg shrink-0 transition-colors",
-                                        mode === item.id ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                                        mode === item.id ? "bg-primary text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
                                     )}>
                                         <HugeiconsIcon icon={mode === item.id ? CheckmarkCircle02Icon : CircleIcon} className="size-5" />
                                     </div>
@@ -781,51 +781,51 @@ function AiSettingsTab() {
             </div>
 
             <div className="space-y-4">
-                <Card className="bg-slate-50 border-slate-200">
-                    <CardHeader className="pb-3 border-b border-slate-200/60 mb-2">
-                        <CardTitle className="text-sm font-bold flex items-center justify-between">
+                <Card className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+                    <CardHeader className="pb-3 border-b border-slate-200/60 dark:border-slate-800 mb-2">
+                        <CardTitle className="text-sm font-bold flex items-center justify-between dark:text-slate-100">
                             <span className="flex items-center gap-2">
                                 <HugeiconsIcon icon={Settings05Icon} className="size-4" />
                                 Hardware & System Metrics
                             </span>
                             {systemMetrics?.ai?.status === "Connected" ? (
-                                <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200 text-[10px] h-5 shadow-none px-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />Online</Badge>
+                                <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] h-5 shadow-none px-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />Online</Badge>
                             ) : (
-                                <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 text-[10px] h-5 shadow-none px-1.5"><div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1" />Offline</Badge>
+                                <Badge variant="outline" className="bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800 text-[10px] h-5 shadow-none px-1.5"><div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1" />Offline</Badge>
                             )}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="text-xs space-y-4 text-slate-600 pt-2">
                         {systemMetrics ? (
                             <div className="grid grid-cols-1 gap-2">
-                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50 dark:border-slate-800">
                                     <span className="text-muted-foreground font-medium">OS Server:</span>
-                                    <span className="font-mono text-slate-800 uppercase">{systemMetrics.system?.platform} ({systemMetrics.system?.arch})</span>
+                                    <span className="font-mono text-slate-800 dark:text-slate-200 uppercase">{systemMetrics.system?.platform} ({systemMetrics.system?.arch})</span>
                                 </div>
-                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50 dark:border-slate-800">
                                     <span className="text-muted-foreground font-medium">CPU Cores:</span>
-                                    <span className="font-mono text-slate-800">{systemMetrics.system?.cpuCount} vCPU</span>
+                                    <span className="font-mono text-slate-800 dark:text-slate-200">{systemMetrics.system?.cpuCount} vCPU</span>
                                 </div>
-                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50 dark:border-slate-800">
                                     <span className="text-muted-foreground font-medium">Memori Terpakai:</span>
-                                    <span className="font-mono text-slate-800">{systemMetrics.system?.usedMemGb} GB / {systemMetrics.system?.totalMemGb} GB</span>
+                                    <span className="font-mono text-slate-800 dark:text-slate-200">{systemMetrics.system?.usedMemGb} GB / {systemMetrics.system?.totalMemGb} GB</span>
                                 </div>
-                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
+                                <div className="flex justify-between items-center pb-2 border-b border-slate-200/50 dark:border-slate-800">
                                     <span className="text-muted-foreground font-medium">AI Hardware Device:</span>
-                                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-50 border-blue-100 shadow-none uppercase">
+                                    <Badge variant="secondary" className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 border-blue-100 dark:border-blue-800 shadow-none uppercase">
                                         {systemMetrics.ai?.device}
                                     </Badge>
                                 </div>
                                 <div className="flex justify-between items-center pb-1">
                                     <span className="text-muted-foreground font-medium">Engine Build:</span>
-                                    <span className="font-mono text-slate-800 font-bold tracking-tighter bg-slate-200/50 px-1.5 py-0.5 rounded">{systemMetrics.ai?.backendMode}</span>
+                                    <span className="font-mono text-slate-800 dark:text-slate-200 font-bold tracking-tighter bg-slate-200/50 dark:bg-slate-800 px-1.5 py-0.5 rounded">{systemMetrics.ai?.backendMode}</span>
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center py-4 text-slate-400">Loading system metrics...</div>
+                            <div className="text-center py-4 text-slate-400 dark:text-slate-600">Loading system metrics...</div>
                         )}
                         
-                        <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-3 text-blue-900 mt-2 shadow-sm">
+                        <div className="bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-lg p-3 text-blue-900 dark:text-blue-300 mt-2 shadow-sm">
                             <p className="leading-relaxed">
                                 **Tips VPS:** Jika Anda mendeploy di VPS, pastikan RAM cukup. Sistem kami merekomendasikan minimal **4GB RAM** agar komputasi AI berjalan stabil.
                             </p>
@@ -1020,7 +1020,7 @@ function SatuSehatSettingsTab() {
             <div className="flex items-center justify-center py-20 animate-pulse">
                 <div className="flex flex-col items-center gap-4">
                     <HugeiconsIcon icon={HealthIcon} className="size-12 text-primary/40 animate-bounce" />
-                    <p className="text-sm font-medium text-slate-400">Memuat konfigurasi SatuSehat...</p>
+                    <p className="text-sm font-medium text-slate-400 dark:text-slate-600">Memuat konfigurasi SatuSehat...</p>
                 </div>
             </div>
         );
@@ -1029,22 +1029,22 @@ function SatuSehatSettingsTab() {
     return (
         <div className="space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Environment Selection & Action Bar */}
-            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between bg-white/40 p-6 rounded-2xl border-2 border-primary/10 backdrop-blur-md shadow-sm">
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between bg-white/40 dark:bg-slate-900/40 p-6 rounded-2xl border-2 border-primary/10 dark:border-primary/20 backdrop-blur-md shadow-sm">
                 <div className="space-y-1">
-                    <h3 className="text-lg font-bold flex items-center gap-2">
+                    <h3 className="text-lg font-bold flex items-center gap-2 dark:text-slate-100">
                         <HugeiconsIcon icon={HealthIcon} className="size-5 text-primary" />
                         Mode Integrasi Aktif
                     </h3>
-                    <p className="text-xs text-slate-500">Pilih lingkungan yang akan digunakan oleh sistem saat ini.</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Pilih lingkungan yang akan digunakan oleh sistem saat ini.</p>
                 </div>
 
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     <div className="flex-1 md:w-64">
                         <Select value={config.env} onValueChange={(v) => handleChange("env", v)}>
-                            <SelectTrigger className="w-full bg-white border-primary/20 focus:ring-primary shadow-sm h-11">
+                            <SelectTrigger className="w-full bg-white dark:bg-slate-900 border-primary/20 dark:border-primary/40 focus:ring-primary shadow-sm h-11 dark:text-slate-100">
                                 <SelectValue placeholder="Pilih Environment" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-white dark:bg-slate-900 dark:border-slate-800">
                                 <SelectItem value="staging">Staging (Sandbox)</SelectItem>
                                 <SelectItem value="production">Production</SelectItem>
                             </SelectContent>
@@ -1077,29 +1077,29 @@ function SatuSehatSettingsTab() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
                 {/* ── STAGING SECTION ── */}
                 <Card className={cn(
-                    "border-2 transition-all duration-300 overflow-hidden",
-                    config.env === "staging" ? "border-primary shadow-lg ring-4 ring-primary/5" : "border-slate-200 opacity-80"
+                    "border-2 transition-all duration-300 overflow-hidden dark:bg-slate-900/50",
+                    config.env === "staging" ? "border-primary shadow-lg ring-4 ring-primary/5" : "border-slate-200 dark:border-slate-800 opacity-80"
                 )}>
                     <CardHeader className={cn(
                         "pb-6 border-b",
-                        config.env === "staging" ? "bg-primary/5 border-primary/10" : "bg-slate-50 border-slate-100"
+                        config.env === "staging" ? "bg-primary/5 dark:bg-primary/10 border-primary/10 dark:border-primary/20" : "bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800"
                     )}>
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <CardTitle className="text-base flex items-center gap-2">
+                                <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                                     <div className="size-2 rounded-full bg-blue-500 animate-pulse" />
                                     Staging (Sandbox) Config
                                 </CardTitle>
-                                <CardDescription className="text-[10px] font-medium uppercase tracking-wider opacity-60">
+                                <CardDescription className="text-[10px] font-medium uppercase tracking-wider opacity-60 dark:text-slate-400">
                                     Environment untuk Pengembangan & Testing
                                 </CardDescription>
                             </div>
                             {config.env === "staging" && <Badge className="bg-primary hover:bg-primary uppercase text-[9px] px-1.5 h-5 flex items-center gap-1"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" /> Active</Badge>}
                         </div>
                     </CardHeader>
-                    <CardContent className="pt-8 space-y-6 bg-white/50">
+                    <CardContent className="pt-8 space-y-6 bg-white/50 dark:bg-transparent">
                         <div className="space-y-1.5">
-                            <Label htmlFor="stgOrgId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Staging Organization ID</Label>
+                            <Label htmlFor="stgOrgId" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter ml-1">Staging Organization ID</Label>
                             <Input
                                 id="stgOrgId"
                                 placeholder="IHS ID Staging"
@@ -1109,18 +1109,18 @@ function SatuSehatSettingsTab() {
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <Label htmlFor="stgClientId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Staging Client ID</Label>
+                            <Label htmlFor="stgClientId" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter ml-1">Staging Client ID</Label>
                             <Input
                                 id="stgClientId"
                                 placeholder="Client ID Staging"
                                 value={config.stgClientId}
                                 onChange={(e) => handleChange("stgClientId", e.target.value)}
-                                className="font-mono text-sm shadow-sm"
+                                className="font-mono text-sm shadow-sm dark:bg-slate-900 dark:border-slate-800"
                             />
                         </div>
                         <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                                <Label htmlFor="stgClientSecret" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Staging Client Secret</Label>
+                                <Label htmlFor="stgClientSecret" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter ml-1">Staging Client Secret</Label>
                                 <Button variant="ghost" size="sm" className="h-4 p-0 px-1 text-[9px] text-primary" onClick={() => setShowSecretStg(!showSecretStg)}>
                                     {showSecretStg ? "Sembunyikan" : "Tampilkan"}
                                 </Button>
@@ -1131,25 +1131,25 @@ function SatuSehatSettingsTab() {
                                 placeholder="Client Secret Staging"
                                 value={config.stgClientSecret}
                                 onChange={(e) => handleChange("stgClientSecret", e.target.value)}
-                                className="font-mono text-sm shadow-sm"
+                                className="font-mono text-sm shadow-sm dark:bg-slate-900 dark:border-slate-800"
                             />
                         </div>
                         <div className="space-y-1.5 pt-2">
-                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Staging Auth URL</Label>
+                            <Label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter ml-1">Staging Auth URL</Label>
                             <Input
                                 value={config.stgAuthUrl}
                                 onChange={(e) => handleChange("stgAuthUrl", e.target.value)}
                                 placeholder="https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken..."
-                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                                className="text-[11px] font-mono text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-900/50 border-transparent"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Staging Base FHIR URL</Label>
+                            <Label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter ml-1">Staging Base FHIR URL</Label>
                             <Input
                                 value={config.stgBaseUrl}
                                 onChange={(e) => handleChange("stgBaseUrl", e.target.value)}
                                 placeholder="https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1"
-                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                                className="text-[11px] font-mono text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-900/50 border-transparent"
                             />
                         </div>
                     </CardContent>
@@ -1157,50 +1157,50 @@ function SatuSehatSettingsTab() {
 
                 {/* ── PRODUCTION SECTION ── */}
                 <Card className={cn(
-                    "border-2 transition-all duration-300 overflow-hidden",
-                    config.env === "production" ? "border-emerald-500 shadow-lg ring-4 ring-emerald-500/5" : "border-slate-200 opacity-80"
+                    "border-2 transition-all duration-300 overflow-hidden dark:bg-slate-900/50",
+                    config.env === "production" ? "border-emerald-500 shadow-lg ring-4 ring-emerald-500/5" : "border-slate-200 dark:border-slate-800 opacity-80"
                 )}>
                     <CardHeader className={cn(
                         "pb-6 border-b",
-                        config.env === "production" ? "bg-emerald-50 border-emerald-100" : "bg-slate-50 border-slate-100"
+                        config.env === "production" ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/30" : "bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800"
                     )}>
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <CardTitle className="text-base flex items-center gap-2">
+                                <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                                     <div className="size-2 rounded-full bg-emerald-500" />
                                     Production Config
                                 </CardTitle>
-                                <CardDescription className="text-[10px] font-medium uppercase tracking-wider opacity-60">
+                                <CardDescription className="text-[10px] font-medium uppercase tracking-wider opacity-60 dark:text-slate-400">
                                     Environment untuk Operasional Klinik / RS
                                 </CardDescription>
                             </div>
                             {config.env === "production" && <Badge className="bg-emerald-600 hover:bg-emerald-600 uppercase text-[9px] px-1.5 h-5 flex items-center gap-1"><HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" /> Active</Badge>}
                         </div>
                     </CardHeader>
-                    <CardContent className="pt-8 space-y-6 bg-white/50">
+                    <CardContent className="pt-8 space-y-6 bg-white/50 dark:bg-transparent">
                         <div className="space-y-1.5">
-                            <Label htmlFor="prdOrgId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Production Organization ID</Label>
+                            <Label htmlFor="prdOrgId" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter ml-1">Production Organization ID</Label>
                             <Input
                                 id="prdOrgId"
                                 placeholder="IHS ID Production"
                                 value={config.prdOrgId}
                                 onChange={(e) => handleChange("prdOrgId", e.target.value)}
-                                className="font-mono text-sm shadow-sm border-emerald-100 focus:ring-emerald-500"
+                                className="font-mono text-sm shadow-sm border-emerald-100 dark:border-emerald-900 focus:ring-emerald-500 dark:bg-slate-900"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <Label htmlFor="prdClientId" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Production Client ID</Label>
+                            <Label htmlFor="prdClientId" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter ml-1">Production Client ID</Label>
                             <Input
                                 id="prdClientId"
                                 placeholder="Client ID Production"
                                 value={config.prdClientId}
                                 onChange={(e) => handleChange("prdClientId", e.target.value)}
-                                className="font-mono text-sm shadow-sm border-emerald-100 focus:ring-emerald-500"
+                                className="font-mono text-sm shadow-sm border-emerald-100 dark:border-emerald-900 focus:ring-emerald-500 dark:bg-slate-900"
                             />
                         </div>
                         <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                                <Label htmlFor="prdClientSecret" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter ml-1">Production Client Secret</Label>
+                                <Label htmlFor="prdClientSecret" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter ml-1">Production Client Secret</Label>
                                 <Button variant="ghost" size="sm" className="h-4 p-0 px-1 text-[9px] text-emerald-600" onClick={() => setShowSecretPrd(!showSecretPrd)}>
                                     {showSecretPrd ? "Sembunyikan" : "Tampilkan"}
                                 </Button>
@@ -1211,25 +1211,25 @@ function SatuSehatSettingsTab() {
                                 placeholder="Client Secret Production"
                                 value={config.prdClientSecret}
                                 onChange={(e) => handleChange("prdClientSecret", e.target.value)}
-                                className="font-mono text-sm shadow-sm border-emerald-100 focus:ring-emerald-500"
+                                className="font-mono text-sm shadow-sm border-emerald-100 dark:border-emerald-900 focus:ring-emerald-500 dark:bg-slate-900"
                             />
                         </div>
                         <div className="space-y-1.5 pt-2">
-                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Production Auth URL</Label>
+                            <Label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter ml-1">Production Auth URL</Label>
                             <Input
                                 value={config.prdAuthUrl}
                                 onChange={(e) => handleChange("prdAuthUrl", e.target.value)}
                                 placeholder="https://api-satusehat.kemkes.go.id/oauth2/v1/accesstoken..."
-                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                                className="text-[11px] font-mono text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-900/50 border-transparent"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Production Base FHIR URL</Label>
+                            <Label className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter ml-1">Production Base FHIR URL</Label>
                             <Input
                                 value={config.prdBaseUrl}
                                 onChange={(e) => handleChange("prdBaseUrl", e.target.value)}
                                 placeholder="https://api-satusehat.kemkes.go.id/fhir-r4/v1"
-                                className="text-[11px] font-mono text-slate-500 bg-slate-50/50"
+                                className="text-[11px] font-mono text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-900/50 border-transparent"
                             />
                         </div>
                     </CardContent>
@@ -1237,10 +1237,10 @@ function SatuSehatSettingsTab() {
             </div>
 
             {debugResult && (
-                <Card className="border-2 border-emerald-200 bg-emerald-50/30 shadow-inner overflow-hidden animate-in zoom-in-95 duration-300">
-                    <CardHeader className="py-3 px-4 bg-emerald-100/50 border-b border-emerald-200">
-                        <CardTitle className="text-xs font-bold text-emerald-800 flex items-center gap-2 uppercase tracking-widest">
-                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3.5 text-emerald-600" strokeWidth={3} />
+                <Card className="border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/20 shadow-inner overflow-hidden animate-in zoom-in-95 duration-300">
+                    <CardHeader className="py-3 px-4 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-800">
+                        <CardTitle className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-2 uppercase tracking-widest">
+                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3.5 text-emerald-600 dark:text-emerald-400" strokeWidth={3} />
                             Auth Debug Output ({config.env.toUpperCase()})
                         </CardTitle>
                     </CardHeader>
@@ -1266,13 +1266,13 @@ function SatuSehatSettingsTab() {
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-2 bg-white/60 rounded border border-emerald-100">
-                                <span className="text-emerald-600/70 font-bold mr-2 uppercase">Application:</span>
-                                <span className="text-emerald-900">{debugResult.application_name}</span>
+                            <div className="p-2 bg-white/60 dark:bg-slate-900/60 rounded border border-emerald-100 dark:border-emerald-900">
+                                <span className="text-emerald-600/70 dark:text-emerald-400/70 font-bold mr-2 uppercase">Application:</span>
+                                <span className="text-emerald-900 dark:text-emerald-100">{debugResult.application_name}</span>
                             </div>
-                            <div className="p-2 bg-white/60 rounded border border-emerald-100">
-                                <span className="text-emerald-600/70 font-bold mr-2 uppercase">Org Verify:</span>
-                                <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-none h-4 px-1 text-[9px]">
+                            <div className="p-2 bg-white/60 dark:bg-slate-900/60 rounded border border-emerald-100 dark:border-emerald-900">
+                                <span className="text-emerald-600/70 dark:text-emerald-400/70 font-bold mr-2 uppercase">Org Verify:</span>
+                                <Badge variant="outline" className="bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border-none h-4 px-1 text-[9px]">
                                     {debugResult.organization_verified ? "SUCCESS" : "SKIPPED"}
                                 </Badge>
                             </div>
@@ -1284,46 +1284,46 @@ function SatuSehatSettingsTab() {
             {/* 2-Column Grid for Identity and Advanced Overrides */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
                 {/* Column 1: Global Identity */}
-                <Card className="border-2 border-slate-200/60 shadow-sm bg-white/30 backdrop-blur-sm">
+                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
                     <CardHeader className="pb-4">
-                        <CardTitle className="text-base flex items-center gap-2">
+                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                             <HugeiconsIcon icon={UserIcon} className="size-4 text-primary" strokeWidth={2.5} />
                             Dummy Personas (Testing)
                         </CardTitle>
-                        <CardDescription className="text-xs">ID virtual untuk keperluan simulasi integrasi.</CardDescription>
+                        <CardDescription className="text-xs dark:text-slate-400">ID virtual untuk keperluan simulasi integrasi.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <Label htmlFor="defPat" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">Default Patient ID</Label>
+                                <Label htmlFor="defPat" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Default Patient ID</Label>
                                 <Input 
                                     id="defPat"
                                     value={config.defaultPatientId || ""}
                                     onChange={(e) => handleChange("defaultPatientId", e.target.value)}
-                                    className="text-[13px] bg-white border-slate-200 shadow-sm"
+                                    className="text-[13px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm"
                                     placeholder="Ex: P000001"
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <Label htmlFor="defPrac" className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">Default Practitioner ID</Label>
+                                <Label htmlFor="defPrac" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Default Practitioner ID</Label>
                                 <Input 
                                     id="defPrac"
                                     value={config.defaultPractitionerId || ""}
                                     onChange={(e) => handleChange("defaultPractitionerId", e.target.value)}
-                                    className="text-[13px] bg-white border-slate-200 shadow-sm"
+                                    className="text-[13px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm"
                                     placeholder="Ex: 1000001"
                                 />
                             </div>
                         </div>
                         
-                        <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
+                        <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/20">
                             <div className="flex gap-3">
                                 <div className="size-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
                                     <HugeiconsIcon icon={InformationCircleIcon} className="size-4" strokeWidth={3} />
                                 </div>
                                 <div className="space-y-1">
-                                    <h4 className="text-xs font-bold text-primary uppercase">Legacy Compatibility</h4>
-                                    <p className="text-[10px] text-slate-500 leading-relaxed">
+                                    <h4 className="text-xs font-bold text-primary dark:text-primary uppercase">Legacy Compatibility</h4>
+                                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
                                         Sistem secara otomatis menyesuaikan kredensial aktif backend dengan pilihan environment di atas agar kompatibel dengan modul lama.
                                     </p>
                                 </div>
@@ -1333,13 +1333,13 @@ function SatuSehatSettingsTab() {
                 </Card>
 
                 {/* Column 2: Advanced Resource Overrides */}
-                <Card className="border-2 border-slate-200/60 shadow-sm bg-white/30 backdrop-blur-sm">
+                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
                     <CardHeader className="pb-4">
-                        <CardTitle className="text-base flex items-center gap-2">
+                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
                             <HugeiconsIcon icon={Settings05Icon} className="size-4 text-primary" strokeWidth={2.5} />
                             Advanced Resource Overrides
                         </CardTitle>
-                        <CardDescription className="text-xs">URL spesifik per resource (Jangan ganti jika tidak perlu).</CardDescription>
+                        <CardDescription className="text-xs dark:text-slate-400">URL spesifik per resource (Jangan ganti jika tidak perlu).</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
@@ -1356,11 +1356,11 @@ function SatuSehatSettingsTab() {
                                 { id: "practitionerUrl", label: "Practitioner" },
                             ].map((resource) => (
                                 <div key={resource.id} className="space-y-1">
-                                    <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">{resource.label}</Label>
+                                    <Label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter ml-1">{resource.label}</Label>
                                     <Input 
                                         value={config[resource.id] || ""}
                                         onChange={(e) => handleChange(resource.id, e.target.value)}
-                                        className="text-[10px] font-mono bg-white border-slate-200 shadow-sm py-1 h-8"
+                                        className="text-[10px] font-mono bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm py-1 h-8 dark:text-slate-300"
                                         placeholder="Auto-derived"
                                     />
                                 </div>
@@ -1482,16 +1482,16 @@ function SatuSehatIntegrationTester() {
     };
 
     return (
-        <Card className="border-2 border-emerald-200/60 shadow-md bg-emerald-50/20 overflow-hidden">
-            <CardHeader className="bg-emerald-50/50 border-b border-emerald-100 pb-4">
+        <Card className="border-2 border-emerald-200/60 dark:border-emerald-900/30 shadow-md bg-emerald-50/20 dark:bg-emerald-950/20 overflow-hidden">
+            <CardHeader className="bg-emerald-50/50 dark:bg-emerald-900/30 border-b border-emerald-100 dark:border-emerald-800 pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-emerald-500 rounded-lg text-white shadow-sm ring-4 ring-emerald-500/10">
                             <HugeiconsIcon icon={Link01Icon} className="size-5" strokeWidth={2.5} />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-emerald-900">SatuSehat Full-Chain Tester</CardTitle>
-                            <CardDescription className="text-emerald-700/70 text-xs text-balance">
+                            <CardTitle className="text-lg font-bold text-emerald-900 dark:text-emerald-100">SatuSehat Full-Chain Tester</CardTitle>
+                            <CardDescription className="text-emerald-700/70 dark:text-emerald-400 text-xs text-balance">
                                 Debug integrasi otomatis (Order {'->'} DICOM {'->'} Router {'->'} Resource) tanpa CLI.
                             </CardDescription>
                         </div>
@@ -1507,18 +1507,18 @@ function SatuSehatIntegrationTester() {
             <CardContent className="pt-8 space-y-8">
                 {/* Stepper Visual */}
                 <div className="relative flex justify-between max-w-2xl mx-auto mb-10">
-                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-emerald-100 -translate-y-1/2 z-0" />
+                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-emerald-100 dark:bg-emerald-900 -translate-y-1/2 z-0" />
                     {[1, 2, 3].map((s) => (
                         <div key={s} className="relative z-10 flex flex-col items-center gap-2 group">
                             <div className={cn(
                                 "size-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 border-4",
-                                step >= s ? "bg-emerald-500 text-white border-emerald-100 ring-4 ring-emerald-500/10" : "bg-white text-slate-300 border-slate-100"
+                                step >= s ? "bg-emerald-500 text-white border-emerald-100 dark:border-emerald-800 ring-4 ring-emerald-500/10" : "bg-white dark:bg-slate-900 text-slate-300 dark:text-slate-700 border-slate-100 dark:border-slate-800"
                             )}>
                                 {step > s ? <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-5" strokeWidth={3} /> : s}
                             </div>
                             <span className={cn(
                                 "text-[10px] font-bold uppercase tracking-widest",
-                                step >= s ? "text-emerald-700" : "text-slate-400"
+                                step >= s ? "text-emerald-700 dark:text-emerald-400" : "text-slate-400 dark:text-slate-600"
                             )}>
                                 {s === 1 ? "Create Order" : s === 2 ? "Send DICOM" : "Verify Result"}
                             </span>
@@ -1526,27 +1526,27 @@ function SatuSehatIntegrationTester() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white/40 border border-emerald-100 rounded-2xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white/40 dark:bg-slate-900/40 border border-emerald-100 dark:border-emerald-900 rounded-2xl">
                     <div className="space-y-2.5">
-                        <Label htmlFor="accNo" className="text-xs font-bold text-emerald-800 uppercase tracking-widest">Accession Number</Label>
+                        <Label htmlFor="accNo" className="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">Accession Number</Label>
                         <Input 
                             id="accNo"
                             value={accessionNumber}
                             onChange={(e) => setAccessionNumber(e.target.value)}
                             disabled={step > 1}
                             placeholder="Contoh: test-888"
-                            className="bg-white border-emerald-100 focus:ring-emerald-500 h-12 font-mono"
+                            className="bg-white dark:bg-slate-900 border-emerald-100 dark:border-emerald-900 focus:ring-emerald-500 h-12 font-mono dark:text-slate-100"
                         />
                     </div>
                     <div className="space-y-2.5">
-                        <Label htmlFor="patientNameTest" className="text-xs font-bold text-emerald-800 uppercase tracking-widest">Nama Pasien</Label>
+                        <Label htmlFor="patientNameTest" className="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">Nama Pasien</Label>
                         <Input 
                             id="patientNameTest"
                             value={patientName}
                             onChange={(e) => setPatientName(e.target.value)}
                             disabled={step > 1}
                             placeholder="Nama Pasien Test"
-                            className="bg-white border-emerald-100 focus:ring-emerald-500 h-12"
+                            className="bg-white dark:bg-slate-900 border-emerald-100 dark:border-emerald-900 focus:ring-emerald-500 h-12 dark:text-slate-100"
                         />
                     </div>
                 </div>
@@ -1563,20 +1563,20 @@ function SatuSehatIntegrationTester() {
                             Step 1: Create Test Order
                         </Button>
                         {orderResult && (
-                            <div className="p-4 bg-white/80 border border-emerald-200 rounded-xl space-y-4 animate-in slide-in-from-left-4">
+                            <div className="p-4 bg-white/80 dark:bg-slate-900/80 border border-emerald-200 dark:border-emerald-900 rounded-xl space-y-4 animate-in slide-in-from-left-4">
                                 <div className="space-y-2">
-                                    <div className="flex justify-between items-center text-xs p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
-                                        <span className="text-emerald-700 font-bold tracking-tight">ServiceRequest ID:</span>
-                                        <code className="bg-emerald-100 px-2 py-0.5 rounded font-bold text-emerald-900">{orderResult.id}</code>
+                                    <div className="flex justify-between items-center text-xs p-2.5 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-100 dark:border-emerald-800">
+                                        <span className="text-emerald-700 dark:text-emerald-400 font-bold tracking-tight">ServiceRequest ID:</span>
+                                        <code className="bg-emerald-100 dark:bg-emerald-900 px-2 py-0.5 rounded font-bold text-emerald-900 dark:text-emerald-100">{orderResult.id}</code>
                                     </div>
-                                    <div className="flex justify-between items-center text-xs p-2.5 bg-blue-50 rounded-lg border border-blue-100">
-                                        <span className="text-blue-700 font-bold tracking-tight">Patient ID (Sync):</span>
-                                        <code className="bg-blue-100 px-2 py-0.5 rounded font-bold text-blue-900">{orderResult.patientId}</code>
+                                    <div className="flex justify-between items-center text-xs p-2.5 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                                        <span className="text-blue-700 dark:text-blue-400 font-bold tracking-tight">Patient ID (Sync):</span>
+                                        <code className="bg-blue-100 dark:bg-blue-900 px-2 py-0.5 rounded font-bold text-blue-900 dark:text-blue-100">{orderResult.patientId}</code>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest opacity-60">Backend Logs</p>
-                                    <div className="text-[10px] font-mono text-slate-500 leading-tight space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100 max-h-40 overflow-y-auto">
+                                    <p className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest opacity-60">Backend Logs</p>
+                                    <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 leading-tight space-y-1 bg-slate-50 dark:bg-slate-950 p-3 rounded-lg border border-slate-100 dark:border-slate-800 max-h-40 overflow-y-auto">
                                         {orderResult.logs.map((L, i) => <div key={i}>[{i+1}] {L}</div>)}
                                     </div>
                                 </div>
@@ -1595,8 +1595,8 @@ function SatuSehatIntegrationTester() {
                             Step 2: Push Dummy DICOM to Orthanc
                         </Button>
                         {dicomResult && (
-                            <div className="p-4 bg-white/80 border border-blue-200 rounded-xl space-y-2 animate-in slide-in-from-left-4">
-                                <p className="text-xs font-bold text-blue-700 underline mb-2 tracking-tight">Orthanc Creation Logs:</p>
+                            <div className="p-4 bg-white/80 dark:bg-slate-900/80 border border-blue-200 dark:border-blue-900 rounded-xl space-y-2 animate-in slide-in-from-left-4">
+                                <p className="text-xs font-bold text-blue-700 dark:text-blue-400 underline mb-2 tracking-tight">Orthanc Creation Logs:</p>
                                 <div className="text-[10px] font-mono text-slate-500 leading-tight space-y-1">
                                     {dicomResult.logs.map((L, i) => <div key={i}>[{i+1}] {L}</div>)}
                                 </div>

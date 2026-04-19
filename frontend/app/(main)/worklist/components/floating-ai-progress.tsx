@@ -74,26 +74,26 @@ function AiToastCard({ task }: { task: Task }) {
         <div
             className={cn(
                 "w-[350px] pointer-events-auto overflow-hidden",
-                "bg-white border border-slate-200 rounded-lg shadow-xl",
+                "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl",
                 "animate-in fade-in slide-in-from-right-5 duration-300",
                 "flex flex-col relative"
             )}
         >
             {/* Header / Meta */}
-            <div className="bg-slate-50/50 px-4 py-1.5 border-b border-slate-100 flex items-center justify-between">
+            <div className="bg-slate-50/50 dark:bg-slate-800/20 px-4 py-1.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                     <div className={cn("size-1.5 rounded-full animate-pulse", progress < 100 ? "bg-primary" : "bg-emerald-500")} />
-                    <span className="text-[10px] uppercase font-black text-slate-500 tracking-widest leading-none">
+                    <span className="text-[10px] uppercase font-black text-slate-500 dark:text-slate-400 tracking-widest leading-none">
                         AI ENGINE
                     </span>
                 </div>
-                <span className="text-[9px] font-mono text-slate-400">
+                <span className="text-[9px] font-mono text-slate-400 dark:text-slate-500">
                     {task.metadata?.studyId?.slice(-12)}
                 </span>
             </div>
 
             {/* Main Content Area */}
-            <div className="p-4 bg-white flex items-center gap-3.5">
+            <div className="p-4 bg-white dark:bg-slate-900 flex items-center gap-3.5">
                 <div className={cn(
                     "flex-shrink-0 size-9 rounded-full flex items-center justify-center border",
                     progress < 100 ? "border-primary/20 bg-primary/5 text-primary" : "border-emerald-500/20 bg-emerald-500/5 text-emerald-600"
@@ -107,21 +107,21 @@ function AiToastCard({ task }: { task: Task }) {
 
                 <div className="flex-1 min-w-0 pr-1">
                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-slate-900 truncate">
+                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
                             {progress < 100 ? "Analyzing Image..." : "Analysis Finished"}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-900 tabular-nums">
+                        <span className="text-[10px] font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                             {progress}%
                         </span>
                     </div>
                     
                     {/* Status Text */}
-                    <p className="text-[10px] font-medium text-slate-500 line-clamp-1 mb-2.5">
+                    <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1 mb-2.5">
                         {status}
                     </p>
 
                     {/* Progress Bar in center content */}
-                    <Progress value={progress} className="h-1.5 bg-slate-100" />
+                    <Progress value={progress} className="h-1.5 bg-slate-100 dark:bg-slate-800" />
                 </div>
             </div>
 

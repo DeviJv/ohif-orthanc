@@ -202,7 +202,7 @@ export const getColumns = ({
                 console.log(`[DEBUG TABLE] Checking AI for Patient: ${patientName}, UID: "${studyUidRaw}" - Found: ${!!result}`);
             }
 
-            if (!result) return <span className="text-slate-400 text-xs italic">-</span>;
+            if (!result) return <span className="text-slate-400 dark:text-slate-600 text-xs italic">-</span>;
 
             return (
                 <div className="flex items-center gap-2">
@@ -212,11 +212,12 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className={`h-8 px-3 text-[11px] font-bold uppercase transition-all rounded-lg ${
+                        className={cn(
+                            "h-8 px-3 text-[11px] font-bold uppercase transition-all rounded-lg",
                             result.isUrgent 
-                            ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 border border-rose-200' 
-                            : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 border border-emerald-200'
-                        }`}
+                            ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-700 dark:hover:text-rose-300 border border-rose-200 dark:border-rose-800' 
+                            : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                        )}
                         onClick={() => openAiResultDialog?.(result, patientName)}
                     >
                         View Results
@@ -246,7 +247,7 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                        className="size-8 p-0 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20"
                         onClick={() => handleOpenViewer(study.MainDicomTags.StudyInstanceUID, "segmented")}
                         title="Open MPR Segmented Viewer"
                     >
@@ -257,7 +258,7 @@ export const getColumns = ({
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="size-8 p-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 disabled:opacity-30"
+                            className="size-8 p-0 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 disabled:opacity-30"
                             onClick={() => handleRunAi?.(study.ID)}
                             title="Run AI Analysis Manually"
                             disabled={aiMode === "OFF"}
@@ -269,7 +270,7 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-slate-600 hover:text-slate-700 hover:bg-slate-100"
+                        className="size-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                         onClick={() => handleDownload(study.ID, patientName)}
                         title="Download ZIP"
                     >
@@ -279,7 +280,7 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        className="size-8 p-0 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                         onClick={() => openSendTelegramDialog(study)}
                         title="Send to Telegram Doctor"
                     >
@@ -289,7 +290,7 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                        className="size-8 p-0 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
                         onClick={() => openExportPdfDialog(study)}
                         title="Export Laporan PDF"
                     >
@@ -302,8 +303,8 @@ export const getColumns = ({
                         className={cn(
                             "size-8 p-0 transition-all",
                             ssIntegrationStatus?.[study.MainDicomTags.StudyInstanceUID]?.status === "SUCCESS"
-                                ? "text-emerald-500 bg-emerald-50/50"
-                                : "text-slate-400 hover:text-primary hover:bg-primary/5"
+                                ? "text-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20"
+                                : "text-slate-400 dark:text-slate-600 hover:text-primary hover:bg-primary/5"
                         )}
                         onClick={() => openBridgeDialog?.(study)}
                         title={
@@ -321,12 +322,12 @@ export const getColumns = ({
                         />
                     </Button>
 
-                    <div className="h-4 w-px bg-slate-200 self-center mx-0.5" />
+                    <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 self-center mx-0.5" />
 
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                        className="size-8 p-0 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                         onClick={() => openEditDialog(study)}
                         title="Edit Study Metadata"
                     >
@@ -336,7 +337,7 @@ export const getColumns = ({
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="size-8 p-0 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                        className="size-8 p-0 text-rose-500 dark:text-rose-400 hover:text-rose-600 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-900/20"
                         onClick={() => {
                             setStudyToDelete(study);
                             setIsDeleteDialogOpen(true);

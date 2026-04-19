@@ -88,7 +88,7 @@ export function UploadDicomDialog({
                             File DICOM (.dcm)
                         </Label>
                         <div 
-                            className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 bg-muted/20 hover:bg-muted/30 transition-colors cursor-pointer"
+                            className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-lg p-6 flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors cursor-pointer"
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <input
@@ -110,7 +110,7 @@ export function UploadDicomDialog({
                                 </>
                             ) : (
                                 <>
-                                    <div className="size-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-1">
+                                    <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-1">
                                         <HugeiconsIcon icon={Upload01Icon} className="size-6" />
                                     </div>
                                     <p className="text-sm font-medium">Klik untuk pilih file DICOM</p>

@@ -68,20 +68,20 @@ export function SatuSehatToolbar<TData>({
                 <div className="relative group w-full sm:w-72 shrink-0">
                     <HugeiconsIcon
                         icon={Search01Icon}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 size-4 group-focus-within:text-primary transition-colors"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-600 size-4 group-focus-within:text-primary transition-colors"
                     />
                     <Input
                         placeholder="Search patient name, ID..."
                         value={globalFilter ?? ""}
                         onChange={(event) => setGlobalFilter(event.target.value)}
-                        className="pl-9 bg-white border-slate-200 focus-visible:ring-primary/20 shadow-sm"
+                        className="pl-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-primary/20 shadow-sm dark:text-slate-100"
                     />
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                <div className="flex items-center gap-2 shrink-0 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
                     <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "ALL")}>
-                        <SelectTrigger className="h-8 w-36 bg-transparent border-0 ring-offset-0 focus:ring-0 focus:ring-offset-0 gap-2 shadow-none text-sm font-medium">
-                            <HugeiconsIcon icon={FilterIcon} className="size-4 text-slate-500" />
+                        <SelectTrigger className="h-8 w-36 bg-transparent border-0 ring-offset-0 focus:ring-0 focus:ring-offset-0 gap-2 shadow-none text-sm font-medium dark:text-slate-300">
+                            <HugeiconsIcon icon={FilterIcon} className="size-4 text-slate-500 dark:text-slate-400" />
                             <SelectValue placeholder="Semua Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -92,14 +92,14 @@ export function SatuSehatToolbar<TData>({
                         </SelectContent>
                     </Select>
 
-                    <div className="h-4 w-px bg-slate-200 mx-1"></div>
+                    <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
 
                     <Popover>
                         <PopoverTrigger 
                             className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 px-3 gap-2 font-medium ${
                                 dateRange?.from || dateRange?.to
-                                    ? "bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary"
-                                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 bg-transparent"
+                                    ? "bg-primary/5 dark:bg-primary/10 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary"
+                                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 bg-transparent"
                             }`}
                         >
                             <HugeiconsIcon icon={Calendar03Icon} className="size-4" />
@@ -129,11 +129,11 @@ export function SatuSehatToolbar<TData>({
                     </Popover>
 
                     {(dateRange?.from || dateRange?.to) && (
-                        <div className="flex items-center pr-1 border-l border-slate-200">
+                        <div className="flex items-center pr-1 border-l border-slate-200 dark:border-slate-800">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50"
+                                className="h-8 w-8 text-slate-400 dark:text-slate-600 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20"
                                 onClick={() => setDateRange(undefined)}
                             >
                                 <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
@@ -145,7 +145,7 @@ export function SatuSehatToolbar<TData>({
                 <Button
                     variant="outline"
                     size="icon"
-                    className="h-9 w-9 shrink-0 bg-white shadow-sm border-slate-200 text-slate-600 hover:text-primary hover:bg-primary/5 hover:border-primary/20"
+                    className="h-9 w-9 shrink-0 bg-white dark:bg-slate-900 shadow-sm border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 dark:hover:border-primary/40 transition-all"
                     onClick={fetchStudies}
                     title="Refresh Data"
                 >
@@ -156,14 +156,14 @@ export function SatuSehatToolbar<TData>({
             <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
                 <div className="flex items-center gap-2">
                     {hasSelection && (
-                        <span className="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200 border-dashed animate-in fade-in slide-in-from-right-2">
+                        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-800 border-dashed animate-in fade-in slide-in-from-right-2">
                             {selectedRows.length} terpilih
                         </span>
                     )}
                     
                     <Button 
                         variant="default" 
-                        className="gap-2 bg-slate-900 hover:bg-slate-800 text-white shadow-md shadow-slate-900/10 h-9"
+                        className="gap-2 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 shadow-md shadow-slate-900/10 dark:shadow-none h-9"
                         onClick={onBulkSyncClick}
                     >
                         <HugeiconsIcon icon={SentIcon} className="size-4" />

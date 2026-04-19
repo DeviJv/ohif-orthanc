@@ -135,15 +135,15 @@ function SatuSehatContent() {
     return (
         <div className="p-6 w-full space-y-6">
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">SatuSehat Sync</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">SatuSehat Sync</h1>
                 <p className="text-muted-foreground">Monitoring dan sinkronisasi manual data DICOM ke platform SatuSehat Kemenkes.</p>
             </div>
 
             <SatuSehatStats studies={studies} />
 
 
-            <div className="mt-8 border border-slate-200 bg-white shadow-sm rounded-xl overflow-hidden flex flex-col">
-                <div className="p-4 sm:p-5 border-b border-slate-100 bg-white">
+            <div className="mt-8 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm rounded-xl overflow-hidden flex flex-col backdrop-blur-sm">
+                <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-transparent">
                     <SatuSehatToolbar 
                         table={table}
                         globalFilter={globalFilter}
@@ -160,11 +160,11 @@ function SatuSehatContent() {
 
                 <div className="w-full overflow-x-auto">
                     <Table>
-                        <TableHeader className="bg-slate-50/50">
+                        <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
                             {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
+                                <TableRow key={headerGroup.id} className="border-slate-100 dark:border-slate-800">
                                     {headerGroup.headers.map((header) => (
-                                        <TableHead key={header.id} className="font-bold text-slate-700">
+                                        <TableHead key={header.id} className="font-bold text-slate-700 dark:text-slate-300">
                                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                         </TableHead>
                                     ))}
@@ -185,10 +185,10 @@ function SatuSehatContent() {
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
-                                        className="hover:bg-slate-50/80 transition-colors"
+                                        className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-slate-100 dark:border-slate-800"
                                     >
                                         {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id} className="py-4">
+                                            <TableCell key={cell.id} className="py-4 text-slate-900 dark:text-slate-100">
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </TableCell>
                                         ))}
@@ -196,7 +196,7 @@ function SatuSehatContent() {
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
+                                    <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400 dark:text-slate-600 italic">
                                         No studies found.
                                     </TableCell>
                                 </TableRow>
@@ -206,13 +206,13 @@ function SatuSehatContent() {
                 </div>
 
                 {/* Pagination Controls */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-100 bg-white">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-transparent">
                     <div className="flex items-center gap-4">
                         <div className="text-sm text-muted-foreground font-medium">
                             Showing {table.getFilteredRowModel().rows.length} studies
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l">Show per page</span>
+                            <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l border-slate-100 dark:border-slate-800">Show per page</span>
                             <Select
                                 value={table.getState().pagination.pageSize.toString()}
                                 onValueChange={(value) => table.setPageSize(Number(value))}
@@ -256,8 +256,8 @@ function SatuSehatContent() {
             <Dialog open={isErrorDialogOpen} onOpenChange={setIsErrorDialogOpen}>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
-                        <DialogTitle className="text-rose-600 flex items-center gap-2">
-                            <span className="p-1.5 bg-rose-100 rounded-full inline-block">
+                        <DialogTitle className="text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                            <span className="p-1.5 bg-rose-100 dark:bg-rose-950/30 rounded-full inline-block">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                             </span>
                             SatuSehat Integration Error
@@ -269,15 +269,15 @@ function SatuSehatContent() {
                     
                     <div className="mt-4 space-y-4">
                         <div>
-                            <h4 className="text-sm font-semibold mb-1 text-slate-700">Error Message:</h4>
-                            <div className="p-3 bg-rose-50 text-rose-700 text-sm rounded-md border border-rose-100">
+                            <h4 className="text-sm font-semibold mb-1 text-slate-700 dark:text-slate-300">Error Message:</h4>
+                            <div className="p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 text-sm rounded-md border border-rose-100 dark:border-rose-900/50">
                                 {selectedStudyError?.error || "Unknown Error"}
                             </div>
                         </div>
 
                         {selectedStudyError?.bundleResponse && (
                             <div>
-                                <h4 className="text-sm font-semibold mb-1 text-slate-700">Raw Response (JSON):</h4>
+                                <h4 className="text-sm font-semibold mb-1 text-slate-700 dark:text-slate-300">Raw Response (JSON):</h4>
                                 <div className="bg-slate-900 border border-slate-800 rounded-md p-4 overflow-x-auto max-h-[300px]">
                                     <pre className="text-xs text-emerald-400 font-mono">
                                         {/* Try to format if valid JSON string, otherwise raw */}

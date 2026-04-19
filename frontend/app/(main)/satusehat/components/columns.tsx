@@ -97,7 +97,7 @@ export const getColumns = ({
         cell: ({ getValue }) => {
            const acc = getValue() as string;
            return (
-               <span className="font-mono text-xs px-2 py-0.5 bg-slate-100 rounded text-slate-700 font-semibold border border-slate-200">
+               <span className="font-mono text-xs px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-700 dark:text-slate-300 font-semibold border border-slate-200 dark:border-slate-700">
                    {acc || "N/A"}
                </span>
            );
@@ -109,22 +109,21 @@ export const getColumns = ({
         header: "Status",
         cell: ({ getValue }) => {
             const status = getValue() as string;
-            let bgColor = "bg-slate-100";
-            let textColor = "text-slate-600";
-            let label = "Pending";
+            let bgColor = "bg-slate-100 dark:bg-slate-800";
+            let textColor = "text-slate-600 dark:text-slate-400";
+            let label = "Tertunda";
 
             if (status === "SUCCESS") {
-                bgColor = "bg-slate-900";
-                textColor = "text-white ring-1 ring-slate-800 shadow-sm";
+                bgColor = "bg-slate-900 dark:bg-slate-100";
+                textColor = "text-white dark:text-slate-900 ring-1 ring-slate-800 dark:ring-slate-200 shadow-sm";
                 label = "Terkirim";
             } else if (status === "FAILED") {
-
-                bgColor = "bg-rose-100";
-                textColor = "text-rose-700";
+                bgColor = "bg-rose-100 dark:bg-rose-950/30";
+                textColor = "text-rose-700 dark:text-rose-400";
                 label = "Gagal";
             } else if (status === "PROCESSING") {
-                bgColor = "bg-amber-100";
-                textColor = "text-amber-700";
+                bgColor = "bg-amber-100 dark:bg-amber-950/30";
+                textColor = "text-amber-700 dark:text-amber-400";
                 label = "Memproses...";
             }
 
@@ -148,12 +147,12 @@ export const getColumns = ({
         header: "Selesai Pada",
         cell: ({ getValue }) => {
             const dateStr = getValue() as string;
-            if (!dateStr) return <span className="text-xs text-slate-400 italic">-</span>;
+            if (!dateStr) return <span className="text-xs text-slate-400 dark:text-slate-600 italic">-</span>;
             
             const date = new Date(dateStr).toLocaleDateString("id-ID", {
                 day: "2-digit", month: "short", year: "numeric", hour: '2-digit', minute:'2-digit'
             });
-            return <span className="text-xs text-slate-600 font-medium">{date}</span>;
+            return <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">{date}</span>;
         },
         sortingFn: "datetime"
     },
@@ -167,7 +166,7 @@ export const getColumns = ({
                     <Button 
                         size="sm" 
                         variant="ghost" 
-                        className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-8 gap-1.5"
+                        className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-900/20 h-8 gap-1.5"
                         onClick={() => openErrorDialog(row.original)}
                     >
                         <HugeiconsIcon icon={Alert01Icon} className="size-4" />
@@ -175,7 +174,7 @@ export const getColumns = ({
                     </Button>
                 )
             }
-            return <span className="text-xs text-slate-400 italic">No errors</span>;
+            return <span className="text-xs text-slate-400 dark:text-slate-600 italic">No errors</span>;
         }
     },
     {
@@ -194,8 +193,8 @@ export const getColumns = ({
                         className={cn(
                             "gap-2 h-8",
                             isSuccess 
-                                ? "border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700" 
-                                : "border-primary/30 text-primary hover:bg-primary/5 hover:text-primary"
+                                ? "border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:text-emerald-700 dark:hover:text-emerald-300" 
+                                : "border-primary/30 text-primary hover:bg-primary/5 hover:text-primary transition-all shadow-sm"
                         )}
                         onClick={() => openBridgeDialog(study)}
                         disabled={isLoading}

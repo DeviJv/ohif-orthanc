@@ -394,7 +394,7 @@ function WorklistContent() {
     return (
         <div className="p-6 w-full space-y-6">
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Study Worklist</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Study Worklist</h1>
                 <p className="text-muted-foreground">Manage and view medical imaging studies from Orthanc PACS.</p>
             </div>
 
@@ -411,13 +411,13 @@ function WorklistContent() {
                 handleBulkDownload={handleBulkDownload}
             />
 
-            <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+            <div className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm overflow-hidden backdrop-blur-sm">
                 <Table>
-                    <TableHeader className="bg-slate-50/50">
+                    <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} className="border-slate-200 dark:border-slate-800">
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="font-bold text-slate-700">
+                                    <TableHead key={header.id} className="font-bold text-slate-700 dark:text-slate-300">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -469,10 +469,10 @@ function WorklistContent() {
                                 <React.Fragment key={row.id}>
                                     <TableRow
                                         data-state={row.getIsSelected() && "selected"}
-                                        className={`group hover:bg-slate-50/80 transition-colors ${expandedStudies[row.original.ID] ? "bg-slate-50 shadow-inner" : ""}`}
+                                        className={`group hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-slate-100 dark:border-slate-800 ${expandedStudies[row.original.ID] ? "bg-slate-50 dark:bg-slate-800 shadow-inner" : ""}`}
                                     >
                                         {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id} className="py-4 relative z-10">
+                                            <TableCell key={cell.id} className="py-4 relative z-10 text-slate-900 dark:text-slate-100">
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </TableCell>
                                         ))}
@@ -504,7 +504,7 @@ function WorklistContent() {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400">
+                                <TableCell colSpan={columns.length} className="h-40 text-center text-slate-400 dark:text-slate-500 italic">
                                     No studies found.
                                 </TableCell>
                             </TableRow>
@@ -520,7 +520,7 @@ function WorklistContent() {
                     </div>
                     
                     <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l">Show per page</span>
+                        <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l border-slate-200 dark:border-slate-800">Show per page</span>
                         <Select
                             value={table.getState().pagination.pageSize.toString()}
                             onValueChange={(value) => {

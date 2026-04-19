@@ -29,8 +29,13 @@ export async function GET(req: NextRequest) {
             };
         }
 
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "10");
+        const skip = (page - 1) * limit;
+
         // 1. Get Summary Counts grouped by resourceType
-        const logs = await db.satuSehatResourceLog.findMany({
+        // (We keep this separate to show total counts for filters)
+        const summaryLogs = await db.satuSehatResourceLog.findMany({
             where: {
                 environment,
                 ...dateFilter
@@ -59,13 +64,20 @@ export async function GET(req: NextRequest) {
             EpisodeOfCare: 0,
         };
 
-        logs.forEach(log => {
+        summaryLogs.forEach(log => {
             if (log.status === "SUCCESS") {
                 summary[log.resourceType] = (summary[log.resourceType] || 0) + 1;
             }
         });
 
-        // 2. Get Recent Transactions (Top 50)
+        // 2. Get Paginated Transactions
+        const totalLogs = await db.satuSehatResourceLog.count({
+            where: {
+                environment,
+                ...dateFilter
+            }
+        });
+
         const recentLogs = await db.satuSehatResourceLog.findMany({
             where: {
                 environment,
@@ -74,7 +86,8 @@ export async function GET(req: NextRequest) {
             orderBy: {
                 createdAt: "desc"
             },
-            take: 50
+            skip,
+            take: limit
         });
 
         // 3. Get total count for organization (from settings)
@@ -84,6 +97,12 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             summary,
             logs: recentLogs,
+            pagination: {
+                total: totalLogs,
+                page,
+                limit,
+                totalPages: Math.ceil(totalLogs / limit)
+            },
             orgId: orgId || "Unknown",
             environment
         });

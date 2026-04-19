@@ -1,0 +1,118 @@
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { 
+    Tick01Icon, 
+    AlertCircleIcon, 
+    Calendar01Icon,
+    Database02Icon
+} from "@hugeicons/core-free-icons";
+
+interface Container {
+    ID: string;
+    Names: string;
+    State: string;
+    Status: string;
+    Image: string;
+}
+
+export function SystemStatusHeader() {
+    const [containers, setContainers] = useState<Container[]>([]);
+    const [env, setEnv] = useState<string>("unknown");
+    const [isLoading, setIsLoading] = useState(true);
+    const [lastSync, setLastSync] = useState<Date>(new Date());
+
+    const fetchData = useCallback(async () => {
+        try {
+            // Fetch Docker status
+            const dockerRes = await fetch("/api/system/docker");
+            if (dockerRes.ok) {
+                const dockerData = await dockerRes.json();
+                if (dockerData.containers) {
+                    setContainers(dockerData.containers);
+                }
+            }
+
+            // Fetch Environment
+            const configRes = await fetch("/api/config/satusehat");
+            if (configRes.ok) {
+                const configData = await configRes.json();
+                setEnv(configData.env || "unknown");
+            }
+            
+            setLastSync(new Date());
+        } catch (error) {
+            console.error("Failed to fetch system status", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+        const interval = setInterval(fetchData, 30000); // Poll every 30s for header summary
+        return () => clearInterval(interval);
+    }, [fetchData]);
+
+    const runningContainers = containers.filter(c => c.State === "running");
+    const totalContainers = containers.length;
+    const allRunning = totalContainers > 0 && runningContainers.length === totalContainers;
+    const downCount = totalContainers - runningContainers.length;
+
+    return (
+        <div className="flex items-center gap-4 px-4 py-1.5 rounded-2xl bg-slate-50/50 border border-slate-200/40 shadow-sm transition-all hover:shadow-md hover:bg-white group">
+            {/* Environment Indicator */}
+            <div className="flex items-center gap-2 border-r border-slate-200 pr-4">
+                <Badge 
+                    variant={env === 'production' ? 'default' : 'secondary'}
+                    className={`${
+                        env === 'production' 
+                            ? "bg-orange-600 hover:bg-orange-600 shadow-sm shadow-orange-200" 
+                            : "bg-blue-600 hover:bg-blue-600 shadow-sm shadow-blue-200 text-white"
+                    } text-[9px] font-black tracking-tighter h-4 px-1.5 rounded-md uppercase transition-transform group-hover:scale-105`}
+                >
+                    {env}
+                </Badge>
+            </div>
+
+            {/* Docker Status */}
+            <div className="flex items-center gap-2.5 border-r border-slate-200 pr-4 transition-all">
+                <div className="relative flex items-center justify-center">
+                    <div className={`size-2 rounded-full ${allRunning ? 'bg-emerald-500' : 'bg-rose-500'} ${allRunning ? 'animate-pulse' : ''}`} />
+                    {allRunning && (
+                        <div className="absolute size-2 rounded-full bg-emerald-400 animate-ping opacity-75" />
+                    )}
+                </div>
+                
+                <div className="flex flex-col -space-y-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                        <HugeiconsIcon icon={Database02Icon} className="size-2.5" />
+                        System Docker
+                    </span>
+                    <span className={`text-xs font-black tracking-tight ${allRunning ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        {isLoading ? "Checking..." : (
+                            allRunning ? "All services running" : `${downCount} services not running`
+                        )}
+                    </span>
+                </div>
+            </div>
+
+            {/* System Online */}
+            <div className="flex items-center gap-2.5">
+                <div className="p-1.5 bg-slate-100 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                    <HugeiconsIcon icon={Calendar01Icon} className="size-3.5" />
+                </div>
+                <div className="flex flex-col -space-y-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Online</span>
+                    <span className="text-xs font-black text-slate-700 tracking-tight">
+                        {format(new Date(), "dd MMMM yyyy", { locale: id })}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+}

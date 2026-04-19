@@ -25,11 +25,6 @@ export default function DashboardPage() {
                     </h1>
                     <p className="text-muted-foreground font-medium">Monitoring performa sistem dan volume data radiologi secara real-time.</p>
                 </div>
-                
-                <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 bg-slate-100/80 px-4 py-2 rounded-2xl border border-slate-200/60 shadow-sm">
-                    <div className="size-2 rounded-full bg-green-500 animate-pulse" />
-                    System Online: {format(new Date(), "dd MMMM yyyy", { locale: id })}
-                </div>
             </div>
 
             <Tabs defaultValue="pacs" className="w-full" onValueChange={setActiveTab}>

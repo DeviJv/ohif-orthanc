@@ -11,8 +11,7 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
-import { SatuSehatService } from "@/lib/services/satusehat"
-import { Badge } from "@/components/ui/badge"
+import { SystemStatusHeader } from "@/components/system-status-header"
 
 export const dynamic = "force-dynamic";
 
@@ -21,14 +20,12 @@ export default async function MainLayout({
 }: {
     children: React.ReactNode
 }) {
-    const ssConfig = await SatuSehatService.getConfig();
-    const env = ssConfig?.environment || "unknown";
 
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b">
+                <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b bg-white/80 backdrop-blur-md">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1" />
                         <Separator
@@ -38,22 +35,16 @@ export default async function MainLayout({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="flex items-center gap-2">
+                                    <BreadcrumbPage className="flex items-center gap-2 font-black text-slate-900 tracking-tight">
                                         Hospital PACS Dashboard
-                                        {ssConfig && (
-                                            <Badge 
-                                                variant={env === 'production' ? 'default' : 'secondary'}
-                                                className={env === 'production' 
-                                                    ? "bg-orange-600 hover:bg-orange-600 text-[10px] h-5 px-1.5" 
-                                                    : "bg-blue-600 hover:bg-blue-600 text-white text-[10px] h-5 px-1.5"}
-                                            >
-                                                {env.toUpperCase()}
-                                            </Badge>
-                                        )}
                                     </BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
+                    </div>
+
+                    <div className="px-4">
+                        <SystemStatusHeader />
                     </div>
                 </header>
                 <main className="flex-1 overflow-auto">

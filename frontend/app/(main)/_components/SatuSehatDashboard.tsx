@@ -40,6 +40,12 @@ interface SatuSehatStats {
         responseCode: number;
         createdAt: string;
     }>;
+    pagination?: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
     orgId: string;
     environment: string;
 }
@@ -47,28 +53,32 @@ interface SatuSehatStats {
 export function SatuSehatDashboard() {
     const [stats, setStats] = useState<SatuSehatStats | null>(null);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
     const [environment, setEnvironment] = useState<string>("staging");
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
         from: new Date(new Date().setDate(new Date().getDate() - 30)),
         to: new Date()
     });
 
-    const fetchStats = async () => {
+    const fetchStats = async (currentPage = 1) => {
         try {
             setLoading(true);
             const params = new URLSearchParams();
             if (dateRange?.from) params.append("startDate", dateRange.from.toISOString());
             if (dateRange?.to) params.append("endDate", dateRange.to.toISOString());
             params.append("environment", environment);
+            params.append("page", currentPage.toString());
+            params.append("limit", "15"); // Use a fixed limit for now
 
             const response = await fetch(`/api/stats/satusehat?${params.toString()}`);
             if (response.ok) {
                 const data = await response.json();
                 setStats(data);
                 
-                // If logs are empty, maybe offer a backfill?
-                if (data.logs.length === 0) {
-                    // Hidden backfill check logic if needed
+                // Reset to page 1 if we changed filters and no data on current page
+                if (data.pagination && currentPage > data.pagination.totalPages && data.pagination.totalPages > 0) {
+                    setPage(1);
+                    fetchStats(1);
                 }
             }
         } catch (error) {
@@ -91,7 +101,8 @@ export function SatuSehatDashboard() {
     };
 
     useEffect(() => {
-        fetchStats();
+        setPage(1);
+        fetchStats(1);
     }, [dateRange, environment]);
 
     if (loading && !stats) {
@@ -305,7 +316,7 @@ export function SatuSehatDashboard() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Badge variant="outline" className="h-6 px-3 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 border-slate-200">
-                                        Last 50 Records
+                                        Showing {stats?.logs.length || 0} of {stats?.pagination?.total || 0} Records
                                     </Badge>
                                 </div>
                             </div>
@@ -361,7 +372,7 @@ export function SatuSehatDashboard() {
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                    {stats?.logs.length === 0 && (
+                                    {stats?.logs.length === 0 && !loading && (
                                         <TableRow>
                                             <TableCell colSpan={6} className="h-96 text-center">
                                                 <div className="flex flex-col items-center justify-center gap-4">
@@ -376,8 +387,89 @@ export function SatuSehatDashboard() {
                                             </TableCell>
                                         </TableRow>
                                     )}
+                                    {loading && (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="h-32 text-center text-slate-400 italic font-medium">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <div className="size-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                                    <div className="size-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                                    <div className="size-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                                    <span className="ml-2 uppercase tracking-[0.2em] text-[10px] font-black">Refreshing Data...</span>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
+
+                            {/* Pagination Controls */}
+                            {stats?.pagination && stats.pagination.totalPages > 1 && (
+                                <div className="bg-slate-50/50 border-t border-slate-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none">
+                                        Page <span className="text-slate-900">{stats.pagination.page}</span> of <span className="text-slate-900">{stats.pagination.totalPages}</span> 
+                                        <span className="mx-2 text-slate-200">•</span>
+                                        Total <span className="text-slate-900">{stats.pagination.total}</span> entries
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border-slate-200 shadow-sm transition-all hover:bg-white disabled:opacity-30"
+                                            onClick={() => {
+                                                const newPage = page - 1;
+                                                setPage(newPage);
+                                                fetchStats(newPage);
+                                            }}
+                                            disabled={page <= 1 || loading}
+                                        >
+                                            Previous
+                                        </Button>
+                                        
+                                        <div className="flex items-center gap-1">
+                                            {[...Array(Math.min(5, stats.pagination.totalPages))].map((_, i) => {
+                                                // Simplified page numbers for now
+                                                const pageNum = i + 1;
+                                                return (
+                                                    <button
+                                                        key={pageNum}
+                                                        onClick={() => {
+                                                            setPage(pageNum);
+                                                            fetchStats(pageNum);
+                                                        }}
+                                                        disabled={loading}
+                                                        className={cn(
+                                                            "size-9 rounded-xl text-[10px] font-black transition-all flex items-center justify-center",
+                                                            page === pageNum 
+                                                                ? "bg-primary text-white shadow-lg shadow-primary/20" 
+                                                                : "text-slate-400 hover:bg-slate-200/50 hover:text-slate-900"
+                                                        )}
+                                                    >
+                                                        {pageNum}
+                                                    </button>
+                                                );
+                                            })}
+                                            {stats.pagination.totalPages > 5 && (
+                                                <span className="text-slate-300 text-xs px-1">...</span>
+                                            )}
+                                        </div>
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border-slate-200 shadow-sm transition-all hover:bg-white disabled:opacity-30"
+                                            onClick={() => {
+                                                const newPage = page + 1;
+                                                setPage(newPage);
+                                                fetchStats(newPage);
+                                            }}
+                                            disabled={page >= (stats.pagination?.totalPages || 1) || loading}
+                                        >
+                                            Next
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </TabsContent>

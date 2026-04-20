@@ -148,23 +148,91 @@ function getCategoryIcon(category: string) {
         case "Series": return <HugeiconsIcon icon={File01Icon} className={size} />;
         case "Instances": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         case "DICOMweb": return <HugeiconsIcon icon={InternetIcon} className={size} />;
+        case "Create Order": return <HugeiconsIcon icon={CodeIcon} className={size} />;
         default: return <HugeiconsIcon icon={Link01Icon} className={size} />;
     }
 }
 
 function EndpointCard({ endpoint, onCopy }: { endpoint: ApiEndpoint, onCopy: (text: string) => void }) {
-    const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "response">("curl");
+    const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
+    const isExternalApi = endpoint.category === "Create Order";
+    const pacsKey = "pacs_secret_token_2026";
     
-    const curlCode = `curl -X ${endpoint.method} "http://localhost:8042${endpoint.path}" \\
-  -H "Authorization: Basic your_base64_auth"`;
+    const baseUrl = isExternalApi ? "" : ":8042"; // External API typically on root domain
+    const authHeader = isExternalApi 
+        ? `-H "x-pacs-key: ${pacsKey}"`
+        : `-H "Authorization: Basic your_base64_auth"`;
+
+    const curlCode = `curl -X ${endpoint.method} "http://localhost${baseUrl}${endpoint.path}" \\
+  ${authHeader} \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "patientId": "12345",
+    "studyDate": "20240420",
+    "accessionNumber": "ACSN-001"
+  }'`;
     
-    const fetchCode = `const response = await fetch("http://localhost:8042${endpoint.path}", {
+    const fetchCode = isExternalApi 
+        ? `const response = await fetch("${endpoint.path}", {
+  method: "${endpoint.method}",
+  headers: {
+    "x-pacs-key": "${pacsKey}",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    patientId: "12345",
+    studyDate: "20240420",
+    accessionNumber: "ACSN-001"
+  })
+});
+const data = await response.json();`
+        : `const response = await fetch("http://localhost:8042${endpoint.path}", {
   method: "${endpoint.method}",
   headers: {
     "Authorization": "Basic " + btoa("username:password")
   }
 });
 const data = await response.json();`;
+
+    const phpCode = isExternalApi
+        ? `<?php
+$url = "http://localhost${endpoint.path}";
+$data = [
+    "patientId" => "12345",
+    "studyDate" => "20240420",
+    "accessionNumber" => "ACSN-001"
+];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'x-pacs-key: ${pacsKey}',
+    'Content-Type: application/json'
+]);
+
+$response = curl_exec($ch);
+$result = json_decode($response, true);
+curl_close($ch);
+print_r($result);
+?>`
+        : `<?php
+$url = "http://localhost:8042${endpoint.path}";
+$auth = base64_encode("username:password");
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "${endpoint.method}");
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Basic ' . $auth
+]);
+
+$response = curl_exec($ch);
+$result = json_decode($response, true);
+curl_close($ch);
+print_r($result);
+?>`;
 
     return (
         <section id={endpoint.id} className="scroll-mt-8 transition-all hover:-translate-y-1">
@@ -251,6 +319,15 @@ const data = await response.json();`;
                                 >
                                     FETCH (JS)
                                 </button>
+                                <button 
+                                    onClick={() => setActiveTab("php")}
+                                    className={cn(
+                                        "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                        activeTab === "php" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                    )}
+                                >
+                                    PHP
+                                </button>
                                 {endpoint.response && (
                                     <button 
                                         onClick={() => setActiveTab("response")}
@@ -291,6 +368,22 @@ const data = await response.json();`;
                                             size="icon-xs" 
                                             className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
                                             onClick={() => onCopy(fetchCode)}
+                                        >
+                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {activeTab === "php" && (
+                                    <div className="relative animate-in fade-in duration-300">
+                                        <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
+                                            {phpCode}
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon-xs" 
+                                            className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
+                                            onClick={() => onCopy(phpCode)}
                                         >
                                             <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
                                         </Button>

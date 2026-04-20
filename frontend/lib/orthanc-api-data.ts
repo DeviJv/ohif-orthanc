@@ -21,6 +21,7 @@ export const ORTHANC_API_CATEGORIES = [
   "Instances",
   "System & Tools",
   "DICOMweb",
+  "Create Order",
 ];
 
 export const ORTHANC_API_DATA: ApiEndpoint[] = [
@@ -191,5 +192,22 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     path: "/dicom-web/studies",
     description: "Upload DICOM files via DICOMweb standard (STOW-RS).",
     category: "DICOMweb",
+  },
+
+  // CREATE ORDER (SIMRS Integration)
+  {
+    id: "create-order-acsn",
+    method: "POST",
+    path: "/api/external/study/accession",
+    description: "Update study Accession Number using Patient ID and Study Date. Designed for SIMRS integration when StudyInstanceUID is unknown.",
+    category: "Create Order",
+    parameters: [
+      { name: "patientId", type: "string", description: "Required Patient ID (DICOM PatientID)", required: true },
+      { name: "studyDate", type: "string", description: "Required Study Date (Format: YYYYMMDD)", required: true },
+      { name: "accessionNumber", type: "string", description: "The new Accession Number to assign", required: true },
+      { name: "patientName", type: "string", description: "Optional Patient Name for better matching", required: false },
+      { name: "description", type: "string", description: "Optional Study Description to narrow down search", required: false },
+    ],
+    response: '{"success": true, "message": "Accession Number updated", "newStudyId": "..."}'
   },
 ];

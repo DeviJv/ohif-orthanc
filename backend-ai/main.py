@@ -30,11 +30,11 @@ load_dotenv()
 app = FastAPI(title="Quantum PACS AI Engine")
 
 # --- Configuration ---
-ORTHANC_URL = os.getenv("ORTHANC_URL", "http://pacs:8042")
-ORTHANC_AUTH = (os.getenv("ORTHANC_USERNAME", "quantum"), os.getenv("ORTHANC_PASSWORD", "quantum123"))
-PUBLIC_APP_URL = os.getenv("NEXT_PUBLIC_APP_URL", "http://localhost:3000")
-FRONTEND_INTERNAL_URL = os.getenv("FRONTEND_INTERNAL_URL", PUBLIC_APP_URL)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://pacsuser:pacspassword@app-db:5432/pacsweb")
+ORTHANC_URL = os.getenv("ORTHANC_URL")
+ORTHANC_AUTH = (os.getenv("ORTHANC_USERNAME"), os.getenv("ORTHANC_PASSWORD"))
+PUBLIC_APP_URL = os.getenv("NEXT_PUBLIC_APP_URL")
+FRONTEND_INTERNAL_URL = os.getenv("FRONTEND_INTERNAL_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # --- Dynamic Configuration (DB Priority) ---
 def get_telegram_config():

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const ORTHANC_URL = process.env.ORTHANC_URL || "http://pacs:8042";
+const ORTHANC_URL = process.env.ORTHANC_URL;
 const ORTHANC_AUTH = Buffer.from(
     `${process.env.ORTHANC_USERNAME || "quantum"}:${process.env.ORTHANC_PASSWORD || "quantum123"}`
 ).toString("base64");

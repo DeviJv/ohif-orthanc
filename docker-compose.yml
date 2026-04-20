@@ -51,7 +51,7 @@ services:
       orthanc-db:
         condition: service_healthy
     environment:
-      - FRONTEND_INTERNAL_URL=http://pacs-web:3001
+      - FRONTEND_INTERNAL_URL=${FRONTEND_INTERNAL_URL}
     networks:
       - pacs
 
@@ -76,10 +76,8 @@ services:
       - AUTH_SECRET=${AUTH_SECRET}
       # Let NextAuth trust the incoming host so localhost/IP/domain access all work.
       - AUTH_TRUST_HOST=true
-      - ORTHANC_URL=http://orthanc:8042
-      - ORTHANC_USERNAME=${ORTHANC_USERNAME}
-      - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
-      - AI_BACKEND_URL=http://ai-engine:8000
+      - ORTHANC_URL=${ORTHANC_URL}
+      - AI_BACKEND_URL=${AI_BACKEND_URL}
       - INTERNAL_PACS_KEY=${INTERNAL_PACS_KEY}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
@@ -175,10 +173,10 @@ services:
     restart: always
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@app-db:5432/${DB_NAME}
-      - ORTHANC_URL=http://orthanc:8042
+      - ORTHANC_URL=${ORTHANC_URL}
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
-      - FRONTEND_INTERNAL_URL=http://pacs-web:3001
+      - FRONTEND_INTERNAL_URL=${FRONTEND_INTERNAL_URL}
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - TELEGRAM_BOT_TOKEN=
       - TELEGRAM_CHAT_ID=

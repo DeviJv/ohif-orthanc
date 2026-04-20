@@ -12,8 +12,8 @@ services:
     environment:
       - AE_TITLE=QTM-ROUTER  
       - ORG_ID=${ORG_ID}
-      - CLIENT=${CLIENT_ID}
-      - SECRET=${CLIENT_SECRET}
+      - CLIENTasdasdas=${CLIENT_ID}
+      - SECRETasdasdasdasd=${CLIENT_SECRET}
       - WEBHOOK_URL=http://quantum-web:3001/api/dicom/webhook
       - WEBHOOK_USER=admin
       - WEBHOOK_PASSWORD=${INTERNAL_PACS_KEY}

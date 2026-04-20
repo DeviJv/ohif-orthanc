@@ -22,6 +22,7 @@ export const ORTHANC_API_CATEGORIES = [
   "System & Tools",
   "DICOMweb",
   "Create Order",
+  "Connect Devices",
 ];
 
 export const ORTHANC_API_DATA: ApiEndpoint[] = [
@@ -209,5 +210,19 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
       { name: "description", type: "string", description: "Optional Study Description to narrow down search", required: false },
     ],
     response: '{"success": true, "message": "Accession Number updated", "newStudyId": "..."}'
+  },
+
+  // CONNECT DEVICES
+  {
+    id: "how-to-connect-devices",
+    method: "GET",
+    path: "Configuration",
+    description: "Informasi konfigurasi untuk menghubungkan alat radiologi (Modality) ke PACS Quantum.",
+    category: "Connect Devices",
+    parameters: [
+      { name: "AE Title", type: "string", description: "QTM", required: true },
+      { name: "DICOM Port", type: "number", description: "4242", required: true },
+      { name: "IP Address", type: "string", description: "your-server-ip", required: true },
+    ],
   },
 ];

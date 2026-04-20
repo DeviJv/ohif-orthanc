@@ -63,6 +63,11 @@ export type SatuSehatSetting = $Result.DefaultSelection<Prisma.$SatuSehatSetting
  * 
  */
 export type SatuSehatResourceLog = $Result.DefaultSelection<Prisma.$SatuSehatResourceLogPayload>
+/**
+ * Model ModalityConnection
+ * 
+ */
+export type ModalityConnection = $Result.DefaultSelection<Prisma.$ModalityConnectionPayload>
 
 /**
  * Enums
@@ -299,6 +304,16 @@ export class PrismaClient<
     * ```
     */
   get satuSehatResourceLog(): Prisma.SatuSehatResourceLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.modalityConnection`: Exposes CRUD operations for the **ModalityConnection** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModalityConnections
+    * const modalityConnections = await prisma.modalityConnection.findMany()
+    * ```
+    */
+  get modalityConnection(): Prisma.ModalityConnectionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -749,7 +764,8 @@ export namespace Prisma {
     SatuSehatIntegration: 'SatuSehatIntegration',
     SatuSehatWebhookLog: 'SatuSehatWebhookLog',
     SatuSehatSetting: 'SatuSehatSetting',
-    SatuSehatResourceLog: 'SatuSehatResourceLog'
+    SatuSehatResourceLog: 'SatuSehatResourceLog',
+    ModalityConnection: 'ModalityConnection'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -768,7 +784,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1512,6 +1528,80 @@ export namespace Prisma {
           }
         }
       }
+      ModalityConnection: {
+        payload: Prisma.$ModalityConnectionPayload<ExtArgs>
+        fields: Prisma.ModalityConnectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ModalityConnectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ModalityConnectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>
+          }
+          findFirst: {
+            args: Prisma.ModalityConnectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ModalityConnectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>
+          }
+          findMany: {
+            args: Prisma.ModalityConnectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>[]
+          }
+          create: {
+            args: Prisma.ModalityConnectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>
+          }
+          createMany: {
+            args: Prisma.ModalityConnectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ModalityConnectionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>[]
+          }
+          delete: {
+            args: Prisma.ModalityConnectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>
+          }
+          update: {
+            args: Prisma.ModalityConnectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ModalityConnectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ModalityConnectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ModalityConnectionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ModalityConnectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ModalityConnectionPayload>
+          }
+          aggregate: {
+            args: Prisma.ModalityConnectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateModalityConnection>
+          }
+          groupBy: {
+            args: Prisma.ModalityConnectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ModalityConnectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ModalityConnectionCountArgs<ExtArgs>
+            result: $Utils.Optional<ModalityConnectionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1618,6 +1708,7 @@ export namespace Prisma {
     satuSehatWebhookLog?: SatuSehatWebhookLogOmit
     satuSehatSetting?: SatuSehatSettingOmit
     satuSehatResourceLog?: SatuSehatResourceLogOmit
+    modalityConnection?: ModalityConnectionOmit
   }
 
   /* Types for Logging */
@@ -12649,6 +12740,1001 @@ export namespace Prisma {
 
 
   /**
+   * Model ModalityConnection
+   */
+
+  export type AggregateModalityConnection = {
+    _count: ModalityConnectionCountAggregateOutputType | null
+    _min: ModalityConnectionMinAggregateOutputType | null
+    _max: ModalityConnectionMaxAggregateOutputType | null
+  }
+
+  export type ModalityConnectionMinAggregateOutputType = {
+    id: string | null
+    aeTitle: string | null
+    ipAddress: string | null
+    event: string | null
+    timestamp: Date | null
+  }
+
+  export type ModalityConnectionMaxAggregateOutputType = {
+    id: string | null
+    aeTitle: string | null
+    ipAddress: string | null
+    event: string | null
+    timestamp: Date | null
+  }
+
+  export type ModalityConnectionCountAggregateOutputType = {
+    id: number
+    aeTitle: number
+    ipAddress: number
+    event: number
+    timestamp: number
+    _all: number
+  }
+
+
+  export type ModalityConnectionMinAggregateInputType = {
+    id?: true
+    aeTitle?: true
+    ipAddress?: true
+    event?: true
+    timestamp?: true
+  }
+
+  export type ModalityConnectionMaxAggregateInputType = {
+    id?: true
+    aeTitle?: true
+    ipAddress?: true
+    event?: true
+    timestamp?: true
+  }
+
+  export type ModalityConnectionCountAggregateInputType = {
+    id?: true
+    aeTitle?: true
+    ipAddress?: true
+    event?: true
+    timestamp?: true
+    _all?: true
+  }
+
+  export type ModalityConnectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModalityConnection to aggregate.
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModalityConnections to fetch.
+     */
+    orderBy?: ModalityConnectionOrderByWithRelationInput | ModalityConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModalityConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModalityConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModalityConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModalityConnections
+    **/
+    _count?: true | ModalityConnectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModalityConnectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModalityConnectionMaxAggregateInputType
+  }
+
+  export type GetModalityConnectionAggregateType<T extends ModalityConnectionAggregateArgs> = {
+        [P in keyof T & keyof AggregateModalityConnection]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModalityConnection[P]>
+      : GetScalarType<T[P], AggregateModalityConnection[P]>
+  }
+
+
+
+
+  export type ModalityConnectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ModalityConnectionWhereInput
+    orderBy?: ModalityConnectionOrderByWithAggregationInput | ModalityConnectionOrderByWithAggregationInput[]
+    by: ModalityConnectionScalarFieldEnum[] | ModalityConnectionScalarFieldEnum
+    having?: ModalityConnectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModalityConnectionCountAggregateInputType | true
+    _min?: ModalityConnectionMinAggregateInputType
+    _max?: ModalityConnectionMaxAggregateInputType
+  }
+
+  export type ModalityConnectionGroupByOutputType = {
+    id: string
+    aeTitle: string
+    ipAddress: string
+    event: string
+    timestamp: Date
+    _count: ModalityConnectionCountAggregateOutputType | null
+    _min: ModalityConnectionMinAggregateOutputType | null
+    _max: ModalityConnectionMaxAggregateOutputType | null
+  }
+
+  type GetModalityConnectionGroupByPayload<T extends ModalityConnectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ModalityConnectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModalityConnectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModalityConnectionGroupByOutputType[P]>
+            : GetScalarType<T[P], ModalityConnectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModalityConnectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    aeTitle?: boolean
+    ipAddress?: boolean
+    event?: boolean
+    timestamp?: boolean
+  }, ExtArgs["result"]["modalityConnection"]>
+
+  export type ModalityConnectionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    aeTitle?: boolean
+    ipAddress?: boolean
+    event?: boolean
+    timestamp?: boolean
+  }, ExtArgs["result"]["modalityConnection"]>
+
+  export type ModalityConnectionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    aeTitle?: boolean
+    ipAddress?: boolean
+    event?: boolean
+    timestamp?: boolean
+  }, ExtArgs["result"]["modalityConnection"]>
+
+  export type ModalityConnectionSelectScalar = {
+    id?: boolean
+    aeTitle?: boolean
+    ipAddress?: boolean
+    event?: boolean
+    timestamp?: boolean
+  }
+
+  export type ModalityConnectionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "aeTitle" | "ipAddress" | "event" | "timestamp", ExtArgs["result"]["modalityConnection"]>
+
+  export type $ModalityConnectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ModalityConnection"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      aeTitle: string
+      ipAddress: string
+      event: string
+      timestamp: Date
+    }, ExtArgs["result"]["modalityConnection"]>
+    composites: {}
+  }
+
+  type ModalityConnectionGetPayload<S extends boolean | null | undefined | ModalityConnectionDefaultArgs> = $Result.GetResult<Prisma.$ModalityConnectionPayload, S>
+
+  type ModalityConnectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ModalityConnectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ModalityConnectionCountAggregateInputType | true
+    }
+
+  export interface ModalityConnectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ModalityConnection'], meta: { name: 'ModalityConnection' } }
+    /**
+     * Find zero or one ModalityConnection that matches the filter.
+     * @param {ModalityConnectionFindUniqueArgs} args - Arguments to find a ModalityConnection
+     * @example
+     * // Get one ModalityConnection
+     * const modalityConnection = await prisma.modalityConnection.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModalityConnectionFindUniqueArgs>(args: SelectSubset<T, ModalityConnectionFindUniqueArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ModalityConnection that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModalityConnectionFindUniqueOrThrowArgs} args - Arguments to find a ModalityConnection
+     * @example
+     * // Get one ModalityConnection
+     * const modalityConnection = await prisma.modalityConnection.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModalityConnectionFindUniqueOrThrowArgs>(args: SelectSubset<T, ModalityConnectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModalityConnection that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionFindFirstArgs} args - Arguments to find a ModalityConnection
+     * @example
+     * // Get one ModalityConnection
+     * const modalityConnection = await prisma.modalityConnection.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModalityConnectionFindFirstArgs>(args?: SelectSubset<T, ModalityConnectionFindFirstArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ModalityConnection that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionFindFirstOrThrowArgs} args - Arguments to find a ModalityConnection
+     * @example
+     * // Get one ModalityConnection
+     * const modalityConnection = await prisma.modalityConnection.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModalityConnectionFindFirstOrThrowArgs>(args?: SelectSubset<T, ModalityConnectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ModalityConnections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModalityConnections
+     * const modalityConnections = await prisma.modalityConnection.findMany()
+     * 
+     * // Get first 10 ModalityConnections
+     * const modalityConnections = await prisma.modalityConnection.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const modalityConnectionWithIdOnly = await prisma.modalityConnection.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ModalityConnectionFindManyArgs>(args?: SelectSubset<T, ModalityConnectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ModalityConnection.
+     * @param {ModalityConnectionCreateArgs} args - Arguments to create a ModalityConnection.
+     * @example
+     * // Create one ModalityConnection
+     * const ModalityConnection = await prisma.modalityConnection.create({
+     *   data: {
+     *     // ... data to create a ModalityConnection
+     *   }
+     * })
+     * 
+     */
+    create<T extends ModalityConnectionCreateArgs>(args: SelectSubset<T, ModalityConnectionCreateArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ModalityConnections.
+     * @param {ModalityConnectionCreateManyArgs} args - Arguments to create many ModalityConnections.
+     * @example
+     * // Create many ModalityConnections
+     * const modalityConnection = await prisma.modalityConnection.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ModalityConnectionCreateManyArgs>(args?: SelectSubset<T, ModalityConnectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ModalityConnections and returns the data saved in the database.
+     * @param {ModalityConnectionCreateManyAndReturnArgs} args - Arguments to create many ModalityConnections.
+     * @example
+     * // Create many ModalityConnections
+     * const modalityConnection = await prisma.modalityConnection.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ModalityConnections and only return the `id`
+     * const modalityConnectionWithIdOnly = await prisma.modalityConnection.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ModalityConnectionCreateManyAndReturnArgs>(args?: SelectSubset<T, ModalityConnectionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ModalityConnection.
+     * @param {ModalityConnectionDeleteArgs} args - Arguments to delete one ModalityConnection.
+     * @example
+     * // Delete one ModalityConnection
+     * const ModalityConnection = await prisma.modalityConnection.delete({
+     *   where: {
+     *     // ... filter to delete one ModalityConnection
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ModalityConnectionDeleteArgs>(args: SelectSubset<T, ModalityConnectionDeleteArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ModalityConnection.
+     * @param {ModalityConnectionUpdateArgs} args - Arguments to update one ModalityConnection.
+     * @example
+     * // Update one ModalityConnection
+     * const modalityConnection = await prisma.modalityConnection.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ModalityConnectionUpdateArgs>(args: SelectSubset<T, ModalityConnectionUpdateArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ModalityConnections.
+     * @param {ModalityConnectionDeleteManyArgs} args - Arguments to filter ModalityConnections to delete.
+     * @example
+     * // Delete a few ModalityConnections
+     * const { count } = await prisma.modalityConnection.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ModalityConnectionDeleteManyArgs>(args?: SelectSubset<T, ModalityConnectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModalityConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModalityConnections
+     * const modalityConnection = await prisma.modalityConnection.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ModalityConnectionUpdateManyArgs>(args: SelectSubset<T, ModalityConnectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModalityConnections and returns the data updated in the database.
+     * @param {ModalityConnectionUpdateManyAndReturnArgs} args - Arguments to update many ModalityConnections.
+     * @example
+     * // Update many ModalityConnections
+     * const modalityConnection = await prisma.modalityConnection.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ModalityConnections and only return the `id`
+     * const modalityConnectionWithIdOnly = await prisma.modalityConnection.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ModalityConnectionUpdateManyAndReturnArgs>(args: SelectSubset<T, ModalityConnectionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ModalityConnection.
+     * @param {ModalityConnectionUpsertArgs} args - Arguments to update or create a ModalityConnection.
+     * @example
+     * // Update or create a ModalityConnection
+     * const modalityConnection = await prisma.modalityConnection.upsert({
+     *   create: {
+     *     // ... data to create a ModalityConnection
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModalityConnection we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModalityConnectionUpsertArgs>(args: SelectSubset<T, ModalityConnectionUpsertArgs<ExtArgs>>): Prisma__ModalityConnectionClient<$Result.GetResult<Prisma.$ModalityConnectionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ModalityConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionCountArgs} args - Arguments to filter ModalityConnections to count.
+     * @example
+     * // Count the number of ModalityConnections
+     * const count = await prisma.modalityConnection.count({
+     *   where: {
+     *     // ... the filter for the ModalityConnections we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModalityConnectionCountArgs>(
+      args?: Subset<T, ModalityConnectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModalityConnectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModalityConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModalityConnectionAggregateArgs>(args: Subset<T, ModalityConnectionAggregateArgs>): Prisma.PrismaPromise<GetModalityConnectionAggregateType<T>>
+
+    /**
+     * Group by ModalityConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModalityConnectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModalityConnectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModalityConnectionGroupByArgs['orderBy'] }
+        : { orderBy?: ModalityConnectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModalityConnectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModalityConnectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ModalityConnection model
+   */
+  readonly fields: ModalityConnectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModalityConnection.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ModalityConnectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ModalityConnection model
+   */
+  interface ModalityConnectionFieldRefs {
+    readonly id: FieldRef<"ModalityConnection", 'String'>
+    readonly aeTitle: FieldRef<"ModalityConnection", 'String'>
+    readonly ipAddress: FieldRef<"ModalityConnection", 'String'>
+    readonly event: FieldRef<"ModalityConnection", 'String'>
+    readonly timestamp: FieldRef<"ModalityConnection", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ModalityConnection findUnique
+   */
+  export type ModalityConnectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which ModalityConnection to fetch.
+     */
+    where: ModalityConnectionWhereUniqueInput
+  }
+
+  /**
+   * ModalityConnection findUniqueOrThrow
+   */
+  export type ModalityConnectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which ModalityConnection to fetch.
+     */
+    where: ModalityConnectionWhereUniqueInput
+  }
+
+  /**
+   * ModalityConnection findFirst
+   */
+  export type ModalityConnectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which ModalityConnection to fetch.
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModalityConnections to fetch.
+     */
+    orderBy?: ModalityConnectionOrderByWithRelationInput | ModalityConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModalityConnections.
+     */
+    cursor?: ModalityConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModalityConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModalityConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModalityConnections.
+     */
+    distinct?: ModalityConnectionScalarFieldEnum | ModalityConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * ModalityConnection findFirstOrThrow
+   */
+  export type ModalityConnectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which ModalityConnection to fetch.
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModalityConnections to fetch.
+     */
+    orderBy?: ModalityConnectionOrderByWithRelationInput | ModalityConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModalityConnections.
+     */
+    cursor?: ModalityConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModalityConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModalityConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModalityConnections.
+     */
+    distinct?: ModalityConnectionScalarFieldEnum | ModalityConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * ModalityConnection findMany
+   */
+  export type ModalityConnectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * Filter, which ModalityConnections to fetch.
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModalityConnections to fetch.
+     */
+    orderBy?: ModalityConnectionOrderByWithRelationInput | ModalityConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModalityConnections.
+     */
+    cursor?: ModalityConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModalityConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModalityConnections.
+     */
+    skip?: number
+    distinct?: ModalityConnectionScalarFieldEnum | ModalityConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * ModalityConnection create
+   */
+  export type ModalityConnectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ModalityConnection.
+     */
+    data: XOR<ModalityConnectionCreateInput, ModalityConnectionUncheckedCreateInput>
+  }
+
+  /**
+   * ModalityConnection createMany
+   */
+  export type ModalityConnectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModalityConnections.
+     */
+    data: ModalityConnectionCreateManyInput | ModalityConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModalityConnection createManyAndReturn
+   */
+  export type ModalityConnectionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ModalityConnections.
+     */
+    data: ModalityConnectionCreateManyInput | ModalityConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ModalityConnection update
+   */
+  export type ModalityConnectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ModalityConnection.
+     */
+    data: XOR<ModalityConnectionUpdateInput, ModalityConnectionUncheckedUpdateInput>
+    /**
+     * Choose, which ModalityConnection to update.
+     */
+    where: ModalityConnectionWhereUniqueInput
+  }
+
+  /**
+   * ModalityConnection updateMany
+   */
+  export type ModalityConnectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModalityConnections.
+     */
+    data: XOR<ModalityConnectionUpdateManyMutationInput, ModalityConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which ModalityConnections to update
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * Limit how many ModalityConnections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModalityConnection updateManyAndReturn
+   */
+  export type ModalityConnectionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * The data used to update ModalityConnections.
+     */
+    data: XOR<ModalityConnectionUpdateManyMutationInput, ModalityConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which ModalityConnections to update
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * Limit how many ModalityConnections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModalityConnection upsert
+   */
+  export type ModalityConnectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ModalityConnection to update in case it exists.
+     */
+    where: ModalityConnectionWhereUniqueInput
+    /**
+     * In case the ModalityConnection found by the `where` argument doesn't exist, create a new ModalityConnection with this data.
+     */
+    create: XOR<ModalityConnectionCreateInput, ModalityConnectionUncheckedCreateInput>
+    /**
+     * In case the ModalityConnection was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModalityConnectionUpdateInput, ModalityConnectionUncheckedUpdateInput>
+  }
+
+  /**
+   * ModalityConnection delete
+   */
+  export type ModalityConnectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+    /**
+     * Filter which ModalityConnection to delete.
+     */
+    where: ModalityConnectionWhereUniqueInput
+  }
+
+  /**
+   * ModalityConnection deleteMany
+   */
+  export type ModalityConnectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModalityConnections to delete
+     */
+    where?: ModalityConnectionWhereInput
+    /**
+     * Limit how many ModalityConnections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ModalityConnection without action
+   */
+  export type ModalityConnectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModalityConnection
+     */
+    select?: ModalityConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ModalityConnection
+     */
+    omit?: ModalityConnectionOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12820,6 +13906,17 @@ export namespace Prisma {
   };
 
   export type SatuSehatResourceLogScalarFieldEnum = (typeof SatuSehatResourceLogScalarFieldEnum)[keyof typeof SatuSehatResourceLogScalarFieldEnum]
+
+
+  export const ModalityConnectionScalarFieldEnum: {
+    id: 'id',
+    aeTitle: 'aeTitle',
+    ipAddress: 'ipAddress',
+    event: 'event',
+    timestamp: 'timestamp'
+  };
+
+  export type ModalityConnectionScalarFieldEnum = (typeof ModalityConnectionScalarFieldEnum)[keyof typeof ModalityConnectionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -13759,6 +14856,58 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"SatuSehatResourceLog"> | Date | string
   }
 
+  export type ModalityConnectionWhereInput = {
+    AND?: ModalityConnectionWhereInput | ModalityConnectionWhereInput[]
+    OR?: ModalityConnectionWhereInput[]
+    NOT?: ModalityConnectionWhereInput | ModalityConnectionWhereInput[]
+    id?: StringFilter<"ModalityConnection"> | string
+    aeTitle?: StringFilter<"ModalityConnection"> | string
+    ipAddress?: StringFilter<"ModalityConnection"> | string
+    event?: StringFilter<"ModalityConnection"> | string
+    timestamp?: DateTimeFilter<"ModalityConnection"> | Date | string
+  }
+
+  export type ModalityConnectionOrderByWithRelationInput = {
+    id?: SortOrder
+    aeTitle?: SortOrder
+    ipAddress?: SortOrder
+    event?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type ModalityConnectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ModalityConnectionWhereInput | ModalityConnectionWhereInput[]
+    OR?: ModalityConnectionWhereInput[]
+    NOT?: ModalityConnectionWhereInput | ModalityConnectionWhereInput[]
+    aeTitle?: StringFilter<"ModalityConnection"> | string
+    ipAddress?: StringFilter<"ModalityConnection"> | string
+    event?: StringFilter<"ModalityConnection"> | string
+    timestamp?: DateTimeFilter<"ModalityConnection"> | Date | string
+  }, "id">
+
+  export type ModalityConnectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    aeTitle?: SortOrder
+    ipAddress?: SortOrder
+    event?: SortOrder
+    timestamp?: SortOrder
+    _count?: ModalityConnectionCountOrderByAggregateInput
+    _max?: ModalityConnectionMaxOrderByAggregateInput
+    _min?: ModalityConnectionMinOrderByAggregateInput
+  }
+
+  export type ModalityConnectionScalarWhereWithAggregatesInput = {
+    AND?: ModalityConnectionScalarWhereWithAggregatesInput | ModalityConnectionScalarWhereWithAggregatesInput[]
+    OR?: ModalityConnectionScalarWhereWithAggregatesInput[]
+    NOT?: ModalityConnectionScalarWhereWithAggregatesInput | ModalityConnectionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ModalityConnection"> | string
+    aeTitle?: StringWithAggregatesFilter<"ModalityConnection"> | string
+    ipAddress?: StringWithAggregatesFilter<"ModalityConnection"> | string
+    event?: StringWithAggregatesFilter<"ModalityConnection"> | string
+    timestamp?: DateTimeWithAggregatesFilter<"ModalityConnection"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -14675,6 +15824,62 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModalityConnectionCreateInput = {
+    id?: string
+    aeTitle: string
+    ipAddress: string
+    event: string
+    timestamp?: Date | string
+  }
+
+  export type ModalityConnectionUncheckedCreateInput = {
+    id?: string
+    aeTitle: string
+    ipAddress: string
+    event: string
+    timestamp?: Date | string
+  }
+
+  export type ModalityConnectionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    aeTitle?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModalityConnectionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    aeTitle?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModalityConnectionCreateManyInput = {
+    id?: string
+    aeTitle: string
+    ipAddress: string
+    event: string
+    timestamp?: Date | string
+  }
+
+  export type ModalityConnectionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    aeTitle?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModalityConnectionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    aeTitle?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15415,6 +16620,30 @@ export namespace Prisma {
 
   export type SatuSehatResourceLogSumOrderByAggregateInput = {
     responseCode?: SortOrder
+  }
+
+  export type ModalityConnectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    aeTitle?: SortOrder
+    ipAddress?: SortOrder
+    event?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type ModalityConnectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    aeTitle?: SortOrder
+    ipAddress?: SortOrder
+    event?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type ModalityConnectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    aeTitle?: SortOrder
+    ipAddress?: SortOrder
+    event?: SortOrder
+    timestamp?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {

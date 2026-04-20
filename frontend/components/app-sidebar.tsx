@@ -45,6 +45,10 @@ const data = {
           url: "/",
         },
         {
+          title: "Device Connectivity",
+          url: "/devices",
+        },
+        {
           title: "Study Worklist",
           url: "/worklist",
         },

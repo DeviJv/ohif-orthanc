@@ -164,3 +164,11 @@ model SatuSehatResourceLog {
   environment      String   // staging, production
   createdAt        DateTime @default(now())
 }
+
+model ModalityConnection {
+  id        String   @id @default(cuid())
+  aeTitle   String
+  ipAddress String
+  event     String   // "CONNECTED", "DISCONNECTED"
+  timestamp DateTime @default(now())
+}

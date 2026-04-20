@@ -149,6 +149,7 @@ function getCategoryIcon(category: string) {
         case "Instances": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         case "DICOMweb": return <HugeiconsIcon icon={InternetIcon} className={size} />;
         case "Create Order": return <HugeiconsIcon icon={CodeIcon} className={size} />;
+        case "Connect Devices": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         default: return <HugeiconsIcon icon={Link01Icon} className={size} />;
     }
 }
@@ -156,6 +157,7 @@ function getCategoryIcon(category: string) {
 function EndpointCard({ endpoint, onCopy }: { endpoint: ApiEndpoint, onCopy: (text: string) => void }) {
     const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
     const isExternalApi = endpoint.category === "Create Order";
+    const isConnectDevices = endpoint.category === "Connect Devices";
     const pacsKey = "pacs_secret_token_2026";
     
     const baseUrl = isExternalApi ? "" : ":8042"; // External API typically on root domain
@@ -241,11 +243,12 @@ print_r($result);
                     <div className="flex flex-wrap items-center gap-3 mb-2">
                         <Badge className={cn(
                             "font-bold px-2 py-0.5 rounded-sm tracking-wider text-[10px]",
-                            endpoint.method === "GET" && "bg-blue-500 hover:bg-blue-600 text-white",
+                            endpoint.method === "GET" && !isConnectDevices && "bg-blue-500 hover:bg-blue-600 text-white",
                             endpoint.method === "POST" && "bg-green-600 hover:bg-green-700 text-white",
                             endpoint.method === "DELETE" && "bg-destructive hover:bg-destructive/90 text-white",
+                            isConnectDevices && "bg-purple-600 hover:bg-purple-700 text-white",
                         )}>
-                            {endpoint.method}
+                            {isConnectDevices ? "INFO" : endpoint.method}
                         </Badge>
                         <code className="text-sm font-mono font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-md shadow-sm">
                             {endpoint.path}
@@ -292,122 +295,124 @@ print_r($result);
                             </div>
                         </div>
                     )}
-
-                    <div className="space-y-3">
-                        <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-600 flex items-center gap-2">
-                            <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
-                            Example Implementation
-                        </h4>
-                        
-                        <div className="w-full">
-                            <div className="flex bg-slate-100/50 dark:bg-slate-800/50 p-1 h-9 gap-1 shadow-inner rounded-lg mb-2 w-fit">
-                                <button 
-                                    onClick={() => setActiveTab("curl")}
-                                    className={cn(
-                                        "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                        activeTab === "curl" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                                    )}
-                                >
-                                    CURL
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab("fetch")}
-                                    className={cn(
-                                        "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                        activeTab === "fetch" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                                    )}
-                                >
-                                    FETCH (JS)
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab("php")}
-                                    className={cn(
-                                        "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                        activeTab === "php" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                                    )}
-                                >
-                                    PHP
-                                </button>
-                                {endpoint.response && (
+                    
+                    {!isConnectDevices && (
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-600 flex items-center gap-2">
+                                <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
+                                Example Implementation
+                            </h4>
+                            
+                            <div className="w-full">
+                                <div className="flex bg-slate-100/50 dark:bg-slate-800/50 p-1 h-9 gap-1 shadow-inner rounded-lg mb-2 w-fit">
                                     <button 
-                                        onClick={() => setActiveTab("response")}
+                                        onClick={() => setActiveTab("curl")}
                                         className={cn(
                                             "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
-                                            activeTab === "response" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                            activeTab === "curl" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                                         )}
                                     >
-                                        RESPONSE
+                                        CURL
                                     </button>
-                                )}
-                            </div>
+                                    <button 
+                                        onClick={() => setActiveTab("fetch")}
+                                        className={cn(
+                                            "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                            activeTab === "fetch" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                        )}
+                                    >
+                                        FETCH (JS)
+                                    </button>
+                                    <button 
+                                        onClick={() => setActiveTab("php")}
+                                        className={cn(
+                                            "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                            activeTab === "php" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                        )}
+                                    >
+                                        PHP
+                                    </button>
+                                    {endpoint.response && (
+                                        <button 
+                                            onClick={() => setActiveTab("response")}
+                                            className={cn(
+                                                "text-[10px] font-bold px-4 py-1.5 rounded-md transition-all",
+                                                activeTab === "response" ? "bg-white dark:bg-slate-900 shadow-sm text-primary" : "text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                                            )}
+                                        >
+                                            RESPONSE
+                                        </button>
+                                    )}
+                                </div>
 
-                            <div className="relative">
-                                {activeTab === "curl" && (
-                                    <div className="relative animate-in fade-in duration-300">
-                                        <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
-                                            {curlCode}
+                                <div className="relative">
+                                    {activeTab === "curl" && (
+                                        <div className="relative animate-in fade-in duration-300">
+                                            <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
+                                                {curlCode}
+                                            </div>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon-xs" 
+                                                className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
+                                                onClick={() => onCopy(curlCode)}
+                                            >
+                                                <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                            </Button>
                                         </div>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon-xs" 
-                                            className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
-                                            onClick={() => onCopy(curlCode)}
-                                        >
-                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
-                                        </Button>
-                                    </div>
-                                )}
-                                
-                                {activeTab === "fetch" && (
-                                    <div className="relative animate-in fade-in duration-300">
-                                        <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
-                                            {fetchCode}
+                                    )}
+                                    
+                                    {activeTab === "fetch" && (
+                                        <div className="relative animate-in fade-in duration-300">
+                                            <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
+                                                {fetchCode}
+                                            </div>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon-xs" 
+                                                className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
+                                                onClick={() => onCopy(fetchCode)}
+                                            >
+                                                <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                            </Button>
                                         </div>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon-xs" 
-                                            className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
-                                            onClick={() => onCopy(fetchCode)}
-                                        >
-                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
-                                        </Button>
-                                    </div>
-                                )}
+                                    )}
 
-                                {activeTab === "php" && (
-                                    <div className="relative animate-in fade-in duration-300">
-                                        <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
-                                            {phpCode}
+                                    {activeTab === "php" && (
+                                        <div className="relative animate-in fade-in duration-300">
+                                            <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto shadow-lg leading-relaxed border border-slate-700">
+                                                {phpCode}
+                                            </div>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon-xs" 
+                                                className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
+                                                onClick={() => onCopy(phpCode)}
+                                            >
+                                                <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                            </Button>
                                         </div>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon-xs" 
-                                            className="absolute right-3 top-3 text-slate-400 hover:text-white hover:bg-slate-800 transition-all rounded-lg"
-                                            onClick={() => onCopy(phpCode)}
-                                        >
-                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
-                                        </Button>
-                                    </div>
-                                )}
+                                    )}
 
-                                {activeTab === "response" && endpoint.response && (
-                                    <div className="relative animate-in fade-in duration-300">
-                                        <div className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto border border-slate-200 dark:border-slate-800 shadow-inner italic">
-                                            {endpoint.response}
+                                    {activeTab === "response" && endpoint.response && (
+                                        <div className="relative animate-in fade-in duration-300">
+                                            <div className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 p-4 rounded-xl text-[12px] font-mono whitespace-pre-wrap overflow-x-auto border border-slate-200 dark:border-slate-800 shadow-inner italic">
+                                                {endpoint.response}
+                                            </div>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon-xs" 
+                                                className="absolute right-3 top-3 text-slate-400 dark:text-slate-600 hover:text-primary transition-all rounded-lg"
+                                                onClick={() => onCopy(endpoint.response || "")}
+                                            >
+                                                <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
+                                            </Button>
                                         </div>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="icon-xs" 
-                                            className="absolute right-3 top-3 text-slate-400 dark:text-slate-600 hover:text-primary transition-all rounded-lg"
-                                            onClick={() => onCopy(endpoint.response || "")}
-                                        >
-                                            <HugeiconsIcon icon={Copy01Icon} className="size-3.5" />
-                                        </Button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </CardContent>
             </Card>
         </section>

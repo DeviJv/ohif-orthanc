@@ -37,3 +37,23 @@ function OnStableStudy(studyId, tags, metadata)
 
     print("--------------------------------------------------")
 end
+
+function OnAssociationAccepted(modality, ip, port)
+    print("MODALITY CONNECTED: " .. modality .. " (" .. ip .. ")")
+    local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
+    local logUrl = frontendUrl .. "/api/modality/log"
+    local secretToken = "pacs_secret_token_2026"
+    
+    local payload = string.format('{"aeTitle":"%s","ipAddress":"%s","event":"CONNECTED","secret":"%s"}', modality, ip, secretToken)
+    os.execute("wget --post-data='" .. payload .. "' --header='Content-Type: application/json' --timeout=5 --tries=1 \"" .. logUrl .. "\" -O /dev/null 2>&1 &")
+end
+
+function OnAssociationClosed(modality, ip, port)
+    print("MODALITY DISCONNECTED: " .. modality .. " (" .. ip .. ")")
+    local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
+    local logUrl = frontendUrl .. "/api/modality/log"
+    local secretToken = "pacs_secret_token_2026"
+    
+    local payload = string.format('{"aeTitle":"%s","ipAddress":"%s","event":"DISCONNECTED","secret":"%s"}', modality, ip, secretToken)
+    os.execute("wget --post-data='" .. payload .. "' --header='Content-Type: application/json' --timeout=5 --tries=1 \"" .. logUrl .. "\" -O /dev/null 2>&1 &")
+end

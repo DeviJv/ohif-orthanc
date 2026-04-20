@@ -251,6 +251,14 @@ exports.Prisma.SatuSehatResourceLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ModalityConnectionScalarFieldEnum = {
+  id: 'id',
+  aeTitle: 'aeTitle',
+  ipAddress: 'ipAddress',
+  event: 'event',
+  timestamp: 'timestamp'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -296,7 +304,8 @@ exports.Prisma.ModelName = {
   SatuSehatIntegration: 'SatuSehatIntegration',
   SatuSehatWebhookLog: 'SatuSehatWebhookLog',
   SatuSehatSetting: 'SatuSehatSetting',
-  SatuSehatResourceLog: 'SatuSehatResourceLog'
+  SatuSehatResourceLog: 'SatuSehatResourceLog',
+  ModalityConnection: 'ModalityConnection'
 };
 
 /**

@@ -39,7 +39,14 @@ import {
     RoboticIcon,
     HealthIcon,
     Link01Icon,
+    Download01Icon,
 } from "@hugeicons/core-free-icons";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -1012,6 +1019,56 @@ function SatuSehatSettingsTab() {
         }
     };
 
+    const handleDownloadRouter = async (source: "official" | "local" = "local") => {
+        if (source === "official" && (!debugResult || !debugResult.token)) {
+            toast.error("Silakan lakukan 'Test' integrasi terlebih dahulu untuk mendapatkan token otorisasi resmi.");
+            return;
+        }
+
+        try {
+            const urlParams = new URLSearchParams({
+                source,
+                env: config.env
+            });
+            if (debugResult?.token) {
+                urlParams.append("token", debugResult.token);
+            }
+
+            const res = await fetch(`/api/config/satusehat/download-router?${urlParams.toString()}`);
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || "Gagal mengunduh konfigurasi");
+            }
+
+            // Detect filename from header if possible
+            const contentDisposition = res.headers.get("Content-Disposition");
+            let filename = source === "local" ? "docker-compose.yml" : "dicom-router-official.zip";
+            
+            if (contentDisposition && contentDisposition.includes("filename=")) {
+                const parts = contentDisposition.split("filename=");
+                filename = parts[1].replace(/"/g, "");
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            if (source === "local") {
+                toast.success("Konfigurasi Quantum Optimized berhasil diunduh (Siap pakai!)");
+            } else {
+                toast.success("Konfigurasi Official berhasil diunduh");
+            }
+        } catch (error: any) {
+            toast.error(error.message || "Gagal mengunduh configuration");
+        }
+    };
+
     const handleChange = (key: string, value: string) => {
         setConfig((prev: any) => ({ ...prev, [key]: value }));
     };
@@ -1053,6 +1110,47 @@ function SatuSehatSettingsTab() {
                     </div>
                     
                     <div className="flex gap-2">
+                        <TooltipProvider>
+                            {/* Quantum Optimized Download (Recommended) */}
+                            <Tooltip>
+                                <TooltipTrigger 
+                                    render={(props) => (
+                                        <Button 
+                                            {...props}
+                                            variant="default" 
+                                            className="gap-2 h-11 px-4 font-medium shadow-sm bg-indigo-600 hover:bg-indigo-700 text-white"
+                                            onClick={() => handleDownloadRouter("local")}
+                                        >
+                                            <HugeiconsIcon icon={Download01Icon} className="size-4" strokeWidth={2} />
+                                        </Button>
+                                    )} 
+                                />
+                                <TooltipContent>
+                                    <p>Download Quantum Optimized YAML (Recommended)</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            
+                            {/* Official Satu Sehat Download (ZIP) */}
+                            <Tooltip>
+                                <TooltipTrigger 
+                                    render={(props) => (
+                                        <Button 
+                                            {...props}
+                                            variant="outline" 
+                                            className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm"
+                                            onClick={() => handleDownloadRouter("official")}
+                                            disabled={!debugResult?.token}
+                                        >
+                                            <HugeiconsIcon icon={Download01Icon} className="size-4" strokeWidth={2} />
+                                        </Button>
+                                    )} 
+                                />
+                                <TooltipContent>
+                                    <p>Download Official Satu Sehat (ZIP)</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+
                         <Button 
                             variant="outline" 
                             className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm"

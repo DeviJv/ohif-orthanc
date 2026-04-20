@@ -77,9 +77,8 @@ function SatuSehatContent() {
 
     // Columns
     const columns = useMemo(() => getColumns({
-        openBridgeDialog,
         openErrorDialog
-    }), [openBridgeDialog, openErrorDialog]);
+    }), [openErrorDialog]);
 
     // Table Instance
     const tableOptions = useMemo(() => ({

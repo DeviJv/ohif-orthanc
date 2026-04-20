@@ -6,17 +6,15 @@ import { formatDicomDate } from "../../worklist/utils/format";
 import { MergedStudy } from "../hooks/use-satusehat-worklist";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { SentIcon, Alert01Icon, InformationCircleIcon } from "@hugeicons/core-free-icons";
+import { Alert01Icon } from "@hugeicons/core-free-icons";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
 interface GetColumnsProps {
-    openBridgeDialog: (study: MergedStudy) => void;
     openErrorDialog: (study: MergedStudy) => void;
 }
 
 export const getColumns = ({
-    openBridgeDialog,
     openErrorDialog
 }: GetColumnsProps): ColumnDef<MergedStudy>[] => [
     {
@@ -101,7 +99,7 @@ export const getColumns = ({
                    {acc || "N/A"}
                </span>
            );
-        }
+         }
     },
     {
         accessorFn: (row) => row.satuSehat.status,
@@ -176,34 +174,5 @@ export const getColumns = ({
             }
             return <span className="text-xs text-slate-400 dark:text-slate-600 italic">No errors</span>;
         }
-    },
-    {
-        id: "actions",
-        header: () => <div className="text-right">Action</div>,
-        cell: ({ row }) => {
-            const study = row.original;
-            const isSuccess = study.satuSehat.status === "SUCCESS";
-            const isLoading = study.satuSehat.status === "PROCESSING";
-            
-            return (
-                <div className="flex justify-end gap-2">
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        className={cn(
-                            "gap-2 h-8",
-                            isSuccess 
-                                ? "border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:text-emerald-700 dark:hover:text-emerald-300" 
-                                : "border-primary/30 text-primary hover:bg-primary/5 hover:text-primary transition-all shadow-sm"
-                        )}
-                        onClick={() => openBridgeDialog(study)}
-                        disabled={isLoading}
-                    >
-                        <HugeiconsIcon icon={SentIcon} className={cn("size-4", isLoading && "animate-spin")} />
-                        {isSuccess ? "Resync" : "Sync Now"}
-                    </Button>
-                </div>
-            );
-        },
     },
 ];

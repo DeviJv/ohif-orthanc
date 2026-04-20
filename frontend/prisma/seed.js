@@ -68,6 +68,7 @@ async function main() {
       
       defaultPatientId: 'P02478375538',
       defaultPractitionerId: '10009880728',
+      patientIdSource: 'PatientID',
       isActive: true,
     },
   });

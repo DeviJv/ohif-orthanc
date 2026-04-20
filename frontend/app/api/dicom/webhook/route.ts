@@ -4,10 +4,8 @@ import { db } from "@/lib/db";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
+        console.log("[WEBHOOK] Full body:", JSON.stringify(body));
 
-        // Support two auth methods:
-        // 1. Basic Auth: dicom-router sends WEBHOOK_USER/WEBHOOK_PASSWORD as Basic Auth
-        // 2. x-pacs-key: legacy custom header
         const internalKey = process.env.INTERNAL_PACS_KEY;
         let authorized = false;
 
@@ -16,9 +14,9 @@ export async function POST(req: NextRequest) {
             try {
                 const base64 = authHeader.slice(6);
                 const decoded = Buffer.from(base64, "base64").toString("utf-8");
-                const password = decoded.split(":").slice(1).join(":"); // handle colons in password
+                const password = decoded.split(":").slice(1).join(":");
                 authorized = password === internalKey;
-            } catch { /* invalid base64, fall through */ }
+            } catch { }
         }
 
         if (!authorized) {
@@ -31,24 +29,21 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        const { studyInstanceUid, status, message, error: errorDetail, patientName, data } = body;
 
-        const { studyInstanceUid, status, message, errorDetail, patientName } = body;
-
-        // 1. Log the webhook event
         const log = await db.satuSehatWebhookLog.create({
             data: {
-                studyInstanceUid,
-                patientName,
+                studyInstanceUid: studyInstanceUid || null,
+                patientName: patientName || null,
                 status: status ? "SUCCESS" : "FAILED",
-                message,
+                message: message || null,
                 errorDetail: errorDetail || null,
                 rawPayload: body
             }
         });
 
-        console.log(`[WEBHOOK] Received from router: ${studyInstanceUid} - Status: ${status}`);
+        console.log(`[WEBHOOK] Received from router: ${studyInstanceUid || 'N/A'} - Status: ${status}, Message: ${message}`);
 
-        // 2. Update SatuSehatIntegration record with syncedAt timestamp
         if (studyInstanceUid) {
             try {
                 await db.satuSehatIntegration.updateMany({
@@ -56,17 +51,15 @@ export async function POST(req: NextRequest) {
                     data: { syncedAt: new Date() }
                 });
             } catch (dbErr) {
-                // Non-fatal: log but don't fail the webhook response
                 console.warn(`[WEBHOOK] Could not update syncedAt for ${studyInstanceUid}:`, dbErr);
             }
         }
 
-        // 3. Trigger Telegram Notification
         await triggerTelegramNotification(body);
 
         return NextResponse.json({ 
             success: true, 
-            status: true, // Standard response for dicom-router
+            status: true,
             logId: log.id,
             message: "Webhook processed successfully"
         });
@@ -81,19 +74,32 @@ async function triggerTelegramNotification(data: any) {
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
         const chatId = process.env.TELEGRAM_CHAT_ID;
 
-        if (!botToken || !chatId) return;
+        console.log("[TELEGRAM] Starting notification - botToken:", !!botToken, "chatId:", !!chatId);
 
+        if (!botToken || !chatId) {
+            console.log("[TELEGRAM] Missing credentials, skipping");
+            return;
+        }
+
+        const rawStatus = data.status ?? data.data?.status ?? data.success;
+        const rawMessage = data.message;
+        
+        console.log("[TELEGRAM] rawStatus:", rawStatus, "rawMessage:", rawMessage);
+        
+        const messageText = (rawMessage || data.data?.message || "").toString().toLowerCase();
+        const hasBerhasil = messageText.includes("berhasil") || messageText.includes("sukses") || messageText.includes("success");
+        
         const isSuccess = 
-            data.status === true || 
-            data.status === "true" || 
-            data.status === "success" || 
-            data.status === "SUCCESS" ||
-            data.success === true;
+            rawStatus === true || 
+            rawStatus === "true" || 
+            rawStatus === 1 ||
+            rawStatus === "success" || 
+            rawStatus === "SUCCESS" ||
+            hasBerhasil;
 
         const emoji = isSuccess ? "✅" : "🚨";
         const title = isSuccess ? "Upload Gambar Berhasil" : "Gagal Upload Gambar";
-        
-        // Format timestamp in Asia/Jakarta
+
         const now = new Date();
         const formattedDate = now.toLocaleString("id-ID", { 
             timeZone: "Asia/Jakarta",
@@ -107,20 +113,23 @@ async function triggerTelegramNotification(data: any) {
 
         let message = `${emoji} *${title}*\n\n`;
         message += `*Waktu:* ${formattedDate} WIB\n`;
-        message += `*Pasien:* ${data.patientName || "Unknown"}\n`;
-        message += `*Study UID:* ${data.studyInstanceUid || "N/A"}\n`;
+        
+        if (data.patientName) {
+            message += `*Pasien:* ${data.patientName}\n`;
+        }
         
         if (data.message) {
             message += `\n💬 *Info:* ${data.message}\n`;
+        } else if (isSuccess) {
+            message += `\n💬 *Info:* Upload ke SatuSehat berhasil\n`;
         }
         
-        // Show Resource ID if present in 'data'
         if (data.data?.id) {
-            message += `🆔 *Resource ID:* \`${data.data.id}\` (SatuSehat)\n`;
+            message += `🆔 *Resource ID:* \`${data.data.id}\`\n`;
         }
 
-        if (data.errorDetail && Object.keys(data.errorDetail).length > 0) {
-            message += `\n❌ *Detail Error:* \`${JSON.stringify(data.errorDetail)}\``;
+        if (!isSuccess && data.error) {
+            message += `\n❌ *Error:* ${data.error}\n`;
         }
 
         const url = `https://api.telegram.org/bot${botToken}/sendMessage`;

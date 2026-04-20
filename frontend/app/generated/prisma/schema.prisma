@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  output   = "."
 }
 
 datasource db {
@@ -145,6 +145,7 @@ model SatuSehatSetting {
   // Default Personas (Dummy Data for Testing)
   defaultPatientId      String? @default("")
   defaultPractitionerId String? @default("")
+  patientIdSource       String? @default("PatientID") // PatientID, StudyDescription
 
   isActive  Boolean  @default(true)
   updatedAt DateTime @updatedAt

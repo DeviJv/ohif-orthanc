@@ -233,6 +233,7 @@ exports.Prisma.SatuSehatSettingScalarFieldEnum = {
   practitionerUrl: 'practitionerUrl',
   defaultPatientId: 'defaultPatientId',
   defaultPractitionerId: 'defaultPractitionerId',
+  patientIdSource: 'patientIdSource',
   isActive: 'isActive',
   updatedAt: 'updatedAt'
 };

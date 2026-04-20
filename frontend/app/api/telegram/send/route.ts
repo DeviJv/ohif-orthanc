@@ -110,9 +110,8 @@ export async function POST(req: NextRequest) {
 
         // 4. Send to Telegram
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
-        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-        const viewerHost = new URL(publicUrl).hostname;
-        const viewerUrl = `http://${viewerHost}/worklist?viewer=${studyUID}`;
+        const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost";
+        const viewerUrl = `${publicUrl}/worklist?viewer=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
 
         const formData = new FormData();

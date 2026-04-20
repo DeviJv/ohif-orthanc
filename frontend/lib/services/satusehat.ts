@@ -22,6 +22,7 @@ export interface SatuSehatConfig {
     patientUrl?: string;
     locationUrl?: string;
     practitionerUrl?: string;
+    patientIdSource?: string;
 }
 
 export class SatuSehatService {
@@ -51,6 +52,7 @@ export class SatuSehatService {
                 diagnosticReportUrl: dbSetting.diagnosticReportUrl?.trim() || undefined,
                 compositionUrl: dbSetting.compositionUrl?.trim() || undefined,
                 patientUrl: dbSetting.patientUrl?.trim() || undefined,
+                patientIdSource: (dbSetting as any).patientIdSource || "PatientID",
             };
         }
 

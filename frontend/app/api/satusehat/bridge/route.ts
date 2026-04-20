@@ -34,9 +34,21 @@ export async function POST(req: NextRequest) {
         const tags = study.MainDicomTags;
         const patientTags = study.PatientMainDicomTags;
 
-        // Gunakan manualNik jika ada, jika tidak ambil dari DICOM PatientID
-        // USER REQUEST: Fallback ke StudyDescription jika PatientID kosong
-        const nik = manualNik || patientTags?.PatientID || tags?.PatientID || tags?.StudyDescription;
+        // Ambil konfigurasi untuk menentukan sumber NIK
+        const config = await SatuSehatService.getConfig();
+        const patientIdSource = config?.patientIdSource || "PatientID";
+
+        // Logic penentuan NIK berdasarkan konfigurasi
+        let nik = manualNik;
+        if (!nik) {
+            if (patientIdSource === "StudyDescription") {
+                // Prioritaskan StudyDescription
+                nik = tags?.StudyDescription || patientTags?.PatientID || tags?.PatientID;
+            } else {
+                // Default: PatientID
+                nik = patientTags?.PatientID || tags?.PatientID || tags?.StudyDescription;
+            }
+        }
         
         if (!nik) {
             return NextResponse.json({ error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }, { status: 400 });

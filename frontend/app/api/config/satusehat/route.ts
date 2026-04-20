@@ -52,6 +52,7 @@ export async function GET() {
             patientUrl: dbSetting.patientUrl,
             locationUrl: dbSetting.locationUrl,
             practitionerUrl: dbSetting.practitionerUrl,
+            patientIdSource: dbSetting.patientIdSource || "PatientID",
             source: "SatuSehatSetting"
         });
     }
@@ -127,7 +128,8 @@ export async function POST(req: NextRequest) {
         compositionUrl: body.compositionUrl || null,
         patientUrl: body.patientUrl || null,
         locationUrl: body.locationUrl || null,
-        practitionerUrl: body.practitionerUrl || null
+        practitionerUrl: body.practitionerUrl || null,
+        patientIdSource: body.patientIdSource || "PatientID"
     };
 
     await db.satuSehatSetting.upsert({

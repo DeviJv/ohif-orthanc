@@ -154,8 +154,8 @@ export const handleOpenOrthancViewer = (id: string, type: "study" | "series" | "
 
 export const getOhifUrl = (uid: string, mode: string) => {
     const viewerHost = window.location.hostname;
-    // For standalone OHIF v3, the path usually needs to include the data source name
-    return `http://${viewerHost}:3000/viewer/dicomweb?StudyInstanceUIDs=${uid}`;
+    // Uses nginx proxy - no port needed
+    return `http://${viewerHost}/worklist?viewer=${uid}`;
 };
 
 export const handleBulkDownloadStudy = async (ids: string[], callbacks?: TaskCallbacks) => {

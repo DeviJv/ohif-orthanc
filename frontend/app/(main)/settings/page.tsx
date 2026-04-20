@@ -919,6 +919,7 @@ function SatuSehatSettingsTab() {
         patientUrl: "",
         locationUrl: "",
         practitionerUrl: "",
+        patientIdSource: "PatientID",
     });
     
     const [showSecretStg, setShowSecretStg] = useState(false);
@@ -1313,6 +1314,24 @@ function SatuSehatSettingsTab() {
                                     className="text-[13px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm"
                                     placeholder="Ex: 1000001"
                                 />
+                            </div>
+                            <div className="space-y-1.5 md:col-span-2">
+                                <Label htmlFor="patIdSource" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Patient Identifier Source (NIK)</Label>
+                                <Select 
+                                    value={config.patientIdSource || "PatientID"} 
+                                    onValueChange={(v) => handleChange("patientIdSource", v)}
+                                >
+                                    <SelectTrigger id="patIdSource" className="w-full text-[13px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
+                                        <SelectValue placeholder="Pilih Sumber NIK" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="PatientID">PatientID (Default DICOM Tag)</SelectItem>
+                                        <SelectItem value="StudyDescription">StudyDescription (Fallback Tag)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-[10px] text-muted-foreground mt-1 italic">
+                                    Sumber data yang akan digunakan sistem untuk mencari data Pasien di Satu Sehat.
+                                </p>
                             </div>
                         </div>
                         

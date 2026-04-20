@@ -170,7 +170,7 @@ services:
       context: ./backend-ai
       dockerfile: Dockerfile
       args:
-        - BUILD_TYPE=full #lite atau full ya value nya
+        - BUILD_TYPE=lite #lite atau full ya value nya
     container_name: ai-engine
     restart: always
     environment:

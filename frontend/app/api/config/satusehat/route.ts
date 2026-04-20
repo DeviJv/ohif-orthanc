@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
                 : "https://api-satusehat-stg.dto.kemkes.go.id";
         }
 
-        const envContent = `ORG_ID=${activeOrgId}\nCLIENT_ID=${activeClientId}\nCLIENT_SECRET=${activeClientSecret}\nSATUSEHAT_URL=${routerUrl}\nNEXT_PUBLIC_APP_URL=http://pacs-web:3001\nINTERNAL_PACS_KEY=${process.env.INTERNAL_PACS_KEY || 'pacs_secret_token_2026'}\n`;
+        const envContent = `ORG_ID=${activeOrgId}\nCLIENT_ID=${activeClientId}\nCLIENT_SECRET=${activeClientSecret}\nSATUSEHAT_URL=${routerUrl}\nNEXT_PUBLIC_APP_URL=http://quantum-web:3001\nINTERNAL_PACS_KEY=${process.env.INTERNAL_PACS_KEY || 'pacs_secret_token_2026'}\n`;
 
         await fs.writeFile(envPath, envContent, "utf8");
         console.log(`[DICOM-ROUTER] Berhasil menimpa file .env di ${envPath}`);

@@ -1,0 +1,273 @@
+# Unified Nginx Configuration
+# Supports both local (HTTP) and production (HTTPS) based on PROTOCOL env var
+# Usage:
+#   Local:  PROTOCOL=http  (SSL disabled)
+#   VPS:    PROTOCOL=https (SSL enabled)
+
+# HTTP Server (redirects to HTTPS in production)
+server {
+    listen 80;
+    server_name _;
+
+    client_max_body_size 500M;
+    proxy_read_timeout 300s;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+
+    # Required for OHIF v3 SharedArrayBuffer / volume rendering
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Cross-Origin-Embedder-Policy "require-corp" always;
+    add_header Cross-Origin-Resource-Policy "cross-origin" always;
+
+    # CORS for Port 3000 Standalone OHIF
+    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE' always;
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+    add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+
+    # Next.js Frontend
+    location / {
+        proxy_pass http://quantum-web:3001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # SSE support for live notifications
+    location /api/events {
+        proxy_pass http://quantum-web:3001;
+        proxy_set_header Host $host;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_buffering off;
+        proxy_cache off;
+        chunked_transfer_encoding off;
+        proxy_read_timeout 3600s;
+    }
+
+    # OHIF Viewer via unified /ohif/ path
+    location /ohif/ {
+        proxy_pass http://viewer:80/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Required for volume rendering and SAB
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "require-corp" always;
+        add_header Cross-Origin-Resource-Policy "cross-origin" always;
+    }
+
+    # OHIF assets that load at root (fallback for app.js, wasm, etc.)
+    location ~* ^/(app.*\.js|app.*\.css|init-service-worker\.js|.*\.wasm|silent-refresh\.html|manifest\.json|sw\.js|ohif-.*|.*\.worker\.js|assets/.*|[0-9]+\..*\.js|[0-9]+\.css)$ {
+        proxy_pass http://viewer:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "require-corp" always;
+    }
+
+    # OHIF config path (fallback)
+    location /app-config.js {
+        proxy_pass http://viewer:80/app-config.js;
+        proxy_set_header Host $host;
+    }
+
+    # Redirect old OHIF paths to new unified /ohif/ path
+    location /orthanc/ohif/ {
+        return 301 http://$host/ohif/viewer$is_args$args;
+    }
+
+    location /viewer/ {
+        return 301 http://$host/ohif/viewer$is_args$args;
+    }
+
+    # Orthanc — Explorer, REST API
+    location /orthanc/ {
+        proxy_pass http://backend:8042/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_set_header X-Forwarded-Host $host;
+    }
+
+    # DICOMweb — required by OHIF v3
+    location /dicom-web/ {
+        proxy_pass http://backend:8042/dicom-web/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+    }
+
+    # WADO-URI fallback
+    location /wado {
+        proxy_pass http://backend:8042/wado;
+        proxy_set_header Host $host;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+    }
+}
+
+# HTTPS Server (production)
+server {
+    listen 443 ssl http2;
+    server_name _;
+
+    # SSL Configuration
+    ssl_certificate     /etc/nginx/ssl/live/${DOMAIN_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/${DOMAIN_NAME}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    client_max_body_size 500M;
+    proxy_read_timeout 300s;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+
+    # Gzip Compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_types
+        text/plain
+        text/css
+        text/javascript
+        application/javascript
+        application/json
+        application/xml
+        image/svg+xml
+        application/wasm;
+
+    # Custom Logo
+    location = /logo.png {
+        alias /usr/share/nginx/html/logo.png;
+        add_header Cache-Control "public, max-age=2592000, immutable";
+        access_log off;
+    }
+
+    # Required for OHIF v3 SharedArrayBuffer / volume rendering
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Cross-Origin-Embedder-Policy "require-corp" always;
+    add_header Cross-Origin-Resource-Policy "cross-origin" always;
+
+    # Next.js Frontend
+    location / {
+        proxy_pass http://quantum-web:3001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # SSE support for live notifications
+    location /api/events {
+        proxy_pass http://quantum-web:3001;
+        proxy_set_header Host $host;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_buffering off;
+        proxy_cache off;
+        chunked_transfer_encoding off;
+        proxy_read_timeout 3600s;
+    }
+
+    # OHIF Viewer via unified /ohif/ path
+    location /ohif/ {
+        proxy_pass http://viewer:80/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_set_header X-Forwarded-Host $host;
+        expires 10m;
+        add_header Cache-Control "public, max-age=600, stale-while-revalidate=86400" always;
+    }
+
+    # OHIF assets
+    location ~* ^/(app.*\.js|app.*\.css|init-service-worker\.js|.*\.wasm|silent-refresh\.html|manifest\.json|sw\.js|ohif-.*|.*\.worker\.js|assets/.*|[0-9]+\..*\.js|[0-9]+\.css)$ {
+        proxy_pass http://viewer:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "require-corp" always;
+    }
+
+    # OHIF config path
+    location /app-config.js {
+        proxy_pass http://viewer:80/app-config.js;
+        proxy_set_header Host $host;
+    }
+
+    # Redirect old OHIF paths
+    location /orthanc/ohif/ {
+        return 301 https://$host/ohif/viewer$is_args$args;
+    }
+
+    location /viewer/ {
+        return 301 https://$host/ohif/viewer$is_args$args;
+    }
+
+    # Orthanc — Explorer, REST API
+    location /orthanc/ {
+        proxy_pass http://backend:8042/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_set_header X-Forwarded-Host $host;
+    }
+
+    # DICOMweb — required by OHIF v3
+    location /dicom-web/ {
+        proxy_pass http://backend:8042/dicom-web/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
+    }
+
+    # WADO-URI fallback
+    location /wado {
+        proxy_pass http://backend:8042/wado;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
+    }
+
+    location /orthanc/wado {
+        proxy_pass http://backend:8042/wado;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header Authorization "Basic ${ORTHANC_AUTH_BASE64}";
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_max_temp_file_size 0;
+        proxy_read_timeout 600s;
+    }
+}

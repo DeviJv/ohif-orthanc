@@ -2,11 +2,13 @@
   "PostgreSQL": {
     "EnableIndex": true,
     "EnableStorage": true,
-    "Host": "orthanc-db",
+    "Host": "backend-db",
     "Port": 5432,
     "Database": "orthanc",
-    "Username": "orthanc",
-    "Password": "orthancpassword",
+    "Username": "quantum",
+    "Password": "quantum123"
+  },
+  "PostgreSQL": {
     "EnableUpgrades": true
   },
   "Name": "Q U A N T U M",

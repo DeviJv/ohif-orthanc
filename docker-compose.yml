@@ -1,7 +1,8 @@
 services:
-  orthanc-db:
+  # PostgreSQL for Orthanc/DICOM data
+  backend-db:
     image: postgres:15-alpine
-    container_name: orthanc-db
+    container_name: backend-db
     restart: always
     environment:
       - POSTGRES_USER=${ORTHANC_USERNAME}
@@ -17,6 +18,7 @@ services:
     networks:
       - pacs
 
+  # PostgreSQL for Quantum Web app
   app-db:
     image: postgres:15-alpine
     container_name: app-db
@@ -32,8 +34,9 @@ services:
     networks:
       - pacs
 
-  pacs:
-    container_name: orthanc
+  # Orthanc DICOM Server (renamed from 'pacs' to 'backend')
+  backend:
+    container_name: backend
     image: jodogne/orthanc-plugins
     ports:
       - 8042:8042
@@ -48,35 +51,33 @@ services:
       - ./orthanc_db:/var/lib/orthanc/db/
     restart: always
     depends_on:
-      orthanc-db:
+      backend-db:
         condition: service_healthy
     environment:
-      - FRONTEND_INTERNAL_URL=http://pacs-web:3001
+      - FRONTEND_INTERNAL_URL=http://quantum-web:3001
     networks:
       - pacs
 
-  frontend:
+  # Quantum Web Frontend (renamed from 'frontend' service, container 'pacs-web' to 'quantum-web')
+  quantum-web:
     user: root
     build:
-
       context: ./frontend
       dockerfile: Dockerfile
     image: quantum-pacs-frontend:latest
-    container_name: pacs-web
+    container_name: quantum-web
     volumes:
       - ./logo.png:/app/public/logo.png:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./dicom-router:/app/dicom-router
-    # Port 3001 is now handled by Nginx, but keeping mapping for local access if needed
     ports:
       - 3001:3001
     environment:
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@app-db:5432/${DB_NAME}
       - AUTH_SECRET=${AUTH_SECRET}
-      # Let NextAuth trust the incoming host so localhost/IP/domain access all work.
       - AUTH_TRUST_HOST=true
-      - ORTHANC_URL=http://orthanc:8042
+      - ORTHANC_URL=http://backend:8042
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
       - AI_BACKEND_URL=http://ai-engine:8000
@@ -86,11 +87,12 @@ services:
       - NEXT_PUBLIC_ORTHANC_URL=${NEXT_PUBLIC_ORTHANC_URL}
     depends_on:
       - app-db
-      - pacs
+      - backend
     restart: always
     networks:
       - pacs
 
+  # Nginx Gateway (unified - works for both local and VPS)
   nginx:
     image: nginx:alpine
     container_name: pacs-gateway
@@ -99,24 +101,20 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx_local.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./logo.png:/usr/share/nginx/html/logo.png:ro
       - /etc/letsencrypt:/etc/nginx/ssl:ro
-    environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
-      - ORTHANC_USERNAME=${ORTHANC_USERNAME}
-      - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
-      - ORTHANC_AUTH_BASE64=${ORTHANC_AUTH_BASE64}
     networks:
       - pacs
     depends_on:
-      - frontend
-      - pacs
-      - ohif-viewer
+      - quantum-web
+      - backend
+      - viewer
 
-  ohif-viewer:
+  # OHIF Viewer (renamed from 'ohif-viewer' to 'viewer')
+  viewer:
     image: ohif/app:v3.9.2
-    container_name: ohif-viewer
+    container_name: viewer
     restart: always
     ports:
       - "3000:80"
@@ -125,13 +123,13 @@ services:
     networks:
       - pacs
 
-  # Automated Weekly Backups (Sunday 00:00)
-  orthanc-backup:
+  # Orthanc Database Backup (renamed from 'orthanc-backup' to 'backend-backup')
+  backend-backup:
     image: prodrigestivill/postgres-backup-local:15-alpine
-    container_name: orthanc-backup
+    container_name: backend-backup
     restart: always
     environment:
-      - POSTGRES_HOST=orthanc-db
+      - POSTGRES_HOST=backend-db
       - POSTGRES_DB=orthanc
       - POSTGRES_USER=${ORTHANC_USERNAME}
       - POSTGRES_PASSWORD=${ORTHANC_PASSWORD}
@@ -143,9 +141,10 @@ services:
     networks:
       - pacs
     depends_on:
-      orthanc-db:
+      backend-db:
         condition: service_healthy
 
+  # App Database Backup
   app-db-backup:
     image: prodrigestivill/postgres-backup-local:15-alpine
     container_name: app-db-backup
@@ -165,46 +164,34 @@ services:
     depends_on:
       - app-db
 
+  # AI Engine for medical image analysis
   ai-engine:
     build:
       context: ./backend-ai
       dockerfile: Dockerfile
       args:
-        - BUILD_TYPE=lite #lite atau full ya value nya
+        - BUILD_TYPE=lite # ganti lite atau full 
     container_name: ai-engine
     restart: always
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@app-db:5432/${DB_NAME}
-      - ORTHANC_URL=http://orthanc:8042
+      - ORTHANC_URL=http://backend:8042
       - ORTHANC_USERNAME=${ORTHANC_USERNAME}
       - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
-      - FRONTEND_INTERNAL_URL=http://pacs-web:3001
+      - FRONTEND_INTERNAL_URL=http://quantum-web:3001
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
-      - TELEGRAM_BOT_TOKEN=
-      - TELEGRAM_CHAT_ID=
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
     volumes:
       - ./ai_models_cache/torch:/root/.cache/torch
       - ./ai_models_cache/torchxrayvision:/root/.torchxrayvision
     depends_on:
       - app-db
-      - pacs
+      - backend
     networks:
       - pacs
     ports:
       - "8000:8000"
-
-  # Log Collector: Otomatis mencatat semua log container ke file logs/all.log
-  log-collector:
-    image: docker:cli
-    container_name: log-collector
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./logs:/app/logs
-    working_dir: /app
-    entrypoint: ["/bin/sh", "-c", "echo '[COLLECTOR] Starting automated log capture...' > logs/all.log && docker events --filter 'type=container' --filter 'event=start' | while read event; do echo '[COLLECTOR] New container detected, refreshing log streams...'; done & docker compose logs -f -t >> logs/all.log 2>&1"]
-    networks:
-      - pacs
 
 networks:
   pacs:

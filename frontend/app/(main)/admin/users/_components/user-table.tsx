@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useMemo } from "react";
+
 import {
   Table,
   TableBody,
@@ -18,11 +20,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { 
     MoreHorizontalIcon, 
     Delete02Icon,
     Shield01Icon,
-    UserIcon
+    UserIcon,
+    Search01Icon,
+    ArrowLeft01Icon,
+    ArrowRight01Icon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { deleteUser } from "@/lib/actions/user-actions";
@@ -62,8 +77,39 @@ export function UserTable({ users, roles }: UserTableProps) {
     }
   };
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => 
+      user.name?.toLowerCase().includes(search.toLowerCase()) || 
+      user.email?.toLowerCase().includes(search.toLowerCase()) ||
+      user.role?.name?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [users, search]);
+
+  const totalPages = Math.ceil(filteredUsers.length / pageSize) || 1;
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredUsers.slice(start, start + pageSize);
+  }, [filteredUsers, page, pageSize]);
+
   return (
-    <Table>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="relative w-64">
+           <HugeiconsIcon icon={Search01Icon} size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+           <Input 
+             placeholder="Search users..." 
+             value={search}
+             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+             className="pl-9 h-9"
+           />
+        </div>
+      </div>
+      <div className="rounded-md border">
+        <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
@@ -81,7 +127,7 @@ export function UserTable({ users, roles }: UserTableProps) {
             </TableCell>
           </TableRow>
         ) : (
-          users.map((user) => (
+          paginatedUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell className="font-medium">{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
@@ -113,5 +159,65 @@ export function UserTable({ users, roles }: UserTableProps) {
         )}
       </TableBody>
     </Table>
+    </div>
+    
+    <div className="flex items-center justify-between px-2">
+      <div className="flex-1 text-sm text-muted-foreground">
+        Showing <strong>{((page - 1) * pageSize) + Math.min(1, paginatedUsers.length)}</strong> to <strong>{Math.min(page * pageSize, filteredUsers.length)}</strong> of <strong>{filteredUsers.length}</strong> user(s).
+      </div>
+      <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm font-medium">Rows per page</p>
+          <Select
+            value={pageSize.toString()}
+            onValueChange={(value) => {
+              setPageSize(Number(value));
+              setPage(1);
+            }}
+          >
+            <SelectTrigger className="h-8 w-[70px]">
+              <SelectValue placeholder={pageSize} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {[5, 10, 20, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          Page {page} of {totalPages}
+        </div>
+        <Pagination className="mx-0 w-auto">
+          <PaginationContent>
+            <PaginationItem>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+              </Button>
+            </PaginationItem>
+            <PaginationItem>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+              >
+                <span className="sr-only">Go to next page</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </div>
+  </div>
   );
 }

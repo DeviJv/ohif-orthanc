@@ -139,7 +139,6 @@ export function DockerServices() {
                                 <TableHead className="w-[200px] font-bold text-slate-500 uppercase text-[10px] tracking-widest pl-6">Layanan</TableHead>
                                 <TableHead className="font-bold text-slate-500 uppercase text-[10px] tracking-widest">Status</TableHead>
                                 <TableHead className="font-bold text-slate-500 uppercase text-[10px] tracking-widest">Waktu Aktif</TableHead>
-                                <TableHead className="font-bold text-slate-500 uppercase text-[10px] tracking-widest">Image</TableHead>
                                 <TableHead className="text-right font-bold text-slate-500 uppercase text-[10px] tracking-widest pr-6">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -147,7 +146,7 @@ export function DockerServices() {
                         <TableBody>
                             {isLoading && containers.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="h-32 text-center text-slate-400 italic">
+                                    <TableCell colSpan={4} className="h-32 text-center text-slate-400 italic">
                                         <div className="flex flex-col items-center gap-2">
                                             <HugeiconsIcon icon={RefreshIcon} className="size-6 animate-spin" />
                                             <span>Menghubungkan ke Docker Engine...</span>
@@ -181,9 +180,7 @@ export function DockerServices() {
                                     <TableCell className="text-xs text-slate-600 font-mono">
                                         {container.Status}
                                     </TableCell>
-                                    <TableCell className="text-[10px] text-slate-400 max-w-[150px] truncate">
-                                        {container.Image}
-                                    </TableCell>
+
                                     <TableCell className="text-right pr-6">
                                         <div className="flex items-center justify-end gap-1">
                                             <Button

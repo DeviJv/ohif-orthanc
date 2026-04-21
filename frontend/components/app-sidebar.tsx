@@ -83,7 +83,7 @@ const data = {
       ),
       items: [
         {
-          title: "Profil Klinik",
+          title: "Pengaturan",
           url: "/settings",
         },
         {

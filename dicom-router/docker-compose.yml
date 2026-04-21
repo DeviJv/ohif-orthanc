@@ -20,6 +20,7 @@ services:
       - URL=${SATUSEHAT_URL}
     networks:
       - pacs
+    entrypoint: /bin/bash -c "sed -i 's/\$$ORG_ID_A/\$$ORG_ID/g; s/\$$CLIENT_A/\$$CLIENT/g; s/\$$SECRET_A/\$$SECRET/g' /app/router.conf && exec /app/entrypoint.sh"
 
 networks:
   pacs:

@@ -24,16 +24,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
 
+                console.log(`[AUTH DEBUG] Attempting login for: "${credentials.email}"`);
+
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email as string },
                 });
 
-                if (!user || !user.password) return null;
+                if (!user) {
+                    console.log(`[AUTH DEBUG] User not found: "${credentials.email}"`);
+                    return null;
+                }
+
+                if (!user.password) {
+                    console.log(`[AUTH DEBUG] User has no password set: "${credentials.email}"`);
+                    return null;
+                }
 
                 const isPasswordValid = await bcrypt.compare(
                     credentials.password as string,
                     user.password
                 );
+
+                console.log(`[AUTH DEBUG] Password check for "${credentials.email}": ${isPasswordValid ? 'SUCCESS' : 'FAILED'}`);
 
                 if (!isPasswordValid) return null;
 

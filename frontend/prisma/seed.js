@@ -6,11 +6,11 @@ async function main() {
   console.log('🌱 Seeding administrative user...');
   const adminEmail = 'admin@pacs.com';
   // Standard default password
-  const hashedPassword = bcrypt.hashSync('admin123', 10);
+  const hashedPassword = bcrypt.hashSync('adminpassword', 10);
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
-    update: {}, // Don't overwrite existing password on re-seed
+    update: { password: hashedPassword }, // FORCED: Update password on every seed run to ensure sync
     create: {
       email: adminEmail,
       name: 'Administrator',

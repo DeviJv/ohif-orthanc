@@ -3,7 +3,8 @@ services:
   dicom-router:
     image: registry.dto.kemkes.go.id/pub/dicom-router:latest
     container_name: dicom-router
-    restart: always
+    platform: linux/amd64
+    restart: unless-stopped
     env_file:
       - .env
     ports:

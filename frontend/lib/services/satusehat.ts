@@ -816,6 +816,7 @@ export class SatuSehatService {
                         url: `ImagingStudy?identifier=${this.getSystemUrl("imagingstudy", config.organizationId)}|${params.accessionNumber}` 
                     }
                 },
+                /* 
                 // ==========================================
                 // 5. OBSERVATION (Hasil Tindakan)
                 // ==========================================
@@ -905,7 +906,8 @@ export class SatuSehatService {
                     },
                     request: { method: "POST", url: "Composition" }
                 }
-            ]
+                */
+            ].filter(Boolean) as any // Filter out potential undefined from comments if any
         };
 
         const response = await fetch(baseUrl, {
@@ -1271,6 +1273,7 @@ export class SatuSehatService {
                     url: `ImagingStudy?identifier=${this.getSystemUrl("imagingstudy", config.organizationId)}|${params.accessionNumber}` 
                 }
             },
+            /*
             {
                 fullUrl: observationUuid,
                 resource: {
@@ -1313,9 +1316,10 @@ export class SatuSehatService {
                     url: `DiagnosticReport?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}` 
                 }
             }
+            */
         ];
 
-        const bundle = { resourceType: "Bundle", type: "transaction", entry: entries };
+        const bundle = { resourceType: "Bundle", type: "transaction", entry: entries.filter(Boolean) as any };
         logs.push("[RADIOLOGY RESULT BUNDLE] Mengirim payload ke Kemenkes...");
 
         const bundleUrl = `${config.environment === 'production' ? 'https://api-satusehat.kemkes.go.id' : 'https://api-satusehat-stg.dto.kemkes.go.id'}/fhir-r4/v1`;

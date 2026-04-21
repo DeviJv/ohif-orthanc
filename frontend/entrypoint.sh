@@ -12,5 +12,9 @@ else
   echo "Database sync failed. Attempting to start the application anyway..."
 fi
 
-# Execute the main container command (pnpm start)
+# Start the custom CRON worker daemon in the background
+echo "Starting Scheduled CRON worker..."
+node cron-worker.js &
+
+# Execute the main container command (pnpm start / next start)
 exec "$@"

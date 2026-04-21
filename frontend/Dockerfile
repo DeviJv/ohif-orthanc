@@ -40,6 +40,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/app/generated/prisma ./app/generated/prisma
 COPY --chown=nextjs:nodejs entrypoint.sh ./entrypoint.sh
+COPY --chown=nextjs:nodejs cron-worker.js ./cron-worker.js
 RUN chmod +x ./entrypoint.sh
 
 USER nextjs

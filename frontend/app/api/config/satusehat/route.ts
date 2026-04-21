@@ -53,6 +53,11 @@ export async function GET() {
             locationUrl: dbSetting.locationUrl,
             practitionerUrl: dbSetting.practitionerUrl,
             patientIdSource: dbSetting.patientIdSource || "PatientID",
+            
+            autoSyncEnabled: dbSetting.autoSyncEnabled,
+            autoSyncFrequency: dbSetting.autoSyncFrequency,
+            autoSyncTime: dbSetting.autoSyncTime,
+            
             source: "SatuSehatSetting"
         });
     }
@@ -125,11 +130,14 @@ export async function POST(req: NextRequest) {
         imagingStudyUrl: body.imagingStudyUrl || null,
         observationUrl: body.observationUrl || null,
         diagnosticReportUrl: body.diagnosticReportUrl || null,
-        compositionUrl: body.compositionUrl || null,
         patientUrl: body.patientUrl || null,
         locationUrl: body.locationUrl || null,
         practitionerUrl: body.practitionerUrl || null,
-        patientIdSource: body.patientIdSource || "PatientID"
+        patientIdSource: body.patientIdSource || "PatientID",
+        
+        autoSyncEnabled: body.autoSyncEnabled ?? false,
+        autoSyncFrequency: body.autoSyncFrequency || "DAILY",
+        autoSyncTime: body.autoSyncTime || "23:00"
     };
 
     await db.satuSehatSetting.upsert({

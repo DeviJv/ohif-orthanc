@@ -12734,6 +12734,10 @@ export namespace Prisma {
     defaultPatientId: string | null
     defaultPractitionerId: string | null
     patientIdSource: string | null
+    autoSyncEnabled: boolean | null
+    autoSyncFrequency: string | null
+    autoSyncTime: string | null
+    lastAutoSyncAt: Date | null
     isActive: boolean | null
     updatedAt: Date | null
   }
@@ -12769,6 +12773,10 @@ export namespace Prisma {
     defaultPatientId: string | null
     defaultPractitionerId: string | null
     patientIdSource: string | null
+    autoSyncEnabled: boolean | null
+    autoSyncFrequency: string | null
+    autoSyncTime: string | null
+    lastAutoSyncAt: Date | null
     isActive: boolean | null
     updatedAt: Date | null
   }
@@ -12804,6 +12812,10 @@ export namespace Prisma {
     defaultPatientId: number
     defaultPractitionerId: number
     patientIdSource: number
+    autoSyncEnabled: number
+    autoSyncFrequency: number
+    autoSyncTime: number
+    lastAutoSyncAt: number
     isActive: number
     updatedAt: number
     _all: number
@@ -12849,6 +12861,10 @@ export namespace Prisma {
     defaultPatientId?: true
     defaultPractitionerId?: true
     patientIdSource?: true
+    autoSyncEnabled?: true
+    autoSyncFrequency?: true
+    autoSyncTime?: true
+    lastAutoSyncAt?: true
     isActive?: true
     updatedAt?: true
   }
@@ -12884,6 +12900,10 @@ export namespace Prisma {
     defaultPatientId?: true
     defaultPractitionerId?: true
     patientIdSource?: true
+    autoSyncEnabled?: true
+    autoSyncFrequency?: true
+    autoSyncTime?: true
+    lastAutoSyncAt?: true
     isActive?: true
     updatedAt?: true
   }
@@ -12919,6 +12939,10 @@ export namespace Prisma {
     defaultPatientId?: true
     defaultPractitionerId?: true
     patientIdSource?: true
+    autoSyncEnabled?: true
+    autoSyncFrequency?: true
+    autoSyncTime?: true
+    lastAutoSyncAt?: true
     isActive?: true
     updatedAt?: true
     _all?: true
@@ -13041,6 +13065,10 @@ export namespace Prisma {
     defaultPatientId: string | null
     defaultPractitionerId: string | null
     patientIdSource: string | null
+    autoSyncEnabled: boolean
+    autoSyncFrequency: string
+    autoSyncTime: string
+    lastAutoSyncAt: Date | null
     isActive: boolean
     updatedAt: Date
     _count: SatuSehatSettingCountAggregateOutputType | null
@@ -13095,6 +13123,10 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: boolean
+    autoSyncTime?: boolean
+    lastAutoSyncAt?: boolean
     isActive?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
@@ -13130,6 +13162,10 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: boolean
+    autoSyncTime?: boolean
+    lastAutoSyncAt?: boolean
     isActive?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
@@ -13165,6 +13201,10 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: boolean
+    autoSyncTime?: boolean
+    lastAutoSyncAt?: boolean
     isActive?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
@@ -13200,11 +13240,15 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: boolean
+    autoSyncTime?: boolean
+    lastAutoSyncAt?: boolean
     isActive?: boolean
     updatedAt?: boolean
   }
 
-  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "patientIdSource" | "isActive" | "updatedAt", ExtArgs["result"]["satuSehatSetting"]>
+  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "patientIdSource" | "autoSyncEnabled" | "autoSyncFrequency" | "autoSyncTime" | "lastAutoSyncAt" | "isActive" | "updatedAt", ExtArgs["result"]["satuSehatSetting"]>
 
   export type $SatuSehatSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatSetting"
@@ -13240,6 +13284,10 @@ export namespace Prisma {
       defaultPatientId: string | null
       defaultPractitionerId: string | null
       patientIdSource: string | null
+      autoSyncEnabled: boolean
+      autoSyncFrequency: string
+      autoSyncTime: string
+      lastAutoSyncAt: Date | null
       isActive: boolean
       updatedAt: Date
     }, ExtArgs["result"]["satuSehatSetting"]>
@@ -13695,6 +13743,10 @@ export namespace Prisma {
     readonly defaultPatientId: FieldRef<"SatuSehatSetting", 'String'>
     readonly defaultPractitionerId: FieldRef<"SatuSehatSetting", 'String'>
     readonly patientIdSource: FieldRef<"SatuSehatSetting", 'String'>
+    readonly autoSyncEnabled: FieldRef<"SatuSehatSetting", 'Boolean'>
+    readonly autoSyncFrequency: FieldRef<"SatuSehatSetting", 'String'>
+    readonly autoSyncTime: FieldRef<"SatuSehatSetting", 'String'>
+    readonly lastAutoSyncAt: FieldRef<"SatuSehatSetting", 'DateTime'>
     readonly isActive: FieldRef<"SatuSehatSetting", 'Boolean'>
     readonly updatedAt: FieldRef<"SatuSehatSetting", 'DateTime'>
   }
@@ -16332,6 +16384,10 @@ export namespace Prisma {
     defaultPatientId: 'defaultPatientId',
     defaultPractitionerId: 'defaultPractitionerId',
     patientIdSource: 'patientIdSource',
+    autoSyncEnabled: 'autoSyncEnabled',
+    autoSyncFrequency: 'autoSyncFrequency',
+    autoSyncTime: 'autoSyncTime',
+    lastAutoSyncAt: 'lastAutoSyncAt',
     isActive: 'isActive',
     updatedAt: 'updatedAt'
   };
@@ -17162,6 +17218,10 @@ export namespace Prisma {
     defaultPatientId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     defaultPractitionerId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     patientIdSource?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    autoSyncEnabled?: BoolFilter<"SatuSehatSetting"> | boolean
+    autoSyncFrequency?: StringFilter<"SatuSehatSetting"> | string
+    autoSyncTime?: StringFilter<"SatuSehatSetting"> | string
+    lastAutoSyncAt?: DateTimeNullableFilter<"SatuSehatSetting"> | Date | string | null
     isActive?: BoolFilter<"SatuSehatSetting"> | boolean
     updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
   }
@@ -17197,6 +17257,10 @@ export namespace Prisma {
     defaultPatientId?: SortOrderInput | SortOrder
     defaultPractitionerId?: SortOrderInput | SortOrder
     patientIdSource?: SortOrderInput | SortOrder
+    autoSyncEnabled?: SortOrder
+    autoSyncFrequency?: SortOrder
+    autoSyncTime?: SortOrder
+    lastAutoSyncAt?: SortOrderInput | SortOrder
     isActive?: SortOrder
     updatedAt?: SortOrder
   }
@@ -17235,6 +17299,10 @@ export namespace Prisma {
     defaultPatientId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     defaultPractitionerId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     patientIdSource?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    autoSyncEnabled?: BoolFilter<"SatuSehatSetting"> | boolean
+    autoSyncFrequency?: StringFilter<"SatuSehatSetting"> | string
+    autoSyncTime?: StringFilter<"SatuSehatSetting"> | string
+    lastAutoSyncAt?: DateTimeNullableFilter<"SatuSehatSetting"> | Date | string | null
     isActive?: BoolFilter<"SatuSehatSetting"> | boolean
     updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
   }, "id">
@@ -17270,6 +17338,10 @@ export namespace Prisma {
     defaultPatientId?: SortOrderInput | SortOrder
     defaultPractitionerId?: SortOrderInput | SortOrder
     patientIdSource?: SortOrderInput | SortOrder
+    autoSyncEnabled?: SortOrder
+    autoSyncFrequency?: SortOrder
+    autoSyncTime?: SortOrder
+    lastAutoSyncAt?: SortOrderInput | SortOrder
     isActive?: SortOrder
     updatedAt?: SortOrder
     _count?: SatuSehatSettingCountOrderByAggregateInput
@@ -17313,6 +17385,10 @@ export namespace Prisma {
     defaultPatientId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
     defaultPractitionerId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
     patientIdSource?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    autoSyncEnabled?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
+    autoSyncFrequency?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    autoSyncTime?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
+    lastAutoSyncAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatSetting"> | Date | string | null
     isActive?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
     updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatSetting"> | Date | string
   }
@@ -18173,6 +18249,10 @@ export namespace Prisma {
     defaultPatientId?: string | null
     defaultPractitionerId?: string | null
     patientIdSource?: string | null
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: string
+    autoSyncTime?: string
+    lastAutoSyncAt?: Date | string | null
     isActive?: boolean
     updatedAt?: Date | string
   }
@@ -18208,6 +18288,10 @@ export namespace Prisma {
     defaultPatientId?: string | null
     defaultPractitionerId?: string | null
     patientIdSource?: string | null
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: string
+    autoSyncTime?: string
+    lastAutoSyncAt?: Date | string | null
     isActive?: boolean
     updatedAt?: Date | string
   }
@@ -18243,6 +18327,10 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
+    autoSyncFrequency?: StringFieldUpdateOperationsInput | string
+    autoSyncTime?: StringFieldUpdateOperationsInput | string
+    lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18278,6 +18366,10 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
+    autoSyncFrequency?: StringFieldUpdateOperationsInput | string
+    autoSyncTime?: StringFieldUpdateOperationsInput | string
+    lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18313,6 +18405,10 @@ export namespace Prisma {
     defaultPatientId?: string | null
     defaultPractitionerId?: string | null
     patientIdSource?: string | null
+    autoSyncEnabled?: boolean
+    autoSyncFrequency?: string
+    autoSyncTime?: string
+    lastAutoSyncAt?: Date | string | null
     isActive?: boolean
     updatedAt?: Date | string
   }
@@ -18348,6 +18444,10 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
+    autoSyncFrequency?: StringFieldUpdateOperationsInput | string
+    autoSyncTime?: StringFieldUpdateOperationsInput | string
+    lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18383,6 +18483,10 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
+    autoSyncFrequency?: StringFieldUpdateOperationsInput | string
+    autoSyncTime?: StringFieldUpdateOperationsInput | string
+    lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19200,6 +19304,10 @@ export namespace Prisma {
     defaultPatientId?: SortOrder
     defaultPractitionerId?: SortOrder
     patientIdSource?: SortOrder
+    autoSyncEnabled?: SortOrder
+    autoSyncFrequency?: SortOrder
+    autoSyncTime?: SortOrder
+    lastAutoSyncAt?: SortOrder
     isActive?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19239,6 +19347,10 @@ export namespace Prisma {
     defaultPatientId?: SortOrder
     defaultPractitionerId?: SortOrder
     patientIdSource?: SortOrder
+    autoSyncEnabled?: SortOrder
+    autoSyncFrequency?: SortOrder
+    autoSyncTime?: SortOrder
+    lastAutoSyncAt?: SortOrder
     isActive?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19274,6 +19386,10 @@ export namespace Prisma {
     defaultPatientId?: SortOrder
     defaultPractitionerId?: SortOrder
     patientIdSource?: SortOrder
+    autoSyncEnabled?: SortOrder
+    autoSyncFrequency?: SortOrder
+    autoSyncTime?: SortOrder
+    lastAutoSyncAt?: SortOrder
     isActive?: SortOrder
     updatedAt?: SortOrder
   }

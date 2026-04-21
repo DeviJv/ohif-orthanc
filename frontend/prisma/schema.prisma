@@ -161,6 +161,12 @@ model SatuSehatSetting {
   defaultPractitionerId String? @default("")
   patientIdSource       String? @default("PatientID")
   
+  // Auto Sync Scheduling Module
+  autoSyncEnabled   Boolean   @default(false)
+  autoSyncFrequency String    @default("DAILY") // DAILY, EVERY_3_DAYS, WEEKLY
+  autoSyncTime      String    @default("23:00") // Format HH:MM
+  lastAutoSyncAt    DateTime?
+  
   isActive         Boolean  @default(true)
   updatedAt        DateTime @updatedAt
 }

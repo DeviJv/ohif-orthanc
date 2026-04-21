@@ -9,7 +9,8 @@ import {
     Tick01Icon, 
     AlertCircleIcon, 
     Calendar01Icon,
-    Database02Icon
+    Database02Icon,
+    RefreshIcon
 } from "@hugeicons/core-free-icons";
 
 interface Container {
@@ -23,6 +24,8 @@ interface Container {
 export function SystemStatusHeader() {
     const [containers, setContainers] = useState<Container[]>([]);
     const [env, setEnv] = useState<string>("unknown");
+    const [autoSyncEnabled, setAutoSyncEnabled] = useState<boolean>(false);
+    const [autoSyncTime, setAutoSyncTime] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [lastSync, setLastSync] = useState<Date>(new Date());
 
@@ -42,6 +45,8 @@ export function SystemStatusHeader() {
             if (configRes.ok) {
                 const configData = await configRes.json();
                 setEnv(configData.env || "unknown");
+                setAutoSyncEnabled(!!configData.autoSyncEnabled);
+                setAutoSyncTime(configData.autoSyncTime || "");
             }
             
             setLastSync(new Date());
@@ -77,6 +82,30 @@ export function SystemStatusHeader() {
                 >
                     {env}
                 </Badge>
+            </div>
+
+            {/* Auto Sync Status */}
+            <div className="flex items-center gap-2.5 border-r border-slate-200 dark:border-slate-800 pr-4 transition-all">
+                <div className="relative flex items-center justify-center">
+                    <div className={`size-2 rounded-full ${autoSyncEnabled ? 'bg-indigo-500' : 'bg-slate-300 dark:bg-slate-700'} ${autoSyncEnabled ? 'animate-pulse' : ''}`} />
+                    {autoSyncEnabled && (
+                        <div className="absolute size-2 rounded-full bg-indigo-400 animate-ping opacity-75" />
+                    )}
+                </div>
+                
+                <div className="flex flex-col -space-y-1">
+                    <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <HugeiconsIcon icon={RefreshIcon} className="size-2.5" />
+                        Auto Sync
+                    </span>
+                    <span className={`text-xs font-semibold tracking-tight ${autoSyncEnabled ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`}>
+                        {isLoading ? "..." : (
+                            autoSyncEnabled 
+                                ? `ON @ ${autoSyncTime}` 
+                                : "OFF"
+                        )}
+                    </span>
+                </div>
             </div>
 
             {/* Docker Status */}

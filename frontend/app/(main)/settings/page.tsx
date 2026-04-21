@@ -40,6 +40,7 @@ import {
     HealthIcon,
     Link01Icon,
     Download01Icon,
+    RefreshIcon,
 } from "@hugeicons/core-free-icons";
 import {
     Tooltip,
@@ -50,6 +51,7 @@ import {
 import { toast } from "sonner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { DockerServices } from "./components/docker-services";
 
 
@@ -893,13 +895,6 @@ function AiSettingsTab() {
 function SatuSehatSettingsTab() {
     const [config, setConfig] = useState<any>({
         env: "staging",
-        // Legacy fields (synced by API)
-        orgId: "",
-        clientId: "",
-        clientSecret: "",
-        authUrl: "",
-        baseUrl: "",
-
         // Staging Fields
         stgOrgId: "",
         stgClientId: "",
@@ -927,6 +922,9 @@ function SatuSehatSettingsTab() {
         locationUrl: "",
         practitionerUrl: "",
         patientIdSource: "PatientID",
+        autoSyncEnabled: false,
+        autoSyncFrequency: "DAILY",
+        autoSyncTime: "23:00",
     });
     
     const [showSecretStg, setShowSecretStg] = useState(false);
@@ -1069,7 +1067,7 @@ function SatuSehatSettingsTab() {
         }
     };
 
-    const handleChange = (key: string, value: string) => {
+    const handleChange = (key: string, value: any) => {
         setConfig((prev: any) => ({ ...prev, [key]: value }));
     };
 
@@ -1433,17 +1431,53 @@ function SatuSehatSettingsTab() {
                             </div>
                         </div>
                         
-                        <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/20">
-                            <div className="flex gap-3">
-                                <div className="size-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
-                                    <HugeiconsIcon icon={InformationCircleIcon} className="size-4" strokeWidth={3} />
+                        <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10 dark:border-primary/20 mt-6">
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <h4 className="text-sm font-bold text-primary dark:text-primary flex items-center gap-2">
+                                            <HugeiconsIcon icon={RefreshIcon} className="size-4" strokeWidth={2.5} />
+                                            Jadwal Auto Sync 
+                                        </h4>
+                                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                            Sistem otomatis melakukan integrasi pasien secara masal (*Bulk Sync*) di latar belakang.
+                                        </p>
+                                    </div>
+                                    <Switch 
+                                        checked={config.autoSyncEnabled} 
+                                        onCheckedChange={(v) => handleChange("autoSyncEnabled", v)} 
+                                    />
                                 </div>
-                                <div className="space-y-1">
-                                    <h4 className="text-xs font-bold text-primary dark:text-primary uppercase">Legacy Compatibility</h4>
-                                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                                        Sistem secara otomatis menyesuaikan kredensial aktif backend dengan pilihan environment di atas agar kompatibel dengan modul lama.
-                                    </p>
-                                </div>
+                                
+                                {config.autoSyncEnabled && (
+                                    <div className="grid grid-cols-2 gap-4 mt-2 p-3 bg-white/60 dark:bg-slate-900/60 rounded-lg border border-primary/10 dark:border-primary/20 animate-in slide-in-from-top-2">
+                                        <div className="space-y-1.5">
+                                            <Label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Frekuensi</Label>
+                                            <Select 
+                                                value={config.autoSyncFrequency} 
+                                                onValueChange={(v) => handleChange("autoSyncFrequency", v)}
+                                            >
+                                                <SelectTrigger className="w-full text-xs h-8">
+                                                    <SelectValue placeholder="Pilih Frekuensi" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="DAILY">Setiap Hari</SelectItem>
+                                                    <SelectItem value="EVERY_3_DAYS">Setiap 3 Hari</SelectItem>
+                                                    <SelectItem value="WEEKLY">Seminggu Sekali</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Jam Eksekusi</Label>
+                                            <Input 
+                                                type="time"
+                                                value={config.autoSyncTime}
+                                                onChange={(e) => handleChange("autoSyncTime", e.target.value)}
+                                                className="w-full text-xs h-8"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </CardContent>

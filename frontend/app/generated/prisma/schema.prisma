@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  output        = "../app/generated/prisma"
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "linux-musl-openssl-3.0.x", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
 }
 
@@ -159,6 +159,12 @@ model SatuSehatSetting {
   defaultPatientId      String? @default("")
   defaultPractitionerId String? @default("")
   patientIdSource       String? @default("PatientID")
+
+  // Auto Sync Scheduling Module
+  autoSyncEnabled   Boolean   @default(false)
+  autoSyncFrequency String    @default("DAILY") // DAILY, EVERY_3_DAYS, WEEKLY
+  autoSyncTime      String    @default("23:00") // Format HH:MM
+  lastAutoSyncAt    DateTime?
 
   isActive  Boolean  @default(true)
   updatedAt DateTime @updatedAt

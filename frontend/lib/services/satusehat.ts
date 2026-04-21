@@ -581,7 +581,7 @@ export class SatuSehatService {
         patientSsId: string;
         patientName: string;
         studyInstanceUid: string;
-        modality: string;
+        modality: string | string[];
         studyDate: string;
         accessionNumber: string;
         description?: string;
@@ -768,10 +768,15 @@ export class SatuSehatService {
                         subject: { reference: `Patient/${activePatientId}` },
                         encounter: { reference: encounterUuid },
                         basedOn: [{ reference: serviceRequestUuid }],
-                        modality: [{
-                            system: "http://dicom.nema.org/resources/ontology/DCM",
-                            code: params.modality
-                        }],
+                        modality: Array.isArray(params.modality) 
+                            ? params.modality.map(m => ({
+                                system: "http://dicom.nema.org/resources/ontology/DCM",
+                                code: m
+                            }))
+                            : [{
+                                system: "http://dicom.nema.org/resources/ontology/DCM",
+                                code: params.modality
+                            }],
                         started: params.studyDate.length === 8 
                             ? `${params.studyDate.substring(0, 4)}-${params.studyDate.substring(4, 6)}-${params.studyDate.substring(6, 8)}T00:00:00+00:00`
                             : params.studyDate,
@@ -806,7 +811,10 @@ export class SatuSehatService {
                             }]
                         }]
                     },
-                    request: { method: "POST", url: "ImagingStudy" }
+                    request: { 
+                        method: "PUT", 
+                        url: `ImagingStudy?identifier=${this.getSystemUrl("imagingstudy", config.organizationId)}|${params.accessionNumber}` 
+                    }
                 },
                 // ==========================================
                 // 5. OBSERVATION (Hasil Tindakan)
@@ -829,7 +837,10 @@ export class SatuSehatService {
                         valueString: "Pemeriksaan Radiologi Selesai",
                         performer: [{ reference: `Organization/${config.organizationId}` }]
                     },
-                    request: { method: "POST", url: "Observation" }
+                    request: { 
+                        method: "PUT", 
+                        url: `Observation?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}` 
+                    }
                 },
                 // ==========================================
                 // 6. DIAGNOSTICREPORT (Ekspertise)
@@ -857,7 +868,10 @@ export class SatuSehatService {
                         result: [{ reference: observationUuid }],
                         conclusion: "Pemeriksaan Radiologi Selesai"
                     },
-                    request: { method: "POST", url: "DiagnosticReport" }
+                    request: { 
+                        method: "PUT", 
+                        url: `DiagnosticReport?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}` 
+                    }
                 },
                 // ==========================================
                 // 7. COMPOSITION (Dokumen Akhir)
@@ -1101,7 +1115,7 @@ export class SatuSehatService {
         studyInstanceUid: string;
         patientSsId: string;
         patientName: string;
-        modality: string;
+        modality: string | string[];
         studyDate: string; 
         accessionNumber?: string;
         description?: string;
@@ -1140,7 +1154,7 @@ export class SatuSehatService {
      */
     static async createRadiologyResultBundle(params: {
         studyInstanceUid: string;
-        modality: string;
+        modality: string | string[];
         studyDate: string;
         accessionNumber: string;
         description?: string;
@@ -1225,7 +1239,12 @@ export class SatuSehatService {
                     subject: { reference: patientRef },
                     encounter: { reference: encounterRef },
                     basedOn: [{ reference: `ServiceRequest/${srId}` }],
-                    modality: [{ system: "http://dicom.nema.org/resources/ontology/DCM", code: params.modality }],
+                    modality: Array.isArray(params.modality)
+                        ? params.modality.map(m => ({
+                            system: "http://dicom.nema.org/resources/ontology/DCM",
+                            code: m
+                        }))
+                        : [{ system: "http://dicom.nema.org/resources/ontology/DCM", code: params.modality }],
                     started: validStartedTime,
                     numberOfSeries: params.numberOfSeries || 1,
                     numberOfInstances: params.numberOfInstances || 1,
@@ -1247,7 +1266,10 @@ export class SatuSehatService {
                         instance: [{ uid: `${params.studyInstanceUid}.1.1`, sopClass: { system: "urn:ietf:rfc:3986", code: "urn:oid:1.2.840.10008.5.1.4.1.1.7" } }]
                     }]
                 },
-                request: { method: "POST", url: "ImagingStudy" }
+                request: { 
+                    method: "PUT", 
+                    url: `ImagingStudy?identifier=${this.getSystemUrl("imagingstudy", config.organizationId)}|${params.accessionNumber}` 
+                }
             },
             {
                 fullUrl: observationUuid,
@@ -1263,7 +1285,10 @@ export class SatuSehatService {
                     valueString: "Pemeriksaan Radiologi Selesai",
                     performer: [{ reference: `Organization/${config.organizationId}` }]
                 },
-                request: { method: "POST", url: "Observation" }
+                request: { 
+                    method: "PUT", 
+                    url: `Observation?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}` 
+                }
             },
             {
                 fullUrl: reportUuid,
@@ -1283,7 +1308,10 @@ export class SatuSehatService {
                     result: [{ reference: observationUuid }],
                     conclusion: "Pemeriksaan Radiologi Selesai"
                 },
-                request: { method: "POST", url: "DiagnosticReport" }
+                request: { 
+                    method: "PUT", 
+                    url: `DiagnosticReport?identifier=${this.getSystemUrl("acsn", config.organizationId)}|${params.accessionNumber}` 
+                }
             }
         ];
 

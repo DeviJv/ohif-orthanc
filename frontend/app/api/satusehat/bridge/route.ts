@@ -65,8 +65,9 @@ export async function POST(req: NextRequest) {
             const seriesPromises = seriesIds.map(sId => fetchOrthanc(`/series/${sId}`));
             const seriesDetails = await Promise.all(seriesPromises);
             
-            // Set primary modality dari series pertama
-            modality = seriesDetails[0].MainDicomTags?.Modality || "OT";
+            // Set all unique modalities dari seluruh series
+            const allModalities = seriesDetails.map(s => s.MainDicomTags?.Modality || "OT");
+            const uniqueModalities = Array.from(new Set(allModalities));
 
             for (const sDetail of seriesDetails) {
                 seriesList.push({
@@ -75,87 +76,82 @@ export async function POST(req: NextRequest) {
                     instanceCount: sDetail.Instances?.length || 1
                 });
             }
-        }
 
-        // 3. Cari ID Pasien di Satu Sehat
-        let patientSsId: string | null = null;
-        try {
-            patientSsId = await SatuSehatService.getPatientIdByNik(nik);
-        } catch (e: any) {
-            return NextResponse.json({ error: `Gagal mencari pasien di Satu Sehat: ${e.message}` }, { status: 500 });
-        }
+            // 3. Cari ID Pasien di Satu Sehat
+            let patientSsId: string | null = null;
+            try {
+                patientSsId = await SatuSehatService.getPatientIdByNik(nik);
+            } catch (e: any) {
+                return NextResponse.json({ error: `Gagal mencari pasien di Satu Sehat: ${e.message}` }, { status: 500 });
+            }
 
-        if (!patientSsId) {
-            return NextResponse.json({ error: `Pasien dengan NIK ${nik} tidak ditemukan di Satu Sehat` }, { status: 404 });
-        }
+            if (!patientSsId) {
+                return NextResponse.json({ error: `Pasien dengan NIK ${nik} tidak ditemukan di Satu Sehat` }, { status: 404 });
+            }
 
-        // 4. Kirim ke Satu Sehat
-        let result;
-        try {
-            result = await SatuSehatService.submitImagingStudy({
-                studyInstanceUid: tags.StudyInstanceUID,
-                patientSsId: patientSsId,
-                patientName: patientTags?.PatientName || tags?.PatientName || "Unknown",
-                modality: modality,
-                studyDate: tags.StudyDate,
-                accessionNumber: tags.AccessionNumber,
-                description: tags.StudyDescription,
-                numberOfSeries: seriesIds.length,
-                numberOfInstances: instanceCount,
-                seriesList: seriesList
-            });
-        } catch (e: any) {
-            console.error("[SATUSEHAT BRIDGE] Detail Error:", e.message);
-            // Use accessionNumber as stable key; fallback to studyInstanceUid if empty
+            // 4. Kirim ke Satu Sehat
+            let result;
+            try {
+                result = await SatuSehatService.submitImagingStudy({
+                    studyInstanceUid: tags.StudyInstanceUID,
+                    patientSsId: patientSsId,
+                    patientName: patientTags?.PatientName || tags?.PatientName || "Unknown",
+                    modality: uniqueModalities,
+                    studyDate: tags.StudyDate,
+                    accessionNumber: tags.AccessionNumber,
+                    description: tags.StudyDescription,
+                    numberOfSeries: seriesIds.length,
+                    numberOfInstances: instanceCount,
+                    seriesList: seriesList
+                });
+            } catch (e: any) {
+                console.error("[SATUSEHAT BRIDGE] Detail Error:", e.message);
+                const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
+                await db.satuSehatIntegration.upsert({
+                    where: { accessionNumber: lookupKey },
+                    update: { status: "FAILED", error: e.message, patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
+                    create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: e.message, patientNik: nik }
+                });
+                
+                return NextResponse.json({ 
+                    error: e.message,
+                    logs: e.logs || ["Terjadi kesalahan saat memproses data di SATUSEHAT."] 
+                }, { status: 500 });
+            }
+
+            // 5. Simpan status sukses ke DB
+            const ssId = result.id;
             const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
             await db.satuSehatIntegration.upsert({
                 where: { accessionNumber: lookupKey },
-                update: { status: "FAILED", error: e.message, patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
-                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: e.message, patientNik: nik }
+                update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik, syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik, syncedAt: new Date() }
             });
-            
+
+            // 6. TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER
+            try {
+                console.log(`[SATUSEHAT BRIDGE] Triggering DICOM Send to QTM-ROUTER for Study: ${studyId}`);
+                await fetchOrthanc("/modalities/QTM-ROUTER/store", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ "Resources": [ studyId ], "Asynchronous": true })
+                });
+            } catch (routerErr: any) {
+                console.error(`[SATUSEHAT BRIDGE] Warning: Failed to trigger QTM-ROUTER: ${routerErr.message}`);
+            }
+
             return NextResponse.json({ 
-                error: e.message,
-                logs: e.logs || ["Terjadi kesalahan saat memproses data di SATUSEHAT."] 
-            }, { status: 500 });
-        }
-
-        // 5. Simpan status sukses ke DB (key by accessionNumber for stability across metadata edits)
-        const ssId = result.id;
-        const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
-        await db.satuSehatIntegration.upsert({
-            where: { accessionNumber: lookupKey },
-            update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik, syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
-            create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik, syncedAt: new Date() }
-        });
-
-        // 6. TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER (Kemenkes Dicom Router)
-        try {
-            console.log(`[SATUSEHAT BRIDGE] Triggering DICOM Send to QTM-ROUTER for Study: ${studyId}`);
-            // Mengirim command push secara Asynchronous agar muncul di menu Jobs
-            await fetchOrthanc("/modalities/QTM-ROUTER/store", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "Resources": [ studyId ],
-                    "Asynchronous": true
-                })
+                success: true, 
+                message: "Berhasil dikirim ke Satu Sehat & Gambar sedang diupload",
+                satusehatId: ssId,
+                logs: result.logs
             });
-            console.log(`[SATUSEHAT BRIDGE] Trigger to QTM-ROUTER sent successfully (Asynchronous Job Created).`);
-        } catch (routerErr: any) {
-            console.error(`[SATUSEHAT BRIDGE] Warning: Failed to trigger QTM-ROUTER: ${routerErr.message}`);
-            // Kita tidak perlu menggagalkan sync FHIR jika upload gambar delay, biarkan background job retry
         }
 
-        return NextResponse.json({ 
-            success: true, 
-            message: "Berhasil dikirim ke Satu Sehat & Gambar sedang diupload",
-            satusehatId: ssId,
-            logs: result.logs
-        });
+        return NextResponse.json({ error: "Study tidak memiliki series" }, { status: 400 });
 
     } catch (error: any) {
-        console.error("[SATUSEHAT BRIDGE] Error:", error);
+        console.error("[SATUSEHAT BRIDGE] Global Error:", error);
         return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }

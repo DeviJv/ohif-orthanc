@@ -6,9 +6,7 @@
     "Port": 5432,
     "Database": "orthanc",
     "Username": "quantum",
-    "Password": "quantum123"
-  },
-  "PostgreSQL": {
+    "Password": "quantum123",
     "EnableUpgrades": true
   },
   "Name": "Q U A N T U M",

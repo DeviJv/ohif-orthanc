@@ -146,6 +146,7 @@ model SatuSehatSetting {
   // Default Personas (Dummy Data for Testing)
   defaultPatientId      String? @default("")
   defaultPractitionerId String? @default("")
+  patientIdSource       String? @default("PatientID")
   
   isActive         Boolean  @default(true)
   updatedAt        DateTime @updatedAt

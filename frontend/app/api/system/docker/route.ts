@@ -25,9 +25,11 @@ async function getDockerPath() {
 
 export async function GET(req: NextRequest) {
     const session = await auth();
-    if (!session || (session.user as any)?.role !== "ADMIN") {
+    const roleName = (session?.user as any)?.role?.name;
+    if (!session || (roleName !== "ROOT" && roleName !== "SUPER-ADMIN")) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
 
 
     const { searchParams } = new URL(req.url);
@@ -72,7 +74,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     const session = await auth();
-    if (!session || (session.user as any)?.role !== "ADMIN") {
+    const roleName = (session?.user as any)?.role?.name;
+    if (!session || (roleName !== "ROOT" && roleName !== "SUPER-ADMIN")) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

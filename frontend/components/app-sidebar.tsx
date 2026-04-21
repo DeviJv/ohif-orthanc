@@ -13,25 +13,20 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { CommandIcon, ComputerTerminalIcon, RoboticIcon, BookOpen02Icon, Settings05Icon, CropIcon, PieChartIcon, MapsIcon } from "@hugeicons/core-free-icons"
+import { 
+    CommandIcon, 
+    ComputerTerminalIcon, 
+    BookOpen02Icon, 
+    Settings05Icon, 
+    UserIcon,
+    Shield01Icon,
+    LockIcon
+} from "@hugeicons/core-free-icons"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "Quantum Admin",
-    email: "admin@pacs.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Quantum PACS",
-      logo: (
-        <HugeiconsIcon icon={CommandIcon} strokeWidth={2} />
-      ),
-      plan: "Enterprise",
-    },
-  ],
-  navMain: [
+export function AppSidebar({ user, ...props }: any) {
+  const roleName = user?.role?.name || "";
+
+  const navMain = [
     {
       title: "Imaging PACS",
       url: "/",
@@ -58,6 +53,28 @@ const data = {
         },
       ],
     },
+    // Only show for ROOT and SUPER-ADMIN
+    ...((roleName === 'ROOT' || roleName === 'SUPER-ADMIN') ? [{
+        title: "User & Roles",
+        url: "/admin/users",
+        icon: (
+          <HugeiconsIcon icon={Shield01Icon} strokeWidth={2} />
+        ),
+        items: [
+          {
+            title: "User Management",
+            url: "/admin/users",
+          },
+          {
+            title: "Roles Management",
+            url: "/admin/roles",
+          },
+          {
+            title: "Permissions",
+            url: "/admin/permissions",
+          },
+        ],
+    }] : []),
     {
       title: "Help & Docs",
       url: "#",
@@ -81,6 +98,8 @@ const data = {
       icon: (
         <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />
       ),
+      // Hide settings if not ROOT/SUPER-ADMIN
+      hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN'),
       items: [
         {
           title: "Pengaturan",
@@ -96,20 +115,35 @@ const data = {
         },
       ],
     },
-  ],
-}
+  ].filter(item => !(item as any).hidden);
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const sidebarData = {
+    user: {
+      name: user?.name || "User",
+      email: user?.email || "",
+      avatar: user?.image || "/avatars/shadcn.jpg",
+    },
+    teams: [
+      {
+        name: "Quantum PACS",
+        logo: (
+          <HugeiconsIcon icon={CommandIcon} strokeWidth={2} />
+        ),
+        plan: roleName,
+      },
+    ],
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={sidebarData.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={sidebarData.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

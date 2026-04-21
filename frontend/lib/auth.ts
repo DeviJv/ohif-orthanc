@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(prisma as any),
     providers: [
         Credentials({
             async authorize(credentials) {
@@ -28,6 +28,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email as string },
+                    include: {
+                        role: {
+                            include: {
+                                permissions: true
+                            }
+                        }
+                    }
                 });
 
                 if (!user) {
@@ -53,7 +60,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     id: user.id,
                     name: user.name,
                     email: user.email,
-                    role: user.role,
+                    role: user.role ? {
+                        name: user.role.name,
+                        permissions: user.role.permissions.map(p => ({ name: p.name }))
+                    } : null,
                 };
             },
         }),

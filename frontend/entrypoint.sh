@@ -2,11 +2,11 @@
 
 # Automated database sync on startup
 echo "Syncing database with Prisma schema..."
-npx prisma db push --schema=app/generated/prisma/schema.prisma --accept-data-loss
+npx prisma db push --schema=prisma/schema.prisma --accept-data-loss
 
 if [ $? -eq 0 ]; then
   echo "Database is in sync. Seeding data..."
-  npx prisma db seed --schema=app/generated/prisma/schema.prisma
+  npx prisma db seed
   echo "Seeding completed. Starting the application..."
 else
   echo "Database sync failed. Attempting to start the application anyway..."

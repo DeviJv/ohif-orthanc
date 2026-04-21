@@ -14,7 +14,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Skip type checking for faster builds in this demo context
 ENV NEXT_TELEMETRY_DISABLED 1
-RUN npx prisma generate --schema=app/generated/prisma/schema.prisma
+RUN npx prisma generate --schema=prisma/schema.prisma
 RUN pnpm run build
 
 # Production image, copy all the files and run next

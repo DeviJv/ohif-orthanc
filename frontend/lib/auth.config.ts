@@ -26,6 +26,7 @@ export const authConfig = {
             const isLoggedIn = !!auth?.user;
             const isOnLoginPage = nextUrl.pathname.startsWith('/login');
             const isApiRoute = nextUrl.pathname.startsWith('/api');
+            const isAdminRoute = nextUrl.pathname.startsWith('/admin');
 
             if (isApiRoute) return true;
 
@@ -33,31 +34,33 @@ export const authConfig = {
                 const loginUrl = nextUrl.clone();
                 loginUrl.pathname = '/login';
                 loginUrl.search = '';
-                // Keep callback relative so it never leaks internal hostnames like localhost.
                 loginUrl.searchParams.set('callbackUrl', `${nextUrl.pathname}${nextUrl.search}`);
                 return Response.redirect(loginUrl);
             }
 
             if (isLoggedIn && isOnLoginPage) {
-                const callbackUrl = nextUrl.searchParams.get('callbackUrl');
-                if (callbackUrl?.startsWith('/')) {
-                    return Response.redirect(new URL(callbackUrl, nextUrl));
-                }
                 return Response.redirect(new URL('/', nextUrl));
+            }
+
+            // RBAC Protection for /admin
+            if (isLoggedIn && isAdminRoute) {
+                const roleName = (auth.user as any)?.role?.name;
+                if (roleName !== 'ROOT' && roleName !== 'SUPER-ADMIN') {
+                    return Response.redirect(new URL('/', nextUrl));
+                }
             }
 
             return true;
         },
         async jwt({ token, user }) {
             if (user) {
-                token.role = (user as { role?: string }).role;
+                token.role = (user as any).role;
             }
             return token;
         },
         async session({ session, token }) {
             if (token && session.user) {
-                (session.user as { role?: string }).role =
-                    typeof token.role === "string" ? token.role : undefined;
+                session.user.role = (token.role as any);
             }
             return session;
         },

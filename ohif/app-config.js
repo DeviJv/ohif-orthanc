@@ -229,7 +229,7 @@ if (true) {
         enableStudyLazyLoad: true,
         supportsFuzzyMatching: false,
         supportsWildcard: true,
-        staticWado: true,
+        staticWado: false,
         singlepart: 'bulkdata,video',
         acceptHeader: [ 'multipart/related; type=application/octet-stream; transfer-syntax=*'],
         bulkDataURI: {

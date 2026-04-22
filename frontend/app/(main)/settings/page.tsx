@@ -147,8 +147,8 @@ export default function SettingsPage() {
 
             <Separator />
 
-            <Tabs defaultValue="clinic" className="w-full overflow-hidden">
-                <TabsList className="flex w-full overflow-x-auto overflow-y-hidden no-scrollbar justify-start h-auto p-1 py-1.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-slate-100 dark:bg-slate-800/50">
+            <Tabs defaultValue="clinic" className="w-full">
+                <TabsList className="flex w-full overflow-x-auto justify-start h-auto p-1 py-1.5 bg-slate-100 dark:bg-slate-800/50">
                     <TabsTrigger value="clinic" className="gap-2 px-4 whitespace-nowrap shrink-0 flex-1 sm:flex-none data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-slate-900 dark:data-[state=active]:text-slate-100">
                         <HugeiconsIcon icon={Building04Icon} className="size-4" />
                         Profil Klinik / RS
@@ -1094,8 +1094,8 @@ function SatuSehatSettingsTab() {
                     <p className="text-xs text-slate-500 dark:text-slate-400">Pilih lingkungan yang akan digunakan oleh sistem saat ini.</p>
                 </div>
 
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="flex-1 md:w-64">
+                <div className="flex flex-col md:flex-row md:items-center gap-4 w-full">
+                    <div className="w-full md:w-64">
                         <Select value={config.env} onValueChange={(v) => handleChange("env", v)}>
                             <SelectTrigger className="w-full bg-white dark:bg-slate-900 border-primary/20 dark:border-primary/40 focus:ring-primary shadow-sm h-11 dark:text-slate-100">
                                 <SelectValue placeholder="Pilih Environment" />
@@ -1107,7 +1107,7 @@ function SatuSehatSettingsTab() {
                         </Select>
                     </div>
                     
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
                         <TooltipProvider>
                             {/* Quantum Optimized Download (Recommended) */}
                             <Tooltip>
@@ -1116,7 +1116,7 @@ function SatuSehatSettingsTab() {
                                         <Button 
                                             {...props}
                                             variant="default" 
-                                            className="gap-2 h-11 px-4 font-medium shadow-sm bg-indigo-600 hover:bg-indigo-700 text-white"
+                                            className="gap-2 h-11 px-4 font-medium shadow-sm bg-indigo-600 hover:bg-indigo-700 text-white flex-shrink-0"
                                             onClick={() => handleDownloadRouter("local")}
                                         >
                                             <HugeiconsIcon icon={Download01Icon} className="size-4" strokeWidth={2} />
@@ -1135,7 +1135,7 @@ function SatuSehatSettingsTab() {
                                         <Button 
                                             {...props}
                                             variant="outline" 
-                                            className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm"
+                                            className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm flex-shrink-0"
                                             onClick={() => handleDownloadRouter("official")}
                                             disabled={!debugResult?.token}
                                         >
@@ -1151,7 +1151,7 @@ function SatuSehatSettingsTab() {
 
                         <Button 
                             variant="outline" 
-                            className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm"
+                            className="gap-2 h-11 px-4 font-medium border-primary/20 hover:bg-primary/5 shadow-sm flex-shrink-0"
                             onClick={handleTest}
                             disabled={isTesting || isSaving}
                         >
@@ -1159,7 +1159,7 @@ function SatuSehatSettingsTab() {
                             {isTesting ? "Testing..." : "Test"}
                         </Button>
                         <Button 
-                            className="gap-2 h-11 px-6 font-semibold shadow-md active:scale-95 transition-all bg-primary hover:bg-primary/90"
+                            className="gap-2 h-11 px-6 font-semibold shadow-md active:scale-95 transition-all bg-primary hover:bg-primary/90 flex-shrink-0"
                             onClick={handleSave}
                             disabled={isSaving || isTesting}
                         >
@@ -1483,7 +1483,7 @@ function SatuSehatSettingsTab() {
                     </CardContent>
                 </Card>
 
-                {/* Column 2: Advanced Resource Overrides */}
+                {/* Advanced Resource Overrides - Commented out because URLs are automatically derived
                 <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
                     <CardHeader className="pb-4">
                         <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
@@ -1519,6 +1519,7 @@ function SatuSehatSettingsTab() {
                         </div>
                     </CardContent>
                 </Card>
+                */}
             </div>
 
         </div>

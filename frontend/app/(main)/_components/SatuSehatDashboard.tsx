@@ -211,68 +211,7 @@ export function SatuSehatDashboard() {
                         </div>
                     </div>
 
-                    {/* Test Router Helper */}
-                    <Card className="border-2 border-primary/20 bg-primary/[0.02] dark:bg-primary/[0.01] rounded-[2rem] overflow-hidden">
-                        <CardHeader className="pb-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2.5 bg-primary/10 rounded-xl text-primary font-black text-xs">
-                                    LAB
-                                </div>
-                                <div>
-                                    <CardTitle className="text-sm font-black tracking-tight uppercase dark:text-slate-100">Test DICOM Router Helper</CardTitle>
-                                    <CardDescription className="text-[10px] font-medium uppercase tracking-tighter dark:text-slate-400">Prime SatuSehat with a ServiceRequest for automated testing.</CardDescription>
-                                </div>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex flex-wrap items-end gap-4 bg-white/50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800">
-                                <div className="space-y-1.5 flex-1 min-w-[200px]">
-                                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Accession Number</p>
-                                    <input 
-                                        type="text" 
-                                        id="testAcsn"
-                                        placeholder="Ex: TEST-12345" 
-                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all uppercase dark:text-slate-100"
-                                    />
-                                </div>
-                                <div className="space-y-1.5 flex-1 min-w-[200px]">
-                                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Patient Name</p>
-                                    <input 
-                                        type="text" 
-                                        id="testName"
-                                        placeholder="Ex: John Doe" 
-                                        className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-100"
-                                    />
-                                </div>
-                                <Button 
-                                    className="h-10 px-8 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary/20 active:scale-95 transition-all"
-                                    onClick={async () => {
-                                        const acsn = (document.getElementById("testAcsn") as HTMLInputElement).value;
-                                        const name = (document.getElementById("testName") as HTMLInputElement).value;
-                                        if (!acsn) return toast.error("Accession Number wajib diisi");
-                                        
-                                        const promise = fetch("/api/stats/satusehat/test-order", {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({ accessionNumber: acsn, patientName: name })
-                                        }).then(r => r.json());
 
-                                        toast.promise(promise, {
-                                            loading: "Mendaftarkan Order di SatuSehat...",
-                                            success: (data) => {
-                                                if (data.error) throw new Error(data.error);
-                                                fetchStats();
-                                                return "Order Berhasil Dibuat! Silakan test DICOM Router Anda.";
-                                            },
-                                            error: (err) => err.message || "Gagal membuat test order"
-                                        });
-                                    }}
-                                >
-                                    Create Order
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
 
                     {/* Summary Cards Grid - More refined */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

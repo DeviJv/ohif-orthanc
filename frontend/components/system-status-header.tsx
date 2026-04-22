@@ -176,15 +176,23 @@ export function SystemStatusHeader() {
                 {isMobile ? (
                     <>
                         <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">System Online</span>
-                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
-                            {format(new Date(), "dd MMM yyyy", { locale: id })}
-                        </span>
+                        <div className="flex flex-col items-end -space-y-1">
+                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
+                                {format(new Date(), "dd MMM yyyy", { locale: id })}
+                            </span>
+                            <span className="text-[9px] font-bold text-primary dark:text-primary tracking-widest">
+                                {format(new Date(), "HH:mm")} WIB
+                            </span>
+                        </div>
                     </>
                 ) : (
                     <div className="flex flex-col -space-y-1 lg:text-left">
                         <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">System Online</span>
                         <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
                             {format(new Date(), "dd MMM yyyy", { locale: id })}
+                        </span>
+                        <span className="text-[9px] font-bold text-primary dark:text-primary tracking-widest">
+                            {format(new Date(), "HH:mm")} WIB
                         </span>
                     </div>
                 )}
@@ -212,7 +220,16 @@ export function SystemStatusHeader() {
                             <div className={`size-2 rounded-full ${allRunning ? 'bg-emerald-500' : 'bg-rose-500'} animate-pulse`} />
                             <div className={`absolute size-2 rounded-full ${allRunning ? 'bg-emerald-400' : 'bg-rose-400'} animate-ping opacity-75`} />
                         </div>
-                        <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-tight">Status</span>
+                        <Badge 
+                            variant={env === 'production' ? 'default' : 'secondary'}
+                            className={`${
+                                env === 'production' 
+                                    ? "bg-orange-600 hover:bg-orange-600 shadow-sm shadow-orange-200" 
+                                    : "bg-blue-600 hover:bg-blue-600 shadow-sm shadow-blue-200 text-white"
+                            } text-[9px] font-bold tracking-tighter h-4 px-1.5 rounded-md uppercase`}
+                        >
+                            {env}
+                        </Badge>
                         <HugeiconsIcon icon={Menu01Icon} className="size-4 text-slate-400" />
                     </PopoverTrigger>
                     <PopoverContent align="end" className="w-[280px] p-4 rounded-2xl shadow-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 backdrop-blur-xl">

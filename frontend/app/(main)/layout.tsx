@@ -43,8 +43,8 @@ export default async function MainLayout({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="flex items-center gap-2 font-medium text-slate-900 dark:text-slate-100 tracking-tight">
-                                        Hospital PACS Dashboard
+                                    <BreadcrumbPage className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100 tracking-tight text-lg">
+                                        Quantum
                                     </BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>

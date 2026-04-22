@@ -59,6 +59,7 @@ export function SatuSehatDashboard() {
         from: new Date(new Date().setDate(new Date().getDate() - 30)),
         to: new Date()
     });
+    const [activeSubTab, setActiveSubTab] = useState("summary");
 
     const fetchStats = async (currentPage = 1) => {
         try {
@@ -113,12 +114,12 @@ export function SatuSehatDashboard() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Unified Toolbar */}
             <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800 rounded-[2rem] p-4 shadow-xl shadow-slate-200/30 dark:shadow-none flex flex-col xl:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-6">
-                    <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200/50 dark:border-slate-700">
+                <div className="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto">
+                    <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200/50 dark:border-slate-700 w-full md:w-auto overflow-x-auto no-scrollbar">
                         <button 
                             onClick={() => setEnvironment("staging")}
                             className={cn(
-                                "flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black transition-all",
+                                "flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
                                 environment === "staging" ? "bg-white dark:bg-slate-900 text-primary shadow-lg shadow-primary/5" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                             )}
                         >
@@ -128,7 +129,7 @@ export function SatuSehatDashboard() {
                         <button 
                             onClick={() => setEnvironment("production")}
                             className={cn(
-                                "flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black transition-all",
+                                "flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
                                 environment === "production" ? "bg-white dark:bg-slate-900 text-amber-600 shadow-lg shadow-amber-600/5" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                             )}
                         >
@@ -137,31 +138,24 @@ export function SatuSehatDashboard() {
                         </button>
                     </div>
 
-                    <div className="hidden md:flex flex-col">
+                    <div className="flex flex-col items-center md:items-start">
                         <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Organization ID</p>
                         <p className="text-xs font-bold text-slate-900 dark:text-slate-100 mt-1">{stats?.orgId || "---"}</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full xl:w-auto">
-                    <DateRangePicker range={dateRange} setRange={setDateRange} />
+                <div className="flex flex-col md:flex-row items-center gap-3 w-full xl:w-auto">
+                    <div className="w-full md:w-auto">
+                        <DateRangePicker range={dateRange} setRange={setDateRange} />
+                    </div>
                     
                     <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden md:block" />
                     
-                    <div className="flex gap-2 ml-auto">
+                    <div className="flex gap-2 w-full md:w-auto justify-end">
                         <Button 
                             variant="outline" 
                             size="sm" 
-                            className="h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-primary hover:text-white dark:hover:text-primary hover:border-primary dark:bg-slate-900 dark:text-slate-300"
-                            onClick={handleBackfill}
-                        >
-                            <HugeiconsIcon icon={Clock01Icon} className="size-4 mr-2" />
-                            Backfill Data
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-900 hover:text-white dark:hover:text-slate-100 hover:border-slate-900 dark:bg-slate-900 dark:text-slate-300"
+                            className="flex-1 md:flex-none h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-900 hover:text-white dark:hover:text-slate-100 hover:border-slate-900 dark:bg-slate-900 dark:text-slate-300"
                         >
                             <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />
                             Export
@@ -170,27 +164,35 @@ export function SatuSehatDashboard() {
                 </div>
             </div>
 
-            <Tabs defaultValue="summary" className="w-full">
-                <div className="flex items-center justify-center mb-8">
-                    <TabsList className="bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-[1.25rem] border border-slate-200/30 dark:border-slate-800">
-                        <TabsTrigger 
-                            value="summary" 
-                            className="rounded-xl px-10 py-2.5 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-primary data-[state=active]:shadow-xl shadow-primary/10 transition-all"
+            <div className="w-full">
+                <div className="flex justify-center mb-8">
+                    <div className="flex bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-[1.25rem] border border-slate-200/30 dark:border-slate-800 w-fit max-w-full overflow-x-auto no-scrollbar">
+                        <button 
+                            onClick={() => setActiveSubTab("summary")}
+                            className={cn(
+                                "flex items-center gap-2 px-8 py-2.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
+                                activeSubTab === "summary" ? "bg-white dark:bg-slate-900 text-primary shadow-xl shadow-primary/10" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                            )}
                         >
-                            <HugeiconsIcon icon={DashboardCircleIcon} className="size-3.5 mr-2" />
-                            Ringkasan Transaksi
-                        </TabsTrigger>
-                        <TabsTrigger 
-                            value="logs" 
-                            className="rounded-xl px-10 py-2.5 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-primary data-[state=active]:shadow-xl shadow-primary/10 transition-all"
+                            <HugeiconsIcon icon={DashboardCircleIcon} className="size-3.5" />
+                            RINGKASAN TRANSAKSI
+                        </button>
+                        <button 
+                            onClick={() => setActiveSubTab("logs")}
+                            className={cn(
+                                "flex items-center gap-2 px-8 py-2.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
+                                activeSubTab === "logs" ? "bg-white dark:bg-slate-900 text-primary shadow-xl shadow-primary/10" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                            )}
                         >
-                            <HugeiconsIcon icon={CheckListIcon} className="size-3.5 mr-2" />
-                            Aktivitas Real-time
-                        </TabsTrigger>
-                    </TabsList>
+                            <HugeiconsIcon icon={CheckListIcon} className="size-3.5" />
+                            AKTIVITAS REAL-TIME
+                        </button>
+                    </div>
                 </div>
 
-                <TabsContent value="summary" className="space-y-8 mt-0 border-none p-0 outline-none">
+                <div className="w-full">
+                    {activeSubTab === "summary" && (
+                        <div className="space-y-8 mt-0 border-none p-0 outline-none animate-in fade-in slide-in-from-bottom-2 duration-500">
                     {/* Info Alert - Slimmer version */}
                     <div className="bg-slate-900 dark:bg-slate-950 text-white rounded-[2rem] p-6 shadow-2xl flex flex-col md:flex-row gap-6 items-center">
                         <div className="bg-primary shadow-lg shadow-primary/20 p-4 rounded-2xl">
@@ -299,9 +301,11 @@ export function SatuSehatDashboard() {
                             </div>
                         ))}
                     </div>
-                </TabsContent>
+                        </div>
+                    )}
 
-                <TabsContent value="logs" className="mt-0 border-none p-0 outline-none">
+                    {activeSubTab === "logs" && (
+                        <div className="mt-0 border-none p-0 outline-none animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <Card className="border border-slate-200/60 dark:border-slate-800 shadow-2xl shadow-slate-200/40 dark:shadow-none rounded-[2.5rem] overflow-hidden bg-white dark:bg-slate-900/50 backdrop-blur-sm">
                         <CardHeader className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 p-8">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -471,8 +475,10 @@ export function SatuSehatDashboard() {
                             )}
                         </CardContent>
                     </Card>
-                </TabsContent>
-            </Tabs>
+                </div>
+            )}
+        </div>
+    </div>
 
             <div className="flex items-center justify-center gap-3 italic text-[10px] text-slate-400 dark:text-slate-500 font-bold bg-slate-50/50 dark:bg-slate-900/50 py-3 rounded-full border border-slate-100 dark:border-slate-800 mt-12">
                 <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -486,7 +492,7 @@ function DateRangePicker({ range, setRange }: { range: DateRange | undefined, se
         <Popover>
             <PopoverTrigger className={cn(
                 buttonVariants({ variant: "outline" }),
-                "h-10 justify-start text-left font-bold text-xs bg-white dark:bg-slate-900 rounded-xl border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-slate-100",
+                "h-10 w-full md:w-auto justify-start text-left font-bold text-xs bg-white dark:bg-slate-900 rounded-xl border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-slate-100",
                 !range && "text-muted-foreground"
             )}>
                 <HugeiconsIcon icon={Calendar03Icon} className="mr-2 size-4 text-slate-400 dark:text-slate-500" />

@@ -11,6 +11,7 @@ import { PacsDashboard } from "./_components/PacsDashboard";
 import { SatuSehatDashboard } from "./_components/SatuSehatDashboard";
 import { id } from "date-fns/locale";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
     const [activeTab, setActiveTab] = useState("pacs");
@@ -27,34 +28,42 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <Tabs defaultValue="pacs" className="w-full" onValueChange={setActiveTab}>
-                <div className="flex justify-center md:justify-start">
-                    <TabsList className="flex bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/40 dark:border-slate-800 mb-4 h-11">
-                        <TabsTrigger 
-                            value="pacs" 
-                            className="rounded-lg px-8 py-2 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-950 data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-full"
-                        >
-                            <HugeiconsIcon icon={DashboardCircleIcon} className="size-3.5 mr-2" />
-                            PACS Dashboard
-                        </TabsTrigger>
-                        <TabsTrigger 
-                            value="satusehat" 
-                            className="rounded-lg px-8 py-2 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-950 data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all h-full"
-                        >
-                            <HugeiconsIcon icon={ActivityIcon} className="size-3.5 mr-2" />
-                            SatuSehat Dashboard
-                        </TabsTrigger>
-                    </TabsList>
+            <div className="flex flex-col gap-6">
+                <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200/40 dark:border-slate-800 w-fit max-w-full overflow-x-auto no-scrollbar">
+                    <button 
+                        onClick={() => setActiveTab("pacs")}
+                        className={cn(
+                            "flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
+                            activeTab === "pacs" 
+                                ? "bg-white dark:bg-slate-900 text-primary shadow-xl shadow-primary/10" 
+                                : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                        )}
+                    >
+                        <HugeiconsIcon icon={DashboardCircleIcon} className="size-3.5" />
+                        PACS DASHBOARD
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab("satusehat")}
+                        className={cn(
+                            "flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
+                            activeTab === "satusehat" 
+                                ? "bg-white dark:bg-slate-900 text-primary shadow-xl shadow-primary/10" 
+                                : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                        )}
+                    >
+                        <HugeiconsIcon icon={ActivityIcon} className="size-3.5" />
+                        SATUSEHAT DASHBOARD
+                    </button>
                 </div>
 
-                <TabsContent value="pacs" className="mt-6 border-none p-0 outline-none">
+                <div className={cn(activeTab === "pacs" ? "block" : "hidden", "animate-in fade-in slide-in-from-bottom-2 duration-500")}>
                     <PacsDashboard />
-                </TabsContent>
+                </div>
 
-                <TabsContent value="satusehat" className="mt-6 border-none p-0 outline-none">
+                <div className={cn(activeTab === "satusehat" ? "block" : "hidden", "animate-in fade-in slide-in-from-bottom-2 duration-500")}>
                     <SatuSehatDashboard />
-                </TabsContent>
-            </Tabs>
+                </div>
+            </div>
         </div>
     );
 }

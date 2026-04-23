@@ -44,6 +44,7 @@ export async function GET(
     try {
         const response = await fetch(orthancUrl, {
             headers: DEFAULT_HEADERS,
+            cache: "no-store",
         });
 
         const body = await response.arrayBuffer();
@@ -80,6 +81,7 @@ export async function POST(
                 "Content-Type": contentType,
             },
             body,
+            cache: "no-store",
         });
 
         const responseBody = await response.arrayBuffer();
@@ -104,6 +106,7 @@ export async function DELETE(
         const response = await fetch(orthancUrl, {
             method: "DELETE",
             headers: DEFAULT_HEADERS,
+            cache: "no-store",
         });
 
         // Orthanc returns 200 with empty body on successful delete
@@ -136,6 +139,7 @@ export async function PUT(
                 "Content-Type": contentType,
             },
             body: body.byteLength > 0 ? body : undefined,
+            cache: "no-store",
         });
 
         const responseBody = await response.arrayBuffer();

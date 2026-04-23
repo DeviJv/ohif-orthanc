@@ -9,7 +9,7 @@ export const orthancApi = {
         const ids: string[] = await response.json();
 
         const details = await Promise.all(
-            ids.slice(0, 50).map(async (id) => {
+            ids.slice(0, 100).map(async (id) => {
                 const res = await fetch(`/api/orthanc/studies/${id}?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
                 return res.json();
             })

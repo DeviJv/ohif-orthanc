@@ -78,6 +78,11 @@ export function useWorklist() {
 
     const fetchStudies = useCallback(async () => {
         setLoading(true);
+        // Clear cached series/instances data on refresh to ensure latest data is fetched
+        setSeriesData({});
+        setInstancesData({});
+        setTagsData({});
+        
         try {
             // Fetch studies AND AI results in parallel to avoid "hilang-muncul"
             const [sortedDetails, resultMap] = await Promise.all([
@@ -213,6 +218,25 @@ export function useWorklist() {
             return newState;
         });
     }, [fetchInstanceTags]);
+
+    // Auto-fetch data for expanded items if data is missing (e.g. after refresh)
+    useEffect(() => {
+        Object.entries(expandedStudies).forEach(([studyId, isExpanded]) => {
+            if (isExpanded && !seriesData[studyId]) fetchSeries(studyId);
+        });
+    }, [expandedStudies, seriesData, fetchSeries]);
+
+    useEffect(() => {
+        Object.entries(expandedSeries).forEach(([seriesId, isExpanded]) => {
+            if (isExpanded && !instancesData[seriesId]) fetchInstances(seriesId);
+        });
+    }, [expandedSeries, instancesData, fetchInstances]);
+
+    useEffect(() => {
+        Object.entries(expandedInstances).forEach(([instanceId, isExpanded]) => {
+            if (isExpanded && !tagsData[instanceId]) fetchInstanceTags(instanceId);
+        });
+    }, [expandedInstances, tagsData, fetchInstanceTags]);
 
     const handleDeleteStudy = useCallback(async (id: string) => {
         const taskId = addTask({ id: `delete-study-${id}`, description: "Deleting study...", type: "delete" });

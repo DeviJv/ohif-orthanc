@@ -37,6 +37,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 # Fix generated prisma path and node_modules permissions
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/app/generated/prisma ./app/generated/prisma
 COPY --chown=nextjs:nodejs entrypoint.sh ./entrypoint.sh

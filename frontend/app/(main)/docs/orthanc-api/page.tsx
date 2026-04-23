@@ -22,7 +22,8 @@ import {
     Database01Icon,
     Folder01Icon,
     File01Icon,
-    InternetIcon
+    InternetIcon,
+    ApiIcon
 } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -161,6 +162,7 @@ function getCategoryIcon(category: string) {
         case "Series": return <HugeiconsIcon icon={File01Icon} className={size} />;
         case "Instances": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         case "DICOMweb": return <HugeiconsIcon icon={InternetIcon} className={size} />;
+        case "Radiology Reports": return <HugeiconsIcon icon={ApiIcon} className={size} />;
         case "Create Order": return <HugeiconsIcon icon={CodeIcon} className={size} />;
         case "Connect Devices": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         default: return <HugeiconsIcon icon={Link01Icon} className={size} />;
@@ -169,7 +171,7 @@ function getCategoryIcon(category: string) {
 
 function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiEndpoint, onCopy: (text: string) => void, appUrl?: string, orthancUrl?: string }) {
     const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
-    const isExternalApi = endpoint.category === "Create Order";
+    const isExternalApi = endpoint.category === "Create Order" || endpoint.category === "Radiology Reports";
     const isConnectDevices = endpoint.category === "Connect Devices";
     const pacsKey = "pacs_secret_token_2026";
     
@@ -180,27 +182,28 @@ function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiE
         ? `-H "x-pacs-key: ${pacsKey}"`
         : `-H "Authorization: Basic cXVhbnR1bTpxdWFudHVtMTIz"`;
 
-    const curlCode = `curl -X ${endpoint.method} "${isExternalApi ? resolvedAppUrl : resolvedOrthancUrl}${endpoint.path}" \\
-  ${authHeader} \\
+    const isGet = endpoint.method === "GET";
+    const queryParams = isGet && isExternalApi ? "?patientId=12345&studyDate=20240420" : "";
+    
+    const curlCode = `curl -X ${endpoint.method} "${isExternalApi ? resolvedAppUrl : resolvedOrthancUrl}${endpoint.path}${queryParams}" \\
+  ${authHeader}${!isGet ? ` \\
   -H "Content-Type: application/json" \\
   -d '{
     "patientId": "12345",
     "studyDate": "20240420",
     "accessionNumber": "ACSN-001"
-  }'`;
+  }'` : ""}`;
     
     const fetchCode = isExternalApi 
-        ? `const response = await fetch("${resolvedAppUrl}${endpoint.path}", {
+        ? `const response = await fetch("${resolvedAppUrl}${endpoint.path}${queryParams}", {
   method: "${endpoint.method}",
   headers: {
-    "x-pacs-key": "${pacsKey}",
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
+    "x-pacs-key": "${pacsKey}"${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
+  }${!isGet ? `,\n  body: JSON.stringify({
     patientId: "12345",
     studyDate: "20240420",
     accessionNumber: "ACSN-001"
-  })
+  })` : ''}
 });
 const data = await response.json();`
         : `const response = await fetch("${resolvedOrthancUrl}${endpoint.path}", {
@@ -213,21 +216,22 @@ const data = await response.json();`;
 
     const phpCode = isExternalApi
         ? `<?php
-$url = "${resolvedAppUrl}${endpoint.path}";
-$data = [
+$url = "${resolvedAppUrl}${endpoint.path}${queryParams}";
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "${endpoint.method}");
+${!isGet ? `$data = [
     "patientId" => "12345",
     "studyDate" => "20240420",
     "accessionNumber" => "ACSN-001"
 ];
-
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'x-pacs-key: ${pacsKey}',
     'Content-Type: application/json'
-]);
+]);` : `curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'x-pacs-key: ${pacsKey}'
+]);`}
 
 $response = curl_exec($ch);
 $result = json_decode($response, true);

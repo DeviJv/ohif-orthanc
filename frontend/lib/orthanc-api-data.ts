@@ -21,6 +21,7 @@ export const ORTHANC_API_CATEGORIES = [
   "Instances",
   "System & Tools",
   "DICOMweb",
+  "Radiology Reports",
   "Create Order",
   "Connect Devices",
 ];
@@ -224,5 +225,32 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
       { name: "DICOM Port", type: "number", description: "4242", required: true },
       { name: "IP Address", type: "string", description: "your-server-ip", required: true },
     ],
+  },
+
+  // RADIOLOGY REPORTS (SIMRS Integration)
+  {
+    id: "get-radiology-report",
+    method: "GET",
+    path: "/api/external/reports",
+    description: "Ambil data laporan radiologi (hasil bacaan) untuk integrasi SIMRS. Jika parameter dikosongkan, API akan mengembalikan SEMUA laporan (List All). Gunakan parameter patientId dan studyDate untuk mengambil detail spesifik.",
+    category: "Radiology Reports",
+    parameters: [
+      { name: "patientId", type: "string", description: "ID Pasien (Opsional, gunakan bersama studyDate untuk mengambil 1 detail spesifik)", required: false },
+      { name: "studyDate", type: "string", description: "Tanggal Pemeriksaan Format YYYYMMDD (Opsional)", required: false },
+    ],
+    response: `{
+  "success": true,
+  "data": {
+    "patientId": "12345",
+    "patientName": "JOHN DOE",
+    "examType": "Rontgen Thorax",
+    "findings": "Normal Cor dan Pulmo...",
+    "conclusion": "Normal",
+    "measurementImages": [
+       { "name": "screenshot1.png", "base64": "data:image/png;base64,..." }
+    ],
+    "doctor": { "name": "dr. Ahmad, Sp.Rad" }
+  }
+}`
   },
 ];

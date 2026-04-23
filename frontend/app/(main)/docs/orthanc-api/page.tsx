@@ -32,6 +32,17 @@ export default function OrthancApiDocsPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [activeCategory, setActiveCategory] = useState<string>("All");
 
+    const [appUrl, setAppUrl] = useState("http://localhost:3000");
+    const [orthancUrl, setOrthancUrl] = useState("http://localhost:8042");
+
+    React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            setAppUrl(window.location.origin);
+            const defaultOrthanc = process.env.NEXT_PUBLIC_ORTHANC_URL || `${window.location.protocol}//${window.location.hostname}:8042`;
+            setOrthancUrl(defaultOrthanc);
+        }
+    }, []);
+
     const filteredEndpoints = useMemo(() => {
         return ORTHANC_API_DATA.filter(endpoint => {
             const matchesSearch = 
@@ -116,7 +127,9 @@ export default function OrthancApiDocsPage() {
                                 <EndpointCard 
                                     key={endpoint.id} 
                                     endpoint={endpoint} 
-                                    onCopy={copyToClipboard} 
+                                    onCopy={copyToClipboard}
+                                    appUrl={appUrl}
+                                    orthancUrl={orthancUrl}
                                 />
                             ))
                         ) : (
@@ -154,18 +167,20 @@ function getCategoryIcon(category: string) {
     }
 }
 
-function EndpointCard({ endpoint, onCopy }: { endpoint: ApiEndpoint, onCopy: (text: string) => void }) {
+function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiEndpoint, onCopy: (text: string) => void, appUrl?: string, orthancUrl?: string }) {
     const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
     const isExternalApi = endpoint.category === "Create Order";
     const isConnectDevices = endpoint.category === "Connect Devices";
     const pacsKey = "pacs_secret_token_2026";
     
-    const baseUrl = isExternalApi ? "" : ":8042"; // External API typically on root domain
+    const resolvedAppUrl = appUrl || "http://localhost:3000";
+    const resolvedOrthancUrl = orthancUrl || "http://localhost:8042";
+
     const authHeader = isExternalApi 
         ? `-H "x-pacs-key: ${pacsKey}"`
-        : `-H "Authorization: Basic your_base64_auth"`;
+        : `-H "Authorization: Basic cXVhbnR1bTpxdWFudHVtMTIz"`;
 
-    const curlCode = `curl -X ${endpoint.method} "http://localhost${baseUrl}${endpoint.path}" \\
+    const curlCode = `curl -X ${endpoint.method} "${isExternalApi ? resolvedAppUrl : resolvedOrthancUrl}${endpoint.path}" \\
   ${authHeader} \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -175,7 +190,7 @@ function EndpointCard({ endpoint, onCopy }: { endpoint: ApiEndpoint, onCopy: (te
   }'`;
     
     const fetchCode = isExternalApi 
-        ? `const response = await fetch("${endpoint.path}", {
+        ? `const response = await fetch("${resolvedAppUrl}${endpoint.path}", {
   method: "${endpoint.method}",
   headers: {
     "x-pacs-key": "${pacsKey}",
@@ -188,17 +203,17 @@ function EndpointCard({ endpoint, onCopy }: { endpoint: ApiEndpoint, onCopy: (te
   })
 });
 const data = await response.json();`
-        : `const response = await fetch("http://localhost:8042${endpoint.path}", {
+        : `const response = await fetch("${resolvedOrthancUrl}${endpoint.path}", {
   method: "${endpoint.method}",
   headers: {
-    "Authorization": "Basic " + btoa("username:password")
+    "Authorization": "Basic " + btoa("quantum:quantum123")
   }
 });
 const data = await response.json();`;
 
     const phpCode = isExternalApi
         ? `<?php
-$url = "http://localhost${endpoint.path}";
+$url = "${resolvedAppUrl}${endpoint.path}";
 $data = [
     "patientId" => "12345",
     "studyDate" => "20240420",
@@ -220,8 +235,8 @@ curl_close($ch);
 print_r($result);
 ?>`
         : `<?php
-$url = "http://localhost:8042${endpoint.path}";
-$auth = base64_encode("username:password");
+$url = "${resolvedOrthancUrl}${endpoint.path}";
+$auth = base64_encode("quantum:quantum123");
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

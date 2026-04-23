@@ -1,0 +1,11 @@
+{
+  "Replace": {
+    "PatientName": "TEST^NEW^NAME^ASYNC"
+  },
+  "Keep": [
+    "StudyInstanceUID"
+  ],
+  "Force": true,
+  "KeepSource": false,
+  "Asynchronous": true
+}

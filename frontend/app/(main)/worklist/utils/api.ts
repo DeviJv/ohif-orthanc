@@ -61,7 +61,7 @@ export const orthancApi = {
         });
 
         // Asynchronous: true → Orthanc returns a job ID instantly, no waiting
-        const payload: any = { Force: true, KeepSource: false, Asynchronous: true };
+        const payload: any = { Force: true, KeepSource: false, Asynchronous: true, Keep: ["StudyInstanceUID"] };
         if (Object.keys(replaceTags).length > 0) payload.Replace = replaceTags;
         if (removeTags.length > 0) payload.Remove = removeTags;
 
@@ -102,7 +102,7 @@ export const orthancApi = {
                 const job = await res.json();
 
                 if (job.State === "Success") {
-                    const newStudyId: string = job.Output?.ID ?? originalStudyId;
+                    const newStudyId: string = job.Content?.ID ?? job.Output?.ID ?? originalStudyId;
                     // Prevent Lua StableStudy from firing Telegram/SatuSehat re-sync
                     await Promise.all([
                         fetch(`/api/orthanc/studies/${newStudyId}/metadata/AI_Processed`, {

@@ -9,6 +9,12 @@ function OnStableStudy(studyId, tags, metadata)
         return
     end
 
+    -- 1. SKIP IF MODIFIED (Edit Metadata)
+    if metadata["ModifiedFrom"] ~= nil then
+        print("SKIPPED: This is a modified study (Edit Metadata).")
+        return
+    end
+
     -- 2. AI ANALYSIS TRIGGER (Removed Router auto-send as requested)
     if metadata["AI_Processed"] ~= "true" then
         local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"

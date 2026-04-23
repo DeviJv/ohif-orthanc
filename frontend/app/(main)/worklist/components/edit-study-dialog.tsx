@@ -140,14 +140,21 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
                             <Label htmlFor="PatientID" className="text-right text-xs font-semibold uppercase text-slate-500">
                                 Patient ID
                             </Label>
-                            <Input
-                                id="PatientID"
-                                name="PatientID"
-                                value={formData.PatientID}
-                                onChange={handleChange}
-                                className="col-span-3 h-9"
-                                placeholder="RM / NIK Pasien"
-                            />
+                            <div className="col-span-3">
+                                <Input
+                                    id="PatientID"
+                                    name="PatientID"
+                                    value={formData.PatientID}
+                                    onChange={handleChange}
+                                    className="h-9"
+                                    placeholder="RM / NIK Pasien"
+                                    disabled
+                                    title="Patient ID tidak bisa diubah karena merubah Patient ID akan merubah Study ID pada Orthanc."
+                                />
+                                <p className="text-[10px] text-muted-foreground mt-1">
+                                    *Tidak dapat diubah. Mengubah Patient ID akan membuat link Telegram / Orthanc ID berubah.
+                                </p>
+                            </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="PatientBirthDate" className="text-right text-xs font-semibold uppercase text-slate-500">

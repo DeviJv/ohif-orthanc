@@ -33,6 +33,11 @@ export function SystemStatusHeader() {
     const [autoSyncTime, setAutoSyncTime] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [lastSync, setLastSync] = useState<Date>(new Date());
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const fetchData = useCallback(async () => {
         try {
@@ -178,10 +183,10 @@ export function SystemStatusHeader() {
                         <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">System Online</span>
                         <div className="flex flex-col items-end -space-y-1">
                             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
-                                {format(new Date(), "dd MMM yyyy", { locale: id })}
+                                {mounted ? format(new Date(), "dd MMM yyyy", { locale: id }) : "..."}
                             </span>
                             <span className="text-[9px] font-bold text-primary dark:text-primary tracking-widest">
-                                {format(new Date(), "HH:mm")} WIB
+                                {mounted ? format(new Date(), "HH:mm") : "..."} WIB
                             </span>
                         </div>
                     </>
@@ -189,10 +194,10 @@ export function SystemStatusHeader() {
                     <div className="flex flex-col -space-y-1 lg:text-left">
                         <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">System Online</span>
                         <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-tight">
-                            {format(new Date(), "dd MMM yyyy", { locale: id })}
+                            {mounted ? format(new Date(), "dd MMM yyyy", { locale: id }) : "..."}
                         </span>
                         <span className="text-[9px] font-bold text-primary dark:text-primary tracking-widest">
-                            {format(new Date(), "HH:mm")} WIB
+                            {mounted ? format(new Date(), "HH:mm") : "..."} WIB
                         </span>
                     </div>
                 )}

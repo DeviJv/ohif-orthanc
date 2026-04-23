@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
                     Replace: { AccessionNumber: accessionNumber },
                     Keep: ["StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"],
                     Force: true,
-                    KeepSource: true
+                    KeepSource: true // MUST be true when keeping UIDs
                 })
             });
             newStudyId = modifyResult.ID;

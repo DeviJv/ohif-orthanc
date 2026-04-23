@@ -138,12 +138,12 @@ export const getColumns = ({
             return labels[val] ?? val;
         },
     },
-    {
-        accessorFn: (row) => row.PatientMainDicomTags?.PatientTelephoneNumbers || row.MainDicomTags.PatientTelephoneNumbers,
-        id: "phone",
-        header: "Phone",
-        cell: ({ getValue }) => getValue() || "-",
-    },
+    // {
+    //     accessorFn: (row) => row.PatientMainDicomTags?.PatientTelephoneNumbers || row.MainDicomTags.PatientTelephoneNumbers,
+    //     id: "phone",
+    //     header: "Phone",
+    //     cell: ({ getValue }) => getValue() || "-",
+    // },
     {
         accessorKey: "MainDicomTags.StudyDate",
         id: "studyDate",

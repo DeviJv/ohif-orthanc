@@ -110,21 +110,29 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No matching study found" }, { status: 404 });
         }
 
-        // --- 4. Modify Study in Orthanc ---
-        // This will replace the AccessionNumber. 
-        // KeepSource: false ensures we don't have duplicates.
-        const modifyResult = await fetchOrthanc(`/studies/${targetStudyId}/modify`, {
-            method: "POST",
-            body: JSON.stringify({
-                Replace: {
-                    AccessionNumber: accessionNumber
-                },
-                Force: true,
-                KeepSource: false
-            })
-        });
+        // --- 4. Modify Study in Orthanc (Only if needed) ---
+        let newStudyId = targetStudyId;
 
-        const newStudyId = modifyResult.ID;
+        // Check if the current AccessionNumber already matches to avoid redundant heavy work
+        const currentStudy = await fetchOrthanc(`/studies/${targetStudyId}`);
+        const currentAcsn = currentStudy.MainDicomTags?.AccessionNumber;
+
+        if (currentAcsn !== accessionNumber) {
+            console.log(`[EXTERNAL API] Modifying AccessionNumber from '${currentAcsn}' to '${accessionNumber}' for study ${targetStudyId}`);
+            
+            const modifyResult = await fetchOrthanc(`/studies/${targetStudyId}/modify`, {
+                method: "POST",
+                body: JSON.stringify({
+                    Replace: { AccessionNumber: accessionNumber },
+                    Keep: ["StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"],
+                    Force: true,
+                    KeepSource: true
+                })
+            });
+            newStudyId = modifyResult.ID;
+        } else {
+            console.log(`[EXTERNAL API] AccessionNumber already matches for study ${targetStudyId}. Skipping modification.`);
+        }
 
         // --- 5. Sync to Database ---
         // We upsert into SatuSehatIntegration so it appears in the dashboard

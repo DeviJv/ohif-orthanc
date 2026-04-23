@@ -26,6 +26,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Image01Icon, ArrowDown01Icon, RefreshIcon } from "@hugeicons/core-free-icons";
+import { getDoctors, upsertRadiologyReport, getRadiologyReport } from "@/lib/actions/report-actions";
 
 interface ClinicConfig {
     clinicName: string;
@@ -68,7 +69,9 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [seriesData, setSeriesData] = useState<Series[]>([]);
     const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
     const [isFetchingSeries, setIsFetchingSeries] = useState(false);
-    const [measurementImages, setMeasurementImages] = useState<{file: File, base64: string}[]>([]);
+    const [measurementImages, setMeasurementImages] = useState<{file?: File, base64: string, name?: string}[]>([]);
+    const [dbDoctors, setDbDoctors] = useState<{id: string, name: string}[]>([]);
+    const [isFetchingDoctors, setIsFetchingDoctors] = useState(false);
 
     const studyMainTags = study?.MainDicomTags as any;
     const patientTags = study?.PatientMainDicomTags as any;
@@ -114,6 +117,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
         conclusion: "",
         recommendation: "",
         doctor: "",
+        doctorId: "",
         date: format(new Date(), "d MMMM yyyy", { locale: idLocale }),
     });
 
@@ -184,14 +188,62 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                     .catch(err => console.error("Error fetching series:", err))
                     .finally(() => setIsFetchingSeries(false));
             }
+
+            // --- FETCH DOCTORS FROM DB ---
+            setIsFetchingDoctors(true);
+            getDoctors().then(res => {
+                if (res.success && res.data) {
+                    const docs = res.data.map(d => ({ id: d.id, name: d.name || d.email || "Unknown" }));
+                    setDbDoctors(docs);
+                }
+            }).finally(() => setIsFetchingDoctors(false));
+
+            // --- LOAD EXISTING REPORT ---
+            if (patientID && study?.MainDicomTags?.StudyInstanceUID) {
+                getRadiologyReport(patientID, study.MainDicomTags.StudyInstanceUID).then(res => {
+                    if (res.success && res.data) {
+                        const report = res.data;
+                        setFormData(prev => ({
+                            ...prev,
+                            age: report.age || prev.age,
+                            gender: report.patientSex === "L" ? "L" : report.patientSex === "P" ? "P" : prev.gender,
+                            address: report.address || prev.address,
+                            sender: report.sender || prev.sender,
+                            diagnosis: report.diagnosis || prev.diagnosis,
+                            soap: report.soap || prev.soap,
+                            photoNum: report.photoNum || prev.photoNum,
+                            examType: report.examType || prev.examType,
+                            findings: report.findings || prev.findings,
+                            conclusion: report.conclusion || prev.conclusion,
+                            recommendation: report.recommendation || prev.recommendation,
+                            doctor: report.doctor?.name || report.doctorName || prev.doctor,
+                            doctorId: report.doctorId || prev.doctorId,
+                            date: report.reportDate || prev.date,
+                        }));
+
+                        if (report.doctor?.name || report.doctorName) {
+                            setSearchValue(report.doctor?.name || report.doctorName || "");
+                        }
+
+                        if (report.measurementImages) {
+                            setMeasurementImages(report.measurementImages as any);
+                        }
+                        if (report.selectedSeries) {
+                            setSelectedSeriesIds(report.selectedSeries as string[]);
+                        }
+                        
+                        toast.info("Laporan sebelumnya berhasil dimuat");
+                    }
+                });
+            }
         }
-    }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName, study?.MainDicomTags?.StudyInstanceUID, study?.ID]);
+    }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName, study?.MainDicomTags?.StudyInstanceUID, study?.ID, patientID]);
 
     const filteredDoctors = React.useMemo(() => {
-        if (!clinic?.doctors || !searchValue) return clinic?.doctors || [];
+        if (!dbDoctors.length || !searchValue) return dbDoctors || [];
         const lower = searchValue.toLowerCase();
-        return clinic.doctors.filter((d) => d.toLowerCase().includes(lower));
-    }, [clinic?.doctors, searchValue]);
+        return dbDoctors.filter((d) => d.name.toLowerCase().includes(lower));
+    }, [dbDoctors, searchValue]);
 
     // Modalities that have no pixel data and cannot be previewed as images
     const NON_IMAGE_MODALITIES = ["SR", "PR", "KO", "SEG", "DOC", "REG", "PLAN", "RWV"];
@@ -209,7 +261,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
         files.forEach(file => {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setMeasurementImages(prev => [...prev, { file, base64: reader.result as string }]);
+                setMeasurementImages(prev => [...prev, { file, base64: reader.result as string, name: file.name }]);
             };
             reader.readAsDataURL(file);
         });
@@ -241,6 +293,38 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
 
         setIsGenerating(true);
         try {
+            // --- SAVE TO DATABASE FIRST ---
+            const reportData = {
+                patientId: patientID,
+                studyInstanceUid: study?.MainDicomTags?.StudyInstanceUID,
+                studyDate: studyDateRaw,
+                accessionNumber: accessionNumber,
+                patientName: patientName,
+                patientSex: formData.gender,
+                age: formData.age,
+                address: formData.address,
+                sender: formData.sender,
+                diagnosis: formData.diagnosis,
+                soap: formData.soap,
+                photoNum: formData.photoNum,
+                examType: formData.examType,
+                findings: formData.findings,
+                conclusion: formData.conclusion,
+                recommendation: formData.recommendation,
+                measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
+                selectedSeries: selectedSeriesIds,
+                doctorId: formData.doctorId,
+                doctorName: formData.doctor,
+                reportDate: formData.date
+            };
+
+            const saveRes = await upsertRadiologyReport(reportData);
+            if (!saveRes.success) {
+                toast.error("Gagal menyimpan data ke database, tapi PDF tetap akan dibuat.");
+            } else {
+                toast.success("Data berhasil disimpan ke database");
+            }
+
             const { default: jsPDF } = await import("jspdf");
             const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
             
@@ -442,7 +526,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                         const xOffset = (pdfPageWidth - drawWidth) / 2;
                         const yOffset = (pdfPageHeight - drawHeight) / 2;
                         
-                        const imgType = imgData.file.type === "image/png" ? "PNG" : "JPEG";
+                        const imgType = imgData.file?.type === "image/png" || imgData.name?.endsWith(".png") ? "PNG" : "JPEG";
                         pdf.addImage(imgData.base64, imgType, xOffset, yOffset, drawWidth, drawHeight);
                         
                         pdf.setFont("helvetica", "bold");
@@ -731,10 +815,16 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                 <div className="bg-card border rounded-xl shadow-sm p-5 grid grid-cols-12 gap-6">
                                     <div className="col-span-8 space-y-2">
                                         <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
-                                        {clinic?.doctors && clinic.doctors.length > 0 ? (
+                                        {dbDoctors && dbDoctors.length > 0 ? (
                                             <Combobox
-                                                value={formData.doctor}
-                                                onValueChange={(v) => v && setFormData((p) => ({ ...p, doctor: v }))}
+                                                value={formData.doctorId}
+                                                onValueChange={(v) => {
+                                                    const doc = dbDoctors.find(d => d.id === v);
+                                                    if (doc) {
+                                                        setFormData((p) => ({ ...p, doctor: doc.name, doctorId: doc.id }));
+                                                        setSearchValue(doc.name);
+                                                    }
+                                                }}
                                                 inputValue={searchValue}
                                                 onInputValueChange={setSearchValue}
                                             >
@@ -745,13 +835,18 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                     <ComboboxContent>
                                                         <ComboboxList tabIndex={-1}>
                                                             {filteredDoctors.map((d, i) => (
-                                                                <ComboboxItem key={i} value={d}>{d}</ComboboxItem>
+                                                                <ComboboxItem key={i} value={d.id}>{d.name}</ComboboxItem>
                                                             ))}
                                                         </ComboboxList>
                                                         <ComboboxEmpty>Dokter tidak ditemukan</ComboboxEmpty>
                                                     </ComboboxContent>
                                                 </ComboboxInput>
                                             </Combobox>
+                                        ) : isFetchingDoctors ? (
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 border rounded-md">
+                                                <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
+                                                Memuat daftar dokter...
+                                            </div>
                                         ) : (
                                             <Input
                                                 value={formData.doctor}

@@ -126,11 +126,11 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  roleId: 'roleId',
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  roleId: 'roleId'
 };
 
 exports.Prisma.RoleScalarFieldEnum = {
@@ -248,12 +248,12 @@ exports.Prisma.SatuSehatSettingScalarFieldEnum = {
   defaultPatientId: 'defaultPatientId',
   defaultPractitionerId: 'defaultPractitionerId',
   patientIdSource: 'patientIdSource',
+  isActive: 'isActive',
+  updatedAt: 'updatedAt',
   autoSyncEnabled: 'autoSyncEnabled',
   autoSyncFrequency: 'autoSyncFrequency',
   autoSyncTime: 'autoSyncTime',
-  lastAutoSyncAt: 'lastAutoSyncAt',
-  isActive: 'isActive',
-  updatedAt: 'updatedAt'
+  lastAutoSyncAt: 'lastAutoSyncAt'
 };
 
 exports.Prisma.SatuSehatResourceLogScalarFieldEnum = {
@@ -276,6 +276,33 @@ exports.Prisma.ModalityConnectionScalarFieldEnum = {
   ipAddress: 'ipAddress',
   event: 'event',
   timestamp: 'timestamp'
+};
+
+exports.Prisma.RadiologyReportScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  studyInstanceUid: 'studyInstanceUid',
+  studyDate: 'studyDate',
+  accessionNumber: 'accessionNumber',
+  patientName: 'patientName',
+  patientSex: 'patientSex',
+  age: 'age',
+  address: 'address',
+  sender: 'sender',
+  diagnosis: 'diagnosis',
+  soap: 'soap',
+  photoNum: 'photoNum',
+  examType: 'examType',
+  findings: 'findings',
+  conclusion: 'conclusion',
+  recommendation: 'recommendation',
+  measurementImages: 'measurementImages',
+  selectedSeries: 'selectedSeries',
+  reportDate: 'reportDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  doctorId: 'doctorId',
+  doctorName: 'doctorName'
 };
 
 exports.Prisma.SortOrder = {
@@ -322,7 +349,8 @@ exports.Prisma.ModelName = {
   SatuSehatWebhookLog: 'SatuSehatWebhookLog',
   SatuSehatSetting: 'SatuSehatSetting',
   SatuSehatResourceLog: 'SatuSehatResourceLog',
-  ModalityConnection: 'ModalityConnection'
+  ModalityConnection: 'ModalityConnection',
+  RadiologyReport: 'RadiologyReport'
 };
 
 /**

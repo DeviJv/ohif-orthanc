@@ -51,17 +51,23 @@ export const orthancApi = {
     modifyStudy: async (studyId: string, modifications: Record<string, string>): Promise<{ newStudyId: string | null }> => {
         const replaceTags: Record<string, string> = {};
         const removeTags: string[] = [];
+        const criticalTags = ["PatientID", "PatientName", "StudyDate"];
 
         Object.entries(modifications).forEach(([key, value]) => {
             if (value && value.trim() !== "") {
                 replaceTags[key] = value.trim();
-            } else {
+            } else if (!criticalTags.includes(key)) {
                 removeTags.push(key);
             }
         });
 
         // Asynchronous: true → Orthanc returns a job ID instantly, no waiting
-        const payload: any = { Force: true, KeepSource: false, Asynchronous: true, Keep: ["StudyInstanceUID"] };
+        const payload: any = { 
+            Force: true, 
+            KeepSource: true, 
+            Asynchronous: true, 
+            Keep: ["StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"] 
+        };
         if (Object.keys(replaceTags).length > 0) payload.Replace = replaceTags;
         if (removeTags.length > 0) payload.Remove = removeTags;
 
@@ -93,7 +99,7 @@ export const orthancApi = {
 
     /** Internal helper: poll a job until success/failure, then set anti-refire metadata */
     _pollJobAndTag: async (jobId: string, originalStudyId: string): Promise<void> => {
-        const maxAttempts = 60; // 60 × 500ms = max 30s
+        const maxAttempts = 1200; // 1200 × 500ms = max 10 minutes (for very large studies)
         for (let i = 0; i < maxAttempts; i++) {
             await new Promise(r => setTimeout(r, 500));
             try {

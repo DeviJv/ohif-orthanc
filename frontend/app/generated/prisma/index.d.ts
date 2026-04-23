@@ -78,6 +78,11 @@ export type SatuSehatResourceLog = $Result.DefaultSelection<Prisma.$SatuSehatRes
  * 
  */
 export type ModalityConnection = $Result.DefaultSelection<Prisma.$ModalityConnectionPayload>
+/**
+ * Model RadiologyReport
+ * 
+ */
+export type RadiologyReport = $Result.DefaultSelection<Prisma.$RadiologyReportPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -326,6 +331,16 @@ export class PrismaClient<
     * ```
     */
   get modalityConnection(): Prisma.ModalityConnectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.radiologyReport`: Exposes CRUD operations for the **RadiologyReport** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RadiologyReports
+    * const radiologyReports = await prisma.radiologyReport.findMany()
+    * ```
+    */
+  get radiologyReport(): Prisma.RadiologyReportDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -779,7 +794,8 @@ export namespace Prisma {
     SatuSehatWebhookLog: 'SatuSehatWebhookLog',
     SatuSehatSetting: 'SatuSehatSetting',
     SatuSehatResourceLog: 'SatuSehatResourceLog',
-    ModalityConnection: 'ModalityConnection'
+    ModalityConnection: 'ModalityConnection',
+    RadiologyReport: 'RadiologyReport'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -798,7 +814,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection"
+      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1764,6 +1780,80 @@ export namespace Prisma {
           }
         }
       }
+      RadiologyReport: {
+        payload: Prisma.$RadiologyReportPayload<ExtArgs>
+        fields: Prisma.RadiologyReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RadiologyReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RadiologyReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>
+          }
+          findFirst: {
+            args: Prisma.RadiologyReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RadiologyReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>
+          }
+          findMany: {
+            args: Prisma.RadiologyReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>[]
+          }
+          create: {
+            args: Prisma.RadiologyReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>
+          }
+          createMany: {
+            args: Prisma.RadiologyReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RadiologyReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>[]
+          }
+          delete: {
+            args: Prisma.RadiologyReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>
+          }
+          update: {
+            args: Prisma.RadiologyReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.RadiologyReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RadiologyReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RadiologyReportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>[]
+          }
+          upsert: {
+            args: Prisma.RadiologyReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiologyReportPayload>
+          }
+          aggregate: {
+            args: Prisma.RadiologyReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRadiologyReport>
+          }
+          groupBy: {
+            args: Prisma.RadiologyReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RadiologyReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RadiologyReportCountArgs<ExtArgs>
+            result: $Utils.Optional<RadiologyReportCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1873,6 +1963,7 @@ export namespace Prisma {
     satuSehatSetting?: SatuSehatSettingOmit
     satuSehatResourceLog?: SatuSehatResourceLogOmit
     modalityConnection?: ModalityConnectionOmit
+    radiologyReport?: RadiologyReportOmit
   }
 
   /* Types for Logging */
@@ -1954,11 +2045,13 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     accounts: number
+    reports: number
     sessions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+    reports?: boolean | UserCountOutputTypeCountReportsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   }
 
@@ -1983,6 +2076,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RadiologyReportWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
   }
@@ -1993,13 +2093,13 @@ export namespace Prisma {
    */
 
   export type RoleCountOutputType = {
-    permissions: number
     users: number
+    permissions: number
   }
 
   export type RoleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    permissions?: boolean | RoleCountOutputTypeCountPermissionsArgs
     users?: boolean | RoleCountOutputTypeCountUsersArgs
+    permissions?: boolean | RoleCountOutputTypeCountPermissionsArgs
   }
 
   // Custom InputTypes
@@ -2016,15 +2116,15 @@ export namespace Prisma {
   /**
    * RoleCountOutputType without action
    */
-  export type RoleCountOutputTypeCountPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PermissionWhereInput
+  export type RoleCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
   /**
    * RoleCountOutputType without action
    */
-  export type RoleCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type RoleCountOutputTypeCountPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PermissionWhereInput
   }
 
 
@@ -2078,11 +2178,11 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    roleId: string | null
     emailVerified: Date | null
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    roleId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2090,11 +2190,11 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    roleId: string | null
     emailVerified: Date | null
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    roleId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2102,11 +2202,11 @@ export namespace Prisma {
     name: number
     email: number
     password: number
-    roleId: number
     emailVerified: number
     image: number
     createdAt: number
     updatedAt: number
+    roleId: number
     _all: number
   }
 
@@ -2116,11 +2216,11 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    roleId?: true
     emailVerified?: true
     image?: true
     createdAt?: true
     updatedAt?: true
+    roleId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2128,11 +2228,11 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    roleId?: true
     emailVerified?: true
     image?: true
     createdAt?: true
     updatedAt?: true
+    roleId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2140,11 +2240,11 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    roleId?: true
     emailVerified?: true
     image?: true
     createdAt?: true
     updatedAt?: true
+    roleId?: true
     _all?: true
   }
 
@@ -2225,11 +2325,11 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    roleId: string | null
     emailVerified: Date | null
     image: string | null
     createdAt: Date
     updatedAt: Date
+    roleId: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2254,14 +2354,15 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    roleId?: boolean
     emailVerified?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    role?: boolean | User$roleArgs<ExtArgs>
+    roleId?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    reports?: boolean | User$reportsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2270,11 +2371,11 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    roleId?: boolean
     emailVerified?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    roleId?: boolean
     role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2283,11 +2384,11 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    roleId?: boolean
     emailVerified?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    roleId?: boolean
     role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2296,18 +2397,19 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    roleId?: boolean
     emailVerified?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    roleId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "roleId" | "emailVerified" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "roleId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    role?: boolean | User$roleArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    reports?: boolean | User$reportsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2320,20 +2422,21 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      role: Prisma.$RolePayload<ExtArgs> | null
       accounts: Prisma.$AccountPayload<ExtArgs>[]
+      reports: Prisma.$RadiologyReportPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
+      role: Prisma.$RolePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string | null
       email: string | null
       password: string | null
-      roleId: string | null
       emailVerified: Date | null
       image: string | null
       createdAt: Date
       updatedAt: Date
+      roleId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2728,9 +2831,10 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    role<T extends User$roleArgs<ExtArgs> = {}>(args?: Subset<T, User$roleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reports<T extends User$reportsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    role<T extends User$roleArgs<ExtArgs> = {}>(args?: Subset<T, User$roleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2764,11 +2868,11 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly roleId: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly roleId: FieldRef<"User", 'String'>
   }
     
 
@@ -3165,25 +3269,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.role
-   */
-  export type User$roleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Role
-     */
-    select?: RoleSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Role
-     */
-    omit?: RoleOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RoleInclude<ExtArgs> | null
-    where?: RoleWhereInput
-  }
-
-  /**
    * User.accounts
    */
   export type User$accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3208,6 +3293,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.reports
+   */
+  export type User$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    where?: RadiologyReportWhereInput
+    orderBy?: RadiologyReportOrderByWithRelationInput | RadiologyReportOrderByWithRelationInput[]
+    cursor?: RadiologyReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RadiologyReportScalarFieldEnum | RadiologyReportScalarFieldEnum[]
+  }
+
+  /**
    * User.sessions
    */
   export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3229,6 +3338,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.role
+   */
+  export type User$roleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    where?: RoleWhereInput
   }
 
   /**
@@ -3406,8 +3534,8 @@ export namespace Prisma {
     name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    permissions?: boolean | Role$permissionsArgs<ExtArgs>
     users?: boolean | Role$usersArgs<ExtArgs>
+    permissions?: boolean | Role$permissionsArgs<ExtArgs>
     _count?: boolean | RoleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["role"]>
 
@@ -3434,8 +3562,8 @@ export namespace Prisma {
 
   export type RoleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["role"]>
   export type RoleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    permissions?: boolean | Role$permissionsArgs<ExtArgs>
     users?: boolean | Role$usersArgs<ExtArgs>
+    permissions?: boolean | Role$permissionsArgs<ExtArgs>
     _count?: boolean | RoleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RoleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3444,8 +3572,8 @@ export namespace Prisma {
   export type $RolePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Role"
     objects: {
-      permissions: Prisma.$PermissionPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
+      permissions: Prisma.$PermissionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3846,8 +3974,8 @@ export namespace Prisma {
    */
   export interface Prisma__RoleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    permissions<T extends Role$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, Role$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Role$usersArgs<ExtArgs> = {}>(args?: Subset<T, Role$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    permissions<T extends Role$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, Role$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4269,30 +4397,6 @@ export namespace Prisma {
   }
 
   /**
-   * Role.permissions
-   */
-  export type Role$permissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Permission
-     */
-    select?: PermissionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Permission
-     */
-    omit?: PermissionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PermissionInclude<ExtArgs> | null
-    where?: PermissionWhereInput
-    orderBy?: PermissionOrderByWithRelationInput | PermissionOrderByWithRelationInput[]
-    cursor?: PermissionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PermissionScalarFieldEnum | PermissionScalarFieldEnum[]
-  }
-
-  /**
    * Role.users
    */
   export type Role$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4314,6 +4418,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Role.permissions
+   */
+  export type Role$permissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Permission
+     */
+    select?: PermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Permission
+     */
+    omit?: PermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PermissionInclude<ExtArgs> | null
+    where?: PermissionWhereInput
+    orderBy?: PermissionOrderByWithRelationInput | PermissionOrderByWithRelationInput[]
+    cursor?: PermissionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PermissionScalarFieldEnum | PermissionScalarFieldEnum[]
   }
 
   /**
@@ -12734,12 +12862,12 @@ export namespace Prisma {
     defaultPatientId: string | null
     defaultPractitionerId: string | null
     patientIdSource: string | null
+    isActive: boolean | null
+    updatedAt: Date | null
     autoSyncEnabled: boolean | null
     autoSyncFrequency: string | null
     autoSyncTime: string | null
     lastAutoSyncAt: Date | null
-    isActive: boolean | null
-    updatedAt: Date | null
   }
 
   export type SatuSehatSettingMaxAggregateOutputType = {
@@ -12773,12 +12901,12 @@ export namespace Prisma {
     defaultPatientId: string | null
     defaultPractitionerId: string | null
     patientIdSource: string | null
+    isActive: boolean | null
+    updatedAt: Date | null
     autoSyncEnabled: boolean | null
     autoSyncFrequency: string | null
     autoSyncTime: string | null
     lastAutoSyncAt: Date | null
-    isActive: boolean | null
-    updatedAt: Date | null
   }
 
   export type SatuSehatSettingCountAggregateOutputType = {
@@ -12812,12 +12940,12 @@ export namespace Prisma {
     defaultPatientId: number
     defaultPractitionerId: number
     patientIdSource: number
+    isActive: number
+    updatedAt: number
     autoSyncEnabled: number
     autoSyncFrequency: number
     autoSyncTime: number
     lastAutoSyncAt: number
-    isActive: number
-    updatedAt: number
     _all: number
   }
 
@@ -12861,12 +12989,12 @@ export namespace Prisma {
     defaultPatientId?: true
     defaultPractitionerId?: true
     patientIdSource?: true
+    isActive?: true
+    updatedAt?: true
     autoSyncEnabled?: true
     autoSyncFrequency?: true
     autoSyncTime?: true
     lastAutoSyncAt?: true
-    isActive?: true
-    updatedAt?: true
   }
 
   export type SatuSehatSettingMaxAggregateInputType = {
@@ -12900,12 +13028,12 @@ export namespace Prisma {
     defaultPatientId?: true
     defaultPractitionerId?: true
     patientIdSource?: true
+    isActive?: true
+    updatedAt?: true
     autoSyncEnabled?: true
     autoSyncFrequency?: true
     autoSyncTime?: true
     lastAutoSyncAt?: true
-    isActive?: true
-    updatedAt?: true
   }
 
   export type SatuSehatSettingCountAggregateInputType = {
@@ -12939,12 +13067,12 @@ export namespace Prisma {
     defaultPatientId?: true
     defaultPractitionerId?: true
     patientIdSource?: true
+    isActive?: true
+    updatedAt?: true
     autoSyncEnabled?: true
     autoSyncFrequency?: true
     autoSyncTime?: true
     lastAutoSyncAt?: true
-    isActive?: true
-    updatedAt?: true
     _all?: true
   }
 
@@ -13065,12 +13193,12 @@ export namespace Prisma {
     defaultPatientId: string | null
     defaultPractitionerId: string | null
     patientIdSource: string | null
+    isActive: boolean
+    updatedAt: Date
     autoSyncEnabled: boolean
     autoSyncFrequency: string
     autoSyncTime: string
     lastAutoSyncAt: Date | null
-    isActive: boolean
-    updatedAt: Date
     _count: SatuSehatSettingCountAggregateOutputType | null
     _avg: SatuSehatSettingAvgAggregateOutputType | null
     _sum: SatuSehatSettingSumAggregateOutputType | null
@@ -13123,12 +13251,12 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
     autoSyncEnabled?: boolean
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
-    isActive?: boolean
-    updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
 
   export type SatuSehatSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13162,12 +13290,12 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
     autoSyncEnabled?: boolean
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
-    isActive?: boolean
-    updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
 
   export type SatuSehatSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13201,12 +13329,12 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
     autoSyncEnabled?: boolean
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
-    isActive?: boolean
-    updatedAt?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
 
   export type SatuSehatSettingSelectScalar = {
@@ -13240,15 +13368,15 @@ export namespace Prisma {
     defaultPatientId?: boolean
     defaultPractitionerId?: boolean
     patientIdSource?: boolean
+    isActive?: boolean
+    updatedAt?: boolean
     autoSyncEnabled?: boolean
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
-    isActive?: boolean
-    updatedAt?: boolean
   }
 
-  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "patientIdSource" | "autoSyncEnabled" | "autoSyncFrequency" | "autoSyncTime" | "lastAutoSyncAt" | "isActive" | "updatedAt", ExtArgs["result"]["satuSehatSetting"]>
+  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "patientIdSource" | "isActive" | "updatedAt" | "autoSyncEnabled" | "autoSyncFrequency" | "autoSyncTime" | "lastAutoSyncAt", ExtArgs["result"]["satuSehatSetting"]>
 
   export type $SatuSehatSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatSetting"
@@ -13284,12 +13412,12 @@ export namespace Prisma {
       defaultPatientId: string | null
       defaultPractitionerId: string | null
       patientIdSource: string | null
+      isActive: boolean
+      updatedAt: Date
       autoSyncEnabled: boolean
       autoSyncFrequency: string
       autoSyncTime: string
       lastAutoSyncAt: Date | null
-      isActive: boolean
-      updatedAt: Date
     }, ExtArgs["result"]["satuSehatSetting"]>
     composites: {}
   }
@@ -13743,12 +13871,12 @@ export namespace Prisma {
     readonly defaultPatientId: FieldRef<"SatuSehatSetting", 'String'>
     readonly defaultPractitionerId: FieldRef<"SatuSehatSetting", 'String'>
     readonly patientIdSource: FieldRef<"SatuSehatSetting", 'String'>
+    readonly isActive: FieldRef<"SatuSehatSetting", 'Boolean'>
+    readonly updatedAt: FieldRef<"SatuSehatSetting", 'DateTime'>
     readonly autoSyncEnabled: FieldRef<"SatuSehatSetting", 'Boolean'>
     readonly autoSyncFrequency: FieldRef<"SatuSehatSetting", 'String'>
     readonly autoSyncTime: FieldRef<"SatuSehatSetting", 'String'>
     readonly lastAutoSyncAt: FieldRef<"SatuSehatSetting", 'DateTime'>
-    readonly isActive: FieldRef<"SatuSehatSetting", 'Boolean'>
-    readonly updatedAt: FieldRef<"SatuSehatSetting", 'DateTime'>
   }
     
 
@@ -16214,6 +16342,1322 @@ export namespace Prisma {
 
 
   /**
+   * Model RadiologyReport
+   */
+
+  export type AggregateRadiologyReport = {
+    _count: RadiologyReportCountAggregateOutputType | null
+    _min: RadiologyReportMinAggregateOutputType | null
+    _max: RadiologyReportMaxAggregateOutputType | null
+  }
+
+  export type RadiologyReportMinAggregateOutputType = {
+    id: string | null
+    patientId: string | null
+    studyInstanceUid: string | null
+    studyDate: string | null
+    accessionNumber: string | null
+    patientName: string | null
+    patientSex: string | null
+    age: string | null
+    address: string | null
+    sender: string | null
+    diagnosis: string | null
+    soap: string | null
+    photoNum: string | null
+    examType: string | null
+    findings: string | null
+    conclusion: string | null
+    recommendation: string | null
+    reportDate: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    doctorId: string | null
+    doctorName: string | null
+  }
+
+  export type RadiologyReportMaxAggregateOutputType = {
+    id: string | null
+    patientId: string | null
+    studyInstanceUid: string | null
+    studyDate: string | null
+    accessionNumber: string | null
+    patientName: string | null
+    patientSex: string | null
+    age: string | null
+    address: string | null
+    sender: string | null
+    diagnosis: string | null
+    soap: string | null
+    photoNum: string | null
+    examType: string | null
+    findings: string | null
+    conclusion: string | null
+    recommendation: string | null
+    reportDate: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    doctorId: string | null
+    doctorName: string | null
+  }
+
+  export type RadiologyReportCountAggregateOutputType = {
+    id: number
+    patientId: number
+    studyInstanceUid: number
+    studyDate: number
+    accessionNumber: number
+    patientName: number
+    patientSex: number
+    age: number
+    address: number
+    sender: number
+    diagnosis: number
+    soap: number
+    photoNum: number
+    examType: number
+    findings: number
+    conclusion: number
+    recommendation: number
+    measurementImages: number
+    selectedSeries: number
+    reportDate: number
+    createdAt: number
+    updatedAt: number
+    doctorId: number
+    doctorName: number
+    _all: number
+  }
+
+
+  export type RadiologyReportMinAggregateInputType = {
+    id?: true
+    patientId?: true
+    studyInstanceUid?: true
+    studyDate?: true
+    accessionNumber?: true
+    patientName?: true
+    patientSex?: true
+    age?: true
+    address?: true
+    sender?: true
+    diagnosis?: true
+    soap?: true
+    photoNum?: true
+    examType?: true
+    findings?: true
+    conclusion?: true
+    recommendation?: true
+    reportDate?: true
+    createdAt?: true
+    updatedAt?: true
+    doctorId?: true
+    doctorName?: true
+  }
+
+  export type RadiologyReportMaxAggregateInputType = {
+    id?: true
+    patientId?: true
+    studyInstanceUid?: true
+    studyDate?: true
+    accessionNumber?: true
+    patientName?: true
+    patientSex?: true
+    age?: true
+    address?: true
+    sender?: true
+    diagnosis?: true
+    soap?: true
+    photoNum?: true
+    examType?: true
+    findings?: true
+    conclusion?: true
+    recommendation?: true
+    reportDate?: true
+    createdAt?: true
+    updatedAt?: true
+    doctorId?: true
+    doctorName?: true
+  }
+
+  export type RadiologyReportCountAggregateInputType = {
+    id?: true
+    patientId?: true
+    studyInstanceUid?: true
+    studyDate?: true
+    accessionNumber?: true
+    patientName?: true
+    patientSex?: true
+    age?: true
+    address?: true
+    sender?: true
+    diagnosis?: true
+    soap?: true
+    photoNum?: true
+    examType?: true
+    findings?: true
+    conclusion?: true
+    recommendation?: true
+    measurementImages?: true
+    selectedSeries?: true
+    reportDate?: true
+    createdAt?: true
+    updatedAt?: true
+    doctorId?: true
+    doctorName?: true
+    _all?: true
+  }
+
+  export type RadiologyReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RadiologyReport to aggregate.
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiologyReports to fetch.
+     */
+    orderBy?: RadiologyReportOrderByWithRelationInput | RadiologyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RadiologyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiologyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiologyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RadiologyReports
+    **/
+    _count?: true | RadiologyReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RadiologyReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RadiologyReportMaxAggregateInputType
+  }
+
+  export type GetRadiologyReportAggregateType<T extends RadiologyReportAggregateArgs> = {
+        [P in keyof T & keyof AggregateRadiologyReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRadiologyReport[P]>
+      : GetScalarType<T[P], AggregateRadiologyReport[P]>
+  }
+
+
+
+
+  export type RadiologyReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RadiologyReportWhereInput
+    orderBy?: RadiologyReportOrderByWithAggregationInput | RadiologyReportOrderByWithAggregationInput[]
+    by: RadiologyReportScalarFieldEnum[] | RadiologyReportScalarFieldEnum
+    having?: RadiologyReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RadiologyReportCountAggregateInputType | true
+    _min?: RadiologyReportMinAggregateInputType
+    _max?: RadiologyReportMaxAggregateInputType
+  }
+
+  export type RadiologyReportGroupByOutputType = {
+    id: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate: string | null
+    accessionNumber: string | null
+    patientName: string | null
+    patientSex: string | null
+    age: string | null
+    address: string | null
+    sender: string | null
+    diagnosis: string | null
+    soap: string | null
+    photoNum: string | null
+    examType: string | null
+    findings: string | null
+    conclusion: string | null
+    recommendation: string | null
+    measurementImages: JsonValue | null
+    selectedSeries: JsonValue | null
+    reportDate: string | null
+    createdAt: Date
+    updatedAt: Date
+    doctorId: string | null
+    doctorName: string | null
+    _count: RadiologyReportCountAggregateOutputType | null
+    _min: RadiologyReportMinAggregateOutputType | null
+    _max: RadiologyReportMaxAggregateOutputType | null
+  }
+
+  type GetRadiologyReportGroupByPayload<T extends RadiologyReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RadiologyReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RadiologyReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RadiologyReportGroupByOutputType[P]>
+            : GetScalarType<T[P], RadiologyReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RadiologyReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    patientId?: boolean
+    studyInstanceUid?: boolean
+    studyDate?: boolean
+    accessionNumber?: boolean
+    patientName?: boolean
+    patientSex?: boolean
+    age?: boolean
+    address?: boolean
+    sender?: boolean
+    diagnosis?: boolean
+    soap?: boolean
+    photoNum?: boolean
+    examType?: boolean
+    findings?: boolean
+    conclusion?: boolean
+    recommendation?: boolean
+    measurementImages?: boolean
+    selectedSeries?: boolean
+    reportDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    doctorId?: boolean
+    doctorName?: boolean
+    doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
+  }, ExtArgs["result"]["radiologyReport"]>
+
+  export type RadiologyReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    patientId?: boolean
+    studyInstanceUid?: boolean
+    studyDate?: boolean
+    accessionNumber?: boolean
+    patientName?: boolean
+    patientSex?: boolean
+    age?: boolean
+    address?: boolean
+    sender?: boolean
+    diagnosis?: boolean
+    soap?: boolean
+    photoNum?: boolean
+    examType?: boolean
+    findings?: boolean
+    conclusion?: boolean
+    recommendation?: boolean
+    measurementImages?: boolean
+    selectedSeries?: boolean
+    reportDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    doctorId?: boolean
+    doctorName?: boolean
+    doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
+  }, ExtArgs["result"]["radiologyReport"]>
+
+  export type RadiologyReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    patientId?: boolean
+    studyInstanceUid?: boolean
+    studyDate?: boolean
+    accessionNumber?: boolean
+    patientName?: boolean
+    patientSex?: boolean
+    age?: boolean
+    address?: boolean
+    sender?: boolean
+    diagnosis?: boolean
+    soap?: boolean
+    photoNum?: boolean
+    examType?: boolean
+    findings?: boolean
+    conclusion?: boolean
+    recommendation?: boolean
+    measurementImages?: boolean
+    selectedSeries?: boolean
+    reportDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    doctorId?: boolean
+    doctorName?: boolean
+    doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
+  }, ExtArgs["result"]["radiologyReport"]>
+
+  export type RadiologyReportSelectScalar = {
+    id?: boolean
+    patientId?: boolean
+    studyInstanceUid?: boolean
+    studyDate?: boolean
+    accessionNumber?: boolean
+    patientName?: boolean
+    patientSex?: boolean
+    age?: boolean
+    address?: boolean
+    sender?: boolean
+    diagnosis?: boolean
+    soap?: boolean
+    photoNum?: boolean
+    examType?: boolean
+    findings?: boolean
+    conclusion?: boolean
+    recommendation?: boolean
+    measurementImages?: boolean
+    selectedSeries?: boolean
+    reportDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    doctorId?: boolean
+    doctorName?: boolean
+  }
+
+  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "patientName" | "patientSex" | "age" | "address" | "sender" | "diagnosis" | "soap" | "photoNum" | "examType" | "findings" | "conclusion" | "recommendation" | "measurementImages" | "selectedSeries" | "reportDate" | "createdAt" | "updatedAt" | "doctorId" | "doctorName", ExtArgs["result"]["radiologyReport"]>
+  export type RadiologyReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
+  }
+  export type RadiologyReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
+  }
+  export type RadiologyReportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
+  }
+
+  export type $RadiologyReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RadiologyReport"
+    objects: {
+      doctor: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      patientId: string
+      studyInstanceUid: string
+      studyDate: string | null
+      accessionNumber: string | null
+      patientName: string | null
+      patientSex: string | null
+      age: string | null
+      address: string | null
+      sender: string | null
+      diagnosis: string | null
+      soap: string | null
+      photoNum: string | null
+      examType: string | null
+      findings: string | null
+      conclusion: string | null
+      recommendation: string | null
+      measurementImages: Prisma.JsonValue | null
+      selectedSeries: Prisma.JsonValue | null
+      reportDate: string | null
+      createdAt: Date
+      updatedAt: Date
+      doctorId: string | null
+      doctorName: string | null
+    }, ExtArgs["result"]["radiologyReport"]>
+    composites: {}
+  }
+
+  type RadiologyReportGetPayload<S extends boolean | null | undefined | RadiologyReportDefaultArgs> = $Result.GetResult<Prisma.$RadiologyReportPayload, S>
+
+  type RadiologyReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RadiologyReportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RadiologyReportCountAggregateInputType | true
+    }
+
+  export interface RadiologyReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RadiologyReport'], meta: { name: 'RadiologyReport' } }
+    /**
+     * Find zero or one RadiologyReport that matches the filter.
+     * @param {RadiologyReportFindUniqueArgs} args - Arguments to find a RadiologyReport
+     * @example
+     * // Get one RadiologyReport
+     * const radiologyReport = await prisma.radiologyReport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RadiologyReportFindUniqueArgs>(args: SelectSubset<T, RadiologyReportFindUniqueArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RadiologyReport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RadiologyReportFindUniqueOrThrowArgs} args - Arguments to find a RadiologyReport
+     * @example
+     * // Get one RadiologyReport
+     * const radiologyReport = await prisma.radiologyReport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RadiologyReportFindUniqueOrThrowArgs>(args: SelectSubset<T, RadiologyReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RadiologyReport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportFindFirstArgs} args - Arguments to find a RadiologyReport
+     * @example
+     * // Get one RadiologyReport
+     * const radiologyReport = await prisma.radiologyReport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RadiologyReportFindFirstArgs>(args?: SelectSubset<T, RadiologyReportFindFirstArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RadiologyReport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportFindFirstOrThrowArgs} args - Arguments to find a RadiologyReport
+     * @example
+     * // Get one RadiologyReport
+     * const radiologyReport = await prisma.radiologyReport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RadiologyReportFindFirstOrThrowArgs>(args?: SelectSubset<T, RadiologyReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RadiologyReports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RadiologyReports
+     * const radiologyReports = await prisma.radiologyReport.findMany()
+     * 
+     * // Get first 10 RadiologyReports
+     * const radiologyReports = await prisma.radiologyReport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const radiologyReportWithIdOnly = await prisma.radiologyReport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RadiologyReportFindManyArgs>(args?: SelectSubset<T, RadiologyReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RadiologyReport.
+     * @param {RadiologyReportCreateArgs} args - Arguments to create a RadiologyReport.
+     * @example
+     * // Create one RadiologyReport
+     * const RadiologyReport = await prisma.radiologyReport.create({
+     *   data: {
+     *     // ... data to create a RadiologyReport
+     *   }
+     * })
+     * 
+     */
+    create<T extends RadiologyReportCreateArgs>(args: SelectSubset<T, RadiologyReportCreateArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RadiologyReports.
+     * @param {RadiologyReportCreateManyArgs} args - Arguments to create many RadiologyReports.
+     * @example
+     * // Create many RadiologyReports
+     * const radiologyReport = await prisma.radiologyReport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RadiologyReportCreateManyArgs>(args?: SelectSubset<T, RadiologyReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RadiologyReports and returns the data saved in the database.
+     * @param {RadiologyReportCreateManyAndReturnArgs} args - Arguments to create many RadiologyReports.
+     * @example
+     * // Create many RadiologyReports
+     * const radiologyReport = await prisma.radiologyReport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RadiologyReports and only return the `id`
+     * const radiologyReportWithIdOnly = await prisma.radiologyReport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RadiologyReportCreateManyAndReturnArgs>(args?: SelectSubset<T, RadiologyReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RadiologyReport.
+     * @param {RadiologyReportDeleteArgs} args - Arguments to delete one RadiologyReport.
+     * @example
+     * // Delete one RadiologyReport
+     * const RadiologyReport = await prisma.radiologyReport.delete({
+     *   where: {
+     *     // ... filter to delete one RadiologyReport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RadiologyReportDeleteArgs>(args: SelectSubset<T, RadiologyReportDeleteArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RadiologyReport.
+     * @param {RadiologyReportUpdateArgs} args - Arguments to update one RadiologyReport.
+     * @example
+     * // Update one RadiologyReport
+     * const radiologyReport = await prisma.radiologyReport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RadiologyReportUpdateArgs>(args: SelectSubset<T, RadiologyReportUpdateArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RadiologyReports.
+     * @param {RadiologyReportDeleteManyArgs} args - Arguments to filter RadiologyReports to delete.
+     * @example
+     * // Delete a few RadiologyReports
+     * const { count } = await prisma.radiologyReport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RadiologyReportDeleteManyArgs>(args?: SelectSubset<T, RadiologyReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RadiologyReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RadiologyReports
+     * const radiologyReport = await prisma.radiologyReport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RadiologyReportUpdateManyArgs>(args: SelectSubset<T, RadiologyReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RadiologyReports and returns the data updated in the database.
+     * @param {RadiologyReportUpdateManyAndReturnArgs} args - Arguments to update many RadiologyReports.
+     * @example
+     * // Update many RadiologyReports
+     * const radiologyReport = await prisma.radiologyReport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RadiologyReports and only return the `id`
+     * const radiologyReportWithIdOnly = await prisma.radiologyReport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RadiologyReportUpdateManyAndReturnArgs>(args: SelectSubset<T, RadiologyReportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RadiologyReport.
+     * @param {RadiologyReportUpsertArgs} args - Arguments to update or create a RadiologyReport.
+     * @example
+     * // Update or create a RadiologyReport
+     * const radiologyReport = await prisma.radiologyReport.upsert({
+     *   create: {
+     *     // ... data to create a RadiologyReport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RadiologyReport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RadiologyReportUpsertArgs>(args: SelectSubset<T, RadiologyReportUpsertArgs<ExtArgs>>): Prisma__RadiologyReportClient<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RadiologyReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportCountArgs} args - Arguments to filter RadiologyReports to count.
+     * @example
+     * // Count the number of RadiologyReports
+     * const count = await prisma.radiologyReport.count({
+     *   where: {
+     *     // ... the filter for the RadiologyReports we want to count
+     *   }
+     * })
+    **/
+    count<T extends RadiologyReportCountArgs>(
+      args?: Subset<T, RadiologyReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RadiologyReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RadiologyReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RadiologyReportAggregateArgs>(args: Subset<T, RadiologyReportAggregateArgs>): Prisma.PrismaPromise<GetRadiologyReportAggregateType<T>>
+
+    /**
+     * Group by RadiologyReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiologyReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RadiologyReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RadiologyReportGroupByArgs['orderBy'] }
+        : { orderBy?: RadiologyReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RadiologyReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRadiologyReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RadiologyReport model
+   */
+  readonly fields: RadiologyReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RadiologyReport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RadiologyReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    doctor<T extends RadiologyReport$doctorArgs<ExtArgs> = {}>(args?: Subset<T, RadiologyReport$doctorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RadiologyReport model
+   */
+  interface RadiologyReportFieldRefs {
+    readonly id: FieldRef<"RadiologyReport", 'String'>
+    readonly patientId: FieldRef<"RadiologyReport", 'String'>
+    readonly studyInstanceUid: FieldRef<"RadiologyReport", 'String'>
+    readonly studyDate: FieldRef<"RadiologyReport", 'String'>
+    readonly accessionNumber: FieldRef<"RadiologyReport", 'String'>
+    readonly patientName: FieldRef<"RadiologyReport", 'String'>
+    readonly patientSex: FieldRef<"RadiologyReport", 'String'>
+    readonly age: FieldRef<"RadiologyReport", 'String'>
+    readonly address: FieldRef<"RadiologyReport", 'String'>
+    readonly sender: FieldRef<"RadiologyReport", 'String'>
+    readonly diagnosis: FieldRef<"RadiologyReport", 'String'>
+    readonly soap: FieldRef<"RadiologyReport", 'String'>
+    readonly photoNum: FieldRef<"RadiologyReport", 'String'>
+    readonly examType: FieldRef<"RadiologyReport", 'String'>
+    readonly findings: FieldRef<"RadiologyReport", 'String'>
+    readonly conclusion: FieldRef<"RadiologyReport", 'String'>
+    readonly recommendation: FieldRef<"RadiologyReport", 'String'>
+    readonly measurementImages: FieldRef<"RadiologyReport", 'Json'>
+    readonly selectedSeries: FieldRef<"RadiologyReport", 'Json'>
+    readonly reportDate: FieldRef<"RadiologyReport", 'String'>
+    readonly createdAt: FieldRef<"RadiologyReport", 'DateTime'>
+    readonly updatedAt: FieldRef<"RadiologyReport", 'DateTime'>
+    readonly doctorId: FieldRef<"RadiologyReport", 'String'>
+    readonly doctorName: FieldRef<"RadiologyReport", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RadiologyReport findUnique
+   */
+  export type RadiologyReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * Filter, which RadiologyReport to fetch.
+     */
+    where: RadiologyReportWhereUniqueInput
+  }
+
+  /**
+   * RadiologyReport findUniqueOrThrow
+   */
+  export type RadiologyReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * Filter, which RadiologyReport to fetch.
+     */
+    where: RadiologyReportWhereUniqueInput
+  }
+
+  /**
+   * RadiologyReport findFirst
+   */
+  export type RadiologyReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * Filter, which RadiologyReport to fetch.
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiologyReports to fetch.
+     */
+    orderBy?: RadiologyReportOrderByWithRelationInput | RadiologyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RadiologyReports.
+     */
+    cursor?: RadiologyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiologyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiologyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RadiologyReports.
+     */
+    distinct?: RadiologyReportScalarFieldEnum | RadiologyReportScalarFieldEnum[]
+  }
+
+  /**
+   * RadiologyReport findFirstOrThrow
+   */
+  export type RadiologyReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * Filter, which RadiologyReport to fetch.
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiologyReports to fetch.
+     */
+    orderBy?: RadiologyReportOrderByWithRelationInput | RadiologyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RadiologyReports.
+     */
+    cursor?: RadiologyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiologyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiologyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RadiologyReports.
+     */
+    distinct?: RadiologyReportScalarFieldEnum | RadiologyReportScalarFieldEnum[]
+  }
+
+  /**
+   * RadiologyReport findMany
+   */
+  export type RadiologyReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * Filter, which RadiologyReports to fetch.
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiologyReports to fetch.
+     */
+    orderBy?: RadiologyReportOrderByWithRelationInput | RadiologyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RadiologyReports.
+     */
+    cursor?: RadiologyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiologyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiologyReports.
+     */
+    skip?: number
+    distinct?: RadiologyReportScalarFieldEnum | RadiologyReportScalarFieldEnum[]
+  }
+
+  /**
+   * RadiologyReport create
+   */
+  export type RadiologyReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RadiologyReport.
+     */
+    data: XOR<RadiologyReportCreateInput, RadiologyReportUncheckedCreateInput>
+  }
+
+  /**
+   * RadiologyReport createMany
+   */
+  export type RadiologyReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RadiologyReports.
+     */
+    data: RadiologyReportCreateManyInput | RadiologyReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RadiologyReport createManyAndReturn
+   */
+  export type RadiologyReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * The data used to create many RadiologyReports.
+     */
+    data: RadiologyReportCreateManyInput | RadiologyReportCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RadiologyReport update
+   */
+  export type RadiologyReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RadiologyReport.
+     */
+    data: XOR<RadiologyReportUpdateInput, RadiologyReportUncheckedUpdateInput>
+    /**
+     * Choose, which RadiologyReport to update.
+     */
+    where: RadiologyReportWhereUniqueInput
+  }
+
+  /**
+   * RadiologyReport updateMany
+   */
+  export type RadiologyReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RadiologyReports.
+     */
+    data: XOR<RadiologyReportUpdateManyMutationInput, RadiologyReportUncheckedUpdateManyInput>
+    /**
+     * Filter which RadiologyReports to update
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * Limit how many RadiologyReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RadiologyReport updateManyAndReturn
+   */
+  export type RadiologyReportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * The data used to update RadiologyReports.
+     */
+    data: XOR<RadiologyReportUpdateManyMutationInput, RadiologyReportUncheckedUpdateManyInput>
+    /**
+     * Filter which RadiologyReports to update
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * Limit how many RadiologyReports to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RadiologyReport upsert
+   */
+  export type RadiologyReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RadiologyReport to update in case it exists.
+     */
+    where: RadiologyReportWhereUniqueInput
+    /**
+     * In case the RadiologyReport found by the `where` argument doesn't exist, create a new RadiologyReport with this data.
+     */
+    create: XOR<RadiologyReportCreateInput, RadiologyReportUncheckedCreateInput>
+    /**
+     * In case the RadiologyReport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RadiologyReportUpdateInput, RadiologyReportUncheckedUpdateInput>
+  }
+
+  /**
+   * RadiologyReport delete
+   */
+  export type RadiologyReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+    /**
+     * Filter which RadiologyReport to delete.
+     */
+    where: RadiologyReportWhereUniqueInput
+  }
+
+  /**
+   * RadiologyReport deleteMany
+   */
+  export type RadiologyReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RadiologyReports to delete
+     */
+    where?: RadiologyReportWhereInput
+    /**
+     * Limit how many RadiologyReports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RadiologyReport.doctor
+   */
+  export type RadiologyReport$doctorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * RadiologyReport without action
+   */
+  export type RadiologyReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiologyReport
+     */
+    select?: RadiologyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiologyReport
+     */
+    omit?: RadiologyReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RadiologyReportInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -16232,11 +17676,11 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
-    roleId: 'roleId',
     emailVerified: 'emailVerified',
     image: 'image',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    roleId: 'roleId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -16384,12 +17828,12 @@ export namespace Prisma {
     defaultPatientId: 'defaultPatientId',
     defaultPractitionerId: 'defaultPractitionerId',
     patientIdSource: 'patientIdSource',
+    isActive: 'isActive',
+    updatedAt: 'updatedAt',
     autoSyncEnabled: 'autoSyncEnabled',
     autoSyncFrequency: 'autoSyncFrequency',
     autoSyncTime: 'autoSyncTime',
-    lastAutoSyncAt: 'lastAutoSyncAt',
-    isActive: 'isActive',
-    updatedAt: 'updatedAt'
+    lastAutoSyncAt: 'lastAutoSyncAt'
   };
 
   export type SatuSehatSettingScalarFieldEnum = (typeof SatuSehatSettingScalarFieldEnum)[keyof typeof SatuSehatSettingScalarFieldEnum]
@@ -16421,6 +17865,36 @@ export namespace Prisma {
   };
 
   export type ModalityConnectionScalarFieldEnum = (typeof ModalityConnectionScalarFieldEnum)[keyof typeof ModalityConnectionScalarFieldEnum]
+
+
+  export const RadiologyReportScalarFieldEnum: {
+    id: 'id',
+    patientId: 'patientId',
+    studyInstanceUid: 'studyInstanceUid',
+    studyDate: 'studyDate',
+    accessionNumber: 'accessionNumber',
+    patientName: 'patientName',
+    patientSex: 'patientSex',
+    age: 'age',
+    address: 'address',
+    sender: 'sender',
+    diagnosis: 'diagnosis',
+    soap: 'soap',
+    photoNum: 'photoNum',
+    examType: 'examType',
+    findings: 'findings',
+    conclusion: 'conclusion',
+    recommendation: 'recommendation',
+    measurementImages: 'measurementImages',
+    selectedSeries: 'selectedSeries',
+    reportDate: 'reportDate',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    doctorId: 'doctorId',
+    doctorName: 'doctorName'
+  };
+
+  export type RadiologyReportScalarFieldEnum = (typeof RadiologyReportScalarFieldEnum)[keyof typeof RadiologyReportScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -16564,14 +18038,15 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     email?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
-    roleId?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+    roleId?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
+    reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
+    role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -16579,14 +18054,15 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
-    roleId?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    role?: RoleOrderByWithRelationInput
+    roleId?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
+    reports?: RadiologyReportOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
+    role?: RoleOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -16597,14 +18073,15 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
-    roleId?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+    roleId?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
+    reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
+    role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -16612,11 +18089,11 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
-    roleId?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    roleId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -16630,11 +18107,11 @@ export namespace Prisma {
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
-    roleId?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    roleId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type RoleWhereInput = {
@@ -16645,8 +18122,8 @@ export namespace Prisma {
     name?: StringFilter<"Role"> | string
     createdAt?: DateTimeFilter<"Role"> | Date | string
     updatedAt?: DateTimeFilter<"Role"> | Date | string
-    permissions?: PermissionListRelationFilter
     users?: UserListRelationFilter
+    permissions?: PermissionListRelationFilter
   }
 
   export type RoleOrderByWithRelationInput = {
@@ -16654,8 +18131,8 @@ export namespace Prisma {
     name?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    permissions?: PermissionOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
+    permissions?: PermissionOrderByRelationAggregateInput
   }
 
   export type RoleWhereUniqueInput = Prisma.AtLeast<{
@@ -16666,8 +18143,8 @@ export namespace Prisma {
     NOT?: RoleWhereInput | RoleWhereInput[]
     createdAt?: DateTimeFilter<"Role"> | Date | string
     updatedAt?: DateTimeFilter<"Role"> | Date | string
-    permissions?: PermissionListRelationFilter
     users?: UserListRelationFilter
+    permissions?: PermissionListRelationFilter
   }, "id" | "name">
 
   export type RoleOrderByWithAggregationInput = {
@@ -17218,12 +18695,12 @@ export namespace Prisma {
     defaultPatientId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     defaultPractitionerId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     patientIdSource?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    isActive?: BoolFilter<"SatuSehatSetting"> | boolean
+    updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
     autoSyncEnabled?: BoolFilter<"SatuSehatSetting"> | boolean
     autoSyncFrequency?: StringFilter<"SatuSehatSetting"> | string
     autoSyncTime?: StringFilter<"SatuSehatSetting"> | string
     lastAutoSyncAt?: DateTimeNullableFilter<"SatuSehatSetting"> | Date | string | null
-    isActive?: BoolFilter<"SatuSehatSetting"> | boolean
-    updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
   }
 
   export type SatuSehatSettingOrderByWithRelationInput = {
@@ -17257,12 +18734,12 @@ export namespace Prisma {
     defaultPatientId?: SortOrderInput | SortOrder
     defaultPractitionerId?: SortOrderInput | SortOrder
     patientIdSource?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
     autoSyncEnabled?: SortOrder
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrderInput | SortOrder
-    isActive?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type SatuSehatSettingWhereUniqueInput = Prisma.AtLeast<{
@@ -17299,12 +18776,12 @@ export namespace Prisma {
     defaultPatientId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     defaultPractitionerId?: StringNullableFilter<"SatuSehatSetting"> | string | null
     patientIdSource?: StringNullableFilter<"SatuSehatSetting"> | string | null
+    isActive?: BoolFilter<"SatuSehatSetting"> | boolean
+    updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
     autoSyncEnabled?: BoolFilter<"SatuSehatSetting"> | boolean
     autoSyncFrequency?: StringFilter<"SatuSehatSetting"> | string
     autoSyncTime?: StringFilter<"SatuSehatSetting"> | string
     lastAutoSyncAt?: DateTimeNullableFilter<"SatuSehatSetting"> | Date | string | null
-    isActive?: BoolFilter<"SatuSehatSetting"> | boolean
-    updatedAt?: DateTimeFilter<"SatuSehatSetting"> | Date | string
   }, "id">
 
   export type SatuSehatSettingOrderByWithAggregationInput = {
@@ -17338,12 +18815,12 @@ export namespace Prisma {
     defaultPatientId?: SortOrderInput | SortOrder
     defaultPractitionerId?: SortOrderInput | SortOrder
     patientIdSource?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
     autoSyncEnabled?: SortOrder
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrderInput | SortOrder
-    isActive?: SortOrder
-    updatedAt?: SortOrder
     _count?: SatuSehatSettingCountOrderByAggregateInput
     _avg?: SatuSehatSettingAvgOrderByAggregateInput
     _max?: SatuSehatSettingMaxOrderByAggregateInput
@@ -17385,12 +18862,12 @@ export namespace Prisma {
     defaultPatientId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
     defaultPractitionerId?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
     patientIdSource?: StringNullableWithAggregatesFilter<"SatuSehatSetting"> | string | null
+    isActive?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
+    updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatSetting"> | Date | string
     autoSyncEnabled?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
     autoSyncFrequency?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     autoSyncTime?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     lastAutoSyncAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatSetting"> | Date | string | null
-    isActive?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
-    updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatSetting"> | Date | string
   }
 
   export type SatuSehatResourceLogWhereInput = {
@@ -17529,6 +19006,157 @@ export namespace Prisma {
     timestamp?: DateTimeWithAggregatesFilter<"ModalityConnection"> | Date | string
   }
 
+  export type RadiologyReportWhereInput = {
+    AND?: RadiologyReportWhereInput | RadiologyReportWhereInput[]
+    OR?: RadiologyReportWhereInput[]
+    NOT?: RadiologyReportWhereInput | RadiologyReportWhereInput[]
+    id?: StringFilter<"RadiologyReport"> | string
+    patientId?: StringFilter<"RadiologyReport"> | string
+    studyInstanceUid?: StringFilter<"RadiologyReport"> | string
+    studyDate?: StringNullableFilter<"RadiologyReport"> | string | null
+    accessionNumber?: StringNullableFilter<"RadiologyReport"> | string | null
+    patientName?: StringNullableFilter<"RadiologyReport"> | string | null
+    patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
+    age?: StringNullableFilter<"RadiologyReport"> | string | null
+    address?: StringNullableFilter<"RadiologyReport"> | string | null
+    sender?: StringNullableFilter<"RadiologyReport"> | string | null
+    diagnosis?: StringNullableFilter<"RadiologyReport"> | string | null
+    soap?: StringNullableFilter<"RadiologyReport"> | string | null
+    photoNum?: StringNullableFilter<"RadiologyReport"> | string | null
+    examType?: StringNullableFilter<"RadiologyReport"> | string | null
+    findings?: StringNullableFilter<"RadiologyReport"> | string | null
+    conclusion?: StringNullableFilter<"RadiologyReport"> | string | null
+    recommendation?: StringNullableFilter<"RadiologyReport"> | string | null
+    measurementImages?: JsonNullableFilter<"RadiologyReport">
+    selectedSeries?: JsonNullableFilter<"RadiologyReport">
+    reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
+    createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
+    updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
+    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
+    doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
+    doctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type RadiologyReportOrderByWithRelationInput = {
+    id?: SortOrder
+    patientId?: SortOrder
+    studyInstanceUid?: SortOrder
+    studyDate?: SortOrderInput | SortOrder
+    accessionNumber?: SortOrderInput | SortOrder
+    patientName?: SortOrderInput | SortOrder
+    patientSex?: SortOrderInput | SortOrder
+    age?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    sender?: SortOrderInput | SortOrder
+    diagnosis?: SortOrderInput | SortOrder
+    soap?: SortOrderInput | SortOrder
+    photoNum?: SortOrderInput | SortOrder
+    examType?: SortOrderInput | SortOrder
+    findings?: SortOrderInput | SortOrder
+    conclusion?: SortOrderInput | SortOrder
+    recommendation?: SortOrderInput | SortOrder
+    measurementImages?: SortOrderInput | SortOrder
+    selectedSeries?: SortOrderInput | SortOrder
+    reportDate?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    doctorId?: SortOrderInput | SortOrder
+    doctorName?: SortOrderInput | SortOrder
+    doctor?: UserOrderByWithRelationInput
+  }
+
+  export type RadiologyReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    patientId_studyInstanceUid?: RadiologyReportPatientIdStudyInstanceUidCompoundUniqueInput
+    AND?: RadiologyReportWhereInput | RadiologyReportWhereInput[]
+    OR?: RadiologyReportWhereInput[]
+    NOT?: RadiologyReportWhereInput | RadiologyReportWhereInput[]
+    patientId?: StringFilter<"RadiologyReport"> | string
+    studyInstanceUid?: StringFilter<"RadiologyReport"> | string
+    studyDate?: StringNullableFilter<"RadiologyReport"> | string | null
+    accessionNumber?: StringNullableFilter<"RadiologyReport"> | string | null
+    patientName?: StringNullableFilter<"RadiologyReport"> | string | null
+    patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
+    age?: StringNullableFilter<"RadiologyReport"> | string | null
+    address?: StringNullableFilter<"RadiologyReport"> | string | null
+    sender?: StringNullableFilter<"RadiologyReport"> | string | null
+    diagnosis?: StringNullableFilter<"RadiologyReport"> | string | null
+    soap?: StringNullableFilter<"RadiologyReport"> | string | null
+    photoNum?: StringNullableFilter<"RadiologyReport"> | string | null
+    examType?: StringNullableFilter<"RadiologyReport"> | string | null
+    findings?: StringNullableFilter<"RadiologyReport"> | string | null
+    conclusion?: StringNullableFilter<"RadiologyReport"> | string | null
+    recommendation?: StringNullableFilter<"RadiologyReport"> | string | null
+    measurementImages?: JsonNullableFilter<"RadiologyReport">
+    selectedSeries?: JsonNullableFilter<"RadiologyReport">
+    reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
+    createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
+    updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
+    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
+    doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
+    doctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "patientId_studyInstanceUid">
+
+  export type RadiologyReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    patientId?: SortOrder
+    studyInstanceUid?: SortOrder
+    studyDate?: SortOrderInput | SortOrder
+    accessionNumber?: SortOrderInput | SortOrder
+    patientName?: SortOrderInput | SortOrder
+    patientSex?: SortOrderInput | SortOrder
+    age?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    sender?: SortOrderInput | SortOrder
+    diagnosis?: SortOrderInput | SortOrder
+    soap?: SortOrderInput | SortOrder
+    photoNum?: SortOrderInput | SortOrder
+    examType?: SortOrderInput | SortOrder
+    findings?: SortOrderInput | SortOrder
+    conclusion?: SortOrderInput | SortOrder
+    recommendation?: SortOrderInput | SortOrder
+    measurementImages?: SortOrderInput | SortOrder
+    selectedSeries?: SortOrderInput | SortOrder
+    reportDate?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    doctorId?: SortOrderInput | SortOrder
+    doctorName?: SortOrderInput | SortOrder
+    _count?: RadiologyReportCountOrderByAggregateInput
+    _max?: RadiologyReportMaxOrderByAggregateInput
+    _min?: RadiologyReportMinOrderByAggregateInput
+  }
+
+  export type RadiologyReportScalarWhereWithAggregatesInput = {
+    AND?: RadiologyReportScalarWhereWithAggregatesInput | RadiologyReportScalarWhereWithAggregatesInput[]
+    OR?: RadiologyReportScalarWhereWithAggregatesInput[]
+    NOT?: RadiologyReportScalarWhereWithAggregatesInput | RadiologyReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RadiologyReport"> | string
+    patientId?: StringWithAggregatesFilter<"RadiologyReport"> | string
+    studyInstanceUid?: StringWithAggregatesFilter<"RadiologyReport"> | string
+    studyDate?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    accessionNumber?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    patientName?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    patientSex?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    age?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    address?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    sender?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    diagnosis?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    soap?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    photoNum?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    examType?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    findings?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    conclusion?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    recommendation?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    measurementImages?: JsonNullableWithAggregatesFilter<"RadiologyReport">
+    selectedSeries?: JsonNullableWithAggregatesFilter<"RadiologyReport">
+    reportDate?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"RadiologyReport"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RadiologyReport"> | Date | string
+    doctorId?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    doctorName?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -17538,9 +19166,10 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    role?: RoleCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -17548,12 +19177,13 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
-    roleId?: string | null
     emailVerified?: Date | string | null
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    roleId?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -17566,9 +19196,10 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    role?: RoleUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -17576,12 +19207,13 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -17590,11 +19222,11 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
-    roleId?: string | null
     emailVerified?: Date | string | null
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    roleId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -17613,11 +19245,11 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RoleCreateInput = {
@@ -17625,8 +19257,8 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    permissions?: PermissionCreateNestedManyWithoutRolesInput
     users?: UserCreateNestedManyWithoutRoleInput
+    permissions?: PermissionCreateNestedManyWithoutRolesInput
   }
 
   export type RoleUncheckedCreateInput = {
@@ -17634,8 +19266,8 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    permissions?: PermissionUncheckedCreateNestedManyWithoutRolesInput
     users?: UserUncheckedCreateNestedManyWithoutRoleInput
+    permissions?: PermissionUncheckedCreateNestedManyWithoutRolesInput
   }
 
   export type RoleUpdateInput = {
@@ -17643,8 +19275,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    permissions?: PermissionUpdateManyWithoutRolesNestedInput
     users?: UserUpdateManyWithoutRoleNestedInput
+    permissions?: PermissionUpdateManyWithoutRolesNestedInput
   }
 
   export type RoleUncheckedUpdateInput = {
@@ -17652,8 +19284,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    permissions?: PermissionUncheckedUpdateManyWithoutRolesNestedInput
     users?: UserUncheckedUpdateManyWithoutRoleNestedInput
+    permissions?: PermissionUncheckedUpdateManyWithoutRolesNestedInput
   }
 
   export type RoleCreateManyInput = {
@@ -18249,12 +19881,12 @@ export namespace Prisma {
     defaultPatientId?: string | null
     defaultPractitionerId?: string | null
     patientIdSource?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
     autoSyncEnabled?: boolean
     autoSyncFrequency?: string
     autoSyncTime?: string
     lastAutoSyncAt?: Date | string | null
-    isActive?: boolean
-    updatedAt?: Date | string
   }
 
   export type SatuSehatSettingUncheckedCreateInput = {
@@ -18288,12 +19920,12 @@ export namespace Prisma {
     defaultPatientId?: string | null
     defaultPractitionerId?: string | null
     patientIdSource?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
     autoSyncEnabled?: boolean
     autoSyncFrequency?: string
     autoSyncTime?: string
     lastAutoSyncAt?: Date | string | null
-    isActive?: boolean
-    updatedAt?: Date | string
   }
 
   export type SatuSehatSettingUpdateInput = {
@@ -18327,12 +19959,12 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SatuSehatSettingUncheckedUpdateInput = {
@@ -18366,12 +19998,12 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SatuSehatSettingCreateManyInput = {
@@ -18405,12 +20037,12 @@ export namespace Prisma {
     defaultPatientId?: string | null
     defaultPractitionerId?: string | null
     patientIdSource?: string | null
+    isActive?: boolean
+    updatedAt?: Date | string
     autoSyncEnabled?: boolean
     autoSyncFrequency?: string
     autoSyncTime?: string
     lastAutoSyncAt?: Date | string | null
-    isActive?: boolean
-    updatedAt?: Date | string
   }
 
   export type SatuSehatSettingUpdateManyMutationInput = {
@@ -18444,12 +20076,12 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SatuSehatSettingUncheckedUpdateManyInput = {
@@ -18483,12 +20115,12 @@ export namespace Prisma {
     defaultPatientId?: NullableStringFieldUpdateOperationsInput | string | null
     defaultPractitionerId?: NullableStringFieldUpdateOperationsInput | string | null
     patientIdSource?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     autoSyncEnabled?: BoolFieldUpdateOperationsInput | boolean
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SatuSehatResourceLogCreateInput = {
@@ -18645,6 +20277,194 @@ export namespace Prisma {
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type RadiologyReportCreateInput = {
+    id?: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate?: string | null
+    accessionNumber?: string | null
+    patientName?: string | null
+    patientSex?: string | null
+    age?: string | null
+    address?: string | null
+    sender?: string | null
+    diagnosis?: string | null
+    soap?: string | null
+    photoNum?: string | null
+    examType?: string | null
+    findings?: string | null
+    conclusion?: string | null
+    recommendation?: string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    doctorName?: string | null
+    doctor?: UserCreateNestedOneWithoutReportsInput
+  }
+
+  export type RadiologyReportUncheckedCreateInput = {
+    id?: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate?: string | null
+    accessionNumber?: string | null
+    patientName?: string | null
+    patientSex?: string | null
+    age?: string | null
+    address?: string | null
+    sender?: string | null
+    diagnosis?: string | null
+    soap?: string | null
+    photoNum?: string | null
+    examType?: string | null
+    findings?: string | null
+    conclusion?: string | null
+    recommendation?: string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    doctorId?: string | null
+    doctorName?: string | null
+  }
+
+  export type RadiologyReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    doctor?: UserUpdateOneWithoutReportsNestedInput
+  }
+
+  export type RadiologyReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorId?: NullableStringFieldUpdateOperationsInput | string | null
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiologyReportCreateManyInput = {
+    id?: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate?: string | null
+    accessionNumber?: string | null
+    patientName?: string | null
+    patientSex?: string | null
+    age?: string | null
+    address?: string | null
+    sender?: string | null
+    diagnosis?: string | null
+    soap?: string | null
+    photoNum?: string | null
+    examType?: string | null
+    findings?: string | null
+    conclusion?: string | null
+    recommendation?: string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    doctorId?: string | null
+    doctorName?: string | null
+  }
+
+  export type RadiologyReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiologyReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorId?: NullableStringFieldUpdateOperationsInput | string | null
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -18697,15 +20517,16 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type RoleNullableScalarRelationFilter = {
-    is?: RoleWhereInput | null
-    isNot?: RoleWhereInput | null
-  }
-
   export type AccountListRelationFilter = {
     every?: AccountWhereInput
     some?: AccountWhereInput
     none?: AccountWhereInput
+  }
+
+  export type RadiologyReportListRelationFilter = {
+    every?: RadiologyReportWhereInput
+    some?: RadiologyReportWhereInput
+    none?: RadiologyReportWhereInput
   }
 
   export type SessionListRelationFilter = {
@@ -18714,12 +20535,21 @@ export namespace Prisma {
     none?: SessionWhereInput
   }
 
+  export type RoleNullableScalarRelationFilter = {
+    is?: RoleWhereInput | null
+    isNot?: RoleWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type AccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RadiologyReportOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18732,11 +20562,11 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    roleId?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    roleId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -18744,11 +20574,11 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    roleId?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    roleId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -18756,11 +20586,11 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    roleId?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    roleId?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -18827,23 +20657,23 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type PermissionListRelationFilter = {
-    every?: PermissionWhereInput
-    some?: PermissionWhereInput
-    none?: PermissionWhereInput
-  }
-
   export type UserListRelationFilter = {
     every?: UserWhereInput
     some?: UserWhereInput
     none?: UserWhereInput
   }
 
-  export type PermissionOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type PermissionListRelationFilter = {
+    every?: PermissionWhereInput
+    some?: PermissionWhereInput
+    none?: PermissionWhereInput
   }
 
   export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PermissionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19304,12 +21134,12 @@ export namespace Prisma {
     defaultPatientId?: SortOrder
     defaultPractitionerId?: SortOrder
     patientIdSource?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
     autoSyncEnabled?: SortOrder
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrder
-    isActive?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type SatuSehatSettingAvgOrderByAggregateInput = {
@@ -19347,12 +21177,12 @@ export namespace Prisma {
     defaultPatientId?: SortOrder
     defaultPractitionerId?: SortOrder
     patientIdSource?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
     autoSyncEnabled?: SortOrder
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrder
-    isActive?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type SatuSehatSettingMinOrderByAggregateInput = {
@@ -19386,12 +21216,12 @@ export namespace Prisma {
     defaultPatientId?: SortOrder
     defaultPractitionerId?: SortOrder
     patientIdSource?: SortOrder
+    isActive?: SortOrder
+    updatedAt?: SortOrder
     autoSyncEnabled?: SortOrder
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrder
-    isActive?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type SatuSehatSettingSumOrderByAggregateInput = {
@@ -19486,10 +21316,91 @@ export namespace Prisma {
     timestamp?: SortOrder
   }
 
-  export type RoleCreateNestedOneWithoutUsersInput = {
-    create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
-    connect?: RoleWhereUniqueInput
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type RadiologyReportPatientIdStudyInstanceUidCompoundUniqueInput = {
+    patientId: string
+    studyInstanceUid: string
+  }
+
+  export type RadiologyReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    patientId?: SortOrder
+    studyInstanceUid?: SortOrder
+    studyDate?: SortOrder
+    accessionNumber?: SortOrder
+    patientName?: SortOrder
+    patientSex?: SortOrder
+    age?: SortOrder
+    address?: SortOrder
+    sender?: SortOrder
+    diagnosis?: SortOrder
+    soap?: SortOrder
+    photoNum?: SortOrder
+    examType?: SortOrder
+    findings?: SortOrder
+    conclusion?: SortOrder
+    recommendation?: SortOrder
+    measurementImages?: SortOrder
+    selectedSeries?: SortOrder
+    reportDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    doctorId?: SortOrder
+    doctorName?: SortOrder
+  }
+
+  export type RadiologyReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    patientId?: SortOrder
+    studyInstanceUid?: SortOrder
+    studyDate?: SortOrder
+    accessionNumber?: SortOrder
+    patientName?: SortOrder
+    patientSex?: SortOrder
+    age?: SortOrder
+    address?: SortOrder
+    sender?: SortOrder
+    diagnosis?: SortOrder
+    soap?: SortOrder
+    photoNum?: SortOrder
+    examType?: SortOrder
+    findings?: SortOrder
+    conclusion?: SortOrder
+    recommendation?: SortOrder
+    reportDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    doctorId?: SortOrder
+    doctorName?: SortOrder
+  }
+
+  export type RadiologyReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    patientId?: SortOrder
+    studyInstanceUid?: SortOrder
+    studyDate?: SortOrder
+    accessionNumber?: SortOrder
+    patientName?: SortOrder
+    patientSex?: SortOrder
+    age?: SortOrder
+    address?: SortOrder
+    sender?: SortOrder
+    diagnosis?: SortOrder
+    soap?: SortOrder
+    photoNum?: SortOrder
+    examType?: SortOrder
+    findings?: SortOrder
+    conclusion?: SortOrder
+    recommendation?: SortOrder
+    reportDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    doctorId?: SortOrder
+    doctorName?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -19499,6 +21410,13 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
+  export type RadiologyReportCreateNestedManyWithoutDoctorInput = {
+    create?: XOR<RadiologyReportCreateWithoutDoctorInput, RadiologyReportUncheckedCreateWithoutDoctorInput> | RadiologyReportCreateWithoutDoctorInput[] | RadiologyReportUncheckedCreateWithoutDoctorInput[]
+    connectOrCreate?: RadiologyReportCreateOrConnectWithoutDoctorInput | RadiologyReportCreateOrConnectWithoutDoctorInput[]
+    createMany?: RadiologyReportCreateManyDoctorInputEnvelope
+    connect?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -19506,11 +21424,24 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
+  export type RoleCreateNestedOneWithoutUsersInput = {
+    create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
+    connect?: RoleWhereUniqueInput
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput = {
+    create?: XOR<RadiologyReportCreateWithoutDoctorInput, RadiologyReportUncheckedCreateWithoutDoctorInput> | RadiologyReportCreateWithoutDoctorInput[] | RadiologyReportUncheckedCreateWithoutDoctorInput[]
+    connectOrCreate?: RadiologyReportCreateOrConnectWithoutDoctorInput | RadiologyReportCreateOrConnectWithoutDoctorInput[]
+    createMany?: RadiologyReportCreateManyDoctorInputEnvelope
+    connect?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
   }
 
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
@@ -19536,16 +21467,6 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type RoleUpdateOneWithoutUsersNestedInput = {
-    create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
-    upsert?: RoleUpsertWithoutUsersInput
-    disconnect?: RoleWhereInput | boolean
-    delete?: RoleWhereInput | boolean
-    connect?: RoleWhereUniqueInput
-    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutUsersInput, RoleUpdateWithoutUsersInput>, RoleUncheckedUpdateWithoutUsersInput>
-  }
-
   export type AccountUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -19558,6 +21479,20 @@ export namespace Prisma {
     update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type RadiologyReportUpdateManyWithoutDoctorNestedInput = {
+    create?: XOR<RadiologyReportCreateWithoutDoctorInput, RadiologyReportUncheckedCreateWithoutDoctorInput> | RadiologyReportCreateWithoutDoctorInput[] | RadiologyReportUncheckedCreateWithoutDoctorInput[]
+    connectOrCreate?: RadiologyReportCreateOrConnectWithoutDoctorInput | RadiologyReportCreateOrConnectWithoutDoctorInput[]
+    upsert?: RadiologyReportUpsertWithWhereUniqueWithoutDoctorInput | RadiologyReportUpsertWithWhereUniqueWithoutDoctorInput[]
+    createMany?: RadiologyReportCreateManyDoctorInputEnvelope
+    set?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    disconnect?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    delete?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    connect?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    update?: RadiologyReportUpdateWithWhereUniqueWithoutDoctorInput | RadiologyReportUpdateWithWhereUniqueWithoutDoctorInput[]
+    updateMany?: RadiologyReportUpdateManyWithWhereWithoutDoctorInput | RadiologyReportUpdateManyWithWhereWithoutDoctorInput[]
+    deleteMany?: RadiologyReportScalarWhereInput | RadiologyReportScalarWhereInput[]
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -19574,6 +21509,16 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
+  export type RoleUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
+    upsert?: RoleUpsertWithoutUsersInput
+    disconnect?: RoleWhereInput | boolean
+    delete?: RoleWhereInput | boolean
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutUsersInput, RoleUpdateWithoutUsersInput>, RoleUncheckedUpdateWithoutUsersInput>
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -19586,6 +21531,20 @@ export namespace Prisma {
     update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput = {
+    create?: XOR<RadiologyReportCreateWithoutDoctorInput, RadiologyReportUncheckedCreateWithoutDoctorInput> | RadiologyReportCreateWithoutDoctorInput[] | RadiologyReportUncheckedCreateWithoutDoctorInput[]
+    connectOrCreate?: RadiologyReportCreateOrConnectWithoutDoctorInput | RadiologyReportCreateOrConnectWithoutDoctorInput[]
+    upsert?: RadiologyReportUpsertWithWhereUniqueWithoutDoctorInput | RadiologyReportUpsertWithWhereUniqueWithoutDoctorInput[]
+    createMany?: RadiologyReportCreateManyDoctorInputEnvelope
+    set?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    disconnect?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    delete?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    connect?: RadiologyReportWhereUniqueInput | RadiologyReportWhereUniqueInput[]
+    update?: RadiologyReportUpdateWithWhereUniqueWithoutDoctorInput | RadiologyReportUpdateWithWhereUniqueWithoutDoctorInput[]
+    updateMany?: RadiologyReportUpdateManyWithWhereWithoutDoctorInput | RadiologyReportUpdateManyWithWhereWithoutDoctorInput[]
+    deleteMany?: RadiologyReportScalarWhereInput | RadiologyReportScalarWhereInput[]
   }
 
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
@@ -19602,12 +21561,6 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type PermissionCreateNestedManyWithoutRolesInput = {
-    create?: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput> | PermissionCreateWithoutRolesInput[] | PermissionUncheckedCreateWithoutRolesInput[]
-    connectOrCreate?: PermissionCreateOrConnectWithoutRolesInput | PermissionCreateOrConnectWithoutRolesInput[]
-    connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
-  }
-
   export type UserCreateNestedManyWithoutRoleInput = {
     create?: XOR<UserCreateWithoutRoleInput, UserUncheckedCreateWithoutRoleInput> | UserCreateWithoutRoleInput[] | UserUncheckedCreateWithoutRoleInput[]
     connectOrCreate?: UserCreateOrConnectWithoutRoleInput | UserCreateOrConnectWithoutRoleInput[]
@@ -19615,7 +21568,7 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type PermissionUncheckedCreateNestedManyWithoutRolesInput = {
+  export type PermissionCreateNestedManyWithoutRolesInput = {
     create?: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput> | PermissionCreateWithoutRolesInput[] | PermissionUncheckedCreateWithoutRolesInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutRolesInput | PermissionCreateOrConnectWithoutRolesInput[]
     connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
@@ -19628,17 +21581,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type PermissionUpdateManyWithoutRolesNestedInput = {
+  export type PermissionUncheckedCreateNestedManyWithoutRolesInput = {
     create?: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput> | PermissionCreateWithoutRolesInput[] | PermissionUncheckedCreateWithoutRolesInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutRolesInput | PermissionCreateOrConnectWithoutRolesInput[]
-    upsert?: PermissionUpsertWithWhereUniqueWithoutRolesInput | PermissionUpsertWithWhereUniqueWithoutRolesInput[]
-    set?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
-    disconnect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
-    delete?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
     connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
-    update?: PermissionUpdateWithWhereUniqueWithoutRolesInput | PermissionUpdateWithWhereUniqueWithoutRolesInput[]
-    updateMany?: PermissionUpdateManyWithWhereWithoutRolesInput | PermissionUpdateManyWithWhereWithoutRolesInput[]
-    deleteMany?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
   }
 
   export type UserUpdateManyWithoutRoleNestedInput = {
@@ -19655,7 +21601,7 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
-  export type PermissionUncheckedUpdateManyWithoutRolesNestedInput = {
+  export type PermissionUpdateManyWithoutRolesNestedInput = {
     create?: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput> | PermissionCreateWithoutRolesInput[] | PermissionUncheckedCreateWithoutRolesInput[]
     connectOrCreate?: PermissionCreateOrConnectWithoutRolesInput | PermissionCreateOrConnectWithoutRolesInput[]
     upsert?: PermissionUpsertWithWhereUniqueWithoutRolesInput | PermissionUpsertWithWhereUniqueWithoutRolesInput[]
@@ -19680,6 +21626,19 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutRoleInput | UserUpdateWithWhereUniqueWithoutRoleInput[]
     updateMany?: UserUpdateManyWithWhereWithoutRoleInput | UserUpdateManyWithWhereWithoutRoleInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type PermissionUncheckedUpdateManyWithoutRolesNestedInput = {
+    create?: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput> | PermissionCreateWithoutRolesInput[] | PermissionUncheckedCreateWithoutRolesInput[]
+    connectOrCreate?: PermissionCreateOrConnectWithoutRolesInput | PermissionCreateOrConnectWithoutRolesInput[]
+    upsert?: PermissionUpsertWithWhereUniqueWithoutRolesInput | PermissionUpsertWithWhereUniqueWithoutRolesInput[]
+    set?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    disconnect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    delete?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    update?: PermissionUpdateWithWhereUniqueWithoutRolesInput | PermissionUpdateWithWhereUniqueWithoutRolesInput[]
+    updateMany?: PermissionUpdateManyWithWhereWithoutRolesInput | PermissionUpdateManyWithWhereWithoutRolesInput[]
+    deleteMany?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
   }
 
   export type RoleCreateNestedManyWithoutPermissionsInput = {
@@ -19766,6 +21725,22 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type UserCreateNestedOneWithoutReportsInput = {
+    create?: XOR<UserCreateWithoutReportsInput, UserUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutReportsNestedInput = {
+    create?: XOR<UserCreateWithoutReportsInput, UserUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportsInput
+    upsert?: UserUpsertWithoutReportsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReportsInput, UserUpdateWithoutReportsInput>, UserUncheckedUpdateWithoutReportsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -20015,27 +21990,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type RoleCreateWithoutUsersInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    permissions?: PermissionCreateNestedManyWithoutRolesInput
-  }
-
-  export type RoleUncheckedCreateWithoutUsersInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    permissions?: PermissionUncheckedCreateNestedManyWithoutRolesInput
-  }
-
-  export type RoleCreateOrConnectWithoutUsersInput = {
-    where: RoleWhereUniqueInput
-    create: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
-  }
-
   export type AccountCreateWithoutUserInput = {
     id?: string
     type: string
@@ -20074,6 +22028,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type RadiologyReportCreateWithoutDoctorInput = {
+    id?: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate?: string | null
+    accessionNumber?: string | null
+    patientName?: string | null
+    patientSex?: string | null
+    age?: string | null
+    address?: string | null
+    sender?: string | null
+    diagnosis?: string | null
+    soap?: string | null
+    photoNum?: string | null
+    examType?: string | null
+    findings?: string | null
+    conclusion?: string | null
+    recommendation?: string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    doctorName?: string | null
+  }
+
+  export type RadiologyReportUncheckedCreateWithoutDoctorInput = {
+    id?: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate?: string | null
+    accessionNumber?: string | null
+    patientName?: string | null
+    patientSex?: string | null
+    age?: string | null
+    address?: string | null
+    sender?: string | null
+    diagnosis?: string | null
+    soap?: string | null
+    photoNum?: string | null
+    examType?: string | null
+    findings?: string | null
+    conclusion?: string | null
+    recommendation?: string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    doctorName?: string | null
+  }
+
+  export type RadiologyReportCreateOrConnectWithoutDoctorInput = {
+    where: RadiologyReportWhereUniqueInput
+    create: XOR<RadiologyReportCreateWithoutDoctorInput, RadiologyReportUncheckedCreateWithoutDoctorInput>
+  }
+
+  export type RadiologyReportCreateManyDoctorInputEnvelope = {
+    data: RadiologyReportCreateManyDoctorInput | RadiologyReportCreateManyDoctorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionCreateWithoutUserInput = {
     id?: string
     sessionToken: string
@@ -20096,31 +22112,25 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type RoleUpsertWithoutUsersInput = {
-    update: XOR<RoleUpdateWithoutUsersInput, RoleUncheckedUpdateWithoutUsersInput>
+  export type RoleCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: PermissionCreateNestedManyWithoutRolesInput
+  }
+
+  export type RoleUncheckedCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: PermissionUncheckedCreateNestedManyWithoutRolesInput
+  }
+
+  export type RoleCreateOrConnectWithoutUsersInput = {
+    where: RoleWhereUniqueInput
     create: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
-    where?: RoleWhereInput
-  }
-
-  export type RoleUpdateToOneWithWhereWithoutUsersInput = {
-    where?: RoleWhereInput
-    data: XOR<RoleUpdateWithoutUsersInput, RoleUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type RoleUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    permissions?: PermissionUpdateManyWithoutRolesNestedInput
-  }
-
-  export type RoleUncheckedUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    permissions?: PermissionUncheckedUpdateManyWithoutRolesNestedInput
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -20157,6 +22167,52 @@ export namespace Prisma {
     session_state?: StringNullableFilter<"Account"> | string | null
   }
 
+  export type RadiologyReportUpsertWithWhereUniqueWithoutDoctorInput = {
+    where: RadiologyReportWhereUniqueInput
+    update: XOR<RadiologyReportUpdateWithoutDoctorInput, RadiologyReportUncheckedUpdateWithoutDoctorInput>
+    create: XOR<RadiologyReportCreateWithoutDoctorInput, RadiologyReportUncheckedCreateWithoutDoctorInput>
+  }
+
+  export type RadiologyReportUpdateWithWhereUniqueWithoutDoctorInput = {
+    where: RadiologyReportWhereUniqueInput
+    data: XOR<RadiologyReportUpdateWithoutDoctorInput, RadiologyReportUncheckedUpdateWithoutDoctorInput>
+  }
+
+  export type RadiologyReportUpdateManyWithWhereWithoutDoctorInput = {
+    where: RadiologyReportScalarWhereInput
+    data: XOR<RadiologyReportUpdateManyMutationInput, RadiologyReportUncheckedUpdateManyWithoutDoctorInput>
+  }
+
+  export type RadiologyReportScalarWhereInput = {
+    AND?: RadiologyReportScalarWhereInput | RadiologyReportScalarWhereInput[]
+    OR?: RadiologyReportScalarWhereInput[]
+    NOT?: RadiologyReportScalarWhereInput | RadiologyReportScalarWhereInput[]
+    id?: StringFilter<"RadiologyReport"> | string
+    patientId?: StringFilter<"RadiologyReport"> | string
+    studyInstanceUid?: StringFilter<"RadiologyReport"> | string
+    studyDate?: StringNullableFilter<"RadiologyReport"> | string | null
+    accessionNumber?: StringNullableFilter<"RadiologyReport"> | string | null
+    patientName?: StringNullableFilter<"RadiologyReport"> | string | null
+    patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
+    age?: StringNullableFilter<"RadiologyReport"> | string | null
+    address?: StringNullableFilter<"RadiologyReport"> | string | null
+    sender?: StringNullableFilter<"RadiologyReport"> | string | null
+    diagnosis?: StringNullableFilter<"RadiologyReport"> | string | null
+    soap?: StringNullableFilter<"RadiologyReport"> | string | null
+    photoNum?: StringNullableFilter<"RadiologyReport"> | string | null
+    examType?: StringNullableFilter<"RadiologyReport"> | string | null
+    findings?: StringNullableFilter<"RadiologyReport"> | string | null
+    conclusion?: StringNullableFilter<"RadiologyReport"> | string | null
+    recommendation?: StringNullableFilter<"RadiologyReport"> | string | null
+    measurementImages?: JsonNullableFilter<"RadiologyReport">
+    selectedSeries?: JsonNullableFilter<"RadiologyReport">
+    reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
+    createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
+    updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
+    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
+    doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -20183,6 +22239,71 @@ export namespace Prisma {
     expires?: DateTimeFilter<"Session"> | Date | string
   }
 
+  export type RoleUpsertWithoutUsersInput = {
+    update: XOR<RoleUpdateWithoutUsersInput, RoleUncheckedUpdateWithoutUsersInput>
+    create: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
+    where?: RoleWhereInput
+  }
+
+  export type RoleUpdateToOneWithWhereWithoutUsersInput = {
+    where?: RoleWhereInput
+    data: XOR<RoleUpdateWithoutUsersInput, RoleUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type RoleUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: PermissionUpdateManyWithoutRolesNestedInput
+  }
+
+  export type RoleUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: PermissionUncheckedUpdateManyWithoutRolesNestedInput
+  }
+
+  export type UserCreateWithoutRoleInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutRoleInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutRoleInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRoleInput, UserUncheckedCreateWithoutRoleInput>
+  }
+
+  export type UserCreateManyRoleInputEnvelope = {
+    data: UserCreateManyRoleInput | UserCreateManyRoleInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PermissionCreateWithoutRolesInput = {
     id?: string
     name: string
@@ -20200,68 +22321,6 @@ export namespace Prisma {
   export type PermissionCreateOrConnectWithoutRolesInput = {
     where: PermissionWhereUniqueInput
     create: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput>
-  }
-
-  export type UserCreateWithoutRoleInput = {
-    id?: string
-    name?: string | null
-    email?: string | null
-    password?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutRoleInput = {
-    id?: string
-    name?: string | null
-    email?: string | null
-    password?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutRoleInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutRoleInput, UserUncheckedCreateWithoutRoleInput>
-  }
-
-  export type UserCreateManyRoleInputEnvelope = {
-    data: UserCreateManyRoleInput | UserCreateManyRoleInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type PermissionUpsertWithWhereUniqueWithoutRolesInput = {
-    where: PermissionWhereUniqueInput
-    update: XOR<PermissionUpdateWithoutRolesInput, PermissionUncheckedUpdateWithoutRolesInput>
-    create: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput>
-  }
-
-  export type PermissionUpdateWithWhereUniqueWithoutRolesInput = {
-    where: PermissionWhereUniqueInput
-    data: XOR<PermissionUpdateWithoutRolesInput, PermissionUncheckedUpdateWithoutRolesInput>
-  }
-
-  export type PermissionUpdateManyWithWhereWithoutRolesInput = {
-    where: PermissionScalarWhereInput
-    data: XOR<PermissionUpdateManyMutationInput, PermissionUncheckedUpdateManyWithoutRolesInput>
-  }
-
-  export type PermissionScalarWhereInput = {
-    AND?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
-    OR?: PermissionScalarWhereInput[]
-    NOT?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
-    id?: StringFilter<"Permission"> | string
-    name?: StringFilter<"Permission"> | string
-    createdAt?: DateTimeFilter<"Permission"> | Date | string
-    updatedAt?: DateTimeFilter<"Permission"> | Date | string
   }
 
   export type UserUpsertWithWhereUniqueWithoutRoleInput = {
@@ -20288,11 +22347,37 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     email?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
-    roleId?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    roleId?: StringNullableFilter<"User"> | string | null
+  }
+
+  export type PermissionUpsertWithWhereUniqueWithoutRolesInput = {
+    where: PermissionWhereUniqueInput
+    update: XOR<PermissionUpdateWithoutRolesInput, PermissionUncheckedUpdateWithoutRolesInput>
+    create: XOR<PermissionCreateWithoutRolesInput, PermissionUncheckedCreateWithoutRolesInput>
+  }
+
+  export type PermissionUpdateWithWhereUniqueWithoutRolesInput = {
+    where: PermissionWhereUniqueInput
+    data: XOR<PermissionUpdateWithoutRolesInput, PermissionUncheckedUpdateWithoutRolesInput>
+  }
+
+  export type PermissionUpdateManyWithWhereWithoutRolesInput = {
+    where: PermissionScalarWhereInput
+    data: XOR<PermissionUpdateManyMutationInput, PermissionUncheckedUpdateManyWithoutRolesInput>
+  }
+
+  export type PermissionScalarWhereInput = {
+    AND?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
+    OR?: PermissionScalarWhereInput[]
+    NOT?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
+    id?: StringFilter<"Permission"> | string
+    name?: StringFilter<"Permission"> | string
+    createdAt?: DateTimeFilter<"Permission"> | Date | string
+    updatedAt?: DateTimeFilter<"Permission"> | Date | string
   }
 
   export type RoleCreateWithoutPermissionsInput = {
@@ -20351,8 +22436,9 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    role?: RoleCreateNestedOneWithoutUsersInput
+    reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -20360,11 +22446,12 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
-    roleId?: string | null
     emailVerified?: Date | string | null
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    roleId?: string | null
+    reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -20393,8 +22480,9 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    role?: RoleUpdateOneWithoutUsersNestedInput
+    reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -20402,11 +22490,12 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -20419,8 +22508,9 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    role?: RoleCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -20428,12 +22518,13 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     password?: string | null
-    roleId?: string | null
     emailVerified?: Date | string | null
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    roleId?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -20461,8 +22552,9 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    role?: RoleUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -20470,12 +22562,85 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
+  }
+
+  export type UserCreateWithoutReportsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutReportsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roleId?: string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReportsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReportsInput, UserUncheckedCreateWithoutReportsInput>
+  }
+
+  export type UserUpsertWithoutReportsInput = {
+    update: XOR<UserUpdateWithoutReportsInput, UserUncheckedUpdateWithoutReportsInput>
+    create: XOR<UserCreateWithoutReportsInput, UserUncheckedCreateWithoutReportsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReportsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReportsInput, UserUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type UserUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -20490,6 +22655,32 @@ export namespace Prisma {
     scope?: string | null
     id_token?: string | null
     session_state?: string | null
+  }
+
+  export type RadiologyReportCreateManyDoctorInput = {
+    id?: string
+    patientId: string
+    studyInstanceUid: string
+    studyDate?: string | null
+    accessionNumber?: string | null
+    patientName?: string | null
+    patientSex?: string | null
+    age?: string | null
+    address?: string | null
+    sender?: string | null
+    diagnosis?: string | null
+    soap?: string | null
+    photoNum?: string | null
+    examType?: string | null
+    findings?: string | null
+    conclusion?: string | null
+    recommendation?: string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    doctorName?: string | null
   }
 
   export type SessionCreateManyUserInput = {
@@ -20540,6 +22731,84 @@ export namespace Prisma {
     session_state?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type RadiologyReportUpdateWithoutDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiologyReportUncheckedUpdateWithoutDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiologyReportUncheckedUpdateManyWithoutDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    patientId?: StringFieldUpdateOperationsInput | string
+    studyInstanceUid?: StringFieldUpdateOperationsInput | string
+    studyDate?: NullableStringFieldUpdateOperationsInput | string | null
+    accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    patientName?: NullableStringFieldUpdateOperationsInput | string | null
+    patientSex?: NullableStringFieldUpdateOperationsInput | string | null
+    age?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    sender?: NullableStringFieldUpdateOperationsInput | string | null
+    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
+    soap?: NullableStringFieldUpdateOperationsInput | string | null
+    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
+    examType?: NullableStringFieldUpdateOperationsInput | string | null
+    findings?: NullableStringFieldUpdateOperationsInput | string | null
+    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
+    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
+    measurementImages?: NullableJsonNullValueInput | InputJsonValue
+    selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    reportDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type SessionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionToken?: StringFieldUpdateOperationsInput | string
@@ -20569,6 +22838,45 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type UserUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PermissionUpdateWithoutRolesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -20586,43 +22894,6 @@ export namespace Prisma {
   export type PermissionUncheckedUpdateManyWithoutRolesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserUpdateWithoutRoleInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutRoleInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateManyWithoutRoleInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

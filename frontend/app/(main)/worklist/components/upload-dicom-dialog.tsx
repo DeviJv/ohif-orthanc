@@ -67,7 +67,7 @@ export function UploadDicomDialog({
                 </AlertDialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                         <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
                             <HugeiconsIcon icon={SmartPhone01Icon} className="size-4" />
                             Nomor Telepon Pasien (Opsional)
@@ -80,7 +80,7 @@ export function UploadDicomDialog({
                             disabled={uploading}
                             type="number"
                         />
-                    </div>
+                    </div> */}
 
                     <div className="space-y-2">
                         <Label className="text-sm font-medium flex items-center gap-2">

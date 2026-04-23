@@ -10,35 +10,36 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String            @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?           @unique
   password      String?
-  roleId        String?
-  role          Role?     @relation(fields: [roleId], references: [id])
   emailVerified DateTime?
   image         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  roleId        String?
   accounts      Account[]
+  reports       RadiologyReport[] @relation("DoctorReports")
   sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          Role?             @relation(fields: [roleId], references: [id])
 }
 
 model Role {
   id          String       @id @default(cuid())
   name        String       @unique
-  permissions Permission[]
-  users       User[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  users       User[]
+  permissions Permission[] @relation("PermissionToRole")
 }
 
 model Permission {
   id        String   @id @default(cuid())
   name      String   @unique
-  roles     Role[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  roles     Role[]   @relation("PermissionToRole")
 }
 
 model Account {
@@ -47,15 +48,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -78,7 +78,7 @@ model VerificationToken {
 
 model AppConfig {
   key       String   @id
-  value     String   @db.Text
+  value     String
   updatedAt DateTime @updatedAt
 }
 
@@ -86,23 +86,23 @@ model AiResult {
   studyInstanceUid String   @id
   modality         String
   conclusion       String
-  findings         Json // Store the results dictionary/probabilities
+  findings         Json
   isUrgent         Boolean  @default(false)
-  heatmapPath      String? // Optional path for visual Grad-CAM
-  heatmapBase64    String?  @db.Text
+  heatmapPath      String?
+  heatmapBase64    String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
 
 model SatuSehatIntegration {
-  accessionNumber  String    @id // Stable key — does not change on metadata edit
-  studyInstanceUid String? // For reference only (may change on modify)
-  satusehatId      String? // UUID from Kemenkes
-  patientNik       String? // NIK used for this integration
-  status           String    @default("PENDING") // SUCCESS, FAILED
-  error            String?   @db.Text
-  bundleResponse   Json? // Full response from SatuSehat
-  syncedAt         DateTime? // Time of successful sync
+  accessionNumber  String    @id
+  studyInstanceUid String?
+  satusehatId      String?
+  patientNik       String?
+  status           String    @default("PENDING")
+  error            String?
+  bundleResponse   Json?
+  syncedAt         DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
@@ -111,76 +111,63 @@ model SatuSehatWebhookLog {
   id               String   @id @default(cuid())
   studyInstanceUid String?
   patientName      String?
-  status           String // SUCCESS, FAILED
-  message          String?  @db.Text
-  errorDetail      Json? // Detailed error from router
-  rawPayload       Json? // Complete incoming JSON
+  status           String
+  message          String?
+  errorDetail      Json?
+  rawPayload       Json?
   createdAt        DateTime @default(now())
 }
 
 model SatuSehatSetting {
-  id          Int    @id @default(1)
-  environment String @default("staging") // staging, production
-
-  // Staging Credentials & URLs
-  stgOrganizationId String @default("")
-  stgClientId       String @default("")
-  stgClientSecret   String @default("") @db.Text
-  stgAuthUrl        String @default("") @db.Text
-  stgBaseUrl        String @default("") @db.Text
-
-  // Production Credentials & URLs
-  prdOrganizationId String @default("")
-  prdClientId       String @default("")
-  prdClientSecret   String @default("") @db.Text
-  prdAuthUrl        String @default("") @db.Text
-  prdBaseUrl        String @default("") @db.Text
-
-  // Legacy / Active URLs (Synced based on environment)
-  organizationId String @default("")
-  clientId       String @default("")
-  clientSecret   String @default("") @db.Text
-  authUrl        String @default("") @db.Text
-  baseUrl        String @default("") @db.Text
-
-  // Per-Resource URL Overrides (Optional)
-  encounterUrl        String? @db.Text
-  conditionUrl        String? @db.Text
-  serviceRequestUrl   String? @db.Text
-  imagingStudyUrl     String? @db.Text
-  observationUrl      String? @db.Text
-  diagnosticReportUrl String? @db.Text
-  compositionUrl      String? @db.Text
-  patientUrl          String? @db.Text
-  locationUrl         String? @db.Text
-  practitionerUrl     String? @db.Text
-
-  // Default Personas (Dummy Data for Testing)
-  defaultPatientId      String? @default("")
-  defaultPractitionerId String? @default("")
-  patientIdSource       String? @default("PatientID")
-
-  // Auto Sync Scheduling Module
-  autoSyncEnabled   Boolean   @default(false)
-  autoSyncFrequency String    @default("DAILY") // DAILY, EVERY_3_DAYS, WEEKLY
-  autoSyncTime      String    @default("23:00") // Format HH:MM
-  lastAutoSyncAt    DateTime?
-
-  isActive  Boolean  @default(true)
-  updatedAt DateTime @updatedAt
+  id                    Int       @id @default(1)
+  environment           String    @default("staging")
+  stgOrganizationId     String    @default("")
+  stgClientId           String    @default("")
+  stgClientSecret       String    @default("")
+  stgAuthUrl            String    @default("")
+  stgBaseUrl            String    @default("")
+  prdOrganizationId     String    @default("")
+  prdClientId           String    @default("")
+  prdClientSecret       String    @default("")
+  prdAuthUrl            String    @default("")
+  prdBaseUrl            String    @default("")
+  organizationId        String    @default("")
+  clientId              String    @default("")
+  clientSecret          String    @default("")
+  authUrl               String    @default("")
+  baseUrl               String    @default("")
+  encounterUrl          String?
+  conditionUrl          String?
+  serviceRequestUrl     String?
+  imagingStudyUrl       String?
+  observationUrl        String?
+  diagnosticReportUrl   String?
+  compositionUrl        String?
+  patientUrl            String?
+  locationUrl           String?
+  practitionerUrl       String?
+  defaultPatientId      String?   @default("")
+  defaultPractitionerId String?   @default("")
+  patientIdSource       String?   @default("PatientID")
+  isActive              Boolean   @default(true)
+  updatedAt             DateTime  @updatedAt
+  autoSyncEnabled       Boolean   @default(false)
+  autoSyncFrequency     String    @default("DAILY")
+  autoSyncTime          String    @default("23:00")
+  lastAutoSyncAt        DateTime?
 }
 
 model SatuSehatResourceLog {
   id               String   @id @default(cuid())
-  resourceType     String // Encounter, Condition, Observation, etc.
-  resourceId       String? // UUID from SatuSehat
+  resourceType     String
+  resourceId       String?
   accessionNumber  String?
   studyInstanceUid String?
-  method           String   @default("POST") // POST, PUT, DELETE
-  status           String // SUCCESS, FAILED
+  method           String   @default("POST")
+  status           String
   responseCode     Int?
   responseBody     Json?
-  environment      String // staging, production
+  environment      String
   createdAt        DateTime @default(now())
 }
 
@@ -188,6 +175,38 @@ model ModalityConnection {
   id        String   @id @default(cuid())
   aeTitle   String
   ipAddress String
-  event     String // "CONNECTED", "DISCONNECTED"
+  event     String
   timestamp DateTime @default(now())
+}
+
+model RadiologyReport {
+  id                String   @id @default(cuid())
+  patientId         String
+  studyInstanceUid  String
+  studyDate         String?
+  accessionNumber   String?
+  patientName       String?
+  patientSex        String?
+  age               String?
+  address           String?
+  sender            String?
+  diagnosis         String?
+  soap              String?
+  photoNum          String?
+  examType          String?
+  findings          String?
+  conclusion        String?
+  recommendation    String?
+  measurementImages Json?
+  selectedSeries    Json?
+  reportDate        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Doctor/Practitioner
+  doctorId   String?
+  doctorName String? // Fallback if user is not linked
+  doctor     User?   @relation("DoctorReports", fields: [doctorId], references: [id])
+
+  @@unique([patientId, studyInstanceUid])
 }

@@ -10,7 +10,8 @@ function OnStableStudy(studyId, tags, metadata)
     end
 
     -- 1. SKIP IF MODIFIED (Edit Metadata)
-    if metadata["ModifiedFrom"] ~= nil then
+    if metadata["ModifiedFrom"] ~= nil or metadata["4"] ~= nil or 
+       metadata["AnonymizedFrom"] ~= nil or metadata["5"] ~= nil then
         print("SKIPPED: This is a modified study (Edit Metadata).")
         return
     end

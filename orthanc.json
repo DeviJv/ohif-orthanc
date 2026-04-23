@@ -74,7 +74,10 @@
   "HttpTimeout": 60,
   "HttpsVerifyPeers": true,
   "HttpsCACertificates": "/etc/ssl/certs/ca-certificates.crt",
-  "UserMetadata": {},
+  "UserMetadata": {
+    "AI_Processed": 1024,
+    "SatuSehat_Sent": 1025
+  },
   "UserContentType": {},
   "StableAge": 5,
   "StrictAetComparison": false,

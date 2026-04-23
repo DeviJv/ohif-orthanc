@@ -1,11 +1,13 @@
 {
   "Replace": {
-    "PatientName": "TEST^NEW^NAME^ASYNC"
+    "PatientName": "TEST^METADATA^WIPE"
   },
   "Keep": [
-    "StudyInstanceUID"
+    "StudyInstanceUID",
+    "SeriesInstanceUID",
+    "SOPInstanceUID"
   ],
   "Force": true,
-  "KeepSource": false,
-  "Asynchronous": true
+  "KeepSource": true,
+  "Asynchronous": false
 }

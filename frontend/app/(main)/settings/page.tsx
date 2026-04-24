@@ -925,6 +925,7 @@ function SatuSehatSettingsTab() {
         autoSyncEnabled: false,
         autoSyncFrequency: "DAILY",
         autoSyncTime: "23:00",
+        sendImageStudyFromWeb: true,
     });
     
     const [showSecretStg, setShowSecretStg] = useState(false);
@@ -1390,6 +1391,19 @@ function SatuSehatSettingsTab() {
                         <CardDescription className="text-xs dark:text-slate-400">ID virtual untuk keperluan simulasi integrasi.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                        <div className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+                            <div className="space-y-1 pr-4">
+                                <Label className="text-[13px] font-bold text-slate-800 dark:text-slate-200">Kirim ImageStudy Dari Web</Label>
+                                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                    Jika off maka pengiriman ImageStudy akan dikirim dari dicom-router ya
+                                </p>
+                            </div>
+                            <Switch 
+                                checked={config.sendImageStudyFromWeb} 
+                                onCheckedChange={(v) => handleChange("sendImageStudyFromWeb", v)} 
+                            />
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <Label htmlFor="defPat" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Default Patient ID</Label>

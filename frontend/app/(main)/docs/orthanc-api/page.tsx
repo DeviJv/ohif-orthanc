@@ -183,7 +183,16 @@ function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiE
         : `-H "Authorization: Basic cXVhbnR1bTpxdWFudHVtMTIz"`;
 
     const isGet = endpoint.method === "GET";
-    const queryParams = isGet && isExternalApi ? "?patientId=12345&studyDate=20240420" : "";
+    let queryParams = "";
+    if (isGet && isExternalApi) {
+        if (endpoint.id === "get-report-by-accession") {
+            queryParams = "?accessionNumber=ACSN-001";
+        } else if (endpoint.id === "search-reports") {
+            queryParams = "?q=ACSN-001";
+        } else {
+            queryParams = "?patientId=12345&studyDate=20240420";
+        }
+    }
     
     const curlCode = `curl -X ${endpoint.method} "${isExternalApi ? resolvedAppUrl : resolvedOrthancUrl}${endpoint.path}${queryParams}" \\
   ${authHeader}${!isGet ? ` \\

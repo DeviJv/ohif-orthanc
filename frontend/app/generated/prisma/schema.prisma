@@ -155,6 +155,7 @@ model SatuSehatSetting {
   autoSyncFrequency     String    @default("DAILY")
   autoSyncTime          String    @default("23:00")
   lastAutoSyncAt        DateTime?
+  sendImageStudyFromWeb Boolean   @default(true)
 }
 
 model SatuSehatResourceLog {

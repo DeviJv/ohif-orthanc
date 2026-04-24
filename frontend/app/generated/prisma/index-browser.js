@@ -253,7 +253,8 @@ exports.Prisma.SatuSehatSettingScalarFieldEnum = {
   autoSyncEnabled: 'autoSyncEnabled',
   autoSyncFrequency: 'autoSyncFrequency',
   autoSyncTime: 'autoSyncTime',
-  lastAutoSyncAt: 'lastAutoSyncAt'
+  lastAutoSyncAt: 'lastAutoSyncAt',
+  sendImageStudyFromWeb: 'sendImageStudyFromWeb'
 };
 
 exports.Prisma.SatuSehatResourceLogScalarFieldEnum = {

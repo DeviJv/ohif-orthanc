@@ -253,4 +253,58 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
   }
 }`
   },
+  {
+    id: "get-report-by-accession",
+    method: "GET",
+    path: "/api/external/reports/by-accession",
+    description: "Ambil detail laporan radiologi menggunakan Accession Number. API ini melakukan pencarian spesifik (exact match) dan mengembalikan 1 data laporan lengkap beserta gambar hasil (measurementImages).",
+    category: "Radiology Reports",
+    parameters: [
+      { name: "accessionNumber", type: "string", description: "Accession Number dari studi terkait.", required: true },
+    ],
+    response: `{
+  "success": true,
+  "data": {
+    "accessionNumber": "ACSN-001",
+    "patientId": "12345",
+    "patientName": "JOHN DOE",
+    "findings": "Normal Cor dan Pulmo...",
+    "conclusion": "Normal",
+    "measurementImages": [
+       { "name": "screenshot1.png", "base64": "data:image/png;base64,..." }
+    ],
+    "doctor": { "name": "dr. Ahmad, Sp.Rad" }
+  }
+}`
+  },
+  {
+    id: "search-reports",
+    method: "GET",
+    path: "/api/external/reports/search",
+    description: "Cari laporan radiologi berdasarkan sebagian karakter Accession Number, Nama Pasien, atau ID Pasien (partial search). Mengembalikan list laporan tanpa gambar (measurementImages) agar response tetap ringan.",
+    category: "Radiology Reports",
+    parameters: [
+      { name: "q", type: "string", description: "Kata kunci pencarian. Akan otomatis mencari kecocokan pada Accession Number, Nama Pasien, atau ID Pasien.", required: true },
+    ],
+    response: `{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "accessionNumber": "ACSN-001",
+      "patientId": "12345",
+      "patientName": "JOHN DOE",
+      "findings": "Normal...",
+      "conclusion": "Normal"
+    },
+    {
+      "accessionNumber": "ACSN-001-A",
+      "patientId": "12346",
+      "patientName": "JANE DOE",
+      "findings": "Pneumonia...",
+      "conclusion": "Abnormal"
+    }
+  ]
+}`
+  },
 ];

@@ -12868,6 +12868,7 @@ export namespace Prisma {
     autoSyncFrequency: string | null
     autoSyncTime: string | null
     lastAutoSyncAt: Date | null
+    sendImageStudyFromWeb: boolean | null
   }
 
   export type SatuSehatSettingMaxAggregateOutputType = {
@@ -12907,6 +12908,7 @@ export namespace Prisma {
     autoSyncFrequency: string | null
     autoSyncTime: string | null
     lastAutoSyncAt: Date | null
+    sendImageStudyFromWeb: boolean | null
   }
 
   export type SatuSehatSettingCountAggregateOutputType = {
@@ -12946,6 +12948,7 @@ export namespace Prisma {
     autoSyncFrequency: number
     autoSyncTime: number
     lastAutoSyncAt: number
+    sendImageStudyFromWeb: number
     _all: number
   }
 
@@ -12995,6 +12998,7 @@ export namespace Prisma {
     autoSyncFrequency?: true
     autoSyncTime?: true
     lastAutoSyncAt?: true
+    sendImageStudyFromWeb?: true
   }
 
   export type SatuSehatSettingMaxAggregateInputType = {
@@ -13034,6 +13038,7 @@ export namespace Prisma {
     autoSyncFrequency?: true
     autoSyncTime?: true
     lastAutoSyncAt?: true
+    sendImageStudyFromWeb?: true
   }
 
   export type SatuSehatSettingCountAggregateInputType = {
@@ -13073,6 +13078,7 @@ export namespace Prisma {
     autoSyncFrequency?: true
     autoSyncTime?: true
     lastAutoSyncAt?: true
+    sendImageStudyFromWeb?: true
     _all?: true
   }
 
@@ -13199,6 +13205,7 @@ export namespace Prisma {
     autoSyncFrequency: string
     autoSyncTime: string
     lastAutoSyncAt: Date | null
+    sendImageStudyFromWeb: boolean
     _count: SatuSehatSettingCountAggregateOutputType | null
     _avg: SatuSehatSettingAvgAggregateOutputType | null
     _sum: SatuSehatSettingSumAggregateOutputType | null
@@ -13257,6 +13264,7 @@ export namespace Prisma {
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
+    sendImageStudyFromWeb?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
 
   export type SatuSehatSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13296,6 +13304,7 @@ export namespace Prisma {
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
+    sendImageStudyFromWeb?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
 
   export type SatuSehatSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13335,6 +13344,7 @@ export namespace Prisma {
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
+    sendImageStudyFromWeb?: boolean
   }, ExtArgs["result"]["satuSehatSetting"]>
 
   export type SatuSehatSettingSelectScalar = {
@@ -13374,9 +13384,10 @@ export namespace Prisma {
     autoSyncFrequency?: boolean
     autoSyncTime?: boolean
     lastAutoSyncAt?: boolean
+    sendImageStudyFromWeb?: boolean
   }
 
-  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "patientIdSource" | "isActive" | "updatedAt" | "autoSyncEnabled" | "autoSyncFrequency" | "autoSyncTime" | "lastAutoSyncAt", ExtArgs["result"]["satuSehatSetting"]>
+  export type SatuSehatSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "environment" | "stgOrganizationId" | "stgClientId" | "stgClientSecret" | "stgAuthUrl" | "stgBaseUrl" | "prdOrganizationId" | "prdClientId" | "prdClientSecret" | "prdAuthUrl" | "prdBaseUrl" | "organizationId" | "clientId" | "clientSecret" | "authUrl" | "baseUrl" | "encounterUrl" | "conditionUrl" | "serviceRequestUrl" | "imagingStudyUrl" | "observationUrl" | "diagnosticReportUrl" | "compositionUrl" | "patientUrl" | "locationUrl" | "practitionerUrl" | "defaultPatientId" | "defaultPractitionerId" | "patientIdSource" | "isActive" | "updatedAt" | "autoSyncEnabled" | "autoSyncFrequency" | "autoSyncTime" | "lastAutoSyncAt" | "sendImageStudyFromWeb", ExtArgs["result"]["satuSehatSetting"]>
 
   export type $SatuSehatSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatSetting"
@@ -13418,6 +13429,7 @@ export namespace Prisma {
       autoSyncFrequency: string
       autoSyncTime: string
       lastAutoSyncAt: Date | null
+      sendImageStudyFromWeb: boolean
     }, ExtArgs["result"]["satuSehatSetting"]>
     composites: {}
   }
@@ -13877,6 +13889,7 @@ export namespace Prisma {
     readonly autoSyncFrequency: FieldRef<"SatuSehatSetting", 'String'>
     readonly autoSyncTime: FieldRef<"SatuSehatSetting", 'String'>
     readonly lastAutoSyncAt: FieldRef<"SatuSehatSetting", 'DateTime'>
+    readonly sendImageStudyFromWeb: FieldRef<"SatuSehatSetting", 'Boolean'>
   }
     
 
@@ -17833,7 +17846,8 @@ export namespace Prisma {
     autoSyncEnabled: 'autoSyncEnabled',
     autoSyncFrequency: 'autoSyncFrequency',
     autoSyncTime: 'autoSyncTime',
-    lastAutoSyncAt: 'lastAutoSyncAt'
+    lastAutoSyncAt: 'lastAutoSyncAt',
+    sendImageStudyFromWeb: 'sendImageStudyFromWeb'
   };
 
   export type SatuSehatSettingScalarFieldEnum = (typeof SatuSehatSettingScalarFieldEnum)[keyof typeof SatuSehatSettingScalarFieldEnum]
@@ -18701,6 +18715,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringFilter<"SatuSehatSetting"> | string
     autoSyncTime?: StringFilter<"SatuSehatSetting"> | string
     lastAutoSyncAt?: DateTimeNullableFilter<"SatuSehatSetting"> | Date | string | null
+    sendImageStudyFromWeb?: BoolFilter<"SatuSehatSetting"> | boolean
   }
 
   export type SatuSehatSettingOrderByWithRelationInput = {
@@ -18740,6 +18755,7 @@ export namespace Prisma {
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrderInput | SortOrder
+    sendImageStudyFromWeb?: SortOrder
   }
 
   export type SatuSehatSettingWhereUniqueInput = Prisma.AtLeast<{
@@ -18782,6 +18798,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringFilter<"SatuSehatSetting"> | string
     autoSyncTime?: StringFilter<"SatuSehatSetting"> | string
     lastAutoSyncAt?: DateTimeNullableFilter<"SatuSehatSetting"> | Date | string | null
+    sendImageStudyFromWeb?: BoolFilter<"SatuSehatSetting"> | boolean
   }, "id">
 
   export type SatuSehatSettingOrderByWithAggregationInput = {
@@ -18821,6 +18838,7 @@ export namespace Prisma {
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrderInput | SortOrder
+    sendImageStudyFromWeb?: SortOrder
     _count?: SatuSehatSettingCountOrderByAggregateInput
     _avg?: SatuSehatSettingAvgOrderByAggregateInput
     _max?: SatuSehatSettingMaxOrderByAggregateInput
@@ -18868,6 +18886,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     autoSyncTime?: StringWithAggregatesFilter<"SatuSehatSetting"> | string
     lastAutoSyncAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatSetting"> | Date | string | null
+    sendImageStudyFromWeb?: BoolWithAggregatesFilter<"SatuSehatSetting"> | boolean
   }
 
   export type SatuSehatResourceLogWhereInput = {
@@ -19887,6 +19906,7 @@ export namespace Prisma {
     autoSyncFrequency?: string
     autoSyncTime?: string
     lastAutoSyncAt?: Date | string | null
+    sendImageStudyFromWeb?: boolean
   }
 
   export type SatuSehatSettingUncheckedCreateInput = {
@@ -19926,6 +19946,7 @@ export namespace Prisma {
     autoSyncFrequency?: string
     autoSyncTime?: string
     lastAutoSyncAt?: Date | string | null
+    sendImageStudyFromWeb?: boolean
   }
 
   export type SatuSehatSettingUpdateInput = {
@@ -19965,6 +19986,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sendImageStudyFromWeb?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SatuSehatSettingUncheckedUpdateInput = {
@@ -20004,6 +20026,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sendImageStudyFromWeb?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SatuSehatSettingCreateManyInput = {
@@ -20043,6 +20066,7 @@ export namespace Prisma {
     autoSyncFrequency?: string
     autoSyncTime?: string
     lastAutoSyncAt?: Date | string | null
+    sendImageStudyFromWeb?: boolean
   }
 
   export type SatuSehatSettingUpdateManyMutationInput = {
@@ -20082,6 +20106,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sendImageStudyFromWeb?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SatuSehatSettingUncheckedUpdateManyInput = {
@@ -20121,6 +20146,7 @@ export namespace Prisma {
     autoSyncFrequency?: StringFieldUpdateOperationsInput | string
     autoSyncTime?: StringFieldUpdateOperationsInput | string
     lastAutoSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sendImageStudyFromWeb?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SatuSehatResourceLogCreateInput = {
@@ -21140,6 +21166,7 @@ export namespace Prisma {
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrder
+    sendImageStudyFromWeb?: SortOrder
   }
 
   export type SatuSehatSettingAvgOrderByAggregateInput = {
@@ -21183,6 +21210,7 @@ export namespace Prisma {
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrder
+    sendImageStudyFromWeb?: SortOrder
   }
 
   export type SatuSehatSettingMinOrderByAggregateInput = {
@@ -21222,6 +21250,7 @@ export namespace Prisma {
     autoSyncFrequency?: SortOrder
     autoSyncTime?: SortOrder
     lastAutoSyncAt?: SortOrder
+    sendImageStudyFromWeb?: SortOrder
   }
 
   export type SatuSehatSettingSumOrderByAggregateInput = {

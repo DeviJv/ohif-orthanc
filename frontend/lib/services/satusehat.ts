@@ -442,6 +442,64 @@ export class SatuSehatService {
     }
 
     /**
+     * Memeriksa apakah Accession Number valid/terdaftar di Satu Sehat ServiceRequest.
+     */
+    static async checkAccessionNumberValid(acsnNumber: string, config: SatuSehatConfig): Promise<boolean> {
+        const token = await this.getAccessToken(config);
+        const resourceUrl = this.getResourceUrl("ServiceRequest", config);
+        
+        const orgId = config.organizationId;
+        
+        // Try multiple common system URLs for Accession Number to be robust
+        const systems = [
+            // Standard paths used in this system
+            this.getSystemUrl("servicerequest", orgId),
+            this.getSystemUrl("acsn", orgId),
+            // Common variations (https vs http, or without orgId suffix if applicable)
+            `https://sys-ids.kemkes.go.id/acsn/${orgId}`,
+            `https://sys-ids.kemkes.go.id/servicerequest/${orgId}`,
+            `https://fhir.kemkes.go.id/id/acsn`
+        ];
+
+        // Unique systems only
+        const uniqueSystems = Array.from(new Set(systems));
+        
+        // Construct the OR identifier string: sys1|val,sys2|val,...
+        const identifierQuery = uniqueSystems.map(sys => `${sys}|${acsnNumber}`).join(',');
+        const url = `${resourceUrl}?identifier=${encodeURIComponent(identifierQuery)}`;
+
+        console.log(`[SATUSEHAT] Checking Accession Number [${acsnNumber}] at URL: ${url}`);
+        
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error(`[SATUSEHAT] Error checking ACSN (Status ${response.status}):`, errText);
+                return false;
+            }
+
+            const data = await response.json();
+            const found = data.total > 0 && data.entry && data.entry.length > 0;
+            
+            if (found) {
+                console.log(`[SATUSEHAT] ACSN [${acsnNumber}] found successfully!`);
+            } else {
+                console.warn(`[SATUSEHAT] ACSN [${acsnNumber}] NOT found in Satu Sehat.`);
+            }
+            
+            return found;
+        } catch (e) {
+            console.error("[SATUSEHAT] Error checking Accession Number:", e);
+            return false;
+        }
+    }
+
+    /**
      * Helper to record individual resource transactions for the dashboard.
      */
     static async recordResourceLog(data: {

@@ -54,6 +54,53 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }, { status: 400 });
         }
 
+        // Ambil pengaturan
+        const dbSetting = await db.satuSehatSetting.findFirst({ where: { id: 1 } });
+        const sendImageStudyFromWeb = dbSetting?.sendImageStudyFromWeb ?? true;
+        const acsnNumber = tags?.AccessionNumber;
+
+        console.log(`[SATUSEHAT BRIDGE] Checking ACSN: ${acsnNumber} for Study: ${studyId}`);
+
+        if (config && acsnNumber) {
+            const isValidAcsn = await SatuSehatService.checkAccessionNumberValid(acsnNumber, config);
+            if (!isValidAcsn) {
+                console.error(`[SATUSEHAT BRIDGE] ACSN validation failed for: ${acsnNumber}`);
+                return NextResponse.json({ error: "ops no acsn belum terdaftar" }, { status: 400 });
+            }
+        } else if (!acsnNumber) {
+            console.error(`[SATUSEHAT BRIDGE] Accession Number missing in DICOM tags for Study: ${studyId}`);
+            return NextResponse.json({ error: "Accession Number tidak ditemukan di metadata DICOM." }, { status: 400 });
+        }
+
+        if (!sendImageStudyFromWeb) {
+            const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
+            
+            // TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER SAJA
+            try {
+                console.log(`[SATUSEHAT BRIDGE] Triggering DICOM Send to QTM-ROUTER for Study: ${studyId} (SatuSehat Web Sync Disabled)`);
+                await fetchOrthanc("/modalities/QTM-ROUTER/store", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ "Resources": [ studyId ], "Asynchronous": true })
+                });
+            } catch (routerErr: any) {
+                console.error(`[SATUSEHAT BRIDGE] Warning: Failed to trigger QTM-ROUTER: ${routerErr.message}`);
+            }
+
+            await db.satuSehatIntegration.upsert({
+                where: { accessionNumber: lookupKey },
+                update: { status: "SUCCESS", satusehatId: "forwarded-to-router", error: null, patientNik: nik, syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: "forwarded-to-router", patientNik: nik, syncedAt: new Date() }
+            });
+
+            return NextResponse.json({ 
+                success: true, 
+                message: "Accession Number valid. Diteruskan ke dicom-router.",
+                satusehatId: null,
+                logs: ["Pengiriman ImageStudy dari Web dinonaktifkan. Triger dicom-router berhasil."]
+            });
+        }
+
         // 2. Ambil data semua series yang ada
         const seriesIds = study.Series as string[];
         let modality = "OT"; // Default primary modality

@@ -61,7 +61,7 @@ export function useSatuSehatWorklist() {
         setIsErrorDialogOpen(true);
     }, []);
 
-    const handleBridgeSatuSehat = useCallback(async (studyId: string, manualNik?: string) => {
+    const handleBridgeSatuSehat = useCallback(async (studyId: string, manualNik?: string, skipRefresh = false) => {
         const study = studies.find(s => s.ID === studyId);
         const studyInstanceUid = study?.MainDicomTags.StudyInstanceUID || studyId;
 
@@ -88,7 +88,9 @@ export function useSatuSehatWorklist() {
                     description: "Data akan diperbarui setelah proses selesai."
                 });
                 // Wait a moment then refresh list
-                setTimeout(fetchStudies, 2000); 
+                if (!skipRefresh) {
+                    setTimeout(fetchStudies, 2000); 
+                }
             } else {
                 const data = await res.json();
                 throw new Error(data.error || "Gagal sinkronisasi");
@@ -96,7 +98,7 @@ export function useSatuSehatWorklist() {
         } catch (error: any) {
             console.error("Sync error:", error);
             toast.error("Gagal Sinkronisasi", { description: error.message });
-            fetchStudies(); // Reset view
+            if (!skipRefresh) fetchStudies(); // Reset view
         }
     }, [studies, fetchStudies]);
 
@@ -119,9 +121,16 @@ export function useSatuSehatWorklist() {
         }
 
         for (const studyId of idsToSync) {
-             await handleBridgeSatuSehat(studyId);
+             await handleBridgeSatuSehat(studyId, undefined, true);
         }
-    }, [studies, handleBridgeSatuSehat]);
+
+        // Refresh once at the end
+        fetchStudies();
+        
+        toast.success("Sinkronisasi Massal Selesai", {
+            description: `Selesai memproses ${idsToSync.length} pasien.`
+        });
+    }, [studies, handleBridgeSatuSehat, fetchStudies]);
 
 
     return {

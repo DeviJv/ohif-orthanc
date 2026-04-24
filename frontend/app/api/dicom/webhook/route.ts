@@ -29,20 +29,51 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { studyInstanceUid, status, message, error: errorDetail, patientName, data } = body;
+        const { status, message, error: errorDetail, data, id } = body;
+        
+        let studyInstanceUid = body.studyInstanceUid;
+        let patientName = body.patientName;
+
+        const resourceId = id || data?.id;
+
+        if (!studyInstanceUid && resourceId) {
+            const integration = await db.satuSehatIntegration.findFirst({
+                where: { satusehatId: resourceId }
+            });
+            
+            if (integration) {
+                studyInstanceUid = integration.studyInstanceUid;
+                if (!patientName && studyInstanceUid) {
+                    const report = await db.radiologyReport.findFirst({
+                        where: { studyInstanceUid: studyInstanceUid }
+                    });
+                    if (report) {
+                        patientName = report.patientName;
+                    }
+                }
+            }
+        }
+
+        const isSuccess = 
+            status === true || 
+            status === "true" || 
+            status === 1 ||
+            status === "success" || 
+            status === "SUCCESS" ||
+            !!resourceId;
 
         const log = await db.satuSehatWebhookLog.create({
             data: {
                 studyInstanceUid: studyInstanceUid || null,
                 patientName: patientName || null,
-                status: status ? "SUCCESS" : "FAILED",
-                message: message || null,
+                status: isSuccess ? "SUCCESS" : "FAILED",
+                message: message || (isSuccess ? "Upload ke SatuSehat berhasil" : null),
                 errorDetail: errorDetail || null,
                 rawPayload: body
             }
         });
 
-        console.log(`[WEBHOOK] Received from router: ${studyInstanceUid || 'N/A'} - Status: ${status}, Message: ${message}`);
+        console.log(`[WEBHOOK] Received from router: ${studyInstanceUid || 'N/A'} - Status: ${isSuccess ? "SUCCESS" : "FAILED"}, Message: ${message}`);
 
         if (studyInstanceUid) {
             try {
@@ -55,13 +86,13 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        await triggerTelegramNotification(body);
+        await triggerTelegramNotification({ ...body, studyInstanceUid, patientName, id: resourceId });
 
         return NextResponse.json({ 
-            success: true, 
             status: true,
-            logId: log.id,
-            message: "Webhook processed successfully"
+            message: "message berhasil",
+            data: { id: resourceId || log.id },
+            error: []
         });
     } catch (error: any) {
         console.error("[WEBHOOK] Error processing webhook:", error);
@@ -83,8 +114,9 @@ async function triggerTelegramNotification(data: any) {
 
         const rawStatus = data.status ?? data.data?.status ?? data.success;
         const rawMessage = data.message;
+        const resourceId = data.id || data.data?.id;
         
-        console.log("[TELEGRAM] rawStatus:", rawStatus, "rawMessage:", rawMessage);
+        console.log("[TELEGRAM] rawStatus:", rawStatus, "rawMessage:", rawMessage, "resourceId:", resourceId);
         
         const messageText = (rawMessage || data.data?.message || "").toString().toLowerCase();
         const hasBerhasil = messageText.includes("berhasil") || messageText.includes("sukses") || messageText.includes("success");
@@ -95,7 +127,8 @@ async function triggerTelegramNotification(data: any) {
             rawStatus === 1 ||
             rawStatus === "success" || 
             rawStatus === "SUCCESS" ||
-            hasBerhasil;
+            hasBerhasil ||
+            !!resourceId;
 
         const emoji = isSuccess ? "✅" : "🚨";
         const title = isSuccess ? "Upload Gambar Berhasil" : "Gagal Upload Gambar";
@@ -124,8 +157,8 @@ async function triggerTelegramNotification(data: any) {
             message += `\n💬 *Info:* Upload ke SatuSehat berhasil\n`;
         }
         
-        if (data.data?.id) {
-            message += `🆔 *Resource ID:* \`${data.data.id}\`\n`;
+        if (resourceId) {
+            message += `🆔 *Resource ID:* \`${resourceId}\`\n`;
         }
 
         if (!isSuccess && data.error) {

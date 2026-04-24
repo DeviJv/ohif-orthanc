@@ -51,6 +51,12 @@ export async function POST(req: NextRequest) {
         }
         
         if (!nik) {
+            const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID || studyId;
+            await db.satuSehatIntegration.upsert({
+                where: { accessionNumber: lookupKey },
+                update: { status: "FAILED", error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual.", studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }
+            });
             return NextResponse.json({ error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }, { status: 400 });
         }
 
@@ -65,10 +71,22 @@ export async function POST(req: NextRequest) {
             const isValidAcsn = await SatuSehatService.checkAccessionNumberValid(acsnNumber, config);
             if (!isValidAcsn) {
                 console.error(`[SATUSEHAT BRIDGE] ACSN validation failed for: ${acsnNumber}`);
+                const lookupKey = acsnNumber || tags.StudyInstanceUID || studyId;
+                await db.satuSehatIntegration.upsert({
+                    where: { accessionNumber: lookupKey },
+                    update: { status: "FAILED", error: "ops no acsn belum terdaftar", patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
+                    create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "ops no acsn belum terdaftar", patientNik: nik }
+                });
                 return NextResponse.json({ error: "ops no acsn belum terdaftar" }, { status: 400 });
             }
         } else if (!acsnNumber) {
             console.error(`[SATUSEHAT BRIDGE] Accession Number missing in DICOM tags for Study: ${studyId}`);
+            const lookupKey = tags.StudyInstanceUID || studyId;
+            await db.satuSehatIntegration.upsert({
+                where: { accessionNumber: lookupKey },
+                update: { status: "FAILED", error: "Accession Number tidak ditemukan di metadata DICOM.", patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "Accession Number tidak ditemukan di metadata DICOM.", patientNik: nik }
+            });
             return NextResponse.json({ error: "Accession Number tidak ditemukan di metadata DICOM." }, { status: 400 });
         }
 

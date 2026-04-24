@@ -34,6 +34,7 @@ import { getColumns } from "./components/columns";
 import { SatuSehatToolbar } from "./components/satusehat-toolbar";
 import { SatuSehatStats } from "./components/satusehat-stats";
 import { WebhookMonitor } from "./components/webhook-monitor";
+import { FloatingSyncProgress } from "./components/floating-sync-progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 import { handleBulkDownloadStudy } from "../worklist/utils/actions";
@@ -140,6 +141,7 @@ function SatuSehatContent() {
 
             <SatuSehatStats studies={studies} />
 
+            <FloatingSyncProgress onComplete={fetchStudies} />
 
             <div className="mt-8 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm rounded-xl overflow-hidden flex flex-col backdrop-blur-sm">
                 <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-transparent">

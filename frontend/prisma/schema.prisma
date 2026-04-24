@@ -203,11 +203,26 @@ model RadiologyReport {
   reportDate        String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  
+
   // Doctor/Practitioner
-  doctorId          String?
-  doctorName        String?   // Fallback if user is not linked
-  doctor            User?     @relation("DoctorReports", fields: [doctorId], references: [id])
+  doctorId   String?
+  doctorName String? // Fallback if user is not linked
+  doctor     User?   @relation("DoctorReports", fields: [doctorId], references: [id])
 
   @@unique([patientId, studyInstanceUid])
+}
+
+model SatuSehatBulkSyncTask {
+  id             String    @id @default(cuid())
+  type           String    @default("MANUAL") // MANUAL, CRON
+  status         String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalItems     Int       @default(0)
+  successCount   Int       @default(0)
+  failCount      Int       @default(0)
+  currentStudyId String?
+  errors         Json? // Array of errors
+  studyIds       Json // Array of study IDs to process
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  completedAt    DateTime?
 }

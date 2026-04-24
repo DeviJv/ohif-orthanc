@@ -81,33 +81,25 @@ export async function GET(req: Request) {
                  const pendingStudies = studies.filter((s: any) => s.satuSehat?.status !== "SUCCESS");
                  console.log(`[CRON] Found ${pendingStudies.length} studies to sync.`);
                  
-                 let successCount = 0;
-                 let failCount = 0;
-
-                 // Process sequentially to be safe with SatuSehat Rate limits
-                 for (const study of pendingStudies) {
-                     try {
-                         const studyInstanceUid = study.MainDicomTags?.StudyInstanceUID || study.ID;
-                         const bridgeRes = await fetch(`${appUrl}/api/satusehat/bridge`, {
-                             method: "POST",
-                             headers: { "Content-Type": "application/json" },
-                             body: JSON.stringify({ studyInstanceUid: study.ID })
-                         });
-
-                         if (bridgeRes.ok) {
-                             successCount++;
-                         } else {
-                             failCount++;
-                         }
-                         
-                         // Small delay between requests
-                         await new Promise(resolve => setTimeout(resolve, 500));
-                     } catch (e) {
-                         failCount++;
-                     }
+                 if (pendingStudies.length === 0) {
+                     return;
                  }
-                 
-                 console.log(`[CRON] Bulk Sync Completed. Success: ${successCount}, Failed: ${failCount}`);
+
+                 const studyIds = pendingStudies.map((s: any) => s.ID);
+
+                 // Send to bulk-sync queue
+                 const bulkSyncRes = await fetch(`${appUrl}/api/satusehat/bulk-sync`, {
+                     method: "POST",
+                     headers: { "Content-Type": "application/json" },
+                     body: JSON.stringify({ studyIds, type: "CRON" })
+                 });
+
+                 if (!bulkSyncRes.ok) {
+                     console.error("[CRON] Failed to trigger bulk sync queue");
+                 } else {
+                     const data = await bulkSyncRes.json();
+                     console.log(`[CRON] Bulk Sync Task created with ID: ${data.taskId}`);
+                 }
 
              } catch (error) {
                  console.error("[CRON] Bulk Sync Routine Exception:", error);

@@ -120,17 +120,27 @@ export function useSatuSehatWorklist() {
             toast.info(`Memulai sinkronisasi massal untuk ${idsToSync.length} pasien pilihan...`);
         }
 
-        for (const studyId of idsToSync) {
-             await handleBridgeSatuSehat(studyId, undefined, true);
-        }
+        try {
+            const res = await fetch("/api/satusehat/bulk-sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ studyIds: idsToSync, type: "MANUAL" })
+            });
 
-        // Refresh once at the end
-        fetchStudies();
-        
-        toast.success("Sinkronisasi Massal Selesai", {
-            description: `Selesai memproses ${idsToSync.length} pasien.`
-        });
-    }, [studies, handleBridgeSatuSehat, fetchStudies]);
+            if (res.ok) {
+                toast.success("Sinkronisasi Massal Dimulai", {
+                    description: `Memproses ${idsToSync.length} pasien di latar belakang.`
+                });
+                fetchStudies();
+            } else {
+                const err = await res.json();
+                throw new Error(err.error || "Gagal memulai bulk sync");
+            }
+        } catch (error: any) {
+            console.error("Bulk sync error:", error);
+            toast.error("Gagal Memulai Bulk Sync", { description: error.message });
+        }
+    }, [studies, fetchStudies]);
 
 
     return {

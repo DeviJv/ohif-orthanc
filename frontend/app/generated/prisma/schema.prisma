@@ -211,3 +211,18 @@ model RadiologyReport {
 
   @@unique([patientId, studyInstanceUid])
 }
+
+model SatuSehatBulkSyncTask {
+  id             String    @id @default(cuid())
+  type           String    @default("MANUAL") // MANUAL, CRON
+  status         String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalItems     Int       @default(0)
+  successCount   Int       @default(0)
+  failCount      Int       @default(0)
+  currentStudyId String?
+  errors         Json? // Array of errors
+  studyIds       Json // Array of study IDs to process
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  completedAt    DateTime?
+}

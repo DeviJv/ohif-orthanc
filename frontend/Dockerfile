@@ -13,7 +13,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Skip type checking for faster builds in this demo context
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx prisma generate --schema=prisma/schema.prisma
 RUN pnpm run build
 
@@ -24,8 +24,8 @@ RUN apk add --no-cache docker-cli docker-cli-compose
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -47,8 +47,8 @@ RUN chmod +x ./entrypoint.sh
 USER nextjs
 
 EXPOSE 3001
-ENV PORT 3001
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3001
+ENV HOSTNAME="0.0.0.0"
 
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["pnpm", "start"]

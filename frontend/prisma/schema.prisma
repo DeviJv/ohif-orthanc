@@ -210,6 +210,8 @@ model RadiologyReport {
   doctor     User?   @relation("DoctorReports", fields: [doctorId], references: [id])
 
   @@unique([patientId, studyInstanceUid])
+  @@index([patientId, studyDate])
+  @@index([accessionNumber])
 }
 
 model SatuSehatBulkSyncTask {

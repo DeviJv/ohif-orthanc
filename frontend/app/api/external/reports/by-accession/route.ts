@@ -5,6 +5,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
     try {
+        const xPacsKey = req.headers.get("x-pacs-key");
+        if (xPacsKey !== process.env.PACS_SECRET_TOKEN) {
+            return NextResponse.json({ success: false, message: "Unauthorized access" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const accessionNumber = searchParams.get("accessionNumber");
 

@@ -254,14 +254,48 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const set = (key: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
         setFormData((prev) => ({ ...prev, [key]: e.target.value }));
 
+    const compressImage = (base64Str: string, maxWidth: number = 1200, maxHeight: number = 1200, quality: number = 0.7): Promise<string> => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = base64Str;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height *= maxWidth / width;
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width *= maxHeight / height;
+                        height = maxHeight;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx?.drawImage(img, 0, 0, width, height);
+                // Force JPEG and lower quality for much smaller Base64 strings
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+        });
+    };
+
     const handleMeasurementUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         const files = Array.from(e.target.files);
         
         files.forEach(file => {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setMeasurementImages(prev => [...prev, { file, base64: reader.result as string, name: file.name }]);
+            reader.onloadend = async () => {
+                const base64 = reader.result as string;
+                // Compress before adding to state/DB
+                const compressedBase64 = await compressImage(base64);
+                setMeasurementImages(prev => [...prev, { file, base64: compressedBase64, name: file.name.replace(/\.[^/.]+$/, "") + ".jpg" }]);
             };
             reader.readAsDataURL(file);
         });

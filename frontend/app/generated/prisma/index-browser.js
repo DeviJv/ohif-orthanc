@@ -321,6 +321,19 @@ exports.Prisma.SatuSehatBulkSyncTaskScalarFieldEnum = {
   completedAt: 'completedAt'
 };
 
+exports.Prisma.ReportExportTaskScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  totalItems: 'totalItems',
+  processedCount: 'processedCount',
+  fileUrl: 'fileUrl',
+  filters: 'filters',
+  reportIds: 'reportIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -367,7 +380,8 @@ exports.Prisma.ModelName = {
   SatuSehatResourceLog: 'SatuSehatResourceLog',
   ModalityConnection: 'ModalityConnection',
   RadiologyReport: 'RadiologyReport',
-  SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask'
+  SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask',
+  ReportExportTask: 'ReportExportTask'
 };
 
 /**

@@ -210,6 +210,8 @@ model RadiologyReport {
   doctor     User?   @relation("DoctorReports", fields: [doctorId], references: [id])
 
   @@unique([patientId, studyInstanceUid])
+  @@index([patientId, studyDate])
+  @@index([accessionNumber])
 }
 
 model SatuSehatBulkSyncTask {
@@ -222,6 +224,19 @@ model SatuSehatBulkSyncTask {
   currentStudyId String?
   errors         Json? // Array of errors
   studyIds       Json // Array of study IDs to process
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  completedAt    DateTime?
+}
+
+model ReportExportTask {
+  id             String    @id @default(cuid())
+  status         String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalItems     Int       @default(0)
+  processedCount Int       @default(0)
+  fileUrl        String?
+  filters        Json? // Search filters applied
+  reportIds      Json? // Specific IDs if it's a bulk select
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   completedAt    DateTime?

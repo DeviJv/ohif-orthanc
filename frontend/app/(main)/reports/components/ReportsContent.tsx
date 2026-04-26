@@ -29,6 +29,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { handleBulkDownloadZip } from "../utils/actions";
 import { ExportPdfDialog } from "../../worklist/components/export-pdf-dialog";
+import { FloatingExportProgress } from "./floating-export-progress";
 import { 
     AlertDialog,
     AlertDialogAction,
@@ -126,14 +127,29 @@ export default function ReportsContent() {
         handleBulkDownloadZip(selectedIds);
     };
 
-    // Convert Report back to Study-like structure for ExportPdfDialog if needed
-    // Actually ExportPdfDialog expects Study, but we can mock it or modify it
-    // The user said "edit seperti di worklist", and in worklist it opens ExportPdfDialog
-    // Let's see if we can adapt it.
+    const handleExportCSV = async (ids?: string[]) => {
+        try {
+            const res = await fetch("/api/reports/export", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ids: ids || [],
+                    filters: !ids ? filters : {}
+                }),
+            });
+            if (res.ok) {
+                // Task started
+            }
+        } catch (error) {
+            console.error("Failed to start CSV export:", error);
+        }
+    };
+
+    // Convert Report back to Study-like structure for ExportPdfDialog
     const mockStudyFromReport = useMemo(() => {
         if (!selectedReportForExport) return null;
         return {
-            ID: selectedReportForExport.studyInstanceUid, // This might be wrong but studyInstanceUid is what's used
+            ID: selectedReportForExport.studyInstanceUid,
             MainDicomTags: {
                 StudyInstanceUID: selectedReportForExport.studyInstanceUid,
                 PatientName: selectedReportForExport.patientName,
@@ -168,6 +184,7 @@ export default function ReportsContent() {
                 setDateRange={handleSetDateRange}
                 handleBulkDelete={handleBulkDeleteClick}
                 handleBulkDownload={handleBulkDownload}
+                handleExportCSV={handleExportCSV}
                 refresh={refresh}
             />
 
@@ -243,6 +260,9 @@ export default function ReportsContent() {
                     <Button variant="outline" size="sm" onClick={() => setFilters(prev => ({ ...prev, page: prev.page + 1 }))} disabled={page >= totalPages} className="shadow-sm">Next</Button>
                 </div>
             </div>
+
+            {/* Floating Progress */}
+            <FloatingExportProgress />
 
             {/* Dialogs */}
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>

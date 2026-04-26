@@ -88,6 +88,11 @@ export type RadiologyReport = $Result.DefaultSelection<Prisma.$RadiologyReportPa
  * 
  */
 export type SatuSehatBulkSyncTask = $Result.DefaultSelection<Prisma.$SatuSehatBulkSyncTaskPayload>
+/**
+ * Model ReportExportTask
+ * 
+ */
+export type ReportExportTask = $Result.DefaultSelection<Prisma.$ReportExportTaskPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -356,6 +361,16 @@ export class PrismaClient<
     * ```
     */
   get satuSehatBulkSyncTask(): Prisma.SatuSehatBulkSyncTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reportExportTask`: Exposes CRUD operations for the **ReportExportTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReportExportTasks
+    * const reportExportTasks = await prisma.reportExportTask.findMany()
+    * ```
+    */
+  get reportExportTask(): Prisma.ReportExportTaskDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -811,7 +826,8 @@ export namespace Prisma {
     SatuSehatResourceLog: 'SatuSehatResourceLog',
     ModalityConnection: 'ModalityConnection',
     RadiologyReport: 'RadiologyReport',
-    SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask'
+    SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask',
+    ReportExportTask: 'ReportExportTask'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -830,7 +846,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport" | "satuSehatBulkSyncTask"
+      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport" | "satuSehatBulkSyncTask" | "reportExportTask"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1944,6 +1960,80 @@ export namespace Prisma {
           }
         }
       }
+      ReportExportTask: {
+        payload: Prisma.$ReportExportTaskPayload<ExtArgs>
+        fields: Prisma.ReportExportTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportExportTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportExportTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.ReportExportTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportExportTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>
+          }
+          findMany: {
+            args: Prisma.ReportExportTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>[]
+          }
+          create: {
+            args: Prisma.ReportExportTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>
+          }
+          createMany: {
+            args: Prisma.ReportExportTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportExportTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.ReportExportTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>
+          }
+          update: {
+            args: Prisma.ReportExportTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportExportTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportExportTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReportExportTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReportExportTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportExportTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.ReportExportTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReportExportTask>
+          }
+          groupBy: {
+            args: Prisma.ReportExportTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportExportTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportExportTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportExportTaskCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2055,6 +2145,7 @@ export namespace Prisma {
     modalityConnection?: ModalityConnectionOmit
     radiologyReport?: RadiologyReportOmit
     satuSehatBulkSyncTask?: SatuSehatBulkSyncTaskOmit
+    reportExportTask?: ReportExportTaskOmit
   }
 
   /* Types for Logging */
@@ -18882,6 +18973,1096 @@ export namespace Prisma {
 
 
   /**
+   * Model ReportExportTask
+   */
+
+  export type AggregateReportExportTask = {
+    _count: ReportExportTaskCountAggregateOutputType | null
+    _avg: ReportExportTaskAvgAggregateOutputType | null
+    _sum: ReportExportTaskSumAggregateOutputType | null
+    _min: ReportExportTaskMinAggregateOutputType | null
+    _max: ReportExportTaskMaxAggregateOutputType | null
+  }
+
+  export type ReportExportTaskAvgAggregateOutputType = {
+    totalItems: number | null
+    processedCount: number | null
+  }
+
+  export type ReportExportTaskSumAggregateOutputType = {
+    totalItems: number | null
+    processedCount: number | null
+  }
+
+  export type ReportExportTaskMinAggregateOutputType = {
+    id: string | null
+    status: string | null
+    totalItems: number | null
+    processedCount: number | null
+    fileUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type ReportExportTaskMaxAggregateOutputType = {
+    id: string | null
+    status: string | null
+    totalItems: number | null
+    processedCount: number | null
+    fileUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type ReportExportTaskCountAggregateOutputType = {
+    id: number
+    status: number
+    totalItems: number
+    processedCount: number
+    fileUrl: number
+    filters: number
+    reportIds: number
+    createdAt: number
+    updatedAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type ReportExportTaskAvgAggregateInputType = {
+    totalItems?: true
+    processedCount?: true
+  }
+
+  export type ReportExportTaskSumAggregateInputType = {
+    totalItems?: true
+    processedCount?: true
+  }
+
+  export type ReportExportTaskMinAggregateInputType = {
+    id?: true
+    status?: true
+    totalItems?: true
+    processedCount?: true
+    fileUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type ReportExportTaskMaxAggregateInputType = {
+    id?: true
+    status?: true
+    totalItems?: true
+    processedCount?: true
+    fileUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type ReportExportTaskCountAggregateInputType = {
+    id?: true
+    status?: true
+    totalItems?: true
+    processedCount?: true
+    fileUrl?: true
+    filters?: true
+    reportIds?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type ReportExportTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportExportTask to aggregate.
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportExportTasks to fetch.
+     */
+    orderBy?: ReportExportTaskOrderByWithRelationInput | ReportExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportExportTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReportExportTasks
+    **/
+    _count?: true | ReportExportTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReportExportTaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReportExportTaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportExportTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportExportTaskMaxAggregateInputType
+  }
+
+  export type GetReportExportTaskAggregateType<T extends ReportExportTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateReportExportTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReportExportTask[P]>
+      : GetScalarType<T[P], AggregateReportExportTask[P]>
+  }
+
+
+
+
+  export type ReportExportTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportExportTaskWhereInput
+    orderBy?: ReportExportTaskOrderByWithAggregationInput | ReportExportTaskOrderByWithAggregationInput[]
+    by: ReportExportTaskScalarFieldEnum[] | ReportExportTaskScalarFieldEnum
+    having?: ReportExportTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportExportTaskCountAggregateInputType | true
+    _avg?: ReportExportTaskAvgAggregateInputType
+    _sum?: ReportExportTaskSumAggregateInputType
+    _min?: ReportExportTaskMinAggregateInputType
+    _max?: ReportExportTaskMaxAggregateInputType
+  }
+
+  export type ReportExportTaskGroupByOutputType = {
+    id: string
+    status: string
+    totalItems: number
+    processedCount: number
+    fileUrl: string | null
+    filters: JsonValue | null
+    reportIds: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    completedAt: Date | null
+    _count: ReportExportTaskCountAggregateOutputType | null
+    _avg: ReportExportTaskAvgAggregateOutputType | null
+    _sum: ReportExportTaskSumAggregateOutputType | null
+    _min: ReportExportTaskMinAggregateOutputType | null
+    _max: ReportExportTaskMaxAggregateOutputType | null
+  }
+
+  type GetReportExportTaskGroupByPayload<T extends ReportExportTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportExportTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportExportTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportExportTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportExportTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportExportTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    reportIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["reportExportTask"]>
+
+  export type ReportExportTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    reportIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["reportExportTask"]>
+
+  export type ReportExportTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    reportIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["reportExportTask"]>
+
+  export type ReportExportTaskSelectScalar = {
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    reportIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type ReportExportTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "totalItems" | "processedCount" | "fileUrl" | "filters" | "reportIds" | "createdAt" | "updatedAt" | "completedAt", ExtArgs["result"]["reportExportTask"]>
+
+  export type $ReportExportTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReportExportTask"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      status: string
+      totalItems: number
+      processedCount: number
+      fileUrl: string | null
+      filters: Prisma.JsonValue | null
+      reportIds: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+      completedAt: Date | null
+    }, ExtArgs["result"]["reportExportTask"]>
+    composites: {}
+  }
+
+  type ReportExportTaskGetPayload<S extends boolean | null | undefined | ReportExportTaskDefaultArgs> = $Result.GetResult<Prisma.$ReportExportTaskPayload, S>
+
+  type ReportExportTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReportExportTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReportExportTaskCountAggregateInputType | true
+    }
+
+  export interface ReportExportTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReportExportTask'], meta: { name: 'ReportExportTask' } }
+    /**
+     * Find zero or one ReportExportTask that matches the filter.
+     * @param {ReportExportTaskFindUniqueArgs} args - Arguments to find a ReportExportTask
+     * @example
+     * // Get one ReportExportTask
+     * const reportExportTask = await prisma.reportExportTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportExportTaskFindUniqueArgs>(args: SelectSubset<T, ReportExportTaskFindUniqueArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReportExportTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReportExportTaskFindUniqueOrThrowArgs} args - Arguments to find a ReportExportTask
+     * @example
+     * // Get one ReportExportTask
+     * const reportExportTask = await prisma.reportExportTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportExportTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportExportTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportExportTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskFindFirstArgs} args - Arguments to find a ReportExportTask
+     * @example
+     * // Get one ReportExportTask
+     * const reportExportTask = await prisma.reportExportTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportExportTaskFindFirstArgs>(args?: SelectSubset<T, ReportExportTaskFindFirstArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportExportTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskFindFirstOrThrowArgs} args - Arguments to find a ReportExportTask
+     * @example
+     * // Get one ReportExportTask
+     * const reportExportTask = await prisma.reportExportTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportExportTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportExportTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReportExportTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReportExportTasks
+     * const reportExportTasks = await prisma.reportExportTask.findMany()
+     * 
+     * // Get first 10 ReportExportTasks
+     * const reportExportTasks = await prisma.reportExportTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportExportTaskWithIdOnly = await prisma.reportExportTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportExportTaskFindManyArgs>(args?: SelectSubset<T, ReportExportTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReportExportTask.
+     * @param {ReportExportTaskCreateArgs} args - Arguments to create a ReportExportTask.
+     * @example
+     * // Create one ReportExportTask
+     * const ReportExportTask = await prisma.reportExportTask.create({
+     *   data: {
+     *     // ... data to create a ReportExportTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportExportTaskCreateArgs>(args: SelectSubset<T, ReportExportTaskCreateArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReportExportTasks.
+     * @param {ReportExportTaskCreateManyArgs} args - Arguments to create many ReportExportTasks.
+     * @example
+     * // Create many ReportExportTasks
+     * const reportExportTask = await prisma.reportExportTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportExportTaskCreateManyArgs>(args?: SelectSubset<T, ReportExportTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReportExportTasks and returns the data saved in the database.
+     * @param {ReportExportTaskCreateManyAndReturnArgs} args - Arguments to create many ReportExportTasks.
+     * @example
+     * // Create many ReportExportTasks
+     * const reportExportTask = await prisma.reportExportTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReportExportTasks and only return the `id`
+     * const reportExportTaskWithIdOnly = await prisma.reportExportTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportExportTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportExportTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReportExportTask.
+     * @param {ReportExportTaskDeleteArgs} args - Arguments to delete one ReportExportTask.
+     * @example
+     * // Delete one ReportExportTask
+     * const ReportExportTask = await prisma.reportExportTask.delete({
+     *   where: {
+     *     // ... filter to delete one ReportExportTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportExportTaskDeleteArgs>(args: SelectSubset<T, ReportExportTaskDeleteArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReportExportTask.
+     * @param {ReportExportTaskUpdateArgs} args - Arguments to update one ReportExportTask.
+     * @example
+     * // Update one ReportExportTask
+     * const reportExportTask = await prisma.reportExportTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportExportTaskUpdateArgs>(args: SelectSubset<T, ReportExportTaskUpdateArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReportExportTasks.
+     * @param {ReportExportTaskDeleteManyArgs} args - Arguments to filter ReportExportTasks to delete.
+     * @example
+     * // Delete a few ReportExportTasks
+     * const { count } = await prisma.reportExportTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportExportTaskDeleteManyArgs>(args?: SelectSubset<T, ReportExportTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportExportTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReportExportTasks
+     * const reportExportTask = await prisma.reportExportTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportExportTaskUpdateManyArgs>(args: SelectSubset<T, ReportExportTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportExportTasks and returns the data updated in the database.
+     * @param {ReportExportTaskUpdateManyAndReturnArgs} args - Arguments to update many ReportExportTasks.
+     * @example
+     * // Update many ReportExportTasks
+     * const reportExportTask = await prisma.reportExportTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReportExportTasks and only return the `id`
+     * const reportExportTaskWithIdOnly = await prisma.reportExportTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReportExportTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, ReportExportTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReportExportTask.
+     * @param {ReportExportTaskUpsertArgs} args - Arguments to update or create a ReportExportTask.
+     * @example
+     * // Update or create a ReportExportTask
+     * const reportExportTask = await prisma.reportExportTask.upsert({
+     *   create: {
+     *     // ... data to create a ReportExportTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReportExportTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportExportTaskUpsertArgs>(args: SelectSubset<T, ReportExportTaskUpsertArgs<ExtArgs>>): Prisma__ReportExportTaskClient<$Result.GetResult<Prisma.$ReportExportTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReportExportTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskCountArgs} args - Arguments to filter ReportExportTasks to count.
+     * @example
+     * // Count the number of ReportExportTasks
+     * const count = await prisma.reportExportTask.count({
+     *   where: {
+     *     // ... the filter for the ReportExportTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportExportTaskCountArgs>(
+      args?: Subset<T, ReportExportTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportExportTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReportExportTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportExportTaskAggregateArgs>(args: Subset<T, ReportExportTaskAggregateArgs>): Prisma.PrismaPromise<GetReportExportTaskAggregateType<T>>
+
+    /**
+     * Group by ReportExportTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportExportTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportExportTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportExportTaskGroupByArgs['orderBy'] }
+        : { orderBy?: ReportExportTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportExportTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportExportTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReportExportTask model
+   */
+  readonly fields: ReportExportTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReportExportTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportExportTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReportExportTask model
+   */
+  interface ReportExportTaskFieldRefs {
+    readonly id: FieldRef<"ReportExportTask", 'String'>
+    readonly status: FieldRef<"ReportExportTask", 'String'>
+    readonly totalItems: FieldRef<"ReportExportTask", 'Int'>
+    readonly processedCount: FieldRef<"ReportExportTask", 'Int'>
+    readonly fileUrl: FieldRef<"ReportExportTask", 'String'>
+    readonly filters: FieldRef<"ReportExportTask", 'Json'>
+    readonly reportIds: FieldRef<"ReportExportTask", 'Json'>
+    readonly createdAt: FieldRef<"ReportExportTask", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReportExportTask", 'DateTime'>
+    readonly completedAt: FieldRef<"ReportExportTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReportExportTask findUnique
+   */
+  export type ReportExportTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportExportTask to fetch.
+     */
+    where: ReportExportTaskWhereUniqueInput
+  }
+
+  /**
+   * ReportExportTask findUniqueOrThrow
+   */
+  export type ReportExportTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportExportTask to fetch.
+     */
+    where: ReportExportTaskWhereUniqueInput
+  }
+
+  /**
+   * ReportExportTask findFirst
+   */
+  export type ReportExportTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportExportTask to fetch.
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportExportTasks to fetch.
+     */
+    orderBy?: ReportExportTaskOrderByWithRelationInput | ReportExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportExportTasks.
+     */
+    cursor?: ReportExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportExportTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportExportTasks.
+     */
+    distinct?: ReportExportTaskScalarFieldEnum | ReportExportTaskScalarFieldEnum[]
+  }
+
+  /**
+   * ReportExportTask findFirstOrThrow
+   */
+  export type ReportExportTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportExportTask to fetch.
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportExportTasks to fetch.
+     */
+    orderBy?: ReportExportTaskOrderByWithRelationInput | ReportExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportExportTasks.
+     */
+    cursor?: ReportExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportExportTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportExportTasks.
+     */
+    distinct?: ReportExportTaskScalarFieldEnum | ReportExportTaskScalarFieldEnum[]
+  }
+
+  /**
+   * ReportExportTask findMany
+   */
+  export type ReportExportTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportExportTasks to fetch.
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportExportTasks to fetch.
+     */
+    orderBy?: ReportExportTaskOrderByWithRelationInput | ReportExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReportExportTasks.
+     */
+    cursor?: ReportExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportExportTasks.
+     */
+    skip?: number
+    distinct?: ReportExportTaskScalarFieldEnum | ReportExportTaskScalarFieldEnum[]
+  }
+
+  /**
+   * ReportExportTask create
+   */
+  export type ReportExportTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ReportExportTask.
+     */
+    data: XOR<ReportExportTaskCreateInput, ReportExportTaskUncheckedCreateInput>
+  }
+
+  /**
+   * ReportExportTask createMany
+   */
+  export type ReportExportTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReportExportTasks.
+     */
+    data: ReportExportTaskCreateManyInput | ReportExportTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportExportTask createManyAndReturn
+   */
+  export type ReportExportTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReportExportTasks.
+     */
+    data: ReportExportTaskCreateManyInput | ReportExportTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportExportTask update
+   */
+  export type ReportExportTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ReportExportTask.
+     */
+    data: XOR<ReportExportTaskUpdateInput, ReportExportTaskUncheckedUpdateInput>
+    /**
+     * Choose, which ReportExportTask to update.
+     */
+    where: ReportExportTaskWhereUniqueInput
+  }
+
+  /**
+   * ReportExportTask updateMany
+   */
+  export type ReportExportTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReportExportTasks.
+     */
+    data: XOR<ReportExportTaskUpdateManyMutationInput, ReportExportTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportExportTasks to update
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * Limit how many ReportExportTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportExportTask updateManyAndReturn
+   */
+  export type ReportExportTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update ReportExportTasks.
+     */
+    data: XOR<ReportExportTaskUpdateManyMutationInput, ReportExportTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportExportTasks to update
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * Limit how many ReportExportTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportExportTask upsert
+   */
+  export type ReportExportTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ReportExportTask to update in case it exists.
+     */
+    where: ReportExportTaskWhereUniqueInput
+    /**
+     * In case the ReportExportTask found by the `where` argument doesn't exist, create a new ReportExportTask with this data.
+     */
+    create: XOR<ReportExportTaskCreateInput, ReportExportTaskUncheckedCreateInput>
+    /**
+     * In case the ReportExportTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportExportTaskUpdateInput, ReportExportTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * ReportExportTask delete
+   */
+  export type ReportExportTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter which ReportExportTask to delete.
+     */
+    where: ReportExportTaskWhereUniqueInput
+  }
+
+  /**
+   * ReportExportTask deleteMany
+   */
+  export type ReportExportTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportExportTasks to delete
+     */
+    where?: ReportExportTaskWhereInput
+    /**
+     * Limit how many ReportExportTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportExportTask without action
+   */
+  export type ReportExportTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportExportTask
+     */
+    select?: ReportExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportExportTask
+     */
+    omit?: ReportExportTaskOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -19138,6 +20319,22 @@ export namespace Prisma {
   };
 
   export type SatuSehatBulkSyncTaskScalarFieldEnum = (typeof SatuSehatBulkSyncTaskScalarFieldEnum)[keyof typeof SatuSehatBulkSyncTaskScalarFieldEnum]
+
+
+  export const ReportExportTaskScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    totalItems: 'totalItems',
+    processedCount: 'processedCount',
+    fileUrl: 'fileUrl',
+    filters: 'filters',
+    reportIds: 'reportIds',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    completedAt: 'completedAt'
+  };
+
+  export type ReportExportTaskScalarFieldEnum = (typeof ReportExportTaskScalarFieldEnum)[keyof typeof ReportExportTaskScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20492,6 +21689,85 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"SatuSehatBulkSyncTask"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatBulkSyncTask"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatBulkSyncTask"> | Date | string | null
+  }
+
+  export type ReportExportTaskWhereInput = {
+    AND?: ReportExportTaskWhereInput | ReportExportTaskWhereInput[]
+    OR?: ReportExportTaskWhereInput[]
+    NOT?: ReportExportTaskWhereInput | ReportExportTaskWhereInput[]
+    id?: StringFilter<"ReportExportTask"> | string
+    status?: StringFilter<"ReportExportTask"> | string
+    totalItems?: IntFilter<"ReportExportTask"> | number
+    processedCount?: IntFilter<"ReportExportTask"> | number
+    fileUrl?: StringNullableFilter<"ReportExportTask"> | string | null
+    filters?: JsonNullableFilter<"ReportExportTask">
+    reportIds?: JsonNullableFilter<"ReportExportTask">
+    createdAt?: DateTimeFilter<"ReportExportTask"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportExportTask"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ReportExportTask"> | Date | string | null
+  }
+
+  export type ReportExportTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
+    filters?: SortOrderInput | SortOrder
+    reportIds?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+  }
+
+  export type ReportExportTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReportExportTaskWhereInput | ReportExportTaskWhereInput[]
+    OR?: ReportExportTaskWhereInput[]
+    NOT?: ReportExportTaskWhereInput | ReportExportTaskWhereInput[]
+    status?: StringFilter<"ReportExportTask"> | string
+    totalItems?: IntFilter<"ReportExportTask"> | number
+    processedCount?: IntFilter<"ReportExportTask"> | number
+    fileUrl?: StringNullableFilter<"ReportExportTask"> | string | null
+    filters?: JsonNullableFilter<"ReportExportTask">
+    reportIds?: JsonNullableFilter<"ReportExportTask">
+    createdAt?: DateTimeFilter<"ReportExportTask"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportExportTask"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ReportExportTask"> | Date | string | null
+  }, "id">
+
+  export type ReportExportTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
+    filters?: SortOrderInput | SortOrder
+    reportIds?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: ReportExportTaskCountOrderByAggregateInput
+    _avg?: ReportExportTaskAvgOrderByAggregateInput
+    _max?: ReportExportTaskMaxOrderByAggregateInput
+    _min?: ReportExportTaskMinOrderByAggregateInput
+    _sum?: ReportExportTaskSumOrderByAggregateInput
+  }
+
+  export type ReportExportTaskScalarWhereWithAggregatesInput = {
+    AND?: ReportExportTaskScalarWhereWithAggregatesInput | ReportExportTaskScalarWhereWithAggregatesInput[]
+    OR?: ReportExportTaskScalarWhereWithAggregatesInput[]
+    NOT?: ReportExportTaskScalarWhereWithAggregatesInput | ReportExportTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReportExportTask"> | string
+    status?: StringWithAggregatesFilter<"ReportExportTask"> | string
+    totalItems?: IntWithAggregatesFilter<"ReportExportTask"> | number
+    processedCount?: IntWithAggregatesFilter<"ReportExportTask"> | number
+    fileUrl?: StringNullableWithAggregatesFilter<"ReportExportTask"> | string | null
+    filters?: JsonNullableWithAggregatesFilter<"ReportExportTask">
+    reportIds?: JsonNullableWithAggregatesFilter<"ReportExportTask">
+    createdAt?: DateTimeWithAggregatesFilter<"ReportExportTask"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReportExportTask"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"ReportExportTask"> | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -21914,6 +23190,97 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type ReportExportTaskCreateInput = {
+    id?: string
+    status?: string
+    totalItems?: number
+    processedCount?: number
+    fileUrl?: string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportExportTaskUncheckedCreateInput = {
+    id?: string
+    status?: string
+    totalItems?: number
+    processedCount?: number
+    fileUrl?: string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportExportTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportExportTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportExportTaskCreateManyInput = {
+    id?: string
+    status?: string
+    totalItems?: number
+    processedCount?: number
+    fileUrl?: string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportExportTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportExportTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    reportIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -22906,6 +24273,51 @@ export namespace Prisma {
     totalItems?: SortOrder
     successCount?: SortOrder
     failCount?: SortOrder
+  }
+
+  export type ReportExportTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrder
+    filters?: SortOrder
+    reportIds?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ReportExportTaskAvgOrderByAggregateInput = {
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+  }
+
+  export type ReportExportTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ReportExportTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ReportExportTaskSumOrderByAggregateInput = {
+    totalItems?: SortOrder
+    processedCount?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {

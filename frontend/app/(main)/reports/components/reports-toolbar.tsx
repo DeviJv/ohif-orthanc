@@ -6,8 +6,9 @@ import {
     Search01Icon, 
     RefreshIcon, 
     Calendar01Icon, 
-    Delete01Icon,
+    FileExportIcon,
     Download01Icon,
+    Delete01Icon,
     MoreVerticalIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -39,6 +40,7 @@ interface ReportsToolbarProps {
     setDateRange: (range: DateRange | undefined) => void;
     handleBulkDelete: () => void;
     handleBulkDownload: () => void;
+    handleExportCSV: (ids?: string[]) => void;
     refresh: () => void;
 }
 
@@ -52,13 +54,38 @@ export function ReportsToolbar({
     setDateRange,
     handleBulkDelete,
     handleBulkDownload,
+    handleExportCSV,
     refresh
 }: ReportsToolbarProps) {
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    const hasSelection = selectedRows.length > 0;
+
     return (
         <Card className="mb-6 shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 backdrop-blur-sm">
             <CardHeader className="pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex flex-1 items-center gap-3">
+                    <div className="flex flex-1 items-center gap-4">
+                        {/* LEFT SIDE: Bulk Actions Dropdown (3 dots) - Exactly like Worklist */}
+                        {hasSelection && (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "size-8 p-0 shrink-0 select-none flex items-center justify-center")}>
+                                    <HugeiconsIcon icon={MoreVerticalIcon} className="size-4" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48">
+                                    <DropdownMenuLabel>Bulk Actions ({selectedRows.length})</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleBulkDownload} className="gap-2 cursor-pointer">
+                                        <HugeiconsIcon icon={Download01Icon} className="size-4 text-blue-500" />
+                                        Download ZIP
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={handleBulkDelete} className="gap-2 text-destructive focus:text-destructive cursor-pointer">
+                                        <HugeiconsIcon icon={Delete01Icon} className="size-4" />
+                                        Delete Reports
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
+
                         <div className="relative flex-1 max-w-[240px]">
                             <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                             <Input
@@ -120,57 +147,38 @@ export function ReportsToolbar({
                                 )}
                             </div>
                         </div>
+                    </div>
+
+                    {/* RIGHT SIDE: Action Buttons */}
+                    <div className="flex items-center gap-2">
+                        {/* Status label for selection */}
+                        {hasSelection && (
+                            <div className="hidden lg:flex items-center px-3 py-1 bg-primary/5 border border-primary/20 rounded-full">
+                                <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                                    {selectedRows.length} Selected
+                                </span>
+                            </div>
+                        )}
 
                         <Button 
                             variant="outline" 
                             size="sm" 
-                            className="size-9 p-0 shrink-0"
+                            className="h-9 gap-2 px-3 font-bold bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 transition-all shadow-sm"
+                            onClick={() => handleExportCSV(hasSelection ? selectedRows.map(r => r.original.id) : undefined)}
+                        >
+                            <HugeiconsIcon icon={FileExportIcon} className="size-4" />
+                            <span>Export CSV</span>
+                        </Button>
+
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-9 gap-2 px-3 font-bold"
                             onClick={refresh}
                         >
                             <HugeiconsIcon icon={RefreshIcon} className="size-4" />
+                            <span>Refresh</span>
                         </Button>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        {table.getFilteredSelectedRowModel().rows.length > 0 && (
-                            <div className="flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-md px-2 py-1">
-                                <span className="text-xs font-bold text-primary mr-2">
-                                    {table.getFilteredSelectedRowModel().rows.length} selected
-                                </span>
-                                <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-7 gap-2 bg-background"
-                                    onClick={handleBulkDownload}
-                                >
-                                    <HugeiconsIcon icon={Download01Icon} className="size-3.5" />
-                                    Download ZIP
-                                </Button>
-                                <Button 
-                                    variant="destructive" 
-                                    size="sm" 
-                                    className="h-7 gap-2"
-                                    onClick={handleBulkDelete}
-                                >
-                                    <HugeiconsIcon icon={Delete01Icon} className="size-3.5" />
-                                    Delete
-                                </Button>
-                            </div>
-                        )}
-
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "sm" }), "size-9 p-0")}>
-                                <HugeiconsIcon icon={MoreVerticalIcon} className="size-4" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={refresh} className="gap-2 cursor-pointer">
-                                    <HugeiconsIcon icon={RefreshIcon} className="size-4" />
-                                    Refresh Data
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
                     </div>
                 </div>
             </CardHeader>

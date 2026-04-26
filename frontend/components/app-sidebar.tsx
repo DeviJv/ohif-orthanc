@@ -25,6 +25,8 @@ import {
 
 export function AppSidebar({ user, ...props }: any) {
   const roleName = user?.role?.name || "";
+  const permissions = user?.role?.permissions?.map((p: any) => p.name) || [];
+  const hasManageAll = permissions.includes('manage-all');
 
   const navMain = [
     {
@@ -38,23 +40,32 @@ export function AppSidebar({ user, ...props }: any) {
         {
           title: "Dashboard",
           url: "/",
+          hidden: !permissions.includes('view-dashboard') && !hasManageAll
         },
         {
           title: "Device Connectivity",
           url: "/devices",
+          hidden: !permissions.includes('manage-settings') && !hasManageAll
         },
         {
           title: "Study Worklist",
           url: "/worklist",
+          hidden: !permissions.includes('view-worklist') && !hasManageAll
+        },
+        {
+          title: "Measurement Reports",
+          url: "/reports",
+          hidden: !permissions.includes('view-reports') && !hasManageAll
         },
         {
           title: "SatuSehat Sync",
           url: "/satusehat",
+          hidden: !permissions.includes('sync-satusehat') && !hasManageAll
         },
-      ],
+      ].filter(item => !item.hidden),
     },
     // Only show for ROOT and SUPER-ADMIN
-    ...((roleName === 'ROOT' || roleName === 'SUPER-ADMIN') ? [{
+    ...((roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll) ? [{
         title: "User & Roles",
         url: "/admin/users",
         icon: (
@@ -99,7 +110,7 @@ export function AppSidebar({ user, ...props }: any) {
         <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />
       ),
       // Hide settings if not ROOT/SUPER-ADMIN
-      hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN'),
+      hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll),
       items: [
         {
           title: "Pengaturan",

@@ -135,7 +135,9 @@ services:
       - POSTGRES_PASSWORD=${ORTHANC_PASSWORD}
       - SCHEDULE=0 0 * * 0
       - BACKUP_KEEP_WEEKS=4
-      - BACKUP_SUFFIX=_orthanc
+      - BACKUP_SUFFIX=.sql
+      - BACKUP_ON_START=TRUE
+      - POSTGRES_EXTRA_OPTS=--clean --if-exists
     volumes:
       - ./backups:/backups
     networks:
@@ -156,13 +158,45 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - SCHEDULE=0 0 * * 0
       - BACKUP_KEEP_WEEKS=4
-      - BACKUP_SUFFIX=_app
+      - BACKUP_SUFFIX=.sql
+      - BACKUP_ON_START=TRUE
+      - POSTGRES_EXTRA_OPTS=--clean --if-exists
     volumes:
       - ./backups:/backups
     networks:
       - pacs
     depends_on:
       - app-db
+
+  # Auto-Cleaner for backups (Removes \restrict and gzips automatically)
+  backup-cleaner:
+    image: alpine
+    container_name: backup-cleaner
+    restart: always
+    volumes:
+      - ./backups:/backups
+    command: >
+      sh -c "
+      apk add --no-cache sed gzip &&
+      echo 'Sidecar cleaner started...' &&
+      while true; do
+        find /backups -name '*.sql' -not -name '*.gz' -type f | while read f; do
+          echo \"Cleaning and zipping $$f...\" &&
+          sed -i '5d' \"$$f\" &&
+          gzip -f \"$$f\" &&
+          DIR=$$(dirname \"$$f\") &&
+          BASE=$$(basename \"$$f\" .sql) &&
+          if echo \"$$BASE\" | grep -q \"orthanc\"; then
+            if [ -L \"$$DIR/orthanc-latest.sql\" ]; then ln -sf \"$$BASE.sql.gz\" \"$$DIR/orthanc-latest.sql.gz\" && rm \"$$DIR/orthanc-latest.sql\"; fi
+          fi &&
+          if echo \"$$BASE\" | grep -q \"pacsweb\"; then
+            if [ -L \"$$DIR/pacsweb-latest.sql\" ]; then ln -sf \"$$BASE.sql.gz\" \"$$DIR/pacsweb-latest.sql.gz\" && rm \"$$DIR/pacsweb-latest.sql\"; fi
+          fi
+        done;
+        sleep 10;
+      done"
+    networks:
+      - pacs
 
   # AI Engine for medical image analysis
   ai-engine:

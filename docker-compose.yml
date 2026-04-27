@@ -33,6 +33,11 @@ services:
       - ./app_postgres_data:/var/lib/postgresql/data
     networks:
       - pacs
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${DB_USER} -d $${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Orthanc DICOM Server (renamed from 'pacs' to 'backend')
   backend:
@@ -140,10 +145,8 @@ services:
       - ./scripts/auto-backup.sh:/auto-backup.sh
     command: /auto-backup.sh
     depends_on:
-      backend-db:
-        condition: service_healthy
-      app-db:
-        condition: service_healthy
+      - backend-db
+      - app-db
     networks:
       - pacs
 

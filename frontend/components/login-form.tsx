@@ -93,7 +93,7 @@ export function LoginForm({
                   {error}
                 </div>
               )}
-              <Field>
+              {/* <Field>
                 <div className="flex gap-4">
                   <Button variant="outline" type="button" className="flex-1" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -114,10 +114,10 @@ export function LoginForm({
                     Google
                   </Button>
                 </div>
-              </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs">
+              </Field> */}
+              {/* <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs">
                 Or continue with
-              </FieldSeparator>
+              </FieldSeparator> */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
@@ -130,7 +130,7 @@ export function LoginForm({
                 />
               </Field>
               <Field>
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <a
                     href="#"
@@ -138,7 +138,7 @@ export function LoginForm({
                   >
                     Forgot your password?
                   </a>
-                </div>
+                </div> */}
                 <Input
                   id="password"
                   name="password"

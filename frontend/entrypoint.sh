@@ -1,20 +1,14 @@
 #!/bin/sh
 
-# Automated database sync on startup
-echo "Syncing database with Prisma schema..."
-npx prisma db push --schema=prisma/schema.prisma --accept-data-loss
+echo "⏳ Menyiapkan Database..."
 
-if [ $? -eq 0 ]; then
-  echo "Database is in sync. Seeding data..."
-  npx prisma db seed
-  echo "Seeding completed. Starting the application..."
-else
-  echo "Database sync failed. Attempting to start the application anyway..."
-fi
+# Memastikan kita menggunakan versi prisma yang sama dengan package.json
+echo "➜ Sinkronisasi Schema Database..."
+# Menggunakan migrate deploy untuk keamanan production (tidak menghapus data)
+npx prisma@6.19.2 migrate deploy --schema=prisma/schema.prisma
 
-# Start the custom CRON worker daemon in the background
-echo "Starting Scheduled CRON worker..."
-node cron-worker.js &
+echo "➜ Menjalankan Seed Database (RBAC System)..."
+node prisma/seed.js
 
-# Execute the main container command (pnpm start / next start)
+echo "✅ Database siap! Memulai Aplikasi Quantum Web..."
 exec "$@"

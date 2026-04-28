@@ -1,31 +1,21 @@
 # Stage 1: Install dependencies
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+FROM node:20-slim AS deps
 WORKDIR /app
-
-# Install pnpm
-RUN npm install -g pnpm
-
-# Install dependencies based on the preferred package manager
+RUN apt-get update && apt-get install -y openssl && npm install -g pnpm
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
 # Stage 2: Rebuild the source code
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
-
-# Install pnpm again for builder stage
-RUN npm install -g pnpm
-
+RUN apt-get update && apt-get install -y openssl && npm install -g pnpm
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate --schema=prisma/schema.prisma
+# Generate Prisma Client menggunakan versi yang sesuai dengan package.json (6.19.2)
+RUN npx prisma@6.19.2 generate --schema=prisma/schema.prisma
 
-# Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
-
 RUN pnpm run build
 
 # Stage 3: Production runner
@@ -37,25 +27,31 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3001
 ENV HOSTNAME="0.0.0.0"
 
-# Install Docker CLI (Needed for dicom-router control)
-RUN apk add --no-cache docker-cli docker-cli-compose
+# Install dependencies yang dibutuhkan Prisma & Docker
+RUN apk add --no-cache docker-cli docker-cli-compose openssl libc6-compat
+# Install npm dependencies yang dibutuhkan oleh seed.js tapi tidak ter-copy di standalone
+RUN npm install bcryptjs
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+RUN mkdir .next && chown nextjs:nodejs .next
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Leverage standalone output
+# Ambil hasil standalone
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
+# Pastikan folder generated prisma ter-copy untuk seed.js
+COPY --from=builder /app/app/generated/prisma ./app/generated/prisma
+
+# Setup Entrypoint untuk Automigrate & Autoseed
+COPY --chown=nextjs:nodejs entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
 
 USER nextjs
-
 EXPOSE 3001
 
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["node", "server.js"]

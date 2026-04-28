@@ -77,7 +77,6 @@ async function main() {
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
     update: { 
-      password: hashedPassword,
       roleId: rootRole.id
     },
     create: {
@@ -112,7 +111,7 @@ async function main() {
 
   await prisma.appConfig.upsert({
     where: { key: 'SATUSEHAT_ENABLED' },
-    update: { value: 'true' },
+    update: {},
     create: { key: 'SATUSEHAT_ENABLED', value: 'true' },
   });
 

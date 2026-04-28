@@ -88,23 +88,37 @@ async function main() {
   });
   console.log('✅ Root user ready:', admin.email);
 
-  // 4. Seeding SatuSehat settings as before...
+  // 4. Seeding SatuSehat settings
   console.log('🌱 Seeding SatuSehat settings...');
   const STG_BASE = 'https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1';
+  const PRD_BASE = 'https://api-satusehat.kemkes.go.id/fhir-r4/v1';
+  
   await prisma.satuSehatSetting.upsert({
     where: { id: 1 },
     update: {}, 
     create: {
       id: 1,
       environment: 'staging',
+      
+      // Staging Config
       stgOrganizationId: 'bf3d3d7d-620a-406a-b790-80d501a1f821',
       stgClientId: '',
       stgClientSecret: '',
       stgAuthUrl: 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
       stgBaseUrl: STG_BASE,
+
+      // Production Config
+      prdOrganizationId: '',
+      prdClientId: '',
+      prdClientSecret: '',
+      prdAuthUrl: 'https://api-satusehat.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
+      prdBaseUrl: PRD_BASE,
+
+      // Active Config (Default to Staging)
       organizationId: 'bf3d3d7d-620a-406a-b790-80d501a1f821',
       authUrl: 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1/accesstoken?grant_type=client_credentials',
       baseUrl: STG_BASE,
+      
       isActive: true,
     },
   });

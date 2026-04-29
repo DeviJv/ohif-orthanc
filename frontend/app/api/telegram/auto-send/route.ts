@@ -130,6 +130,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true, message: "SSE Event emitted, AUTO-AI task triggered if applicable" });
     }
 
+    // --- TELEGRAM NOTIFICATION DISABLED PER USER REQUEST ---
+    /*
     // 1. Get credentials (DB or Env)
     const { botToken: TELEGRAM_BOT_TOKEN, chatId: TELEGRAM_CHAT_ID } = await getTelegramCredentials();
 
@@ -241,10 +243,10 @@ export async function POST(req: NextRequest) {
             const errorData = await telegramResponse.json();
             throw new Error(`Telegram API error: ${errorData.description || telegramResponse.statusText}`);
         }
-
-        return NextResponse.json({ success: true, message: "Automated Telegram sent" });
     } catch (error: any) {
         console.error("Telegram Auto-Send Error:", error);
-        return NextResponse.json({ error: error.message || "Failed to auto-send to Telegram" }, { status: 500 });
     }
+    */
+
+    return NextResponse.json({ success: true, message: "SSE Event emitted, AUTO-AI task triggered, Telegram DISABLED" });
 }

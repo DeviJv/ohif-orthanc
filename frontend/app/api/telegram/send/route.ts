@@ -20,6 +20,34 @@ async function getTelegramCredentials() {
     };
 }
 
+function calculateAgeString(birthDateStr: string | undefined) {
+    if (!birthDateStr || birthDateStr.length !== 8) return "Unknown";
+    
+    const year = parseInt(birthDateStr.substring(0, 4), 10);
+    const month = parseInt(birthDateStr.substring(4, 6), 10) - 1;
+    const day = parseInt(birthDateStr.substring(6, 8), 10);
+    
+    const birthDate = new Date(year, month, day);
+    const today = new Date();
+    
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+    
+    if (days < 0) {
+        months--;
+        const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += lastMonth.getDate();
+    }
+    
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+    
+    return `${years} thn, ${months} bln, ${days} hr`;
+}
+
 export async function POST(req: NextRequest) {
     const session = await auth();
     if (!session) {
@@ -39,7 +67,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Study ID is required" }, { status: 400 });
         }
 
-        // 1. Get Study details to find the first instance
+        // 1. Get Study details
         const studyResponse = await fetch(`${ORTHANC_URL}/studies/${studyId}`, {
             headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
         });
@@ -49,17 +77,18 @@ export async function POST(req: NextRequest) {
         }
 
         const studyData = await studyResponse.json();
-        const seriesIds = studyData.Series;
+        const seriesIds = studyData.Series || [];
 
-        if (!seriesIds || seriesIds.length === 0) {
+        if (seriesIds.length === 0) {
             throw new Error("No series found in this study");
         }
 
-        // 1. Find the first valid IMAGE instance (Skip SR, SC, PR)
-        let selectedInstanceId: string | null = null;
-        let selectedModality: string | null = null;
+        // 2. Collect one valid IMAGE instance from each series (up to 10 for Telegram Album)
+        const imageInstances: { instanceId: string; modality: string }[] = [];
 
         for (const sId of seriesIds) {
+            if (imageInstances.length >= 10) break; // Telegram limit
+
             const sRes = await fetch(`${ORTHANC_URL}/series/${sId}`, {
                 headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
             });
@@ -67,78 +96,121 @@ export async function POST(req: NextRequest) {
                 const sData = await sRes.json();
                 const mod = sData.MainDicomTags?.Modality?.trim().toUpperCase();
                 
-                console.log(`[LOG-MANUAL-V2] Checking series ${sId} modality: ${mod}`);
-
                 // Skip non-image modalities
                 if (!mod || ["SR", "SC", "PR"].includes(mod)) {
-                    console.log(`[LOG-MANUAL-V2] Skipping non-image series ${sId} (${mod})`);
                     continue;
                 }
 
                 if (sData.Instances && sData.Instances.length > 0) {
-                    selectedInstanceId = sData.Instances[0];
-                    selectedModality = mod;
-                    console.log(`[LOG-MANUAL-V2] SUCCESS: Selected ${selectedInstanceId} (Modality ${mod})`);
-                    break;
+                    imageInstances.push({
+                        instanceId: sData.Instances[0],
+                        modality: mod
+                    });
                 }
             }
         }
 
-        // Fallback if no images found
-        if (!selectedInstanceId) {
-            console.log("[LOG-MANUAL-V2] No image modality found. Picking first instance as fallback.");
-            selectedInstanceId = (await (await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
+        // Fallback if no image modality found: take first instance of first series
+        if (imageInstances.length === 0) {
+            const sRes = await fetch(`${ORTHANC_URL}/series/${seriesIds[0]}`, {
                 headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-            })).json())?.Instances?.[0];
+            });
+            if (sRes.ok) {
+                const sData = await sRes.json();
+                if (sData.Instances && sData.Instances.length > 0) {
+                    imageInstances.push({
+                        instanceId: sData.Instances[0],
+                        modality: sData.MainDicomTags?.Modality || "Unknown"
+                    });
+                }
+            }
         }
 
-        if (!selectedInstanceId) {
+        if (imageInstances.length === 0) {
             throw new Error("No instances found in this study");
         }
 
-        // 3. Get preview image of the selected instance
-        const previewUrl = `${ORTHANC_URL}/instances/${selectedInstanceId}/preview`;
-        const previewResponse = await fetch(previewUrl, {
-            headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
-        });
-
-        if (!previewResponse.ok) {
-            throw new Error(`Failed to fetch instance preview: ${previewResponse.status} for ${selectedInstanceId}`);
-        }
-
-        const imageBuffer = await previewResponse.arrayBuffer();
-
-        // 4. Send to Telegram
+        // 3. Prepare Caption
         const studyUID = studyData.MainDicomTags?.StudyInstanceUID;
         const publicUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost";
         const viewerUrl = `${publicUrl}/worklist?viewer=${studyUID}`;
         const exportUrl = `${publicUrl}/worklist?export=${studyUID}`;
 
-        const formData = new FormData();
-        formData.append("chat_id", TELEGRAM_CHAT_ID || "");
-        
-        // Create a Blob from the ArrayBuffer
-        const blob = new Blob([imageBuffer], { type: "image/jpeg" });
-        formData.append("photo", blob, "preview.jpg");
-        
-        let caption = `PACS Preview\nPatient: ${studyData.PatientMainDicomTags?.PatientName || "Unknown"}\nID: ${studyData.PatientMainDicomTags?.PatientID || "Unknown"}\nStudy: ${studyData.MainDicomTags?.StudyDescription || "No Description"}\nSOAP Dokter: -`;
+        const birthDate = studyData.PatientMainDicomTags?.PatientBirthDate;
+        const ageStr = calculateAgeString(birthDate);
+
+        let caption = `PACS Preview\nPatient: ${studyData.PatientMainDicomTags?.PatientName || "Unknown"}\nID: ${studyData.PatientMainDicomTags?.PatientID || "Unknown"}\nUmur: ${ageStr}\nStudy: ${studyData.MainDicomTags?.StudyDescription || "No Description"}`;
         
         if (studyUID) {
             caption += `\n\n🔗 View in OHIF:\n${viewerUrl}`;
             caption += `\n\n📄 Print Kesimpulan:\n${exportUrl}`;
         }
 
-        formData.append("caption", caption);
+        // 4. Send to Telegram
+        if (imageInstances.length > 1) {
+            // Send Media Group (Album)
+            const formData = new FormData();
+            formData.append("chat_id", TELEGRAM_CHAT_ID || "");
+            
+            const media = [];
+            for (let i = 0; i < imageInstances.length; i++) {
+                const previewRes = await fetch(`${ORTHANC_URL}/instances/${imageInstances[i].instanceId}/preview`, {
+                    headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+                });
+                if (!previewRes.ok) continue;
 
-        const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-        const telegramResponse = await fetch(telegramUrl, {
-            method: "POST",
-            body: formData
-        });
+                const buffer = await previewRes.arrayBuffer();
+                const blob = new Blob([buffer], { type: "image/jpeg" });
+                const partName = `photo${i}`;
+                formData.append(partName, blob, `${partName}.jpg`);
+                
+                media.push({
+                    type: "photo",
+                    media: `attach://${partName}`,
+                    caption: i === 0 ? caption : undefined // Caption only on the first photo
+                });
+            }
 
-        if (!telegramResponse.ok) {
-            const errorData = await telegramResponse.json();
-            throw new Error(`Telegram API error: ${errorData.description || telegramResponse.statusText}`);
+            formData.append("media", JSON.stringify(media));
+
+            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMediaGroup`;
+            const telegramResponse = await fetch(telegramUrl, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!telegramResponse.ok) {
+                const errorData = await telegramResponse.json();
+                throw new Error(`Telegram MediaGroup error: ${errorData.description || telegramResponse.statusText}`);
+            }
+        } else {
+            // Send Single Photo
+            const selectedInstanceId = imageInstances[0].instanceId;
+            const previewResponse = await fetch(`${ORTHANC_URL}/instances/${selectedInstanceId}/preview`, {
+                headers: { "Authorization": `Basic ${ORTHANC_AUTH}` }
+            });
+
+            if (!previewResponse.ok) {
+                throw new Error(`Failed to fetch instance preview: ${previewResponse.status}`);
+            }
+
+            const imageBuffer = await previewResponse.arrayBuffer();
+            const formData = new FormData();
+            formData.append("chat_id", TELEGRAM_CHAT_ID || "");
+            const blob = new Blob([imageBuffer], { type: "image/jpeg" });
+            formData.append("photo", blob, "preview.jpg");
+            formData.append("caption", caption);
+
+            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+            const telegramResponse = await fetch(telegramUrl, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!telegramResponse.ok) {
+                const errorData = await telegramResponse.json();
+                throw new Error(`Telegram Photo error: ${errorData.description || telegramResponse.statusText}`);
+            }
         }
 
         return NextResponse.json({ success: true });

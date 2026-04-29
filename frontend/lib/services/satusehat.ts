@@ -1173,8 +1173,8 @@ export class SatuSehatService {
      */
     static async submitImagingStudy(params: {
         studyInstanceUid: string;
-        patientSsId: string;
-        patientName: string;
+        patientSsId?: string;
+        patientName?: string;
         modality: string | string[];
         studyDate: string; 
         accessionNumber?: string;

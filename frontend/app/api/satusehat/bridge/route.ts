@@ -50,15 +50,7 @@ export async function POST(req: NextRequest) {
             }
         }
         
-        if (!nik) {
-            const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID || studyId;
-            await db.satuSehatIntegration.upsert({
-                where: { accessionNumber: lookupKey },
-                update: { status: "FAILED", error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual.", studyInstanceUid: tags.StudyInstanceUID },
-                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }
-            });
-            return NextResponse.json({ error: "NIK tidak ditemukan. Silakan masukkan NIK secara manual." }, { status: 400 });
-        }
+        // Remove old NIK mandatory check here, it is now handled later after ACSN check.
 
         // Ambil pengaturan
         const dbSetting = await db.satuSehatSetting.findFirst({ where: { id: 1 } });
@@ -67,6 +59,7 @@ export async function POST(req: NextRequest) {
 
         console.log(`[SATUSEHAT BRIDGE] Checking ACSN: ${acsnNumber} for Study: ${studyId}`);
 
+        // 2. Validasi Accession Number (WAJIB ADA untuk Fase 2)
         if (config && acsnNumber) {
             const isValidAcsn = await SatuSehatService.checkAccessionNumberValid(acsnNumber, config);
             if (!isValidAcsn) {
@@ -74,8 +67,8 @@ export async function POST(req: NextRequest) {
                 const lookupKey = acsnNumber || tags.StudyInstanceUID || studyId;
                 await db.satuSehatIntegration.upsert({
                     where: { accessionNumber: lookupKey },
-                    update: { status: "FAILED", error: "ops no acsn belum terdaftar", patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
-                    create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "ops no acsn belum terdaftar", patientNik: nik }
+                    update: { status: "FAILED", error: "ops no acsn belum terdaftar", patientNik: nik || "N/A", studyInstanceUid: tags.StudyInstanceUID },
+                    create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "ops no acsn belum terdaftar", patientNik: nik || "N/A" }
                 });
                 return NextResponse.json({ error: "ops no acsn belum terdaftar" }, { status: 400 });
             }
@@ -84,10 +77,17 @@ export async function POST(req: NextRequest) {
             const lookupKey = tags.StudyInstanceUID || studyId;
             await db.satuSehatIntegration.upsert({
                 where: { accessionNumber: lookupKey },
-                update: { status: "FAILED", error: "Accession Number tidak ditemukan di metadata DICOM.", patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
-                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "Accession Number tidak ditemukan di metadata DICOM.", patientNik: nik }
+                update: { status: "FAILED", error: "Accession Number tidak ditemukan di metadata DICOM.", patientNik: nik || "N/A", studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: "Accession Number tidak ditemukan di metadata DICOM.", patientNik: nik || "N/A" }
             });
             return NextResponse.json({ error: "Accession Number tidak ditemukan di metadata DICOM." }, { status: 400 });
+        }
+
+        // 3. Validasi NIK (Hanya jika kita butuh mencari pasien baru, tapi di Fase 2 createRadiologyResultBundle akan mencari via ACSN)
+        // Namun kita tetap butuh NIK untuk logging/fallback jika diperlukan. 
+        // Jika ACSN valid, NIK menjadi opsional (akan dicari otomatis dari ServiceRequest di SS).
+        if (!nik && !acsnNumber) {
+             return NextResponse.json({ error: "NIK tidak ditemukan dan Accession Number kosong." }, { status: 400 });
         }
 
         if (!sendImageStudyFromWeb) {
@@ -107,8 +107,8 @@ export async function POST(req: NextRequest) {
 
             await db.satuSehatIntegration.upsert({
                 where: { accessionNumber: lookupKey },
-                update: { status: "SUCCESS", satusehatId: "forwarded-to-router", error: null, patientNik: nik, syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
-                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: "forwarded-to-router", patientNik: nik, syncedAt: new Date() }
+                update: { status: "SUCCESS", satusehatId: "forwarded-to-router", error: null, patientNik: nik || "N/A", syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: "forwarded-to-router", patientNik: nik || "N/A", syncedAt: new Date() }
             });
 
             return NextResponse.json({ 
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        // 2. Ambil data semua series yang ada
+        // 4. Ambil data semua series yang ada
         const seriesIds = study.Series as string[];
         let modality = "OT"; // Default primary modality
         let instanceCount = study.Instances?.length || 0;
@@ -142,16 +142,18 @@ export async function POST(req: NextRequest) {
                 });
             }
 
-            // 3. Cari ID Pasien di Satu Sehat
+            // 5. Cari ID Pasien di Satu Sehat (Hanya jika kita mau kirim via NIK, tapi Fase 2 bisa otomatis)
             let patientSsId: string | null = null;
-            try {
-                patientSsId = await SatuSehatService.getPatientIdByNik(nik);
-            } catch (e: any) {
-                return NextResponse.json({ error: `Gagal mencari pasien di Satu Sehat: ${e.message}` }, { status: 500 });
+            if (nik) {
+                try {
+                    patientSsId = await SatuSehatService.getPatientIdByNik(nik);
+                } catch (e: any) {
+                    console.warn(`[SATUSEHAT BRIDGE] Gagal mencari pasien via NIK (${nik}): ${e.message}. Akan mencoba via ACSN.`);
+                }
             }
 
-            if (!patientSsId) {
-                return NextResponse.json({ error: `Pasien dengan NIK ${nik} tidak ditemukan di Satu Sehat` }, { status: 404 });
+            if (!patientSsId && !acsnNumber) {
+                return NextResponse.json({ error: `Pasien dengan NIK ${nik || "N/A"} tidak ditemukan di Satu Sehat dan No ACSN kosong.` }, { status: 404 });
             }
 
             // 4. Kirim ke Satu Sehat
@@ -159,7 +161,7 @@ export async function POST(req: NextRequest) {
             try {
                 result = await SatuSehatService.submitImagingStudy({
                     studyInstanceUid: tags.StudyInstanceUID,
-                    patientSsId: patientSsId,
+                    patientSsId: patientSsId || undefined,
                     patientName: patientTags?.PatientName || tags?.PatientName || "Unknown",
                     modality: uniqueModalities,
                     studyDate: tags.StudyDate,
@@ -174,8 +176,8 @@ export async function POST(req: NextRequest) {
                 const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
                 await db.satuSehatIntegration.upsert({
                     where: { accessionNumber: lookupKey },
-                    update: { status: "FAILED", error: e.message, patientNik: nik, studyInstanceUid: tags.StudyInstanceUID },
-                    create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: e.message, patientNik: nik }
+                    update: { status: "FAILED", error: e.message, patientNik: nik || "N/A", studyInstanceUid: tags.StudyInstanceUID },
+                    create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "FAILED", error: e.message, patientNik: nik || "N/A" }
                 });
                 
                 return NextResponse.json({ 
@@ -189,8 +191,8 @@ export async function POST(req: NextRequest) {
             const lookupKey = tags.AccessionNumber || tags.StudyInstanceUID;
             await db.satuSehatIntegration.upsert({
                 where: { accessionNumber: lookupKey },
-                update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik, syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
-                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik, syncedAt: new Date() }
+                update: { status: "SUCCESS", satusehatId: ssId, error: null, patientNik: nik || "N/A", syncedAt: new Date(), studyInstanceUid: tags.StudyInstanceUID },
+                create: { accessionNumber: lookupKey, studyInstanceUid: tags.StudyInstanceUID, status: "SUCCESS", satusehatId: ssId, patientNik: nik || "N/A", syncedAt: new Date() }
             });
 
             // 6. TRIGER PENGIRIMAN FISIK DICOM KE QTM-ROUTER

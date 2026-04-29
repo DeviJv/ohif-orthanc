@@ -64,7 +64,7 @@ export const orthancApi = {
         // Asynchronous: true → Orthanc returns a job ID instantly, no waiting
         const payload: any = { 
             Force: true, 
-            KeepSource: true, // MUST be true when keeping all UIDs to allow in-place overwrite
+            KeepSource: false, // Set to false to replace the original instances with the modified ones
             Asynchronous: true, 
             Keep: ["StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"] 
         };

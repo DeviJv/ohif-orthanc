@@ -60,7 +60,7 @@
   "DicomAlwaysAllowMove": false,
   "DicomCheckModalityHost": false,
   "DicomModalities": {
-    "QTM-ROUTER": [ "QTM-ROUTER", "dicom-router", 11112 ]
+    "QTM-ROUTER": [ "QTM", "dicom-router", 11112 ]
   },
   "DicomModalitiesInDatabase": false,
   "DicomEchoChecksFind": false,

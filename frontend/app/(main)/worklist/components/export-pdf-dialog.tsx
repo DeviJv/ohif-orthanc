@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Study, Series } from "../types";
-import { format } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { FileExportIcon } from "@hugeicons/core-free-icons";
+import { FileExportIcon, Calendar01Icon } from "@hugeicons/core-free-icons";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -25,6 +25,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { Image01Icon, ArrowDown01Icon, RefreshIcon } from "@hugeicons/core-free-icons";
 import { getDoctors, upsertRadiologyReport, getRadiologyReport } from "@/lib/actions/report-actions";
 
@@ -59,6 +61,11 @@ function calcAge(birthDateStr?: string): string {
     const m = now.getMonth() - birth.getMonth();
     if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
     return String(age);
+}
+
+function parseReportDate(dateStr: string): Date {
+    const parsed = parse(dateStr, "d MMMM yyyy", new Date(), { locale: idLocale });
+    return isValid(parsed) ? parsed : new Date();
 }
 
 // Optimized with React.memo to prevent lag, but keeping ORIGINAL layout
@@ -107,15 +114,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [formData, setFormData] = useState({
         age: "",
         gender: patientSex === "M" ? "L" : patientSex === "F" ? "P" : "",
-        address: "",
-        sender: studyMainTags?.ReferringPhysicianName || "",
-        diagnosis: "",
-        soap: "",
-        photoNum: "01",
         examType: studyDesc || `Pemeriksaan ${modalityName}`,
         findings: "",
-        conclusion: "",
-        recommendation: "",
         doctor: "",
         doctorId: "",
         date: format(new Date(), "d MMMM yyyy", { locale: idLocale }),
@@ -135,7 +135,6 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 ...prev,
                 age: calcAge(birthDate),
                 gender: patientSex === "M" ? "L" : patientSex === "F" ? "P" : "",
-                sender: studyMainTags?.ReferringPhysicianName || "",
                 examType: studyDesc || `Pemeriksaan ${modalityName}`,
                 date: format(new Date(), "d MMMM yyyy", { locale: idLocale }),
             }));
@@ -146,8 +145,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 fetch(`/api/ai/results?studyInstanceUid=${studyUID}`)
                     .then(r => r.ok ? r.json() : null)
                     .then(aiData => {
-                        if (aiData && aiData.conclusion && aiData.conclusion !== "PROCESSING") {
-                            // Format findings dictionary into a nice multiline string
+                        if (aiData) {
                             let aiFindingsText = "";
                             if (aiData.findings && typeof aiData.findings === 'object') {
                                 aiFindingsText = Object.entries(aiData.findings)
@@ -162,7 +160,6 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                             setFormData(prev => ({
                                 ...prev,
                                 findings: aiFindingsText || prev.findings,
-                                conclusion: aiData.conclusion || prev.conclusion
                             }));
                             
                             toast.success("Hasil AI otomatis dimuat ke dalam form");
@@ -207,15 +204,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                             ...prev,
                             age: report.age || prev.age,
                             gender: report.patientSex === "L" ? "L" : report.patientSex === "P" ? "P" : prev.gender,
-                            address: report.address || prev.address,
-                            sender: report.sender || prev.sender,
-                            diagnosis: report.diagnosis || prev.diagnosis,
-                            soap: report.soap || prev.soap,
-                            photoNum: report.photoNum || prev.photoNum,
                             examType: report.examType || prev.examType,
                             findings: report.findings || prev.findings,
-                            conclusion: report.conclusion || prev.conclusion,
-                            recommendation: report.recommendation || prev.recommendation,
                             doctor: report.doctor?.name || report.doctorName || prev.doctor,
                             doctorId: report.doctorId || prev.doctorId,
                             date: report.reportDate || prev.date,
@@ -309,13 +299,19 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
 
     const handleGenerate = async () => {
         // Basic validation
-        const requiredFields = {
+        // Check if doctor is selected and matches search value
+        const selectedDoc = dbDoctors?.find(d => d.id === formData.doctorId);
+        if (!selectedDoc || searchValue !== selectedDoc.name) {
+            toast.error("Harap pilih dokter dari daftar yang tersedia");
+            return;
+        }
+
+        const requiredFields: any = {
             age: "Umur",
             gender: "L/P",
             examType: "Jenis Pemeriksaan",
-            findings: "Temuan Radiologi",
-            conclusion: "Kesimpulan",
-            doctor: "Dokter Penanggung Jawab"
+            findings: "Exercise",
+            doctorId: "Dokter Penanggung Jawab"
         };
         
         for (const [key, label] of Object.entries(requiredFields)) {
@@ -336,15 +332,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 patientName: patientName,
                 patientSex: formData.gender,
                 age: formData.age,
-                address: formData.address,
-                sender: formData.sender,
-                diagnosis: formData.diagnosis,
-                soap: formData.soap,
-                photoNum: formData.photoNum,
                 examType: formData.examType,
                 findings: formData.findings,
-                conclusion: formData.conclusion,
-                recommendation: formData.recommendation,
                 measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
                 selectedSeries: selectedSeriesIds,
                 doctorId: formData.doctorId,
@@ -420,9 +409,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
 
             currentY = drawRow("Nama", patientName, "Umur", `${formData.age} Thn (${formData.gender})`, currentY);
             currentY = drawRow("No. RM", patientID, "No. Acc", accessionNumber || "-", currentY);
-            currentY = drawRow("Tgl Foto", studyDateFormatted, "No. Foto", formData.photoNum, currentY);
-            currentY = drawRow("Pengirim", formData.sender || "-", "Diagnosa", formData.diagnosis || "-", currentY);
-            currentY = drawRow("Alamat", formData.address || "-", "Unit", modalityName, currentY);
+            currentY = drawRow("Tgl Foto", studyDateFormatted, "Unit", modalityName, currentY);
             
             // Body Table: Exam, Findings, Conclusion, Recommendation
             currentY += 10;
@@ -444,12 +431,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             };
 
             currentY = drawSection("Jenis", formData.examType, currentY);
-            if (formData.soap && formData.soap.trim() !== "") {
-                currentY = drawSection("SOAP", formData.soap, currentY);
-            }
-            currentY = drawSection("Temuan", formData.findings, currentY);
-            currentY = drawSection("Kesimpulan", formData.conclusion, currentY);
-            currentY = drawSection("Anjuran", formData.recommendation || "-", currentY);
+            currentY = drawSection("Exercise", formData.findings, currentY);
             
             // Signature Section
             currentY += 20;
@@ -631,42 +613,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                             <Input id="e-gender" value={formData.gender} onChange={set("gender")} placeholder="L" className="h-9 text-sm bg-background border" />
                                         </div>
                                     </div>
-                                    <div className="space-y-2 mt-4">
-                                        <Label htmlFor="e-address" className="text-xs font-semibold text-muted-foreground uppercase">Alamat Pasien <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                        <Textarea id="e-address" value={formData.address} onChange={set("address")} placeholder="Alamat lengkap..." className="h-20 text-sm resize-none bg-background border" />
-                                    </div>
                                 </div>
 
-                                {/* Examination Context */}
-                                <div className="bg-card border rounded-xl p-5 shadow-sm space-y-5">
-                                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Konteks Medis</h3>
-                                    
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="e-photo" className="text-xs font-semibold text-muted-foreground uppercase">No. Foto <span className="text-destructive">*</span></Label>
-                                            <Input id="e-photo" value={formData.photoNum} onChange={set("photoNum")} placeholder="01" className="h-9 text-sm bg-background border" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-xs font-semibold text-muted-foreground uppercase">Acc Number</Label>
-                                            <Input value={accessionNumber} readOnly className="h-9 text-sm bg-muted/30 border text-muted-foreground cursor-not-allowed" />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="e-sender" className="text-xs font-semibold text-muted-foreground uppercase">Dokter Pengirim <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                        <Input id="e-sender" value={formData.sender} onChange={set("sender")} placeholder="dr. Prodia..." className="h-9 text-sm bg-background border" />
-                                    </div>
-                                    
-                                    <div className="space-y-2">
-                                        <Label htmlFor="e-diagnosis" className="text-xs font-semibold text-muted-foreground uppercase">Diagnosa Klinis <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                        <Input id="e-diagnosis" value={formData.diagnosis} onChange={set("diagnosis")} placeholder="Medical Check Up" className="h-9 text-sm bg-background border" />
-                                    </div>
-                                    
-                                    <div className="space-y-2">
-                                        <Label htmlFor="e-soap" className="text-xs font-semibold text-muted-foreground uppercase">SOAP Dokter <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                        <Textarea id="e-soap" value={formData.soap} onChange={set("soap")} placeholder="S: Keluhan pasien...&#10;O: TD 120/80...&#10;A: Observasi...&#10;P: Tindakan lanjutan..." className="h-24 text-sm resize-y bg-background border" />
-                                    </div>
-                                </div>
                             </div>
                             
                             {/* Right Column: Medical Report Content */}
@@ -687,7 +635,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                     
                                     <div className="p-6 flex-1 flex flex-col gap-6 bg-card">
                                         <div className="space-y-3 flex-1 flex flex-col">
-                                            <Label htmlFor="e-findings" className="font-bold text-base text-foreground">Temuan Radiologi <span className="text-destructive">*</span></Label>
+                                            <Label htmlFor="e-findings" className="font-bold text-base text-foreground">Exercise <span className="text-destructive">*</span></Label>
                                             <Textarea
                                                 id="e-findings"
                                                 value={formData.findings}
@@ -698,27 +646,6 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-6">
-                                            <div className="space-y-3">
-                                                <Label htmlFor="e-conclusion" className="font-bold text-base text-foreground">Kesimpulan <span className="text-destructive">*</span></Label>
-                                                <Textarea 
-                                                    id="e-conclusion" 
-                                                    value={formData.conclusion} 
-                                                    onChange={set("conclusion")} 
-                                                    placeholder="Jantung: Normal, Paru-paru: Bronchitis" 
-                                                    className="min-h-[80px] resize-y text-sm bg-background border"
-                                                />
-                                            </div>
-
-                                            <div className="space-y-3">
-                                                <Label htmlFor="e-rec" className="font-bold text-base text-foreground">Anjuran <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span></Label>
-                                                <Input 
-                                                    id="e-rec" 
-                                                    value={formData.recommendation} 
-                                                    onChange={set("recommendation")} 
-                                                    placeholder="-" 
-                                                    className="bg-background border h-10"
-                                                />
-                                            </div>
 
                                             <div className="space-y-3">
                                                 <Label className="font-bold text-base text-foreground flex items-center gap-2">
@@ -851,25 +778,31 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                         <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
                                         {dbDoctors && dbDoctors.length > 0 ? (
                                             <Combobox
-                                                value={formData.doctorId}
+                                                value={formData.doctor}
                                                 onValueChange={(v) => {
-                                                    const doc = dbDoctors.find(d => d.id === v);
+                                                    const doc = dbDoctors.find(d => d.name === v);
                                                     if (doc) {
                                                         setFormData((p) => ({ ...p, doctor: doc.name, doctorId: doc.id }));
                                                         setSearchValue(doc.name);
                                                     }
                                                 }}
                                                 inputValue={searchValue}
-                                                onInputValueChange={setSearchValue}
+                                                onInputValueChange={(val) => {
+                                                    setSearchValue(val);
+                                                    // If user is typing and it doesn't match the current selected doctor's name, clear the selection
+                                                    if (formData.doctor && val !== formData.doctor) {
+                                                        setFormData(p => ({ ...p, doctor: "", doctorId: "" }));
+                                                    }
+                                                }}
                                             >
                                                 <ComboboxInput
                                                     placeholder="Cari atau pilih nama dokter..."
-                                                    className="w-full"
+                                                    className="w-full h-10 bg-background border"
                                                 >
                                                     <ComboboxContent>
                                                         <ComboboxList tabIndex={-1}>
                                                             {filteredDoctors.map((d, i) => (
-                                                                <ComboboxItem key={i} value={d.id}>{d.name}</ComboboxItem>
+                                                                <ComboboxItem key={i} value={d.name}>{d.name}</ComboboxItem>
                                                             ))}
                                                         </ComboboxList>
                                                         <ComboboxEmpty>Dokter tidak ditemukan</ComboboxEmpty>
@@ -877,24 +810,45 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                 </ComboboxInput>
                                             </Combobox>
                                         ) : isFetchingDoctors ? (
-                                            <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 border rounded-md">
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 border rounded-md h-10 bg-background">
                                                 <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
                                                 Memuat daftar dokter...
                                             </div>
                                         ) : (
-                                            <Input
-                                                value={formData.doctor}
-                                                onChange={set("doctor")}
-                                                placeholder="dr. Nama Dokter, Sp.Rad"
-                                                className="bg-background font-medium border h-10"
-                                            />
+                                            <div className="flex items-center gap-2 text-sm text-destructive p-2 border border-destructive/20 rounded-md h-10 bg-destructive/5">
+                                                Daftar dokter kosong. Silakan tambah dokter di Settings.
+                                            </div>
                                         )}
                                     </div>
                                     <div className="col-span-4 space-y-2">
-                                        <Label htmlFor="e-date" className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan</Label>
-                                        <Input id="e-date" value={formData.date} onChange={set("date")} className="bg-background font-medium border h-10" />
+                                        <Label htmlFor="e-date" className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan <span className="text-destructive">*</span></Label>
+                                        <Popover>
+                                            <PopoverTrigger
+                                                className={cn(
+                                                    "w-full justify-start text-left font-medium h-10 bg-background border flex items-center px-3 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground",
+                                                    !formData.date && "text-muted-foreground"
+                                                )}
+                                            >
+                                                <HugeiconsIcon icon={Calendar01Icon} className="mr-2 size-4 text-primary" />
+                                                {formData.date ? formData.date : <span>Pilih tanggal</span>}
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="end">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={parseReportDate(formData.date)}
+                                                    onSelect={(date) => {
+                                                        if (date) {
+                                                            setFormData(prev => ({ 
+                                                                ...prev, 
+                                                                date: format(date, "d MMMM yyyy", { locale: idLocale }) 
+                                                            }));
+                                                        }
+                                                    }}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
-                                </div>
 
                                 {(!clinic?.clinicName) && (
                                     <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 shadow-sm">
@@ -905,6 +859,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                             </div>
                         </div>
                     </div>
+                </div>
 
                     <div className="px-6 py-4 border-t bg-muted/50 flex items-center justify-end gap-3 h-16">
                         <Button variant="outline" onClick={() => onOpenChange(false)} className="px-8 h-10">Batal</Button>

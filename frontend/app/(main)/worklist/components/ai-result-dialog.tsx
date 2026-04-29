@@ -52,7 +52,7 @@ export const AiResultDialog = React.memo(({
                                 <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md p-3 rounded-xl border border-white/10">
                                     <p className="text-[10px] text-white/80 leading-tight">
                                         <span className="text-rose-400 font-bold shrink-0 mr-1">HEATMAP:</span> 
-                                        Area berwarna merah menunjukkan probabilitas temuan tertinggi yang dideteksi oleh AI.
+                                        Area berwarna merah menunjukkan probabilitas exercise tertinggi yang dideteksi oleh AI.
                                     </p>
                                 </div>
                             </>
@@ -74,7 +74,7 @@ export const AiResultDialog = React.memo(({
                                 <div>
                                     <DialogTitle className="text-xl dark:text-slate-100">AI Analysis Result</DialogTitle>
                                     <DialogDescription className="text-xs dark:text-slate-400">
-                                        Detail temuan untuk pasien <span className="font-bold text-foreground dark:text-slate-200">{patientName || 'N/A'}</span>
+                                        Detail exercise untuk pasien <span className="font-bold text-foreground dark:text-slate-200">{patientName || 'N/A'}</span>
                                     </DialogDescription>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@ export const AiResultDialog = React.memo(({
                             <div className="space-y-4">
                                 <h4 className="text-[10px] font-bold uppercase text-slate-500 mb-4 flex items-center gap-2 tracking-wider">
                                     <HugeiconsIcon icon={Tick02Icon} className="size-3" />
-                                    Probability Findings
+                                    Probability Exercise
                                 </h4>
                                 <div className="grid grid-cols-1 gap-2.5">
                                     {probabilityEntries.length > 0 ? (
@@ -133,7 +133,7 @@ export const AiResultDialog = React.memo(({
                                         })
                                     ) : (
                                         <div className="text-center py-8 text-slate-400 dark:text-slate-600 text-xs italic">
-                                            No detailed findings available.
+                                            No detailed exercise available.
                                         </div>
                                     )}
                                 </div>

@@ -12,8 +12,7 @@ function convertToCSV(data: any[]) {
     
     const headers = [
         'Patient ID', 'Patient Name', 'Patient Sex', 'Age', 'Accession Number', 
-        'Study Date', 'Exam Type', 'Sender', 'Diagnosis', 'SOAP', 
-        'Findings', 'Conclusion', 'Recommendation', 'Doctor Name', 'Report Date', 'Created At'
+        'Study Date', 'Exam Type', 'Findings', 'Doctor Name', 'Report Date', 'Created At'
     ];
 
     const rows = data.map(report => [
@@ -24,12 +23,7 @@ function convertToCSV(data: any[]) {
         `"${report.accessionNumber || ''}"`,
         `"${report.studyDate || ''}"`,
         `"${report.examType || ''}"`,
-        `"${report.sender || ''}"`,
-        `"${report.diagnosis || ''}"`,
-        `"${report.soap || ''}"`,
         `"${report.findings?.replace(/"/g, '""')?.replace(/\n/g, ' ') || ''}"`,
-        `"${report.conclusion?.replace(/"/g, '""')?.replace(/\n/g, ' ') || ''}"`,
-        `"${report.recommendation?.replace(/"/g, '""')?.replace(/\n/g, ' ') || ''}"`,
         `"${report.doctorName || ''}"`,
         `"${report.reportDate || ''}"`,
         `"${report.createdAt || ''}"`

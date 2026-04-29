@@ -16555,15 +16555,8 @@ export namespace Prisma {
     patientName: string | null
     patientSex: string | null
     age: string | null
-    address: string | null
-    sender: string | null
-    diagnosis: string | null
-    soap: string | null
-    photoNum: string | null
     examType: string | null
     findings: string | null
-    conclusion: string | null
-    recommendation: string | null
     reportDate: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -16580,15 +16573,8 @@ export namespace Prisma {
     patientName: string | null
     patientSex: string | null
     age: string | null
-    address: string | null
-    sender: string | null
-    diagnosis: string | null
-    soap: string | null
-    photoNum: string | null
     examType: string | null
     findings: string | null
-    conclusion: string | null
-    recommendation: string | null
     reportDate: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -16605,15 +16591,8 @@ export namespace Prisma {
     patientName: number
     patientSex: number
     age: number
-    address: number
-    sender: number
-    diagnosis: number
-    soap: number
-    photoNum: number
     examType: number
     findings: number
-    conclusion: number
-    recommendation: number
     measurementImages: number
     selectedSeries: number
     reportDate: number
@@ -16634,15 +16613,8 @@ export namespace Prisma {
     patientName?: true
     patientSex?: true
     age?: true
-    address?: true
-    sender?: true
-    diagnosis?: true
-    soap?: true
-    photoNum?: true
     examType?: true
     findings?: true
-    conclusion?: true
-    recommendation?: true
     reportDate?: true
     createdAt?: true
     updatedAt?: true
@@ -16659,15 +16631,8 @@ export namespace Prisma {
     patientName?: true
     patientSex?: true
     age?: true
-    address?: true
-    sender?: true
-    diagnosis?: true
-    soap?: true
-    photoNum?: true
     examType?: true
     findings?: true
-    conclusion?: true
-    recommendation?: true
     reportDate?: true
     createdAt?: true
     updatedAt?: true
@@ -16684,15 +16649,8 @@ export namespace Prisma {
     patientName?: true
     patientSex?: true
     age?: true
-    address?: true
-    sender?: true
-    diagnosis?: true
-    soap?: true
-    photoNum?: true
     examType?: true
     findings?: true
-    conclusion?: true
-    recommendation?: true
     measurementImages?: true
     selectedSeries?: true
     reportDate?: true
@@ -16784,15 +16742,8 @@ export namespace Prisma {
     patientName: string | null
     patientSex: string | null
     age: string | null
-    address: string | null
-    sender: string | null
-    diagnosis: string | null
-    soap: string | null
-    photoNum: string | null
     examType: string | null
     findings: string | null
-    conclusion: string | null
-    recommendation: string | null
     measurementImages: JsonValue | null
     selectedSeries: JsonValue | null
     reportDate: string | null
@@ -16828,15 +16779,8 @@ export namespace Prisma {
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
-    address?: boolean
-    sender?: boolean
-    diagnosis?: boolean
-    soap?: boolean
-    photoNum?: boolean
     examType?: boolean
     findings?: boolean
-    conclusion?: boolean
-    recommendation?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
     reportDate?: boolean
@@ -16856,15 +16800,8 @@ export namespace Prisma {
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
-    address?: boolean
-    sender?: boolean
-    diagnosis?: boolean
-    soap?: boolean
-    photoNum?: boolean
     examType?: boolean
     findings?: boolean
-    conclusion?: boolean
-    recommendation?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
     reportDate?: boolean
@@ -16884,15 +16821,8 @@ export namespace Prisma {
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
-    address?: boolean
-    sender?: boolean
-    diagnosis?: boolean
-    soap?: boolean
-    photoNum?: boolean
     examType?: boolean
     findings?: boolean
-    conclusion?: boolean
-    recommendation?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
     reportDate?: boolean
@@ -16912,15 +16842,8 @@ export namespace Prisma {
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
-    address?: boolean
-    sender?: boolean
-    diagnosis?: boolean
-    soap?: boolean
-    photoNum?: boolean
     examType?: boolean
     findings?: boolean
-    conclusion?: boolean
-    recommendation?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
     reportDate?: boolean
@@ -16930,7 +16853,7 @@ export namespace Prisma {
     doctorName?: boolean
   }
 
-  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "patientName" | "patientSex" | "age" | "address" | "sender" | "diagnosis" | "soap" | "photoNum" | "examType" | "findings" | "conclusion" | "recommendation" | "measurementImages" | "selectedSeries" | "reportDate" | "createdAt" | "updatedAt" | "doctorId" | "doctorName", ExtArgs["result"]["radiologyReport"]>
+  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "reportDate" | "createdAt" | "updatedAt" | "doctorId" | "doctorName", ExtArgs["result"]["radiologyReport"]>
   export type RadiologyReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }
@@ -16955,15 +16878,8 @@ export namespace Prisma {
       patientName: string | null
       patientSex: string | null
       age: string | null
-      address: string | null
-      sender: string | null
-      diagnosis: string | null
-      soap: string | null
-      photoNum: string | null
       examType: string | null
       findings: string | null
-      conclusion: string | null
-      recommendation: string | null
       measurementImages: Prisma.JsonValue | null
       selectedSeries: Prisma.JsonValue | null
       reportDate: string | null
@@ -17403,15 +17319,8 @@ export namespace Prisma {
     readonly patientName: FieldRef<"RadiologyReport", 'String'>
     readonly patientSex: FieldRef<"RadiologyReport", 'String'>
     readonly age: FieldRef<"RadiologyReport", 'String'>
-    readonly address: FieldRef<"RadiologyReport", 'String'>
-    readonly sender: FieldRef<"RadiologyReport", 'String'>
-    readonly diagnosis: FieldRef<"RadiologyReport", 'String'>
-    readonly soap: FieldRef<"RadiologyReport", 'String'>
-    readonly photoNum: FieldRef<"RadiologyReport", 'String'>
     readonly examType: FieldRef<"RadiologyReport", 'String'>
     readonly findings: FieldRef<"RadiologyReport", 'String'>
-    readonly conclusion: FieldRef<"RadiologyReport", 'String'>
-    readonly recommendation: FieldRef<"RadiologyReport", 'String'>
     readonly measurementImages: FieldRef<"RadiologyReport", 'Json'>
     readonly selectedSeries: FieldRef<"RadiologyReport", 'Json'>
     readonly reportDate: FieldRef<"RadiologyReport", 'String'>
@@ -20282,15 +20191,8 @@ export namespace Prisma {
     patientName: 'patientName',
     patientSex: 'patientSex',
     age: 'age',
-    address: 'address',
-    sender: 'sender',
-    diagnosis: 'diagnosis',
-    soap: 'soap',
-    photoNum: 'photoNum',
     examType: 'examType',
     findings: 'findings',
-    conclusion: 'conclusion',
-    recommendation: 'recommendation',
     measurementImages: 'measurementImages',
     selectedSeries: 'selectedSeries',
     reportDate: 'reportDate',
@@ -21463,15 +21365,8 @@ export namespace Prisma {
     patientName?: StringNullableFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
     age?: StringNullableFilter<"RadiologyReport"> | string | null
-    address?: StringNullableFilter<"RadiologyReport"> | string | null
-    sender?: StringNullableFilter<"RadiologyReport"> | string | null
-    diagnosis?: StringNullableFilter<"RadiologyReport"> | string | null
-    soap?: StringNullableFilter<"RadiologyReport"> | string | null
-    photoNum?: StringNullableFilter<"RadiologyReport"> | string | null
     examType?: StringNullableFilter<"RadiologyReport"> | string | null
     findings?: StringNullableFilter<"RadiologyReport"> | string | null
-    conclusion?: StringNullableFilter<"RadiologyReport"> | string | null
-    recommendation?: StringNullableFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableFilter<"RadiologyReport">
     selectedSeries?: JsonNullableFilter<"RadiologyReport">
     reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
@@ -21491,15 +21386,8 @@ export namespace Prisma {
     patientName?: SortOrderInput | SortOrder
     patientSex?: SortOrderInput | SortOrder
     age?: SortOrderInput | SortOrder
-    address?: SortOrderInput | SortOrder
-    sender?: SortOrderInput | SortOrder
-    diagnosis?: SortOrderInput | SortOrder
-    soap?: SortOrderInput | SortOrder
-    photoNum?: SortOrderInput | SortOrder
     examType?: SortOrderInput | SortOrder
     findings?: SortOrderInput | SortOrder
-    conclusion?: SortOrderInput | SortOrder
-    recommendation?: SortOrderInput | SortOrder
     measurementImages?: SortOrderInput | SortOrder
     selectedSeries?: SortOrderInput | SortOrder
     reportDate?: SortOrderInput | SortOrder
@@ -21523,15 +21411,8 @@ export namespace Prisma {
     patientName?: StringNullableFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
     age?: StringNullableFilter<"RadiologyReport"> | string | null
-    address?: StringNullableFilter<"RadiologyReport"> | string | null
-    sender?: StringNullableFilter<"RadiologyReport"> | string | null
-    diagnosis?: StringNullableFilter<"RadiologyReport"> | string | null
-    soap?: StringNullableFilter<"RadiologyReport"> | string | null
-    photoNum?: StringNullableFilter<"RadiologyReport"> | string | null
     examType?: StringNullableFilter<"RadiologyReport"> | string | null
     findings?: StringNullableFilter<"RadiologyReport"> | string | null
-    conclusion?: StringNullableFilter<"RadiologyReport"> | string | null
-    recommendation?: StringNullableFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableFilter<"RadiologyReport">
     selectedSeries?: JsonNullableFilter<"RadiologyReport">
     reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
@@ -21551,15 +21432,8 @@ export namespace Prisma {
     patientName?: SortOrderInput | SortOrder
     patientSex?: SortOrderInput | SortOrder
     age?: SortOrderInput | SortOrder
-    address?: SortOrderInput | SortOrder
-    sender?: SortOrderInput | SortOrder
-    diagnosis?: SortOrderInput | SortOrder
-    soap?: SortOrderInput | SortOrder
-    photoNum?: SortOrderInput | SortOrder
     examType?: SortOrderInput | SortOrder
     findings?: SortOrderInput | SortOrder
-    conclusion?: SortOrderInput | SortOrder
-    recommendation?: SortOrderInput | SortOrder
     measurementImages?: SortOrderInput | SortOrder
     selectedSeries?: SortOrderInput | SortOrder
     reportDate?: SortOrderInput | SortOrder
@@ -21584,15 +21458,8 @@ export namespace Prisma {
     patientName?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     age?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    address?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    sender?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    diagnosis?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    soap?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    photoNum?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     examType?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     findings?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    conclusion?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
-    recommendation?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableWithAggregatesFilter<"RadiologyReport">
     selectedSeries?: JsonNullableWithAggregatesFilter<"RadiologyReport">
     reportDate?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
@@ -22906,15 +22773,8 @@ export namespace Prisma {
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
-    address?: string | null
-    sender?: string | null
-    diagnosis?: string | null
-    soap?: string | null
-    photoNum?: string | null
     examType?: string | null
     findings?: string | null
-    conclusion?: string | null
-    recommendation?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: string | null
@@ -22933,15 +22793,8 @@ export namespace Prisma {
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
-    address?: string | null
-    sender?: string | null
-    diagnosis?: string | null
-    soap?: string | null
-    photoNum?: string | null
     examType?: string | null
     findings?: string | null
-    conclusion?: string | null
-    recommendation?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: string | null
@@ -22960,15 +22813,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22987,15 +22833,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23014,15 +22853,8 @@ export namespace Prisma {
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
-    address?: string | null
-    sender?: string | null
-    diagnosis?: string | null
-    soap?: string | null
-    photoNum?: string | null
     examType?: string | null
     findings?: string | null
-    conclusion?: string | null
-    recommendation?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: string | null
@@ -23041,15 +22873,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23067,15 +22892,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24154,15 +23972,8 @@ export namespace Prisma {
     patientName?: SortOrder
     patientSex?: SortOrder
     age?: SortOrder
-    address?: SortOrder
-    sender?: SortOrder
-    diagnosis?: SortOrder
-    soap?: SortOrder
-    photoNum?: SortOrder
     examType?: SortOrder
     findings?: SortOrder
-    conclusion?: SortOrder
-    recommendation?: SortOrder
     measurementImages?: SortOrder
     selectedSeries?: SortOrder
     reportDate?: SortOrder
@@ -24181,15 +23992,8 @@ export namespace Prisma {
     patientName?: SortOrder
     patientSex?: SortOrder
     age?: SortOrder
-    address?: SortOrder
-    sender?: SortOrder
-    diagnosis?: SortOrder
-    soap?: SortOrder
-    photoNum?: SortOrder
     examType?: SortOrder
     findings?: SortOrder
-    conclusion?: SortOrder
-    recommendation?: SortOrder
     reportDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24206,15 +24010,8 @@ export namespace Prisma {
     patientName?: SortOrder
     patientSex?: SortOrder
     age?: SortOrder
-    address?: SortOrder
-    sender?: SortOrder
-    diagnosis?: SortOrder
-    soap?: SortOrder
-    photoNum?: SortOrder
     examType?: SortOrder
     findings?: SortOrder
-    conclusion?: SortOrder
-    recommendation?: SortOrder
     reportDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24954,15 +24751,8 @@ export namespace Prisma {
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
-    address?: string | null
-    sender?: string | null
-    diagnosis?: string | null
-    soap?: string | null
-    photoNum?: string | null
     examType?: string | null
     findings?: string | null
-    conclusion?: string | null
-    recommendation?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: string | null
@@ -24980,15 +24770,8 @@ export namespace Prisma {
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
-    address?: string | null
-    sender?: string | null
-    diagnosis?: string | null
-    soap?: string | null
-    photoNum?: string | null
     examType?: string | null
     findings?: string | null
-    conclusion?: string | null
-    recommendation?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: string | null
@@ -25112,15 +24895,8 @@ export namespace Prisma {
     patientName?: StringNullableFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
     age?: StringNullableFilter<"RadiologyReport"> | string | null
-    address?: StringNullableFilter<"RadiologyReport"> | string | null
-    sender?: StringNullableFilter<"RadiologyReport"> | string | null
-    diagnosis?: StringNullableFilter<"RadiologyReport"> | string | null
-    soap?: StringNullableFilter<"RadiologyReport"> | string | null
-    photoNum?: StringNullableFilter<"RadiologyReport"> | string | null
     examType?: StringNullableFilter<"RadiologyReport"> | string | null
     findings?: StringNullableFilter<"RadiologyReport"> | string | null
-    conclusion?: StringNullableFilter<"RadiologyReport"> | string | null
-    recommendation?: StringNullableFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableFilter<"RadiologyReport">
     selectedSeries?: JsonNullableFilter<"RadiologyReport">
     reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
@@ -25583,15 +25359,8 @@ export namespace Prisma {
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
-    address?: string | null
-    sender?: string | null
-    diagnosis?: string | null
-    soap?: string | null
-    photoNum?: string | null
     examType?: string | null
     findings?: string | null
-    conclusion?: string | null
-    recommendation?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: string | null
@@ -25657,15 +25426,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25683,15 +25445,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25709,15 +25464,8 @@ export namespace Prisma {
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    sender?: NullableStringFieldUpdateOperationsInput | string | null
-    diagnosis?: NullableStringFieldUpdateOperationsInput | string | null
-    soap?: NullableStringFieldUpdateOperationsInput | string | null
-    photoNum?: NullableStringFieldUpdateOperationsInput | string | null
     examType?: NullableStringFieldUpdateOperationsInput | string | null
     findings?: NullableStringFieldUpdateOperationsInput | string | null
-    conclusion?: NullableStringFieldUpdateOperationsInput | string | null
-    recommendation?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null

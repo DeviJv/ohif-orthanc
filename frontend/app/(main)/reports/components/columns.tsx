@@ -12,6 +12,7 @@ import { Report } from "../types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface GetColumnsProps {
     onEdit: (report: Report) => void;
@@ -76,6 +77,38 @@ export const getColumns = ({
         accessorKey: "examType",
         header: "Exam Type",
         cell: ({ getValue }) => getValue() || "-",
+    },
+    {
+        accessorKey: "findings",
+        header: "Exercise",
+        cell: ({ getValue }) => {
+            const val = getValue() as string;
+            if (!val) return <span className="text-slate-400 italic">-</span>;
+            
+            const isLong = val.length > 40;
+            const displayVal = isLong ? `${val.substring(0, 40)}...` : val;
+            
+            return (
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <span className="cursor-help hover:text-primary transition-colors">
+                                {displayVal}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-sm p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-2xl rounded-xl">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <div className="size-1.5 rounded-full bg-primary" />
+                                    <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Detail Exercise</p>
+                                </div>
+                                <p className="text-xs leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300 font-medium">{val}</p>
+                            </div>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            );
+        },
     },
     {
         accessorKey: "doctorName",

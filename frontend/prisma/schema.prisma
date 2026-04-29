@@ -189,15 +189,8 @@ model RadiologyReport {
   patientName       String?
   patientSex        String?
   age               String?
-  address           String?
-  sender            String?
-  diagnosis         String?
-  soap              String?
-  photoNum          String?
   examType          String?
   findings          String?
-  conclusion        String?
-  recommendation    String?
   measurementImages Json?
   selectedSeries    Json?
   reportDate        String?

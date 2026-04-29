@@ -298,6 +298,7 @@ export const getColumns = ({
                     </Button>
 
                     <Button
+                        hidden
                         size="sm"
                         variant="ghost"
                         className={cn(

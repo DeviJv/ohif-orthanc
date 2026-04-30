@@ -97,10 +97,6 @@ export function AppSidebar({ user, ...props }: any) {
           title: "User Guide",
           url: "/docs/orthanc-api",
         },
-        {
-          title: "Support",
-          url: "#",
-        },
       ],
     },
     {

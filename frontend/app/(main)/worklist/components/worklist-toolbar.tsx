@@ -10,11 +10,13 @@ import {
     LayoutTableIcon,
     Delete01Icon,
     Download01Icon,
-    MoreVerticalIcon
+    MoreVerticalIcon,
+    FilterIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -46,6 +48,10 @@ interface WorklistToolbarProps {
     handleBulkDelete: () => void;
     handleBulkDownload: () => void;
 }
+
+const COMMON_MODALITIES = [
+    "CT", "MR", "CR", "DX", "US", "SR", "MG", "XA", "NM", "OT"
+];
 
 export function WorklistToolbar({
     table,
@@ -96,6 +102,65 @@ export function WorklistToolbar({
                                 onChange={(e) => setGlobalFilter(e.target.value)}
                             />
                         </div>
+
+                        <Popover>
+                            <PopoverTrigger 
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "sm" }),
+                                    "gap-2 border-slate-200 dark:border-slate-800 shrink-0",
+                                    (table.getColumn("modalities")?.getFilterValue() as string[] || []).length > 0 && "bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"
+                                )}
+                            >
+                                <HugeiconsIcon icon={FilterIcon} className="size-4" />
+                                <span>Modality</span>
+                                {(table.getColumn("modalities")?.getFilterValue() as string[] || []).length > 0 && (
+                                    <span className="ml-1 px-1.5 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-bold">
+                                        {(table.getColumn("modalities")?.getFilterValue() as string[] || []).length}
+                                    </span>
+                                )}
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56 p-3" align="start">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-semibold text-sm">Modality Filter</h4>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            className="h-auto p-0 text-xs text-blue-600 hover:bg-transparent"
+                                            onClick={() => table.getColumn("modalities")?.setFilterValue([])}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-y-2.5">
+                                        {COMMON_MODALITIES.map((modality) => {
+                                            const selected = (table.getColumn("modalities")?.getFilterValue() as string[] || []).includes(modality);
+                                            return (
+                                                <div key={modality} className="flex items-center gap-2">
+                                                    <Checkbox 
+                                                        id={`modality-${modality}`}
+                                                        checked={selected}
+                                                        onCheckedChange={(checked) => {
+                                                            const current = (table.getColumn("modalities")?.getFilterValue() as string[] || []);
+                                                            const next = checked 
+                                                                ? [...current, modality]
+                                                                : current.filter(m => m !== modality);
+                                                            table.getColumn("modalities")?.setFilterValue(next.length ? next : undefined);
+                                                        }}
+                                                    />
+                                                    <label 
+                                                        htmlFor={`modality-${modality}`}
+                                                        className="text-xs font-medium cursor-pointer select-none leading-none"
+                                                    >
+                                                        {modality}
+                                                    </label>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                         
                         <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1 border border-slate-200 dark:border-slate-800 rounded-md px-2 py-1 bg-slate-50 dark:bg-slate-950">
@@ -196,6 +261,7 @@ export function WorklistToolbar({
                                                      column.id === "patientID" ? "Patient ID" :
                                                      column.id === "phone" ? "Phone Number" :
                                                      column.id === "studyDate" ? "Study Date" :
+                                                     column.id === "modalities" ? "Modality" :
                                                      column.id === "description" ? "Description" : 
                                                      column.id}
                                                 </DropdownMenuCheckboxItem>

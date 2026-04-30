@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/auth";
+import { prisma, auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 
@@ -101,5 +101,27 @@ export async function deleteUser(id: string) {
     return { success: true };
   } catch (error) {
     return { success: false, error: "Failed to delete user" };
+  }
+}
+
+export async function verifyPassword(password: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user || !user.password) {
+      return { success: false, error: "User not found" };
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    return { success: isPasswordValid };
+  } catch (error) {
+    return { success: false, error: "Failed to verify password" };
   }
 }

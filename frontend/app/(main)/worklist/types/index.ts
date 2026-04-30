@@ -22,6 +22,7 @@ export interface Study {
     };
     Series: string[];
     Labels: string[];
+    Modalities?: string[];
 }
 
 export interface Series {

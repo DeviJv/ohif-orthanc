@@ -178,6 +178,29 @@ export const getColumns = ({
         },
     },
     {
+        accessorFn: (row) => row.Modalities?.join(", ") || "-",
+        id: "modalities",
+        header: "Modality",
+        cell: ({ getValue }) => {
+            const val = getValue() as string;
+            if (val === "-") return <span className="text-slate-400">-</span>;
+            return (
+                <div className="flex flex-wrap gap-1">
+                    {val.split(", ").map((m, i) => (
+                        <span key={i} className="px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-[10px] font-bold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 uppercase">
+                            {m}
+                        </span>
+                    ))}
+                </div>
+            );
+        },
+        filterFn: (row, columnId, filterValue) => {
+            if (!filterValue || filterValue.length === 0) return true;
+            const modalities = row.original.Modalities || [];
+            return filterValue.some((v: string) => modalities.includes(v));
+        },
+    },
+    {
         accessorKey: "MainDicomTags.StudyDescription",
         id: "description",
         header: "Description",

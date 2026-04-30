@@ -4,22 +4,12 @@ import { Study, Series, Instance } from "../types";
 export const orthancApi = {
     // Studies
     fetchStudies: async (): Promise<Study[]> => {
-        const response = await fetch(`/api/orthanc/studies?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
-        if (!response.ok) throw new Error("Failed to fetch study list");
-        const ids: string[] = await response.json();
-
-        const details = await Promise.all(
-            ids.slice(0, 100).map(async (id) => {
-                const res = await fetch(`/api/orthanc/studies/${id}?_t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache" } });
-                return res.json();
-            })
-        );
-
-        return details.sort((a, b) => {
-            const dateA = a.MainDicomTags.StudyDate || "00000000";
-            const dateB = b.MainDicomTags.StudyDate || "00000000";
-            return dateB.localeCompare(dateA);
+        const response = await fetch(`/api/orthanc/worklist?_t=${Date.now()}`, { 
+            cache: "no-store", 
+            headers: { "Cache-Control": "no-cache" } 
         });
+        if (!response.ok) throw new Error("Failed to fetch study worklist");
+        return response.json();
     },
 
     deleteStudy: async (studyId: string) => {

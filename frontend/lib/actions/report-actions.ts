@@ -94,11 +94,7 @@ export async function getDoctors() {
     // Fetch users who have a role that sounds like "Doctor"
     const doctors = await prisma.user.findMany({
       where: {
-        OR: [
-          { role: { name: { contains: "DOCTOR", mode: "insensitive" } } },
-          { role: { name: "ROOT" } },
-          { role: { name: "SUPER-ADMIN" } },
-        ]
+        role: { name: { contains: "DOCTOR", mode: "insensitive" } }
       },
       select: {
         id: true,

@@ -74,7 +74,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [isGenerating, setIsGenerating] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [seriesData, setSeriesData] = useState<Series[]>([]);
-    const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
+    const [selectedInstanceIds, setSelectedInstanceIds] = useState<string[]>([]);
     const [isFetchingSeries, setIsFetchingSeries] = useState(false);
     const [measurementImages, setMeasurementImages] = useState<{file?: File, base64: string, name?: string}[]>([]);
     const [dbDoctors, setDbDoctors] = useState<{id: string, name: string, signature?: string | null}[]>([]);
@@ -170,7 +170,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
 
             setSearchValue("");
             setSeriesData([]);
-            setSelectedSeriesIds([]);
+            setSelectedInstanceIds([]);
             setMeasurementImages([]);
             
             if (study?.ID) {
@@ -289,7 +289,11 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                             setMeasurementImages(report.measurementImages as any);
                         }
                         if (report.selectedSeries) {
-                            setSelectedSeriesIds(report.selectedSeries as string[]);
+                            // Support migration from series IDs to instance IDs
+                            const saved = report.selectedSeries as string[];
+                            // If they are series IDs, we'll need to resolve them later or just keep them
+                            // For now, assume we save Instance IDs now.
+                            setSelectedInstanceIds(saved);
                         }
                         
                         toast.info("Laporan sebelumnya berhasil dimuat");
@@ -405,7 +409,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 examType: formData.examType,
                 findings: formData.findings,
                 measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
-                selectedSeries: selectedSeriesIds,
+                selectedSeries: selectedInstanceIds, // Saving instance IDs in this field
                 doctorId: formData.doctorId,
                 doctorName: formData.doctor,
                 reportDate: formData.date
@@ -537,13 +541,13 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             // Align center of doctor name with center of date text for better aesthetics
             pdf.text(`( ${formData.doctor} )`, signatureCenterX, currentY, { align: "center" });
 
-            // --- APPEND SELECTED SERIES IMAGES ---
-            if (selectedSeriesIds.length > 0) {
-                for (const seriesId of selectedSeriesIds) {
-                    const series = seriesData.find(s => s.ID === seriesId);
-                    if (!series || !series.Instances?.[0]) continue;
+            // --- APPEND SELECTED INSTANCE IMAGES ---
+            if (selectedInstanceIds.length > 0) {
+                for (const instanceId of selectedInstanceIds) {
+                    // Find which series this instance belongs to for the footer text
+                    const series = seriesData.find(s => s.Instances?.includes(instanceId));
+                    if (!series) continue;
 
-                    const instanceId = series.Instances[0];
                     try {
                         const imgResp = await fetch(`/api/orthanc/instances/${instanceId}/preview`);
                         if (!imgResp.ok) throw new Error("Failed to fetch image");
@@ -591,8 +595,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                         pdf.text(`${series.MainDicomTags.SeriesDescription || "Series"} - ${series.MainDicomTags.Modality} (${series.MainDicomTags.SeriesNumber})`, 10, pdfPageHeight - 6);
                         pdf.setTextColor(0, 0, 0); // Reset
                     } catch (e) {
-                        console.error(`Error adding series ${seriesId} to PDF:`, e);
-                        toast.error(`Gagal memuat gambar untuk series: ${seriesId}`);
+                        console.error(`Error adding instance ${instanceId} to PDF:`, e);
+                        toast.error(`Gagal memuat gambar untuk instance: ${instanceId}`);
                     }
                 }
             }
@@ -751,26 +755,26 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                 <Popover>
                                                     <PopoverTrigger >
                                                         <div role="button" className="w-full flex items-center justify-between h-10 px-3 font-normal bg-background border rounded-md cursor-pointer hover:bg-muted/50 transition-colors text-sm">
-                                                            <div className="flex items-center gap-2 truncate">
+                                                            <div className="flex flex-center items-center gap-2 truncate">
                                                                 <HugeiconsIcon icon={Image01Icon} className="size-4 text-primary" />
-                                                                {selectedSeriesIds.length > 0 ? (
+                                                                {selectedInstanceIds.length > 0 ? (
                                                                     <div className="flex gap-1 overflow-hidden">
                                                                         <Badge variant="secondary" className="rounded-sm px-1.5 font-bold bg-primary/10 text-primary border-primary/20">
-                                                                            {selectedSeriesIds.length} Series Terpilih
+                                                                            {selectedInstanceIds.length} Gambar Terpilih
                                                                         </Badge>
                                                                     </div>
                                                                 ) : (
-                                                                    <span className="text-muted-foreground">Pilih series untuk di-export ke PDF...</span>
+                                                                    <span className="text-muted-foreground">Pilih gambar untuk di-export ke PDF...</span>
                                                                 )}
                                                             </div>
                                                             <HugeiconsIcon icon={ArrowDown01Icon} className="size-4 opacity-50 shrink-0" />
                                                         </div>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-[400px] p-0" align="start">
+                                                    <PopoverContent className="w-[500px] p-0" align="start">
                                                         <div className="p-3 border-b bg-muted/30">
-                                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Daftar Series</p>
+                                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Pilih Gambar dari Series</p>
                                                         </div>
-                                                        <div className="max-h-[300px] overflow-y-auto p-1">
+                                                        <div className="max-h-[400px] overflow-y-auto p-2 space-y-4">
                                                             {isFetchingSeries ? (
                                                                 <div className="flex items-center justify-center p-8 gap-3 text-sm text-muted-foreground">
                                                                     <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
@@ -778,56 +782,101 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                                                 </div>
                                                             ) : imageSeriesData.length === 0 ? (
                                                                 <div className="p-8 text-center text-sm text-muted-foreground italic">
-                                                                    Tidak ada series gambar ditemukan.<br/>
-                                                                    <span className="text-xs">(Series SR/PR/KO tidak dapat di-export sebagai gambar)</span>
+                                                                    Tidak ada series gambar ditemukan.
                                                                 </div>
                                                             ) : (
-                                                                imageSeriesData.map((s) => (
-                                                                    <div 
-                                                                        key={s.ID} 
-                                                                        className="flex items-center space-x-3 p-3 hover:bg-accent rounded-md cursor-pointer transition-colors"
-                                                                        onClick={() => {
-                                                                            setSelectedSeriesIds(prev => 
-                                                                                prev.includes(s.ID) 
-                                                                                    ? prev.filter(id => id !== s.ID) 
-                                                                                    : [...prev, s.ID]
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <Checkbox 
-                                                                            id={`series-${s.ID}`}
-                                                                            checked={selectedSeriesIds.includes(s.ID)}
-                                                                            onCheckedChange={() => {}} // Handled by div onClick for better UX
-                                                                        />
-                                                                        <div className="flex-1 min-w-0">
-                                                                            <p className="text-sm font-bold leading-none truncate">
-                                                                                {s.MainDicomTags.SeriesDescription || "No Description"}
-                                                                            </p>
-                                                                            <div className="flex items-center gap-2 mt-1">
-                                                                                <Badge variant="outline" className="text-[10px] h-4 px-1 bg-muted/50 font-mono">
-                                                                                    #{s.MainDicomTags.SeriesNumber}
-                                                                                </Badge>
-                                                                                <Badge variant="outline" className="text-[10px] h-4 px-1 bg-primary/5 text-primary border-primary/20">
-                                                                                    {s.MainDicomTags.Modality}
-                                                                                </Badge>
-                                                                                <span className="text-[10px] text-muted-foreground italic">
-                                                                                    {s.Instances?.length || 0} Images
-                                                                                </span>
+                                                                imageSeriesData.map((s) => {
+                                                                    const selectedInSeries = s.Instances?.filter(id => selectedInstanceIds.includes(id)) || [];
+                                                                    const allSelected = s.Instances?.length > 0 && selectedInSeries.length === s.Instances.length;
+                                                                    const someSelected = selectedInSeries.length > 0 && !allSelected;
+
+                                                                    return (
+                                                                        <div key={s.ID} className="border rounded-lg overflow-hidden bg-card shadow-sm">
+                                                                            <div 
+                                                                                className="flex items-center space-x-3 p-3 bg-muted/20 hover:bg-muted/40 cursor-pointer transition-colors"
+                                                                                onClick={() => {
+                                                                                    if (allSelected) {
+                                                                                        // Deselect all in this series
+                                                                                        setSelectedInstanceIds(prev => prev.filter(id => !s.Instances.includes(id)));
+                                                                                    } else {
+                                                                                        // Select all in this series
+                                                                                        const newIds = s.Instances.filter(id => !selectedInstanceIds.includes(id));
+                                                                                        setSelectedInstanceIds(prev => [...prev, ...newIds]);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                <Checkbox 
+                                                                                    checked={allSelected}
+                                                                                    className={someSelected ? "data-[state=unchecked]:bg-primary/20 data-[state=unchecked]:border-primary" : ""}
+                                                                                />
+                                                                                <div className="flex-1 min-w-0">
+                                                                                    <div className="flex justify-between items-start">
+                                                                                        <p className="text-sm font-bold truncate">
+                                                                                            {s.MainDicomTags.SeriesDescription || "No Description"}
+                                                                                        </p>
+                                                                                        <Badge variant="outline" className="text-[10px] h-4 px-1 bg-primary/5 text-primary">
+                                                                                            {s.MainDicomTags.Modality}
+                                                                                        </Badge>
+                                                                                    </div>
+                                                                                    <p className="text-[10px] text-muted-foreground">
+                                                                                        Series #{s.MainDicomTags.SeriesNumber} • {s.Instances?.length || 0} Images
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                            
+                                                                            {/* Instances Grid */}
+                                                                            <div className="p-2 grid grid-cols-5 gap-2 bg-background/50 border-t">
+                                                                                {s.Instances?.map((instId, idx) => (
+                                                                                    <div 
+                                                                                        key={instId}
+                                                                                        className={cn(
+                                                                                            "relative aspect-square rounded border cursor-pointer hover:border-primary transition-all overflow-hidden group",
+                                                                                            selectedInstanceIds.includes(instId) ? "border-primary ring-1 ring-primary ring-inset" : "border-muted"
+                                                                                        )}
+                                                                                        onClick={() => {
+                                                                                            setSelectedInstanceIds(prev => 
+                                                                                                prev.includes(instId) 
+                                                                                                    ? prev.filter(id => id !== instId) 
+                                                                                                    : [...prev, instId]
+                                                                                            );
+                                                                                        }}
+                                                                                    >
+                                                                                        <img 
+                                                                                            src={`/api/orthanc/instances/${instId}/preview`} 
+                                                                                            alt={`Inst ${idx}`}
+                                                                                            className="w-full h-full object-cover"
+                                                                                            loading="lazy"
+                                                                                        />
+                                                                                        <div className={cn(
+                                                                                            "absolute inset-0 bg-primary/10 flex items-center justify-center transition-opacity",
+                                                                                            selectedInstanceIds.includes(instId) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                                                                                        )}>
+                                                                                            {selectedInstanceIds.includes(instId) && (
+                                                                                                <div className="bg-primary text-white rounded-full p-0.5 shadow-lg">
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                                                                </div>
+                                                                                            )}
+                                                                                        </div>
+                                                                                        <div className="absolute bottom-0 right-0 bg-black/50 text-[8px] text-white px-1 font-mono">
+                                                                                            {idx + 1}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ))}
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                ))
+                                                                    );
+                                                                })
                                                             )}
                                                         </div>
-                                                        {selectedSeriesIds.length > 0 && (
+                                                        {selectedInstanceIds.length > 0 && (
                                                             <div className="p-2 border-t bg-muted/20 flex gap-2">
                                                                 <Button 
                                                                     variant="ghost" 
                                                                     size="xs" 
                                                                     className="w-full text-[10px] h-7"
-                                                                    onClick={() => setSelectedSeriesIds([])}
+                                                                    onClick={() => setSelectedInstanceIds([])}
                                                                 >
-                                                                    Reset Pilihan
+                                                                    Reset Pilihan ({selectedInstanceIds.length})
                                                                 </Button>
                                                             </div>
                                                         )}

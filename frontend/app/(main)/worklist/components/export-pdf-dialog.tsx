@@ -77,7 +77,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[]>([]);
     const [isFetchingSeries, setIsFetchingSeries] = useState(false);
     const [measurementImages, setMeasurementImages] = useState<{file?: File, base64: string, name?: string}[]>([]);
-    const [dbDoctors, setDbDoctors] = useState<{id: string, name: string}[]>([]);
+    const [dbDoctors, setDbDoctors] = useState<{id: string, name: string, signature?: string | null}[]>([]);
     const [isFetchingDoctors, setIsFetchingDoctors] = useState(false);
 
     const studyMainTags = study?.MainDicomTags as any;
@@ -175,23 +175,93 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             
             if (study?.ID) {
                 setIsFetchingSeries(true);
-                fetch(`/api/orthanc/studies/${study.ID}/series`)
+                
+                const fetchSeriesData = (id: string) => {
+                    fetch(`/api/orthanc/studies/${id}/series`)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (Array.isArray(data)) {
+                                setSeriesData(data);
+
+                                // --- SMART EXAM TYPE EXTRACTION ---
+                                // Collect unique specific descriptions from series
+                                const uniqueTypes = new Set<string>();
+                                
+                                // 1. Check Series Descriptions
+                                for (const s of data) {
+                                    const sd = s.MainDicomTags?.SeriesDescription;
+                                    if (sd && sd.length > 3 && !sd.toLowerCase().includes("pemeriksaan")) {
+                                        uniqueTypes.add(sd);
+                                    }
+                                }
+                                
+                                // 2. If no series description, check Protocol Name
+                                if (uniqueTypes.size === 0) {
+                                    for (const s of data) {
+                                        const pn = s.MainDicomTags?.ProtocolName;
+                                        if (pn && pn.length > 3 && !pn.toLowerCase().includes("pemeriksaan")) {
+                                            uniqueTypes.add(pn);
+                                        }
+                                    }
+                                }
+
+                                if (uniqueTypes.size > 0) {
+                                    const betterType = Array.from(uniqueTypes).join(", ");
+                                    setFormData(prev => ({ ...prev, examType: betterType }));
+                                }
+                            }
+                        })
+                        .catch(err => console.error("Error fetching series:", err))
+                        .finally(() => setIsFetchingSeries(false));
+                };
+
+                // If ID contains dots, it's likely a StudyInstanceUID and needs resolution
+                if (study.ID.includes(".")) {
+                    fetch("/api/orthanc/tools/find", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            Level: "Study",
+                            Query: { StudyInstanceUID: study.ID }
+                        })
+                    })
                     .then(r => r.json())
-                    .then(data => {
-                        if (Array.isArray(data)) {
-                            setSeriesData(data);
+                    .then(ids => {
+                        if (Array.isArray(ids) && ids.length > 0) {
+                            fetchSeriesData(ids[0]);
+                        } else {
+                            setIsFetchingSeries(false);
                         }
                     })
-                    .catch(err => console.error("Error fetching series:", err))
-                    .finally(() => setIsFetchingSeries(false));
+                    .catch(err => {
+                        console.error("Error resolving StudyInstanceUID:", err);
+                        setIsFetchingSeries(false);
+                    });
+                } else {
+                    fetchSeriesData(study.ID);
+                }
             }
 
             // --- FETCH DOCTORS FROM DB ---
             setIsFetchingDoctors(true);
             getDoctors().then(res => {
                 if (res.success && res.data) {
-                    const docs = res.data.map(d => ({ id: d.id, name: d.name || d.email || "Unknown" }));
+                    const docs = res.data.map(d => ({ 
+                        id: d.id, 
+                        name: d.name || d.email || "Unknown",
+                        signature: d.signature
+                    }));
                     setDbDoctors(docs);
+
+                    // Auto-select oldest doctor if none selected
+                    if (!formData.doctorId && docs.length > 0) {
+                        const oldest = docs[0];
+                        setFormData(prev => ({ 
+                            ...prev, 
+                            doctor: oldest.name, 
+                            doctorId: oldest.id 
+                        }));
+                        setSearchValue(oldest.name);
+                    }
                 }
             }).finally(() => setIsFetchingDoctors(false));
 
@@ -407,14 +477,6 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 return y + 7;
             };
 
-            currentY = drawRow("Nama", patientName, "Umur", `${formData.age} Thn (${formData.gender})`, currentY);
-            currentY = drawRow("No. RM", patientID, "No. Acc", accessionNumber || "-", currentY);
-            currentY = drawRow("Tgl Foto", studyDateFormatted, "Unit", modalityName, currentY);
-            
-            // Body Table: Exam, Findings, Conclusion, Recommendation
-            currentY += 10;
-            
-            // Improved body drawing logic (manual grid for symmetry)
             const drawSection = (label: string, content: string, startY: number) => {
                 pdf.setFont("helvetica", "bold");
                 const splitContent = pdf.splitTextToSize(content, contentWidth - 35);
@@ -430,7 +492,17 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 return startY + height;
             };
 
+            currentY = drawRow("Nama", patientName, "Umur", `${formData.age} Thn (${formData.gender})`, currentY);
+            currentY = drawRow("No. RM", patientID, "No. Acc", accessionNumber || "-", currentY);
+            currentY = drawRow("Tgl Foto", studyDateFormatted, "Unit", modalityName, currentY);
+            
+            // Move Jenis (Exam Type) to the top section per user request
             currentY = drawSection("Jenis", formData.examType, currentY);
+            
+            // Body Table: findings, Conclusion, Recommendation
+            currentY += 10;
+            
+            // currentY = drawSection("Jenis", formData.examType, currentY); // Moved to top
             currentY = drawSection("Exercise", formData.findings, currentY);
             
             // Signature Section
@@ -445,12 +517,24 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             const dateWidth = pdf.getTextWidth(dateText);
             pdf.text(dateText, rightEdgeX, currentY, { align: "right" });
             
+            const signatureCenterX = rightEdgeX - (dateWidth / 2);
+
+            // --- DOCTOR SIGNATURE IMAGE ---
+            const selectedDoc = dbDoctors.find(d => d.id === formData.doctorId);
+            if (selectedDoc?.signature) {
+                try {
+                    // Place signature image above the doctor's name
+                    pdf.addImage(selectedDoc.signature, "PNG", signatureCenterX - 15, currentY + 5, 30, 15);
+                } catch (e) {
+                    console.error("Error adding doctor signature to PDF:", e);
+                }
+            }
+
             currentY += 25; // Space for physical signature
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(10);
             
             // Align center of doctor name with center of date text for better aesthetics
-            const signatureCenterX = rightEdgeX - (dateWidth / 2);
             pdf.text(`( ${formData.doctor} )`, signatureCenterX, currentY, { align: "center" });
 
             // --- APPEND SELECTED SERIES IMAGES ---
@@ -613,6 +697,19 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                             <Input id="e-gender" value={formData.gender} onChange={set("gender")} placeholder="L" className="h-9 text-sm bg-background border" />
                                         </div>
                                     </div>
+                                    <Separator className="my-4" />
+                                    <div className="space-y-2">
+                                        <Label htmlFor="e-examtype" className="text-xs font-bold uppercase text-muted-foreground tracking-tight flex items-center gap-2">
+                                            Jenis Pemeriksaan <span className="text-destructive">*</span>
+                                        </Label>
+                                        <Input 
+                                            id="e-examtype" 
+                                            value={formData.examType} 
+                                            onChange={set("examType")} 
+                                            placeholder="e.g. Chest PA" 
+                                            className="h-9 text-sm bg-background border font-semibold" 
+                                        />
+                                    </div>
                                 </div>
 
                             </div>
@@ -621,14 +718,14 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                             <div className="md:col-span-8 flex flex-col gap-6">
                                 <div className="bg-card border rounded-xl shadow-sm flex-1 flex flex-col overflow-hidden">
                                     <div className="p-5 border-b bg-muted/40">
-                                        <div className="flex justify-between items-start gap-4">
-                                            <div className="space-y-2 flex-1">
-                                                <Label htmlFor="e-examtype" className="text-xs font-bold uppercase text-muted-foreground tracking-tight">Jenis Pemeriksaan <span className="text-destructive">*</span></Label>
-                                                <Input id="e-examtype" value={formData.examType} onChange={set("examType")} placeholder="Rontgen Thorax PA" className="font-bold text-xl border-none bg-transparent shadow-none px-0 h-auto focus-visible:ring-0 w-full" />
-                                            </div>
-                                            <div className="text-right">
+                                        <div className="flex justify-between items-center">
+                                            <div>
                                                 <p className="text-[10px] font-bold text-muted-foreground uppercase">Study Date</p>
                                                 <p className="text-sm font-semibold">{studyDateFormatted || "-"}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase">Accession</p>
+                                                <p className="text-sm font-semibold">{accessionNumber || "-"}</p>
                                             </div>
                                         </div>
                                     </div>

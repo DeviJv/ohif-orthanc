@@ -45,6 +45,7 @@ export function UserFormDialog({ user, roles, isEdit = false }: UserFormDialogPr
     email: user?.email || "",
     password: "",
     roleId: user?.roleId || "",
+    signature: user?.signature || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,7 +71,7 @@ export function UserFormDialog({ user, roles, isEdit = false }: UserFormDialogPr
         if (result.success) {
           toast.success("User created successfully");
           setOpen(false);
-          setFormData({ name: "", email: "", password: "", roleId: "" });
+          setFormData({ name: "", email: "", password: "", roleId: "", signature: "" });
         } else {
           toast.error(result.error || "Failed to create user");
         }
@@ -177,6 +178,45 @@ export function UserFormDialog({ user, roles, isEdit = false }: UserFormDialogPr
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="signature">Doctor Signature (Optional)</Label>
+              <div className="space-y-2">
+                <Input
+                  id="signature"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData({ ...formData, signature: reader.result as string });
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="cursor-pointer h-9 text-xs"
+                />
+                {formData.signature && (
+                  <div className="relative w-full h-20 border rounded-md bg-muted/50 flex items-center justify-center overflow-hidden">
+                    <img src={formData.signature} alt="Signature Preview" className="max-h-full object-contain" />
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="sm" 
+                      className="absolute top-1 right-1 size-6 p-0"
+                      onClick={() => setFormData({ ...formData, signature: "" })}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                )}
+              </div>
+              <p className="text-[10px] text-muted-foreground italic">
+                Upload a transparent PNG signature for best results in PDF reports.
+              </p>
             </div>
           </div>
           <DialogFooter>

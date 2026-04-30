@@ -16,6 +16,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
+  signature     String? // Doctor's signature (Base64)
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   roleId        String?

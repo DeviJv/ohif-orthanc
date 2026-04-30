@@ -33,7 +33,7 @@ export async function getRoles() {
 
 export async function createUser(data: any) {
   try {
-    const { name, email, password, roleId } = data;
+    const { name, email, password, roleId, signature } = data;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
@@ -42,6 +42,7 @@ export async function createUser(data: any) {
         email,
         password: hashedPassword,
         roleId,
+        signature,
       },
     });
 
@@ -57,8 +58,8 @@ export async function createUser(data: any) {
 
 export async function updateUser(id: string, data: any) {
   try {
-    const { name, email, password, roleId } = data;
-    const updateData: any = { name, email, roleId };
+    const { name, email, password, roleId, signature } = data;
+    const updateData: any = { name, email, roleId, signature };
 
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);

@@ -22,7 +22,9 @@ import {
 } from "@/components/ui/sidebar"
 import { signOut } from "next-auth/react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { UnfoldMoreIcon, SparklesIcon, CheckmarkBadgeIcon, CreditCardIcon, NotificationIcon, LogoutIcon } from "@hugeicons/core-free-icons"
+import { UnfoldMoreIcon, SparklesIcon, CheckmarkBadgeIcon, CreditCardIcon, NotificationIcon, LogoutIcon, Key01Icon } from "@hugeicons/core-free-icons"
+import { useState } from "react"
+import { ChangePasswordDialog } from "@/components/auth/change-password-dialog"
 
 export function NavUser({
   user,
@@ -34,6 +36,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const [showChangePassword, setShowChangePassword] = useState(false)
 
   const handleLogout = async () => {
     try {
@@ -106,7 +109,11 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator /> */}
+            {/* <DropdownMenuSeparator /> */}
+            <DropdownMenuItem onClick={() => setShowChangePassword(true)}>
+              <HugeiconsIcon icon={Key01Icon} strokeWidth={2} />
+              Change Password
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleLogout}>
               <HugeiconsIcon icon={LogoutIcon} strokeWidth={2} />
               Log out
@@ -114,6 +121,10 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <ChangePasswordDialog 
+        open={showChangePassword} 
+        onOpenChange={setShowChangePassword} 
+      />
     </SidebarMenu>
   )
 }

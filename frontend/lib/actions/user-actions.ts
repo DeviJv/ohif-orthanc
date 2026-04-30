@@ -126,3 +126,39 @@ export async function verifyPassword(password: string) {
     return { success: false, error: "Failed to verify password" };
   }
 }
+
+export async function changePassword(data: any) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    const { currentPassword, newPassword } = data;
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user || !user.password) {
+      return { success: false, error: "User not found" };
+    }
+
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return { success: false, error: "Current password is incorrect" };
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { email: session.user.email },
+      data: { password: hashedPassword },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Change password error:", error);
+    return { success: false, error: "Failed to change password" };
+  }
+}

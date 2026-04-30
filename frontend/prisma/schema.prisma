@@ -16,10 +16,10 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  signature     String?           // Doctor's signature (Base64)
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   roleId        String?
+  signature     String?
   accounts      Account[]
   reports       RadiologyReport[] @relation("DoctorReports")
   sessions      Session[]
@@ -194,14 +194,12 @@ model RadiologyReport {
   findings          String?
   measurementImages Json?
   selectedSeries    Json?
+  doctorId          String?
   reportDate        String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-
-  // Doctor/Practitioner
-  doctorId   String?
-  doctorName String? // Fallback if user is not linked
-  doctor     User?   @relation("DoctorReports", fields: [doctorId], references: [id])
+  doctorName        String?
+  doctor            User?    @relation("DoctorReports", fields: [doctorId], references: [id])
 
   @@unique([patientId, studyInstanceUid])
   @@index([patientId, studyDate])
@@ -210,14 +208,14 @@ model RadiologyReport {
 
 model SatuSehatBulkSyncTask {
   id             String    @id @default(cuid())
-  type           String    @default("MANUAL") // MANUAL, CRON
-  status         String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  type           String    @default("MANUAL")
+  status         String    @default("PENDING")
   totalItems     Int       @default(0)
   successCount   Int       @default(0)
   failCount      Int       @default(0)
   currentStudyId String?
-  errors         Json? // Array of errors
-  studyIds       Json // Array of study IDs to process
+  errors         Json?
+  studyIds       Json
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   completedAt    DateTime?
@@ -225,12 +223,25 @@ model SatuSehatBulkSyncTask {
 
 model ReportExportTask {
   id             String    @id @default(cuid())
+  status         String    @default("PENDING")
+  totalItems     Int       @default(0)
+  processedCount Int       @default(0)
+  fileUrl        String?
+  filters        Json?
+  reportIds      Json?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  completedAt    DateTime?
+}
+
+model SatuSehatLogExportTask {
+  id             String    @id @default(cuid())
   status         String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
   totalItems     Int       @default(0)
   processedCount Int       @default(0)
   fileUrl        String?
-  filters        Json?     // Search filters applied
-  reportIds      Json?     // Specific IDs if it's a bulk select
+  filters        Json?     // Search filters applied (startDate, endDate, environment)
+  logIds         Json?     // Specific IDs if it's a bulk select (optional)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   completedAt    DateTime?

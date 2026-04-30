@@ -93,6 +93,11 @@ export type SatuSehatBulkSyncTask = $Result.DefaultSelection<Prisma.$SatuSehatBu
  * 
  */
 export type ReportExportTask = $Result.DefaultSelection<Prisma.$ReportExportTaskPayload>
+/**
+ * Model SatuSehatLogExportTask
+ * 
+ */
+export type SatuSehatLogExportTask = $Result.DefaultSelection<Prisma.$SatuSehatLogExportTaskPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -371,6 +376,16 @@ export class PrismaClient<
     * ```
     */
   get reportExportTask(): Prisma.ReportExportTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.satuSehatLogExportTask`: Exposes CRUD operations for the **SatuSehatLogExportTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SatuSehatLogExportTasks
+    * const satuSehatLogExportTasks = await prisma.satuSehatLogExportTask.findMany()
+    * ```
+    */
+  get satuSehatLogExportTask(): Prisma.SatuSehatLogExportTaskDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -827,7 +842,8 @@ export namespace Prisma {
     ModalityConnection: 'ModalityConnection',
     RadiologyReport: 'RadiologyReport',
     SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask',
-    ReportExportTask: 'ReportExportTask'
+    ReportExportTask: 'ReportExportTask',
+    SatuSehatLogExportTask: 'SatuSehatLogExportTask'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -846,7 +862,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport" | "satuSehatBulkSyncTask" | "reportExportTask"
+      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport" | "satuSehatBulkSyncTask" | "reportExportTask" | "satuSehatLogExportTask"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2034,6 +2050,80 @@ export namespace Prisma {
           }
         }
       }
+      SatuSehatLogExportTask: {
+        payload: Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>
+        fields: Prisma.SatuSehatLogExportTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SatuSehatLogExportTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SatuSehatLogExportTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.SatuSehatLogExportTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SatuSehatLogExportTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>
+          }
+          findMany: {
+            args: Prisma.SatuSehatLogExportTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>[]
+          }
+          create: {
+            args: Prisma.SatuSehatLogExportTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>
+          }
+          createMany: {
+            args: Prisma.SatuSehatLogExportTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SatuSehatLogExportTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.SatuSehatLogExportTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>
+          }
+          update: {
+            args: Prisma.SatuSehatLogExportTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.SatuSehatLogExportTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SatuSehatLogExportTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SatuSehatLogExportTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.SatuSehatLogExportTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatuSehatLogExportTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.SatuSehatLogExportTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSatuSehatLogExportTask>
+          }
+          groupBy: {
+            args: Prisma.SatuSehatLogExportTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatLogExportTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SatuSehatLogExportTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<SatuSehatLogExportTaskCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2146,6 +2236,7 @@ export namespace Prisma {
     radiologyReport?: RadiologyReportOmit
     satuSehatBulkSyncTask?: SatuSehatBulkSyncTaskOmit
     reportExportTask?: ReportExportTaskOmit
+    satuSehatLogExportTask?: SatuSehatLogExportTaskOmit
   }
 
   /* Types for Logging */
@@ -2362,10 +2453,10 @@ export namespace Prisma {
     password: string | null
     emailVerified: Date | null
     image: string | null
-    signature: string | null
     createdAt: Date | null
     updatedAt: Date | null
     roleId: string | null
+    signature: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2375,10 +2466,10 @@ export namespace Prisma {
     password: string | null
     emailVerified: Date | null
     image: string | null
-    signature: string | null
     createdAt: Date | null
     updatedAt: Date | null
     roleId: string | null
+    signature: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2388,10 +2479,10 @@ export namespace Prisma {
     password: number
     emailVerified: number
     image: number
-    signature: number
     createdAt: number
     updatedAt: number
     roleId: number
+    signature: number
     _all: number
   }
 
@@ -2403,10 +2494,10 @@ export namespace Prisma {
     password?: true
     emailVerified?: true
     image?: true
-    signature?: true
     createdAt?: true
     updatedAt?: true
     roleId?: true
+    signature?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2416,10 +2507,10 @@ export namespace Prisma {
     password?: true
     emailVerified?: true
     image?: true
-    signature?: true
     createdAt?: true
     updatedAt?: true
     roleId?: true
+    signature?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2429,10 +2520,10 @@ export namespace Prisma {
     password?: true
     emailVerified?: true
     image?: true
-    signature?: true
     createdAt?: true
     updatedAt?: true
     roleId?: true
+    signature?: true
     _all?: true
   }
 
@@ -2515,10 +2606,10 @@ export namespace Prisma {
     password: string | null
     emailVerified: Date | null
     image: string | null
-    signature: string | null
     createdAt: Date
     updatedAt: Date
     roleId: string | null
+    signature: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2545,10 +2636,10 @@ export namespace Prisma {
     password?: boolean
     emailVerified?: boolean
     image?: boolean
-    signature?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     roleId?: boolean
+    signature?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -2563,10 +2654,10 @@ export namespace Prisma {
     password?: boolean
     emailVerified?: boolean
     image?: boolean
-    signature?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     roleId?: boolean
+    signature?: boolean
     role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2577,10 +2668,10 @@ export namespace Prisma {
     password?: boolean
     emailVerified?: boolean
     image?: boolean
-    signature?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     roleId?: boolean
+    signature?: boolean
     role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2591,13 +2682,13 @@ export namespace Prisma {
     password?: boolean
     emailVerified?: boolean
     image?: boolean
-    signature?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     roleId?: boolean
+    signature?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "emailVerified" | "image" | "signature" | "createdAt" | "updatedAt" | "roleId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "roleId" | "signature", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
@@ -2627,10 +2718,10 @@ export namespace Prisma {
       password: string | null
       emailVerified: Date | null
       image: string | null
-      signature: string | null
       createdAt: Date
       updatedAt: Date
       roleId: string | null
+      signature: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3064,10 +3155,10 @@ export namespace Prisma {
     readonly password: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
-    readonly signature: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly roleId: FieldRef<"User", 'String'>
+    readonly signature: FieldRef<"User", 'String'>
   }
     
 
@@ -16570,10 +16661,10 @@ export namespace Prisma {
     age: string | null
     examType: string | null
     findings: string | null
+    doctorId: string | null
     reportDate: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    doctorId: string | null
     doctorName: string | null
   }
 
@@ -16588,10 +16679,10 @@ export namespace Prisma {
     age: string | null
     examType: string | null
     findings: string | null
+    doctorId: string | null
     reportDate: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    doctorId: string | null
     doctorName: string | null
   }
 
@@ -16608,10 +16699,10 @@ export namespace Prisma {
     findings: number
     measurementImages: number
     selectedSeries: number
+    doctorId: number
     reportDate: number
     createdAt: number
     updatedAt: number
-    doctorId: number
     doctorName: number
     _all: number
   }
@@ -16628,10 +16719,10 @@ export namespace Prisma {
     age?: true
     examType?: true
     findings?: true
+    doctorId?: true
     reportDate?: true
     createdAt?: true
     updatedAt?: true
-    doctorId?: true
     doctorName?: true
   }
 
@@ -16646,10 +16737,10 @@ export namespace Prisma {
     age?: true
     examType?: true
     findings?: true
+    doctorId?: true
     reportDate?: true
     createdAt?: true
     updatedAt?: true
-    doctorId?: true
     doctorName?: true
   }
 
@@ -16666,10 +16757,10 @@ export namespace Prisma {
     findings?: true
     measurementImages?: true
     selectedSeries?: true
+    doctorId?: true
     reportDate?: true
     createdAt?: true
     updatedAt?: true
-    doctorId?: true
     doctorName?: true
     _all?: true
   }
@@ -16759,10 +16850,10 @@ export namespace Prisma {
     findings: string | null
     measurementImages: JsonValue | null
     selectedSeries: JsonValue | null
+    doctorId: string | null
     reportDate: string | null
     createdAt: Date
     updatedAt: Date
-    doctorId: string | null
     doctorName: string | null
     _count: RadiologyReportCountAggregateOutputType | null
     _min: RadiologyReportMinAggregateOutputType | null
@@ -16796,10 +16887,10 @@ export namespace Prisma {
     findings?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
+    doctorId?: boolean
     reportDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    doctorId?: boolean
     doctorName?: boolean
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }, ExtArgs["result"]["radiologyReport"]>
@@ -16817,10 +16908,10 @@ export namespace Prisma {
     findings?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
+    doctorId?: boolean
     reportDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    doctorId?: boolean
     doctorName?: boolean
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }, ExtArgs["result"]["radiologyReport"]>
@@ -16838,10 +16929,10 @@ export namespace Prisma {
     findings?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
+    doctorId?: boolean
     reportDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    doctorId?: boolean
     doctorName?: boolean
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }, ExtArgs["result"]["radiologyReport"]>
@@ -16859,14 +16950,14 @@ export namespace Prisma {
     findings?: boolean
     measurementImages?: boolean
     selectedSeries?: boolean
+    doctorId?: boolean
     reportDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    doctorId?: boolean
     doctorName?: boolean
   }
 
-  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "reportDate" | "createdAt" | "updatedAt" | "doctorId" | "doctorName", ExtArgs["result"]["radiologyReport"]>
+  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "doctorId" | "reportDate" | "createdAt" | "updatedAt" | "doctorName", ExtArgs["result"]["radiologyReport"]>
   export type RadiologyReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }
@@ -16895,10 +16986,10 @@ export namespace Prisma {
       findings: string | null
       measurementImages: Prisma.JsonValue | null
       selectedSeries: Prisma.JsonValue | null
+      doctorId: string | null
       reportDate: string | null
       createdAt: Date
       updatedAt: Date
-      doctorId: string | null
       doctorName: string | null
     }, ExtArgs["result"]["radiologyReport"]>
     composites: {}
@@ -17336,10 +17427,10 @@ export namespace Prisma {
     readonly findings: FieldRef<"RadiologyReport", 'String'>
     readonly measurementImages: FieldRef<"RadiologyReport", 'Json'>
     readonly selectedSeries: FieldRef<"RadiologyReport", 'Json'>
+    readonly doctorId: FieldRef<"RadiologyReport", 'String'>
     readonly reportDate: FieldRef<"RadiologyReport", 'String'>
     readonly createdAt: FieldRef<"RadiologyReport", 'DateTime'>
     readonly updatedAt: FieldRef<"RadiologyReport", 'DateTime'>
-    readonly doctorId: FieldRef<"RadiologyReport", 'String'>
     readonly doctorName: FieldRef<"RadiologyReport", 'String'>
   }
     
@@ -19985,6 +20076,1096 @@ export namespace Prisma {
 
 
   /**
+   * Model SatuSehatLogExportTask
+   */
+
+  export type AggregateSatuSehatLogExportTask = {
+    _count: SatuSehatLogExportTaskCountAggregateOutputType | null
+    _avg: SatuSehatLogExportTaskAvgAggregateOutputType | null
+    _sum: SatuSehatLogExportTaskSumAggregateOutputType | null
+    _min: SatuSehatLogExportTaskMinAggregateOutputType | null
+    _max: SatuSehatLogExportTaskMaxAggregateOutputType | null
+  }
+
+  export type SatuSehatLogExportTaskAvgAggregateOutputType = {
+    totalItems: number | null
+    processedCount: number | null
+  }
+
+  export type SatuSehatLogExportTaskSumAggregateOutputType = {
+    totalItems: number | null
+    processedCount: number | null
+  }
+
+  export type SatuSehatLogExportTaskMinAggregateOutputType = {
+    id: string | null
+    status: string | null
+    totalItems: number | null
+    processedCount: number | null
+    fileUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type SatuSehatLogExportTaskMaxAggregateOutputType = {
+    id: string | null
+    status: string | null
+    totalItems: number | null
+    processedCount: number | null
+    fileUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type SatuSehatLogExportTaskCountAggregateOutputType = {
+    id: number
+    status: number
+    totalItems: number
+    processedCount: number
+    fileUrl: number
+    filters: number
+    logIds: number
+    createdAt: number
+    updatedAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type SatuSehatLogExportTaskAvgAggregateInputType = {
+    totalItems?: true
+    processedCount?: true
+  }
+
+  export type SatuSehatLogExportTaskSumAggregateInputType = {
+    totalItems?: true
+    processedCount?: true
+  }
+
+  export type SatuSehatLogExportTaskMinAggregateInputType = {
+    id?: true
+    status?: true
+    totalItems?: true
+    processedCount?: true
+    fileUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type SatuSehatLogExportTaskMaxAggregateInputType = {
+    id?: true
+    status?: true
+    totalItems?: true
+    processedCount?: true
+    fileUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type SatuSehatLogExportTaskCountAggregateInputType = {
+    id?: true
+    status?: true
+    totalItems?: true
+    processedCount?: true
+    fileUrl?: true
+    filters?: true
+    logIds?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type SatuSehatLogExportTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatLogExportTask to aggregate.
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatLogExportTasks to fetch.
+     */
+    orderBy?: SatuSehatLogExportTaskOrderByWithRelationInput | SatuSehatLogExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SatuSehatLogExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatLogExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatLogExportTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SatuSehatLogExportTasks
+    **/
+    _count?: true | SatuSehatLogExportTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SatuSehatLogExportTaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SatuSehatLogExportTaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SatuSehatLogExportTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SatuSehatLogExportTaskMaxAggregateInputType
+  }
+
+  export type GetSatuSehatLogExportTaskAggregateType<T extends SatuSehatLogExportTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateSatuSehatLogExportTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSatuSehatLogExportTask[P]>
+      : GetScalarType<T[P], AggregateSatuSehatLogExportTask[P]>
+  }
+
+
+
+
+  export type SatuSehatLogExportTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatuSehatLogExportTaskWhereInput
+    orderBy?: SatuSehatLogExportTaskOrderByWithAggregationInput | SatuSehatLogExportTaskOrderByWithAggregationInput[]
+    by: SatuSehatLogExportTaskScalarFieldEnum[] | SatuSehatLogExportTaskScalarFieldEnum
+    having?: SatuSehatLogExportTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SatuSehatLogExportTaskCountAggregateInputType | true
+    _avg?: SatuSehatLogExportTaskAvgAggregateInputType
+    _sum?: SatuSehatLogExportTaskSumAggregateInputType
+    _min?: SatuSehatLogExportTaskMinAggregateInputType
+    _max?: SatuSehatLogExportTaskMaxAggregateInputType
+  }
+
+  export type SatuSehatLogExportTaskGroupByOutputType = {
+    id: string
+    status: string
+    totalItems: number
+    processedCount: number
+    fileUrl: string | null
+    filters: JsonValue | null
+    logIds: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    completedAt: Date | null
+    _count: SatuSehatLogExportTaskCountAggregateOutputType | null
+    _avg: SatuSehatLogExportTaskAvgAggregateOutputType | null
+    _sum: SatuSehatLogExportTaskSumAggregateOutputType | null
+    _min: SatuSehatLogExportTaskMinAggregateOutputType | null
+    _max: SatuSehatLogExportTaskMaxAggregateOutputType | null
+  }
+
+  type GetSatuSehatLogExportTaskGroupByPayload<T extends SatuSehatLogExportTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SatuSehatLogExportTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SatuSehatLogExportTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SatuSehatLogExportTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], SatuSehatLogExportTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SatuSehatLogExportTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    logIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["satuSehatLogExportTask"]>
+
+  export type SatuSehatLogExportTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    logIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["satuSehatLogExportTask"]>
+
+  export type SatuSehatLogExportTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    logIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }, ExtArgs["result"]["satuSehatLogExportTask"]>
+
+  export type SatuSehatLogExportTaskSelectScalar = {
+    id?: boolean
+    status?: boolean
+    totalItems?: boolean
+    processedCount?: boolean
+    fileUrl?: boolean
+    filters?: boolean
+    logIds?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type SatuSehatLogExportTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "totalItems" | "processedCount" | "fileUrl" | "filters" | "logIds" | "createdAt" | "updatedAt" | "completedAt", ExtArgs["result"]["satuSehatLogExportTask"]>
+
+  export type $SatuSehatLogExportTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SatuSehatLogExportTask"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      status: string
+      totalItems: number
+      processedCount: number
+      fileUrl: string | null
+      filters: Prisma.JsonValue | null
+      logIds: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+      completedAt: Date | null
+    }, ExtArgs["result"]["satuSehatLogExportTask"]>
+    composites: {}
+  }
+
+  type SatuSehatLogExportTaskGetPayload<S extends boolean | null | undefined | SatuSehatLogExportTaskDefaultArgs> = $Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload, S>
+
+  type SatuSehatLogExportTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SatuSehatLogExportTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SatuSehatLogExportTaskCountAggregateInputType | true
+    }
+
+  export interface SatuSehatLogExportTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SatuSehatLogExportTask'], meta: { name: 'SatuSehatLogExportTask' } }
+    /**
+     * Find zero or one SatuSehatLogExportTask that matches the filter.
+     * @param {SatuSehatLogExportTaskFindUniqueArgs} args - Arguments to find a SatuSehatLogExportTask
+     * @example
+     * // Get one SatuSehatLogExportTask
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SatuSehatLogExportTaskFindUniqueArgs>(args: SelectSubset<T, SatuSehatLogExportTaskFindUniqueArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SatuSehatLogExportTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SatuSehatLogExportTaskFindUniqueOrThrowArgs} args - Arguments to find a SatuSehatLogExportTask
+     * @example
+     * // Get one SatuSehatLogExportTask
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SatuSehatLogExportTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, SatuSehatLogExportTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatLogExportTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskFindFirstArgs} args - Arguments to find a SatuSehatLogExportTask
+     * @example
+     * // Get one SatuSehatLogExportTask
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SatuSehatLogExportTaskFindFirstArgs>(args?: SelectSubset<T, SatuSehatLogExportTaskFindFirstArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatuSehatLogExportTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskFindFirstOrThrowArgs} args - Arguments to find a SatuSehatLogExportTask
+     * @example
+     * // Get one SatuSehatLogExportTask
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SatuSehatLogExportTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, SatuSehatLogExportTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SatuSehatLogExportTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SatuSehatLogExportTasks
+     * const satuSehatLogExportTasks = await prisma.satuSehatLogExportTask.findMany()
+     * 
+     * // Get first 10 SatuSehatLogExportTasks
+     * const satuSehatLogExportTasks = await prisma.satuSehatLogExportTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const satuSehatLogExportTaskWithIdOnly = await prisma.satuSehatLogExportTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SatuSehatLogExportTaskFindManyArgs>(args?: SelectSubset<T, SatuSehatLogExportTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SatuSehatLogExportTask.
+     * @param {SatuSehatLogExportTaskCreateArgs} args - Arguments to create a SatuSehatLogExportTask.
+     * @example
+     * // Create one SatuSehatLogExportTask
+     * const SatuSehatLogExportTask = await prisma.satuSehatLogExportTask.create({
+     *   data: {
+     *     // ... data to create a SatuSehatLogExportTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends SatuSehatLogExportTaskCreateArgs>(args: SelectSubset<T, SatuSehatLogExportTaskCreateArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SatuSehatLogExportTasks.
+     * @param {SatuSehatLogExportTaskCreateManyArgs} args - Arguments to create many SatuSehatLogExportTasks.
+     * @example
+     * // Create many SatuSehatLogExportTasks
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SatuSehatLogExportTaskCreateManyArgs>(args?: SelectSubset<T, SatuSehatLogExportTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SatuSehatLogExportTasks and returns the data saved in the database.
+     * @param {SatuSehatLogExportTaskCreateManyAndReturnArgs} args - Arguments to create many SatuSehatLogExportTasks.
+     * @example
+     * // Create many SatuSehatLogExportTasks
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SatuSehatLogExportTasks and only return the `id`
+     * const satuSehatLogExportTaskWithIdOnly = await prisma.satuSehatLogExportTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SatuSehatLogExportTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, SatuSehatLogExportTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SatuSehatLogExportTask.
+     * @param {SatuSehatLogExportTaskDeleteArgs} args - Arguments to delete one SatuSehatLogExportTask.
+     * @example
+     * // Delete one SatuSehatLogExportTask
+     * const SatuSehatLogExportTask = await prisma.satuSehatLogExportTask.delete({
+     *   where: {
+     *     // ... filter to delete one SatuSehatLogExportTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SatuSehatLogExportTaskDeleteArgs>(args: SelectSubset<T, SatuSehatLogExportTaskDeleteArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SatuSehatLogExportTask.
+     * @param {SatuSehatLogExportTaskUpdateArgs} args - Arguments to update one SatuSehatLogExportTask.
+     * @example
+     * // Update one SatuSehatLogExportTask
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SatuSehatLogExportTaskUpdateArgs>(args: SelectSubset<T, SatuSehatLogExportTaskUpdateArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SatuSehatLogExportTasks.
+     * @param {SatuSehatLogExportTaskDeleteManyArgs} args - Arguments to filter SatuSehatLogExportTasks to delete.
+     * @example
+     * // Delete a few SatuSehatLogExportTasks
+     * const { count } = await prisma.satuSehatLogExportTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SatuSehatLogExportTaskDeleteManyArgs>(args?: SelectSubset<T, SatuSehatLogExportTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatLogExportTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SatuSehatLogExportTasks
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SatuSehatLogExportTaskUpdateManyArgs>(args: SelectSubset<T, SatuSehatLogExportTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatuSehatLogExportTasks and returns the data updated in the database.
+     * @param {SatuSehatLogExportTaskUpdateManyAndReturnArgs} args - Arguments to update many SatuSehatLogExportTasks.
+     * @example
+     * // Update many SatuSehatLogExportTasks
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SatuSehatLogExportTasks and only return the `id`
+     * const satuSehatLogExportTaskWithIdOnly = await prisma.satuSehatLogExportTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SatuSehatLogExportTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, SatuSehatLogExportTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SatuSehatLogExportTask.
+     * @param {SatuSehatLogExportTaskUpsertArgs} args - Arguments to update or create a SatuSehatLogExportTask.
+     * @example
+     * // Update or create a SatuSehatLogExportTask
+     * const satuSehatLogExportTask = await prisma.satuSehatLogExportTask.upsert({
+     *   create: {
+     *     // ... data to create a SatuSehatLogExportTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SatuSehatLogExportTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SatuSehatLogExportTaskUpsertArgs>(args: SelectSubset<T, SatuSehatLogExportTaskUpsertArgs<ExtArgs>>): Prisma__SatuSehatLogExportTaskClient<$Result.GetResult<Prisma.$SatuSehatLogExportTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SatuSehatLogExportTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskCountArgs} args - Arguments to filter SatuSehatLogExportTasks to count.
+     * @example
+     * // Count the number of SatuSehatLogExportTasks
+     * const count = await prisma.satuSehatLogExportTask.count({
+     *   where: {
+     *     // ... the filter for the SatuSehatLogExportTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends SatuSehatLogExportTaskCountArgs>(
+      args?: Subset<T, SatuSehatLogExportTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SatuSehatLogExportTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SatuSehatLogExportTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SatuSehatLogExportTaskAggregateArgs>(args: Subset<T, SatuSehatLogExportTaskAggregateArgs>): Prisma.PrismaPromise<GetSatuSehatLogExportTaskAggregateType<T>>
+
+    /**
+     * Group by SatuSehatLogExportTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatuSehatLogExportTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SatuSehatLogExportTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SatuSehatLogExportTaskGroupByArgs['orderBy'] }
+        : { orderBy?: SatuSehatLogExportTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SatuSehatLogExportTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSatuSehatLogExportTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SatuSehatLogExportTask model
+   */
+  readonly fields: SatuSehatLogExportTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SatuSehatLogExportTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SatuSehatLogExportTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SatuSehatLogExportTask model
+   */
+  interface SatuSehatLogExportTaskFieldRefs {
+    readonly id: FieldRef<"SatuSehatLogExportTask", 'String'>
+    readonly status: FieldRef<"SatuSehatLogExportTask", 'String'>
+    readonly totalItems: FieldRef<"SatuSehatLogExportTask", 'Int'>
+    readonly processedCount: FieldRef<"SatuSehatLogExportTask", 'Int'>
+    readonly fileUrl: FieldRef<"SatuSehatLogExportTask", 'String'>
+    readonly filters: FieldRef<"SatuSehatLogExportTask", 'Json'>
+    readonly logIds: FieldRef<"SatuSehatLogExportTask", 'Json'>
+    readonly createdAt: FieldRef<"SatuSehatLogExportTask", 'DateTime'>
+    readonly updatedAt: FieldRef<"SatuSehatLogExportTask", 'DateTime'>
+    readonly completedAt: FieldRef<"SatuSehatLogExportTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SatuSehatLogExportTask findUnique
+   */
+  export type SatuSehatLogExportTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatLogExportTask to fetch.
+     */
+    where: SatuSehatLogExportTaskWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatLogExportTask findUniqueOrThrow
+   */
+  export type SatuSehatLogExportTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatLogExportTask to fetch.
+     */
+    where: SatuSehatLogExportTaskWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatLogExportTask findFirst
+   */
+  export type SatuSehatLogExportTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatLogExportTask to fetch.
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatLogExportTasks to fetch.
+     */
+    orderBy?: SatuSehatLogExportTaskOrderByWithRelationInput | SatuSehatLogExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatLogExportTasks.
+     */
+    cursor?: SatuSehatLogExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatLogExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatLogExportTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatLogExportTasks.
+     */
+    distinct?: SatuSehatLogExportTaskScalarFieldEnum | SatuSehatLogExportTaskScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatLogExportTask findFirstOrThrow
+   */
+  export type SatuSehatLogExportTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatLogExportTask to fetch.
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatLogExportTasks to fetch.
+     */
+    orderBy?: SatuSehatLogExportTaskOrderByWithRelationInput | SatuSehatLogExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatuSehatLogExportTasks.
+     */
+    cursor?: SatuSehatLogExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatLogExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatLogExportTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatuSehatLogExportTasks.
+     */
+    distinct?: SatuSehatLogExportTaskScalarFieldEnum | SatuSehatLogExportTaskScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatLogExportTask findMany
+   */
+  export type SatuSehatLogExportTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which SatuSehatLogExportTasks to fetch.
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatuSehatLogExportTasks to fetch.
+     */
+    orderBy?: SatuSehatLogExportTaskOrderByWithRelationInput | SatuSehatLogExportTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SatuSehatLogExportTasks.
+     */
+    cursor?: SatuSehatLogExportTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatuSehatLogExportTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatuSehatLogExportTasks.
+     */
+    skip?: number
+    distinct?: SatuSehatLogExportTaskScalarFieldEnum | SatuSehatLogExportTaskScalarFieldEnum[]
+  }
+
+  /**
+   * SatuSehatLogExportTask create
+   */
+  export type SatuSehatLogExportTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SatuSehatLogExportTask.
+     */
+    data: XOR<SatuSehatLogExportTaskCreateInput, SatuSehatLogExportTaskUncheckedCreateInput>
+  }
+
+  /**
+   * SatuSehatLogExportTask createMany
+   */
+  export type SatuSehatLogExportTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SatuSehatLogExportTasks.
+     */
+    data: SatuSehatLogExportTaskCreateManyInput | SatuSehatLogExportTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatLogExportTask createManyAndReturn
+   */
+  export type SatuSehatLogExportTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many SatuSehatLogExportTasks.
+     */
+    data: SatuSehatLogExportTaskCreateManyInput | SatuSehatLogExportTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatuSehatLogExportTask update
+   */
+  export type SatuSehatLogExportTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SatuSehatLogExportTask.
+     */
+    data: XOR<SatuSehatLogExportTaskUpdateInput, SatuSehatLogExportTaskUncheckedUpdateInput>
+    /**
+     * Choose, which SatuSehatLogExportTask to update.
+     */
+    where: SatuSehatLogExportTaskWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatLogExportTask updateMany
+   */
+  export type SatuSehatLogExportTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SatuSehatLogExportTasks.
+     */
+    data: XOR<SatuSehatLogExportTaskUpdateManyMutationInput, SatuSehatLogExportTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatLogExportTasks to update
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * Limit how many SatuSehatLogExportTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatLogExportTask updateManyAndReturn
+   */
+  export type SatuSehatLogExportTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update SatuSehatLogExportTasks.
+     */
+    data: XOR<SatuSehatLogExportTaskUpdateManyMutationInput, SatuSehatLogExportTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which SatuSehatLogExportTasks to update
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * Limit how many SatuSehatLogExportTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatLogExportTask upsert
+   */
+  export type SatuSehatLogExportTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SatuSehatLogExportTask to update in case it exists.
+     */
+    where: SatuSehatLogExportTaskWhereUniqueInput
+    /**
+     * In case the SatuSehatLogExportTask found by the `where` argument doesn't exist, create a new SatuSehatLogExportTask with this data.
+     */
+    create: XOR<SatuSehatLogExportTaskCreateInput, SatuSehatLogExportTaskUncheckedCreateInput>
+    /**
+     * In case the SatuSehatLogExportTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SatuSehatLogExportTaskUpdateInput, SatuSehatLogExportTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * SatuSehatLogExportTask delete
+   */
+  export type SatuSehatLogExportTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+    /**
+     * Filter which SatuSehatLogExportTask to delete.
+     */
+    where: SatuSehatLogExportTaskWhereUniqueInput
+  }
+
+  /**
+   * SatuSehatLogExportTask deleteMany
+   */
+  export type SatuSehatLogExportTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatuSehatLogExportTasks to delete
+     */
+    where?: SatuSehatLogExportTaskWhereInput
+    /**
+     * Limit how many SatuSehatLogExportTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatuSehatLogExportTask without action
+   */
+  export type SatuSehatLogExportTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatuSehatLogExportTask
+     */
+    select?: SatuSehatLogExportTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatuSehatLogExportTask
+     */
+    omit?: SatuSehatLogExportTaskOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20005,10 +21186,10 @@ export namespace Prisma {
     password: 'password',
     emailVerified: 'emailVerified',
     image: 'image',
-    signature: 'signature',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    roleId: 'roleId'
+    roleId: 'roleId',
+    signature: 'signature'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -20209,10 +21390,10 @@ export namespace Prisma {
     findings: 'findings',
     measurementImages: 'measurementImages',
     selectedSeries: 'selectedSeries',
+    doctorId: 'doctorId',
     reportDate: 'reportDate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    doctorId: 'doctorId',
     doctorName: 'doctorName'
   };
 
@@ -20251,6 +21432,22 @@ export namespace Prisma {
   };
 
   export type ReportExportTaskScalarFieldEnum = (typeof ReportExportTaskScalarFieldEnum)[keyof typeof ReportExportTaskScalarFieldEnum]
+
+
+  export const SatuSehatLogExportTaskScalarFieldEnum: {
+    id: 'id',
+    status: 'status',
+    totalItems: 'totalItems',
+    processedCount: 'processedCount',
+    fileUrl: 'fileUrl',
+    filters: 'filters',
+    logIds: 'logIds',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    completedAt: 'completedAt'
+  };
+
+  export type SatuSehatLogExportTaskScalarFieldEnum = (typeof SatuSehatLogExportTaskScalarFieldEnum)[keyof typeof SatuSehatLogExportTaskScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20396,10 +21593,10 @@ export namespace Prisma {
     password?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
-    signature?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     roleId?: StringNullableFilter<"User"> | string | null
+    signature?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
@@ -20413,10 +21610,10 @@ export namespace Prisma {
     password?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
-    signature?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     roleId?: SortOrderInput | SortOrder
+    signature?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     reports?: RadiologyReportOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
@@ -20433,10 +21630,10 @@ export namespace Prisma {
     password?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
-    signature?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     roleId?: StringNullableFilter<"User"> | string | null
+    signature?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
@@ -20450,10 +21647,10 @@ export namespace Prisma {
     password?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
-    signature?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     roleId?: SortOrderInput | SortOrder
+    signature?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -20469,10 +21666,10 @@ export namespace Prisma {
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
-    signature?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     roleId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    signature?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type RoleWhereInput = {
@@ -21388,10 +22585,10 @@ export namespace Prisma {
     findings?: StringNullableFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableFilter<"RadiologyReport">
     selectedSeries?: JsonNullableFilter<"RadiologyReport">
+    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
     reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
     createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
-    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
     doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
     doctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
@@ -21409,10 +22606,10 @@ export namespace Prisma {
     findings?: SortOrderInput | SortOrder
     measurementImages?: SortOrderInput | SortOrder
     selectedSeries?: SortOrderInput | SortOrder
+    doctorId?: SortOrderInput | SortOrder
     reportDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    doctorId?: SortOrderInput | SortOrder
     doctorName?: SortOrderInput | SortOrder
     doctor?: UserOrderByWithRelationInput
   }
@@ -21434,10 +22631,10 @@ export namespace Prisma {
     findings?: StringNullableFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableFilter<"RadiologyReport">
     selectedSeries?: JsonNullableFilter<"RadiologyReport">
+    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
     reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
     createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
-    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
     doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
     doctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id" | "patientId_studyInstanceUid">
@@ -21455,10 +22652,10 @@ export namespace Prisma {
     findings?: SortOrderInput | SortOrder
     measurementImages?: SortOrderInput | SortOrder
     selectedSeries?: SortOrderInput | SortOrder
+    doctorId?: SortOrderInput | SortOrder
     reportDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    doctorId?: SortOrderInput | SortOrder
     doctorName?: SortOrderInput | SortOrder
     _count?: RadiologyReportCountOrderByAggregateInput
     _max?: RadiologyReportMaxOrderByAggregateInput
@@ -21481,10 +22678,10 @@ export namespace Prisma {
     findings?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableWithAggregatesFilter<"RadiologyReport">
     selectedSeries?: JsonNullableWithAggregatesFilter<"RadiologyReport">
+    doctorId?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     reportDate?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"RadiologyReport"> | Date | string
-    doctorId?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     doctorName?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
   }
 
@@ -21656,6 +22853,85 @@ export namespace Prisma {
     completedAt?: DateTimeNullableWithAggregatesFilter<"ReportExportTask"> | Date | string | null
   }
 
+  export type SatuSehatLogExportTaskWhereInput = {
+    AND?: SatuSehatLogExportTaskWhereInput | SatuSehatLogExportTaskWhereInput[]
+    OR?: SatuSehatLogExportTaskWhereInput[]
+    NOT?: SatuSehatLogExportTaskWhereInput | SatuSehatLogExportTaskWhereInput[]
+    id?: StringFilter<"SatuSehatLogExportTask"> | string
+    status?: StringFilter<"SatuSehatLogExportTask"> | string
+    totalItems?: IntFilter<"SatuSehatLogExportTask"> | number
+    processedCount?: IntFilter<"SatuSehatLogExportTask"> | number
+    fileUrl?: StringNullableFilter<"SatuSehatLogExportTask"> | string | null
+    filters?: JsonNullableFilter<"SatuSehatLogExportTask">
+    logIds?: JsonNullableFilter<"SatuSehatLogExportTask">
+    createdAt?: DateTimeFilter<"SatuSehatLogExportTask"> | Date | string
+    updatedAt?: DateTimeFilter<"SatuSehatLogExportTask"> | Date | string
+    completedAt?: DateTimeNullableFilter<"SatuSehatLogExportTask"> | Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
+    filters?: SortOrderInput | SortOrder
+    logIds?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+  }
+
+  export type SatuSehatLogExportTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SatuSehatLogExportTaskWhereInput | SatuSehatLogExportTaskWhereInput[]
+    OR?: SatuSehatLogExportTaskWhereInput[]
+    NOT?: SatuSehatLogExportTaskWhereInput | SatuSehatLogExportTaskWhereInput[]
+    status?: StringFilter<"SatuSehatLogExportTask"> | string
+    totalItems?: IntFilter<"SatuSehatLogExportTask"> | number
+    processedCount?: IntFilter<"SatuSehatLogExportTask"> | number
+    fileUrl?: StringNullableFilter<"SatuSehatLogExportTask"> | string | null
+    filters?: JsonNullableFilter<"SatuSehatLogExportTask">
+    logIds?: JsonNullableFilter<"SatuSehatLogExportTask">
+    createdAt?: DateTimeFilter<"SatuSehatLogExportTask"> | Date | string
+    updatedAt?: DateTimeFilter<"SatuSehatLogExportTask"> | Date | string
+    completedAt?: DateTimeNullableFilter<"SatuSehatLogExportTask"> | Date | string | null
+  }, "id">
+
+  export type SatuSehatLogExportTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
+    filters?: SortOrderInput | SortOrder
+    logIds?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: SatuSehatLogExportTaskCountOrderByAggregateInput
+    _avg?: SatuSehatLogExportTaskAvgOrderByAggregateInput
+    _max?: SatuSehatLogExportTaskMaxOrderByAggregateInput
+    _min?: SatuSehatLogExportTaskMinOrderByAggregateInput
+    _sum?: SatuSehatLogExportTaskSumOrderByAggregateInput
+  }
+
+  export type SatuSehatLogExportTaskScalarWhereWithAggregatesInput = {
+    AND?: SatuSehatLogExportTaskScalarWhereWithAggregatesInput | SatuSehatLogExportTaskScalarWhereWithAggregatesInput[]
+    OR?: SatuSehatLogExportTaskScalarWhereWithAggregatesInput[]
+    NOT?: SatuSehatLogExportTaskScalarWhereWithAggregatesInput | SatuSehatLogExportTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SatuSehatLogExportTask"> | string
+    status?: StringWithAggregatesFilter<"SatuSehatLogExportTask"> | string
+    totalItems?: IntWithAggregatesFilter<"SatuSehatLogExportTask"> | number
+    processedCount?: IntWithAggregatesFilter<"SatuSehatLogExportTask"> | number
+    fileUrl?: StringNullableWithAggregatesFilter<"SatuSehatLogExportTask"> | string | null
+    filters?: JsonNullableWithAggregatesFilter<"SatuSehatLogExportTask">
+    logIds?: JsonNullableWithAggregatesFilter<"SatuSehatLogExportTask">
+    createdAt?: DateTimeWithAggregatesFilter<"SatuSehatLogExportTask"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SatuSehatLogExportTask"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatLogExportTask"> | Date | string | null
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -21663,9 +22939,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -21679,10 +22955,10 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     roleId?: string | null
+    signature?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -21695,9 +22971,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -21711,10 +22987,10 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -21727,10 +23003,10 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     roleId?: string | null
+    signature?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -21740,9 +23016,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -21752,10 +23028,10 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RoleCreateInput = {
@@ -22823,10 +24099,10 @@ export namespace Prisma {
     findings?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    doctorId?: string | null
     reportDate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    doctorId?: string | null
     doctorName?: string | null
   }
 
@@ -22863,10 +24139,10 @@ export namespace Prisma {
     findings?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    doctorId?: NullableStringFieldUpdateOperationsInput | string | null
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorId?: NullableStringFieldUpdateOperationsInput | string | null
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -22883,10 +24159,10 @@ export namespace Prisma {
     findings?: string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    doctorId?: string | null
     reportDate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    doctorId?: string | null
     doctorName?: string | null
   }
 
@@ -22922,10 +24198,10 @@ export namespace Prisma {
     findings?: NullableStringFieldUpdateOperationsInput | string | null
     measurementImages?: NullableJsonNullValueInput | InputJsonValue
     selectedSeries?: NullableJsonNullValueInput | InputJsonValue
+    doctorId?: NullableStringFieldUpdateOperationsInput | string | null
     reportDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    doctorId?: NullableStringFieldUpdateOperationsInput | string | null
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -23125,6 +24401,97 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type SatuSehatLogExportTaskCreateInput = {
+    id?: string
+    status?: string
+    totalItems?: number
+    processedCount?: number
+    fileUrl?: string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskUncheckedCreateInput = {
+    id?: string
+    status?: string
+    totalItems?: number
+    processedCount?: number
+    fileUrl?: string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskCreateManyInput = {
+    id?: string
+    status?: string
+    totalItems?: number
+    processedCount?: number
+    fileUrl?: string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SatuSehatLogExportTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    totalItems?: IntFieldUpdateOperationsInput | number
+    processedCount?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    logIds?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -23224,10 +24591,10 @@ export namespace Prisma {
     password?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
-    signature?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     roleId?: SortOrder
+    signature?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -23237,10 +24604,10 @@ export namespace Prisma {
     password?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
-    signature?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     roleId?: SortOrder
+    signature?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -23250,10 +24617,10 @@ export namespace Prisma {
     password?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
-    signature?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     roleId?: SortOrder
+    signature?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -24005,10 +25372,10 @@ export namespace Prisma {
     findings?: SortOrder
     measurementImages?: SortOrder
     selectedSeries?: SortOrder
+    doctorId?: SortOrder
     reportDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    doctorId?: SortOrder
     doctorName?: SortOrder
   }
 
@@ -24023,10 +25390,10 @@ export namespace Prisma {
     age?: SortOrder
     examType?: SortOrder
     findings?: SortOrder
+    doctorId?: SortOrder
     reportDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    doctorId?: SortOrder
     doctorName?: SortOrder
   }
 
@@ -24041,10 +25408,10 @@ export namespace Prisma {
     age?: SortOrder
     examType?: SortOrder
     findings?: SortOrder
+    doctorId?: SortOrder
     reportDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    doctorId?: SortOrder
     doctorName?: SortOrder
   }
 
@@ -24142,6 +25509,51 @@ export namespace Prisma {
   }
 
   export type ReportExportTaskSumOrderByAggregateInput = {
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+  }
+
+  export type SatuSehatLogExportTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrder
+    filters?: SortOrder
+    logIds?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type SatuSehatLogExportTaskAvgOrderByAggregateInput = {
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+  }
+
+  export type SatuSehatLogExportTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type SatuSehatLogExportTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    status?: SortOrder
+    totalItems?: SortOrder
+    processedCount?: SortOrder
+    fileUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type SatuSehatLogExportTaskSumOrderByAggregateInput = {
     totalItems?: SortOrder
     processedCount?: SortOrder
   }
@@ -24928,10 +26340,10 @@ export namespace Prisma {
     findings?: StringNullableFilter<"RadiologyReport"> | string | null
     measurementImages?: JsonNullableFilter<"RadiologyReport">
     selectedSeries?: JsonNullableFilter<"RadiologyReport">
+    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
     reportDate?: StringNullableFilter<"RadiologyReport"> | string | null
     createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
-    doctorId?: StringNullableFilter<"RadiologyReport"> | string | null
     doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
   }
 
@@ -24995,9 +26407,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -25010,9 +26422,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -25073,10 +26485,10 @@ export namespace Prisma {
     password?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
-    signature?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     roleId?: StringNullableFilter<"User"> | string | null
+    signature?: StringNullableFilter<"User"> | string | null
   }
 
   export type PermissionUpsertWithWhereUniqueWithoutRolesInput = {
@@ -25159,9 +26571,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
@@ -25174,10 +26586,10 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     roleId?: string | null
+    signature?: string | null
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -25205,9 +26617,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
@@ -25220,10 +26632,10 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -25235,9 +26647,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     role?: RoleCreateNestedOneWithoutUsersInput
@@ -25250,10 +26662,10 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     roleId?: string | null
+    signature?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
   }
@@ -25281,9 +26693,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
@@ -25296,10 +26708,10 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
   }
@@ -25311,9 +26723,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
@@ -25326,10 +26738,10 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     roleId?: string | null
+    signature?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -25357,9 +26769,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
@@ -25372,10 +26784,10 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -25543,9 +26955,9 @@ export namespace Prisma {
     password?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    signature?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    signature?: string | null
   }
 
   export type UserUpdateWithoutRoleInput = {
@@ -25555,9 +26967,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -25570,9 +26982,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -25585,9 +26997,9 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    signature?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PermissionUpdateWithoutRolesInput = {

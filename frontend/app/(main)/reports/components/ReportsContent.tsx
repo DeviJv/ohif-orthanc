@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 
 import React, { useState, useMemo, useCallback } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from "@/components/ui/table";
@@ -138,7 +139,11 @@ export default function ReportsContent() {
                 }),
             });
             if (res.ok) {
-                // Task started
+                toast.success("Proses export dimulai", {
+                    description: "Data sedang disiapkan di latar belakang."
+                });
+            } else {
+                toast.error("Gagal memulai export");
             }
         } catch (error) {
             console.error("Failed to start CSV export:", error);

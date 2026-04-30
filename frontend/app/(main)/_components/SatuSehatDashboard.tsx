@@ -12,7 +12,8 @@ import {
     InformationCircleIcon,
     Search01Icon,
     Download01Icon,
-    Clock01Icon
+    Clock01Icon,
+    Cancel01Icon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
+import { FloatingSatuSehatExportProgress } from "./floating-satusehat-export-progress";
 
 interface SatuSehatStats {
     summary: Record<string, number>;
@@ -60,6 +62,44 @@ export function SatuSehatDashboard() {
         to: new Date()
     });
     const [activeSubTab, setActiveSubTab] = useState("summary");
+
+    const defaultDateRange = {
+        from: new Date(new Date().setDate(new Date().getDate() - 30)),
+        to: new Date()
+    };
+
+    const handleResetFilters = () => {
+        setDateRange(defaultDateRange);
+        setEnvironment("staging");
+        setPage(1);
+        toast.info("Filter telah direset");
+    };
+
+    const handleExportCSV = async () => {
+        try {
+            const res = await fetch("/api/stats/satusehat/export", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    filters: {
+                        startDate: dateRange?.from?.toISOString(),
+                        endDate: dateRange?.to?.toISOString(),
+                        environment
+                    }
+                }),
+            });
+            if (res.ok) {
+                toast.success("Proses export dimulai", {
+                    description: "Data sedang disiapkan di latar belakang."
+                });
+            } else {
+                throw new Error("Gagal memulai export");
+            }
+        } catch (error) {
+            console.error("Export error:", error);
+            toast.error("Gagal memulai export");
+        }
+    };
 
     const fetchStats = async (currentPage = 1) => {
         try {
@@ -149,12 +189,25 @@ export function SatuSehatDashboard() {
                         <DateRangePicker range={dateRange} setRange={setDateRange} />
                     </div>
                     
+                    {dateRange && (
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={handleResetFilters}
+                            className="h-10 w-10 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20"
+                            title="Reset All Filters"
+                        >
+                            <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
+                        </Button>
+                    )}
+                    
                     <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden md:block" />
                     
                     <div className="flex gap-2 w-full md:w-auto justify-end">
                         <Button 
                             variant="outline" 
                             size="sm" 
+                            onClick={handleExportCSV}
                             className="flex-1 md:flex-none h-10 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:bg-slate-900 hover:text-white dark:hover:text-slate-100 hover:border-slate-900 dark:bg-slate-900 dark:text-slate-300"
                         >
                             <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />
@@ -423,6 +476,7 @@ export function SatuSehatDashboard() {
                 <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Dihubungkan ke SATUSEHAT API • Terakhir diperbarui: {format(new Date(), "dd MMMM yyyy, HH:mm", { locale: id })} WIB
             </div>
+            <FloatingSatuSehatExportProgress />
         </div>
     );
 

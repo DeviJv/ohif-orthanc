@@ -17,24 +17,23 @@ export default async function UsersPage() {
   const roles = rolesResult?.success && rolesResult?.data ? rolesResult.data : [];
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />
+    <div className="p-6 w-full space-y-6">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-3">
+            <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2.5} className="size-8 text-primary" />
             User Management
-          </h2>
+          </h1>
           <p className="text-muted-foreground">
             Manage your hospital staff access and roles.
           </p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <UserFormDialog roles={roles} />
         </div>
       </div>
-      <div className="border rounded-md bg-white dark:bg-slate-950">
-        <UserTable users={users || []} roles={roles} />
-      </div>
+      
+      <UserTable users={users || []} roles={roles} />
     </div>
   );
 }

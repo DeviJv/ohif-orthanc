@@ -47,47 +47,48 @@ export function PermissionTable({ permissions }: PermissionTableProps) {
   }, [filteredPermissions, page, pageSize]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="relative w-64">
-           <HugeiconsIcon icon={Search01Icon} size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-sm group">
+           <HugeiconsIcon icon={Search01Icon} size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" />
            <Input 
              placeholder="Search permissions..." 
              value={search}
              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-             className="pl-9 h-9"
+             className="pl-10 h-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-xl shadow-sm focus-visible:ring-primary/20 transition-all"
            />
         </div>
       </div>
-      <div className="border rounded-md bg-white dark:bg-slate-950 overflow-hidden">
+
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm overflow-hidden backdrop-blur-sm">
         <Table>
-          <TableHeader className="bg-slate-50 dark:bg-slate-900">
-            <TableRow>
-              <TableHead className="w-[300px]">Permission Name / Slug</TableHead>
-              <TableHead>Description & Usage</TableHead>
-              <TableHead className="text-right">Scope</TableHead>
+          <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
+            <TableRow className="hover:bg-transparent border-slate-200 dark:border-slate-800">
+              <TableHead className="w-[300px] font-bold text-slate-700 dark:text-slate-300">Permission Name / Slug</TableHead>
+              <TableHead className="font-bold text-slate-700 dark:text-slate-300">Description & Usage</TableHead>
+              <TableHead className="text-right font-bold text-slate-700 dark:text-slate-300">Scope</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {permissions.length === 0 ? (
+            {filteredPermissions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="h-24 text-center">
+                <TableCell colSpan={3} className="h-40 text-center text-slate-400 dark:text-slate-500 italic">
                   No permissions found.
                 </TableCell>
               </TableRow>
             ) : (
               paginatedPermissions.map((p: any) => (
-                <TableRow key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50">
-                  <TableCell className="font-mono text-sm">
-                    <Badge variant="outline" className="bg-slate-100 dark:bg-slate-800 font-mono text-[11px]">
+                <TableRow key={p.id} className="group hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-slate-100 dark:border-slate-800">
+                  <TableCell className="py-4 font-mono text-sm">
+                    <Badge variant="outline" className="bg-slate-100 dark:bg-slate-800 font-mono text-[11px] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 px-2">
                       {p.name}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="py-4 text-sm text-slate-600 dark:text-slate-400">
                     Grants access to {p.name.replace(/-/g, ' ')} functionality across the system.
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Badge className="bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-50 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-900 font-normal">
+                  <TableCell className="py-4 text-right">
+                    <Badge className="bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-50 dark:bg-indigo-950/30 dark:text-indigo-300 dark:border-indigo-900 font-medium px-3">
                       System
                     </Badge>
                   </TableCell>
@@ -98,13 +99,13 @@ export function PermissionTable({ permissions }: PermissionTableProps) {
         </Table>
       </div>
       
-      <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
-          Showing <strong>{((page - 1) * pageSize) + Math.min(1, paginatedPermissions.length)}</strong> to <strong>{Math.min(page * pageSize, filteredPermissions.length)}</strong> of <strong>{filteredPermissions.length}</strong> permission(s).
-        </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2">
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-muted-foreground font-medium">
+            Showing {filteredPermissions.length} permissions
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground whitespace-nowrap px-2 border-l border-slate-200 dark:border-slate-800">Show per page</span>
             <Select
               value={pageSize.toString()}
               onValueChange={(value) => {
@@ -112,47 +113,41 @@ export function PermissionTable({ permissions }: PermissionTableProps) {
                 setPage(1);
               }}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger className="h-8 w-[70px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-lg shadow-sm">
                 <SelectValue placeholder={pageSize} />
               </SelectTrigger>
-              <SelectContent side="top">
-                {[5, 10, 20, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
+              <SelectContent side="top" className="rounded-xl border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
+                {[10, 20, 50, 100].map((size) => (
+                  <SelectItem key={size} value={`${size}`} className="rounded-lg cursor-pointer">
+                    {size}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="h-9 px-4 rounded-lg border-slate-200 dark:border-slate-800 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            Previous
+          </Button>
+          <div className="flex items-center gap-1 text-sm font-semibold px-4">
             Page {page} of {totalPages}
           </div>
-          <Pagination className="mx-0 w-auto">
-            <PaginationContent>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  className="h-8 w-8 p-0"
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                >
-                  <span className="sr-only">Go to previous page</span>
-                  <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  className="h-8 w-8 p-0"
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages}
-                >
-                  <span className="sr-only">Go to next page</span>
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="h-9 px-4 rounded-lg border-slate-200 dark:border-slate-800 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>

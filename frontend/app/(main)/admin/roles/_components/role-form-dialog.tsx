@@ -73,12 +73,16 @@ export function RoleFormDialog({ role, permissions, isEdit = false }: RoleFormDi
       <DialogTrigger
         render={
           isEdit ? (
-            <div className="flex items-center px-2 py-1.5 text-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 rounded-sm">
-              <HugeiconsIcon icon={PencilEdit01Icon} size={16} className="mr-2" />
-              Edit Role
-            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="size-8 p-0 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg"
+              title="Edit Role"
+            >
+              <HugeiconsIcon icon={PencilEdit01Icon} className="size-4" />
+            </Button>
           ) : (
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2 px-4 rounded-xl shadow-md hover:shadow-lg transition-all">
               <HugeiconsIcon icon={Add01Icon} size={18} />
               Add New Role
             </Button>

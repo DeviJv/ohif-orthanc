@@ -128,10 +128,10 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   emailVerified: 'emailVerified',
   image: 'image',
-  signature: 'signature',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  roleId: 'roleId'
+  roleId: 'roleId',
+  signature: 'signature'
 };
 
 exports.Prisma.RoleScalarFieldEnum = {
@@ -293,10 +293,10 @@ exports.Prisma.RadiologyReportScalarFieldEnum = {
   findings: 'findings',
   measurementImages: 'measurementImages',
   selectedSeries: 'selectedSeries',
+  doctorId: 'doctorId',
   reportDate: 'reportDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  doctorId: 'doctorId',
   doctorName: 'doctorName'
 };
 
@@ -323,6 +323,19 @@ exports.Prisma.ReportExportTaskScalarFieldEnum = {
   fileUrl: 'fileUrl',
   filters: 'filters',
   reportIds: 'reportIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.SatuSehatLogExportTaskScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  totalItems: 'totalItems',
+  processedCount: 'processedCount',
+  fileUrl: 'fileUrl',
+  filters: 'filters',
+  logIds: 'logIds',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   completedAt: 'completedAt'
@@ -375,7 +388,8 @@ exports.Prisma.ModelName = {
   ModalityConnection: 'ModalityConnection',
   RadiologyReport: 'RadiologyReport',
   SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask',
-  ReportExportTask: 'ReportExportTask'
+  ReportExportTask: 'ReportExportTask',
+  SatuSehatLogExportTask: 'SatuSehatLogExportTask'
 };
 
 /**

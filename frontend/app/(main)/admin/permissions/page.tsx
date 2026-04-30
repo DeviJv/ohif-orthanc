@@ -22,24 +22,22 @@ export default async function PermissionsPage() {
   const permissions = result?.success && result?.data ? result.data : [];
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <HugeiconsIcon icon={Key01Icon} strokeWidth={2} />
-            System Permissions
-          </h2>
-          <p className="text-muted-foreground">
-            List of unique capabilities available for role assignment.
-          </p>
-        </div>
+    <div className="p-6 w-full space-y-6">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-3">
+          <HugeiconsIcon icon={Key01Icon} strokeWidth={2.5} className="size-8 text-primary" />
+          System Permissions
+        </h1>
+        <p className="text-muted-foreground">
+          List of unique capabilities available for role assignment.
+        </p>
       </div>
 
-      <Alert variant="info" className="bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-900">
-        <HugeiconsIcon icon={InformationCircleIcon} size={18} className="text-blue-600 dark:text-blue-400" />
-        <AlertTitle className="text-blue-800 dark:text-blue-300">Read-Only Access</AlertTitle>
-        <AlertDescription className="text-blue-700 dark:text-blue-400">
-          Permissions are defined in the system core. You can assign them to roles in the Roles Management tab, but new permissions can only be added by system administrators via code updates.
+      <Alert variant="info" className="bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 rounded-xl overflow-hidden backdrop-blur-sm">
+        <HugeiconsIcon icon={InformationCircleIcon} size={20} className="text-blue-600 dark:text-blue-400" />
+        <AlertTitle className="text-blue-800 dark:text-blue-300 font-bold">Read-Only Access</AlertTitle>
+        <AlertDescription className="text-blue-700/80 dark:text-blue-400/80">
+          Permissions are defined in the system core. You can assign them to roles in the <span className="font-semibold text-blue-900 dark:text-blue-200">Roles Management</span> tab, but new permissions can only be added by system administrators via code updates.
         </AlertDescription>
       </Alert>
 

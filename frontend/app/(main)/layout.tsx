@@ -15,6 +15,7 @@ import { SystemStatusHeader } from "@/components/system-status-header"
 import { ModeToggle } from "@/components/mode-toggle"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Preloader } from "@/components/preloader"
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,7 @@ export default async function MainLayout({
 
     return (
         <SidebarProvider>
+            <Preloader />
             <AppSidebar user={session.user} />
             <SidebarInset>
                 <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b bg-white/80 backdrop-blur-md dark:bg-slate-950/80 dark:border-slate-800">

@@ -22,7 +22,7 @@ export const ORTHANC_API_CATEGORIES = [
   "System & Tools",
   "DICOMweb",
   "Radiology Reports",
-  "Create Order",
+  "Create ACSN",
   "Connect Devices",
 ];
 
@@ -202,7 +202,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     method: "POST",
     path: "/api/external/study/accession",
     description: "Update study Accession Number using Patient ID and Study Date. Designed for SIMRS integration when StudyInstanceUID is unknown.",
-    category: "Create Order",
+    category: "Create ACSN",
     parameters: [
       { name: "patientId", type: "string", description: "Required Patient ID (DICOM PatientID)", required: true },
       { name: "studyDate", type: "string", description: "Required Study Date (Format: YYYYMMDD)", required: true },

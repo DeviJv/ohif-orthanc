@@ -163,7 +163,7 @@ function getCategoryIcon(category: string) {
         case "Instances": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         case "DICOMweb": return <HugeiconsIcon icon={InternetIcon} className={size} />;
         case "Radiology Reports": return <HugeiconsIcon icon={ApiIcon} className={size} />;
-        case "Create Order": return <HugeiconsIcon icon={CodeIcon} className={size} />;
+        case "Create ACSN": return <HugeiconsIcon icon={CodeIcon} className={size} />;
         case "Connect Devices": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         default: return <HugeiconsIcon icon={Link01Icon} className={size} />;
     }
@@ -171,7 +171,7 @@ function getCategoryIcon(category: string) {
 
 function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiEndpoint, onCopy: (text: string) => void, appUrl?: string, orthancUrl?: string }) {
     const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
-    const isExternalApi = endpoint.category === "Create Order" || endpoint.category === "Radiology Reports";
+    const isExternalApi = endpoint.category === "Create ACSN" || endpoint.category === "Radiology Reports";
     const isConnectDevices = endpoint.category === "Connect Devices";
     const pacsKey = "pacs_secret_token_2026";
     

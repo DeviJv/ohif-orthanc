@@ -481,6 +481,16 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 return y + 7;
             };
 
+            const drawRowSingle = (label: string, val: string, y: number) => {
+                pdf.setFont("helvetica", "bold");
+                pdf.text(label, leftMargin + 2, y + 4.5);
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`: ${val}`, leftMargin + 27, y + 4.5);
+                
+                pdf.rect(leftMargin, y, contentWidth, 7);
+                return y + 7;
+            };
+
             const drawSection = (label: string, content: string, startY: number) => {
                 pdf.setFont("helvetica", "bold");
                 const splitContent = pdf.splitTextToSize(content, contentWidth - 35);
@@ -501,7 +511,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             currentY = drawRow("Tgl Foto", studyDateFormatted, "Unit", modalityName, currentY);
             
             // Move Jenis (Exam Type) to the top section per user request
-            currentY = drawSection("Jenis", formData.examType, currentY);
+            currentY = drawRowSingle("Jenis", formData.examType, currentY);
             
             // Body Table: findings, Conclusion, Recommendation
             currentY += 10;

@@ -139,9 +139,9 @@ export default function SettingsPage() {
                 </h1>
                 <div className="flex items-center gap-4">
                     <p className="text-muted-foreground text-sm">Kelola konfigurasi sistem dan profil fasilitas kesehatan.</p>
-                    <Badge variant="outline" className="bg-primary/5 dark:bg-primary/10 text-primary border-primary/20 dark:border-primary/40">
+                    {/* <Badge variant="outline" className="bg-primary/5 dark:bg-primary/10 text-primary border-primary/20 dark:border-primary/40">
                         AI Service: Active
-                    </Badge>
+                    </Badge> */}
                 </div>
             </header>
 

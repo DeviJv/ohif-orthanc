@@ -21,30 +21,31 @@ services:
       - URL=${SATUSEHAT_URL}
     networks:
       - pacs
-    entrypoint: |
-      /bin/bash -c "
-      cat <<EOF > /app/router.conf
-      [satusehat]
-      url = \$$URL
-      dicom_pathsuffix = /dicom/v1/dicomWeb/studies
-      fhir_pathsuffix = /fhir-r4/v1
-      tz_name = Asia/Jakarta
-      ae_title = DCMROUTER
-      dicom_port = 11112
-      dcm_dir = /in/
-      http_port = 8080
-      webhook_url = \$$WEBHOOK_URL
-      webhook_user = \$$WEBHOOK_USER
-      webhook_password = \$$WEBHOOK_PASSWORD
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cat <<EOF > /app/router.conf
+        [satusehat]
+        url = $$URL
+        dicom_pathsuffix = /dicom/v1/dicomWeb/studies
+        fhir_pathsuffix = /fhir-r4/v1
+        tz_name = Asia/Jakarta
+        ae_title = DCMROUTER
+        dicom_port = 11112
+        dcm_dir = /in/
+        http_port = 8080
+        webhook_url = $$WEBHOOK_URL
+        webhook_user = $$WEBHOOK_USER
+        webhook_password = $$WEBHOOK_PASSWORD
 
-      [satusehat.default]
-      calling_ae_title = \$$AE_TITLE
-      organization_id = \$$ORG_ID
-      client_key = \$$CLIENT
-      secret_key = \$$SECRET
-      EOF
-      exec /app/entrypoint.sh
-      "
+        [satusehat.default]
+        calling_ae_title = $$AE_TITLE
+        organization_id = $$ORG_ID
+        client_key = $$CLIENT
+        secret_key = $$SECRET
+        EOF
+        exec /app/entrypoint.sh
 
 networks:
   pacs:

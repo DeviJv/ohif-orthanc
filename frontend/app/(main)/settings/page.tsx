@@ -449,7 +449,7 @@ function TelegramSettingsTab() {
             const res = await fetch("/api/config/telegram/test", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ botToken, chatId }),
+                body: JSON.stringify({ botToken, chatId, satuSehatChatId }),
             });
             
             const data = await res.json();

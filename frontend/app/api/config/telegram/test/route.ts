@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        let { botToken, chatId } = await req.json();
+        let { botToken, chatId, satuSehatChatId } = await req.json();
 
         // Helper to check if a value is masked
         const isMasked = (val: string) => !val || val.includes("***");
@@ -25,9 +25,24 @@ export async function POST(req: NextRequest) {
             const chatIdRow = await db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } });
             chatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "";
         }
+        if (isMasked(satuSehatChatId)) {
+            const satuSehatRow = await db.appConfig.findUnique({ where: { key: "TELEGRAM_SATUSEHAT_CHAT_ID" } });
+            satuSehatChatId = satuSehatRow?.value || process.env.TELEGRAM_SATUSEHAT_CHAT_ID || "";
+        }
 
-        if (!botToken || !chatId) {
-            return NextResponse.json({ error: "Token and Chat ID are required for testing" }, { status: 400 });
+        if (!botToken) {
+            return NextResponse.json({ error: "Bot Token is required for testing" }, { status: 400 });
+        }
+
+        // We test whichever chatId is provided. If both, we could test both, 
+        // but for simplicity, we prioritize satuSehatChatId if it's explicitly being tested from UI,
+        // or just test both if available.
+        const targetChatIds = [];
+        if (chatId) targetChatIds.push({ id: chatId, label: "Primary" });
+        if (satuSehatChatId) targetChatIds.push({ id: satuSehatChatId, label: "SatuSehat" });
+
+        if (targetChatIds.length === 0) {
+            return NextResponse.json({ error: "At least one Chat ID is required for testing" }, { status: 400 });
         }
 
         const telegramUrl = `https://api.telegram.org/bot${botToken}/getMe`;
@@ -44,22 +59,29 @@ export async function POST(req: NextRequest) {
         const meData = await meResponse.json();
         const botName = meData.result.first_name;
 
-        // Try to send a test message
-        const sendMessageUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-        const sendResponse = await fetch(sendMessageUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: `✅ Connection Test Successful!\n\nThis bot (${botName}) is now correctly configured for your Quantum PACS system.`,
-            }),
-        });
+        // Try to send a test message to all target chat IDs
+        const errors: string[] = [];
+        for (const target of targetChatIds) {
+            const sendMessageUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            const sendResponse = await fetch(sendMessageUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: target.id,
+                    text: `✅ ${target.label} Connection Test Successful!\n\nThis bot (${botName}) is now correctly configured for your Quantum PACS system.`,
+                }),
+            });
 
-        if (!sendResponse.ok) {
-            const errorData = await sendResponse.json();
+            if (!sendResponse.ok) {
+                const errorData = await sendResponse.json();
+                errors.push(`${target.label}: ${errorData.description || "Unknown error"}`);
+            }
+        }
+
+        if (errors.length > 0 && errors.length === targetChatIds.length) {
             return NextResponse.json({ 
                 success: false, 
-                error: `Chat ID Invalid or Bot not started: ${errorData.description || "Unknown error"}` 
+                error: `Chat ID Invalid or Bot not started: ${errors.join(", ")}` 
             }, { status: 400 });
         }
 

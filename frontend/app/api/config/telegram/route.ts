@@ -14,19 +14,23 @@ export async function GET() {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const [tokenRow, chatIdRow] = await Promise.all([
+    const [tokenRow, chatIdRow, satuSehatChatIdRow] = await Promise.all([
         db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } }),
         db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } }),
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_SATUSEHAT_CHAT_ID" } }),
     ]);
 
     const token = tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "";
     const chatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "";
+    const satuSehatChatId = satuSehatChatIdRow?.value || process.env.TELEGRAM_SATUSEHAT_CHAT_ID || "";
 
     return NextResponse.json({
         botToken: token,
         chatId: chatId,
+        satuSehatChatId: satuSehatChatId,
         hasDbToken: !!tokenRow?.value,
         hasDbChatId: !!chatIdRow?.value,
+        hasDbSatuSehatChatId: !!satuSehatChatIdRow?.value,
         source: tokenRow?.value ? "database" : "environment",
     });
 }
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { botToken, chatId } = await req.json();
+    const { botToken, chatId, satuSehatChatId } = await req.json();
 
     const ops: Promise<any>[] = [];
 
@@ -68,6 +72,20 @@ export async function POST(req: NextRequest) {
                     where: { key: "TELEGRAM_CHAT_ID" },
                     update: { value: chatId.trim() },
                     create: { key: "TELEGRAM_CHAT_ID", value: chatId.trim() },
+                })
+            );
+        }
+    }
+
+    if (typeof satuSehatChatId === "string") {
+        if (satuSehatChatId.trim() === "") {
+            ops.push(db.appConfig.deleteMany({ where: { key: "TELEGRAM_SATUSEHAT_CHAT_ID" } }));
+        } else {
+            ops.push(
+                db.appConfig.upsert({
+                    where: { key: "TELEGRAM_SATUSEHAT_CHAT_ID" },
+                    update: { value: satuSehatChatId.trim() },
+                    create: { key: "TELEGRAM_SATUSEHAT_CHAT_ID", value: satuSehatChatId.trim() },
                 })
             );
         }

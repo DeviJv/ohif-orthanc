@@ -352,6 +352,7 @@ export default function SettingsPage() {
 function TelegramSettingsTab() {
     const [botToken, setBotToken] = useState("");
     const [chatId, setChatId] = useState("");
+    const [satuSehatChatId, setSatuSehatChatId] = useState("");
     const [showToken, setShowToken] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -359,12 +360,15 @@ function TelegramSettingsTab() {
     // Track whether user has actually edited (typed into) each field
     const [tokenDirty, setTokenDirty] = useState(false);
     const [chatIdDirty, setChatIdDirty] = useState(false);
+    const [satuSehatChatIdDirty, setSatuSehatChatIdDirty] = useState(false);
     const [configInfo, setConfigInfo] = useState<{
         source: string;
         hasDbToken: boolean;
         hasDbChatId: boolean;
+        hasDbSatuSehatChatId: boolean;
         botToken: string;
         chatId: string;
+        satuSehatChatId: string;
     } | null>(null);
 
     // Fetch current config on load
@@ -376,6 +380,7 @@ function TelegramSettingsTab() {
                     const data = await res.json();
                     setBotToken(data.botToken);
                     setChatId(data.chatId);
+                    setSatuSehatChatId(data.satuSehatChatId);
                     setConfigInfo(data);
                 }
             } catch (error) {
@@ -394,6 +399,7 @@ function TelegramSettingsTab() {
         const payload: Record<string, string> = {};
         if (tokenDirty) payload.botToken = botToken;
         if (chatIdDirty) payload.chatId = chatId;
+        if (satuSehatChatIdDirty) payload.satuSehatChatId = satuSehatChatId;
 
         if (Object.keys(payload).length === 0) {
             toast.info("Tidak ada perubahan untuk disimpan.");
@@ -413,11 +419,13 @@ function TelegramSettingsTab() {
                 // Reset dirty flags & refresh masked display
                 setTokenDirty(false);
                 setChatIdDirty(false);
+                setSatuSehatChatIdDirty(false);
                 const refreshRes = await fetch("/api/config/telegram");
                 if (refreshRes.ok) {
                     const data = await refreshRes.json();
                     setBotToken(data.botToken);
                     setChatId(data.chatId);
+                    setSatuSehatChatId(data.satuSehatChatId);
                     setConfigInfo(data);
                 }
             } else {
@@ -552,6 +560,33 @@ function TelegramSettingsTab() {
                             <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 ml-1">
                                 <HugeiconsIcon icon={InformationCircleIcon} className="size-3" />
                                 Gunakan chat ID personal atau group ID (pake tanda minus).
+                            </p>
+                        </div>
+
+                        {/* Satu Sehat Sync Chat ID */}
+                        <div className="space-y-3">
+                            <Label htmlFor="satuSehatChatId" className="text-sm font-semibold">Satu Sehat Sync Chat ID</Label>
+                            <div className="flex gap-2">
+                                <Input
+                                    id="satuSehatChatId"
+                                    type="text"
+                                    placeholder="Ex: -458293847"
+                                    value={satuSehatChatId}
+                                    onChange={(e) => { setSatuSehatChatId(e.target.value); setSatuSehatChatIdDirty(true); }}
+                                    className="font-mono text-sm h-10"
+                                />
+                                <Button 
+                                    variant="outline" 
+                                    size="icon" 
+                                    className="shrink-0 h-10 w-10 aspect-square"
+                                    onClick={() => copyToClipboard(satuSehatChatId, "Satu Sehat Chat ID")}
+                                >
+                                    <HugeiconsIcon icon={Copy01Icon} className="size-4" />
+                                </Button>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 ml-1">
+                                <HugeiconsIcon icon={InformationCircleIcon} className="size-3" />
+                                Chat ID khusus untuk log webhook dari dicom-router (SatuSehat).
                             </p>
                         </div>
                     </CardContent>

@@ -103,13 +103,15 @@ export async function POST(req: NextRequest) {
 async function triggerTelegramNotification(data: any) {
     try {
         // Fetch credentials from DB first, fallback to ENV
-        const [tokenRow, chatIdRow] = await Promise.all([
+        const [tokenRow, chatIdRow, satuSehatChatIdRow] = await Promise.all([
             db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } }),
             db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } }),
+            db.appConfig.findUnique({ where: { key: "TELEGRAM_SATUSEHAT_CHAT_ID" } }),
         ]);
 
         const botToken = tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN;
-        const chatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID;
+        // Priority: DB SatuSehat Chat ID -> DB Default Chat ID -> ENV SatuSehat -> ENV Default
+        const chatId = satuSehatChatIdRow?.value || chatIdRow?.value || process.env.TELEGRAM_SATUSEHAT_CHAT_ID || process.env.TELEGRAM_CHAT_ID;
 
         console.log("[TELEGRAM] Starting notification - botToken:", !!botToken, "chatId:", !!chatId);
 

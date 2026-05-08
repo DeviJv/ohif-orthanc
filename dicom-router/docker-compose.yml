@@ -11,7 +11,7 @@ services:
       - "11112:11112"
       - "18080:8080"
     environment:
-      - AE_TITLE=DCMROUTER
+      - AE_TITLE=QTM
       - ORG_ID=${ORG_ID}
       - CLIENT=${CLIENT_ID}
       - SECRET=${CLIENT_SECRET}

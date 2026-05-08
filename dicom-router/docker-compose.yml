@@ -21,7 +21,7 @@ services:
       - URL=${SATUSEHAT_URL}
     networks:
       - pacs
-    entrypoint: >
+    entrypoint: |
       /bin/bash -c "
       cat <<EOF > /app/router.conf
       [satusehat]

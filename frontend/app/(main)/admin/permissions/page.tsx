@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPermissions } from "@/lib/actions/role-actions";
 import { 
   Key01Icon,

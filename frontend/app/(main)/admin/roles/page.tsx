@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getRolesWithPermissions, getPermissions } from "@/lib/actions/role-actions";
 import { RoleTable } from "@/app/(main)/admin/roles/_components/role-table";
 import { RoleFormDialog } from "@/app/(main)/admin/roles/_components/role-form-dialog";

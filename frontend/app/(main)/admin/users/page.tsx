@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getUsers, getRoles } from "@/lib/actions/user-actions";
 import { UserTable } from "./_components/user-table";
 import { UserFormDialog } from "./_components/user-form-dialog";

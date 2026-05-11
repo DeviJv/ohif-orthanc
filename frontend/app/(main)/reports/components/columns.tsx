@@ -4,6 +4,7 @@ import React from "react";
 import { 
     Delete01Icon, 
     FileExportIcon,
+    ArrowDown01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Report } from "../types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface GetColumnsProps {
@@ -63,7 +65,24 @@ export const getColumns = ({
     },
     {
         accessorKey: "studyDate",
-        header: "Study Date",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Study Date
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => {
             const val = getValue() as string;
             if (!val || val.length !== 8) return val || "-";
@@ -117,12 +136,48 @@ export const getColumns = ({
     },
     {
         accessorKey: "reportDate",
-        header: "Report Date",
+        id: "reportDate",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Report Date
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => getValue() || "-",
     },
     {
         accessorKey: "createdAt",
-        header: "Created At",
+        id: "createdAt",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Created At
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => format(new Date(getValue() as string), "d MMM yyyy HH:mm", { locale: idLocale }),
     },
     {

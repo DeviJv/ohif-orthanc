@@ -64,7 +64,7 @@ function SatuSehatContent() {
     } = useSatuSehatWorklist();
 
     // Table State
-    const [sorting, setSorting] = useState<SortingState>([{ id: "syncedAt", desc: true }]);
+    const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});

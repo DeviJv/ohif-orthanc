@@ -64,7 +64,7 @@ export default function ReportsContent() {
     const [selectedReportForExport, setSelectedReportForExport] = useState<Report | null>(null);
 
     // Table State
-    const [sorting, setSorting] = useState<SortingState>([]);
+    const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
     const [rowSelection, setRowSelection] = useState({});
 
     const handleEdit = useCallback((report: Report) => {

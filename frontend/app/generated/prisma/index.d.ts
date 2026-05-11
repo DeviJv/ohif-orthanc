@@ -2457,6 +2457,7 @@ export namespace Prisma {
     updatedAt: Date | null
     roleId: string | null
     signature: string | null
+    sip: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2470,6 +2471,7 @@ export namespace Prisma {
     updatedAt: Date | null
     roleId: string | null
     signature: string | null
+    sip: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2483,6 +2485,7 @@ export namespace Prisma {
     updatedAt: number
     roleId: number
     signature: number
+    sip: number
     _all: number
   }
 
@@ -2498,6 +2501,7 @@ export namespace Prisma {
     updatedAt?: true
     roleId?: true
     signature?: true
+    sip?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2511,6 +2515,7 @@ export namespace Prisma {
     updatedAt?: true
     roleId?: true
     signature?: true
+    sip?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2524,6 +2529,7 @@ export namespace Prisma {
     updatedAt?: true
     roleId?: true
     signature?: true
+    sip?: true
     _all?: true
   }
 
@@ -2610,6 +2616,7 @@ export namespace Prisma {
     updatedAt: Date
     roleId: string | null
     signature: string | null
+    sip: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2640,6 +2647,7 @@ export namespace Prisma {
     updatedAt?: boolean
     roleId?: boolean
     signature?: boolean
+    sip?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -2658,6 +2666,7 @@ export namespace Prisma {
     updatedAt?: boolean
     roleId?: boolean
     signature?: boolean
+    sip?: boolean
     role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2672,6 +2681,7 @@ export namespace Prisma {
     updatedAt?: boolean
     roleId?: boolean
     signature?: boolean
+    sip?: boolean
     role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2686,9 +2696,10 @@ export namespace Prisma {
     updatedAt?: boolean
     roleId?: boolean
     signature?: boolean
+    sip?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "roleId" | "signature", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "roleId" | "signature" | "sip", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
@@ -2722,6 +2733,7 @@ export namespace Prisma {
       updatedAt: Date
       roleId: string | null
       signature: string | null
+      sip: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3159,6 +3171,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly roleId: FieldRef<"User", 'String'>
     readonly signature: FieldRef<"User", 'String'>
+    readonly sip: FieldRef<"User", 'String'>
   }
     
 
@@ -21189,7 +21202,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     roleId: 'roleId',
-    signature: 'signature'
+    signature: 'signature',
+    sip: 'sip'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -21597,6 +21611,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     roleId?: StringNullableFilter<"User"> | string | null
     signature?: StringNullableFilter<"User"> | string | null
+    sip?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
@@ -21614,6 +21629,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     roleId?: SortOrderInput | SortOrder
     signature?: SortOrderInput | SortOrder
+    sip?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     reports?: RadiologyReportOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
@@ -21634,6 +21650,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     roleId?: StringNullableFilter<"User"> | string | null
     signature?: StringNullableFilter<"User"> | string | null
+    sip?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
@@ -21651,6 +21668,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     roleId?: SortOrderInput | SortOrder
     signature?: SortOrderInput | SortOrder
+    sip?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -21670,6 +21688,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     roleId?: StringNullableWithAggregatesFilter<"User"> | string | null
     signature?: StringNullableWithAggregatesFilter<"User"> | string | null
+    sip?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type RoleWhereInput = {
@@ -22942,6 +22961,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -22959,6 +22979,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     roleId?: string | null
     signature?: string | null
+    sip?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -22974,6 +22995,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -22991,6 +23013,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -23007,6 +23030,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     roleId?: string | null
     signature?: string | null
+    sip?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -23019,6 +23043,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -23032,6 +23057,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RoleCreateInput = {
@@ -24595,6 +24621,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     roleId?: SortOrder
     signature?: SortOrder
+    sip?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -24608,6 +24635,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     roleId?: SortOrder
     signature?: SortOrder
+    sip?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -24621,6 +24649,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     roleId?: SortOrder
     signature?: SortOrder
+    sip?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -26410,6 +26439,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -26425,6 +26455,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -26489,6 +26520,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     roleId?: StringNullableFilter<"User"> | string | null
     signature?: StringNullableFilter<"User"> | string | null
+    sip?: StringNullableFilter<"User"> | string | null
   }
 
   export type PermissionUpsertWithWhereUniqueWithoutRolesInput = {
@@ -26574,6 +26606,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
@@ -26590,6 +26623,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     roleId?: string | null
     signature?: string | null
+    sip?: string | null
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -26620,6 +26654,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
@@ -26636,6 +26671,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -26650,6 +26686,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     role?: RoleCreateNestedOneWithoutUsersInput
@@ -26666,6 +26703,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     roleId?: string | null
     signature?: string | null
+    sip?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
   }
@@ -26696,6 +26734,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
@@ -26712,6 +26751,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
   }
@@ -26726,6 +26766,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
@@ -26742,6 +26783,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     roleId?: string | null
     signature?: string | null
+    sip?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -26772,6 +26814,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
@@ -26788,6 +26831,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -26958,6 +27002,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     signature?: string | null
+    sip?: string | null
   }
 
   export type UserUpdateWithoutRoleInput = {
@@ -26970,6 +27015,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -26985,6 +27031,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -27000,6 +27047,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PermissionUpdateWithoutRolesInput = {

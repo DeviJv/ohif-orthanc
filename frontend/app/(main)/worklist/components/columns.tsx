@@ -121,7 +121,24 @@ export const getColumns = ({
     {
         accessorFn: (row) => (row.PatientMainDicomTags as any)?.PatientBirthDate || (row.MainDicomTags as any)?.PatientBirthDate,
         id: "birthDate",
-        header: "Birth Date",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Birth Date
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => {
             const val = getValue() as string;
             return val ? formatDicomDate(val) : "-";
@@ -147,7 +164,24 @@ export const getColumns = ({
     {
         accessorKey: "MainDicomTags.StudyDate",
         id: "studyDate",
-        header: "Study Date",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Study Date
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => formatDicomDate(getValue() as string),
         filterFn: (row, columnId, value) => {
             const dateStr = row.getValue(columnId) as string;

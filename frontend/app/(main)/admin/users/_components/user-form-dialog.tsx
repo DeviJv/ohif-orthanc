@@ -46,6 +46,7 @@ export function UserFormDialog({ user, roles, isEdit = false }: UserFormDialogPr
     password: "",
     roleId: user?.roleId || "",
     signature: user?.signature || "",
+    sip: user?.sip || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,7 +72,7 @@ export function UserFormDialog({ user, roles, isEdit = false }: UserFormDialogPr
         if (result.success) {
           toast.success("User created successfully");
           setOpen(false);
-          setFormData({ name: "", email: "", password: "", roleId: "", signature: "" });
+          setFormData({ name: "", email: "", password: "", roleId: "", signature: "", sip: "" });
         } else {
           toast.error(result.error || "Failed to create user");
         }
@@ -182,6 +183,16 @@ export function UserFormDialog({ user, roles, isEdit = false }: UserFormDialogPr
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="sip">SIP (Optional)</Label>
+              <Input
+                id="sip"
+                value={formData.sip}
+                onChange={(e) => setFormData({ ...formData, sip: e.target.value })}
+                placeholder="Nomor SIP (Surat Izin Praktik)"
+              />
             </div>
 
             <div className="grid gap-2">

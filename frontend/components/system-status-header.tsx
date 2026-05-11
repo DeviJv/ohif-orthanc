@@ -12,7 +12,8 @@ import {
     Database02Icon,
     RefreshIcon,
     Menu01Icon,
-    Activity01Icon
+    Activity01Icon,
+    Building04Icon
 } from "@hugeicons/core-free-icons";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -33,6 +34,7 @@ export function SystemStatusHeader() {
     const [autoSyncTime, setAutoSyncTime] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [lastSync, setLastSync] = useState<Date>(new Date());
+    const [clinicName, setClinicName] = useState<string>("");
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -57,6 +59,13 @@ export function SystemStatusHeader() {
                 setEnv(configData.env || "unknown");
                 setAutoSyncEnabled(!!configData.autoSyncEnabled);
                 setAutoSyncTime(configData.autoSyncTime || "");
+            }
+            
+            // Fetch Clinic Name
+            const clinicRes = await fetch("/api/config/clinic");
+            if (clinicRes.ok) {
+                const clinicData = await clinicRes.json();
+                setClinicName(clinicData.clinicName || "");
             }
             
             setLastSync(new Date());
@@ -88,17 +97,27 @@ export function SystemStatusHeader() {
                 "flex items-center gap-2",
                 isMobile ? "justify-between pb-2 border-b border-slate-100 dark:border-slate-800" : "border-r border-slate-200 dark:border-slate-800 pr-4"
             )}>
-                {isMobile && <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Environment</span>}
-                <Badge 
-                    variant={env === 'production' ? 'default' : 'secondary'}
-                    className={`${
-                        env === 'production' 
-                            ? "bg-orange-600 hover:bg-orange-600 shadow-sm shadow-orange-200" 
-                            : "bg-blue-600 hover:bg-blue-600 shadow-sm shadow-blue-200 text-white"
-                    } text-[9px] font-semibold tracking-tighter h-4 px-1.5 rounded-md uppercase`}
-                >
-                    {env}
-                </Badge>
+                {clinicName && (
+                    <div className="flex items-center gap-1.5 group/clinic">
+                        {!isMobile && <HugeiconsIcon icon={Building04Icon} className="size-3 text-primary/60 dark:text-primary/80" />}
+                        <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-tight truncate max-w-[150px]">
+                            {clinicName}
+                        </span>
+                    </div>
+                )}
+                
+                <div className="flex items-center gap-2 ml-auto">
+                    <Badge 
+                        variant={env === 'production' ? 'default' : 'secondary'}
+                        className={`${
+                            env === 'production' 
+                                ? "bg-orange-600 hover:bg-orange-600 shadow-sm shadow-orange-200" 
+                                : "bg-blue-600 hover:bg-blue-600 shadow-sm shadow-blue-200 text-white"
+                        } text-[9px] font-semibold tracking-tighter h-4 px-1.5 rounded-md uppercase`}
+                    >
+                        {env}
+                    </Badge>
+                </div>
             </div>
 
             {/* Auto Sync Status */}

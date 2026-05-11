@@ -6,7 +6,7 @@ import { formatDicomDate } from "../../worklist/utils/format";
 import { MergedStudy } from "../hooks/use-satusehat-worklist";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Alert01Icon } from "@hugeicons/core-free-icons";
+import { Alert01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
@@ -57,7 +57,24 @@ export const getColumns = ({
     {
         accessorKey: "MainDicomTags.StudyDate",
         id: "studyDate",
-        header: "Study Date",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Study Date
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => formatDicomDate(getValue() as string),
         filterFn: (row, columnId, filterValue: { from?: Date, to?: Date }) => {
             if (!filterValue || (!filterValue.from && !filterValue.to)) return true;
@@ -104,7 +121,24 @@ export const getColumns = ({
     {
         accessorFn: (row) => row.satuSehat.status,
         id: "status",
-        header: "Status",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Status
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => {
             const status = getValue() as string;
             let bgColor = "bg-slate-100 dark:bg-slate-800";
@@ -142,7 +176,24 @@ export const getColumns = ({
     {
         accessorFn: (row) => row.satuSehat.syncedAt,
         id: "syncedAt",
-        header: "Selesai Pada",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="group -ml-4 h-8 data-[state=open]:bg-accent font-bold"
+                >
+                    Synced At
+                    <HugeiconsIcon 
+                        icon={ArrowDown01Icon} 
+                        className={cn(
+                            "ml-2 size-4 transition-transform", 
+                            column.getIsSorted() === "desc" ? "" : column.getIsSorted() === "asc" ? "rotate-180" : "opacity-0 group-hover:opacity-100"
+                        )} 
+                    />
+                </Button>
+            );
+        },
         cell: ({ getValue }) => {
             const dateStr = getValue() as string;
             if (!dateStr) return <span className="text-xs text-slate-400 dark:text-slate-600 italic">-</span>;

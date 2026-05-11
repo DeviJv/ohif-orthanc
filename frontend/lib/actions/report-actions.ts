@@ -101,6 +101,7 @@ export async function getDoctors() {
         name: true,
         email: true,
         signature: true,
+        sip: true,
         createdAt: true
       },
       orderBy: {

@@ -77,7 +77,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const [selectedInstanceIds, setSelectedInstanceIds] = useState<string[]>([]);
     const [isFetchingSeries, setIsFetchingSeries] = useState(false);
     const [measurementImages, setMeasurementImages] = useState<{file?: File, base64: string, name?: string}[]>([]);
-    const [dbDoctors, setDbDoctors] = useState<{id: string, name: string, signature?: string | null}[]>([]);
+    const [dbDoctors, setDbDoctors] = useState<{id: string, name: string, signature?: string | null, sip?: string | null}[]>([]);
     const [isFetchingDoctors, setIsFetchingDoctors] = useState(false);
 
     const studyMainTags = study?.MainDicomTags as any;
@@ -248,7 +248,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                     const docs = res.data.map(d => ({ 
                         id: d.id, 
                         name: d.name || d.email || "Unknown",
-                        signature: d.signature
+                        signature: d.signature,
+                        sip: d.sip
                     }));
                     setDbDoctors(docs);
 
@@ -550,6 +551,12 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             
             // Align center of doctor name with center of date text for better aesthetics
             pdf.text(`( ${formData.doctor} )`, signatureCenterX, currentY, { align: "center" });
+
+            if (selectedDoc?.sip) {
+                pdf.setFont("helvetica", "normal");
+                pdf.setFontSize(9);
+                pdf.text(`SIP. ${selectedDoc.sip}`, signatureCenterX, currentY + 5, { align: "center" });
+            }
 
             // --- APPEND SELECTED INSTANCE IMAGES ---
             if (selectedInstanceIds.length > 0) {

@@ -20,6 +20,7 @@ model User {
   updatedAt     DateTime          @updatedAt
   roleId        String?
   signature     String?
+  sip           String?
   accounts      Account[]
   reports       RadiologyReport[] @relation("DoctorReports")
   sessions      Session[]

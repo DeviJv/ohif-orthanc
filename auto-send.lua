@@ -45,22 +45,31 @@ function OnStableStudy(studyId, tags, metadata)
     print("--------------------------------------------------")
 end
 
-function OnAssociationAccepted(modality, ip, port)
-    print("MODALITY CONNECTED: " .. modality .. " (" .. ip .. ")")
-    local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
-    local logUrl = frontendUrl .. "/api/modality/log"
-    local secretToken = "pacs_secret_token_2026"
-    
-    local payload = string.format('{"aeTitle":"%s","ipAddress":"%s","event":"CONNECTED","secret":"%s"}', modality, ip, secretToken)
-    os.execute("wget --post-data='" .. payload .. "' --header='Content-Type: application/json' --timeout=5 --tries=1 \"" .. logUrl .. "\" -O /dev/null 2>&1 &")
+-- Global table to keep track of last logged time per modality
+LastModalityLogTime = {}
+
+function OnStoredInstance(instanceId, tags, metadata, origin)
+    if origin['RequestOrigin'] == 'DicomProtocol' then
+        local modality = origin['RemoteAet']
+        local ip = origin['RemoteIp']
+        
+        if modality ~= nil and ip ~= nil then
+            local currentTime = os.time()
+            local lastTime = LastModalityLogTime[modality]
+            
+            -- Only log once every 60 seconds per modality to prevent spamming
+            if lastTime == nil or os.difftime(currentTime, lastTime) > 60 then
+                LastModalityLogTime[modality] = currentTime
+                
+                print("MODALITY CONNECTED (via StoredInstance): " .. modality .. " (" .. ip .. ")")
+                local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
+                local logUrl = frontendUrl .. "/api/modality/log"
+                local secretToken = "pacs_secret_token_2026"
+                
+                local payload = string.format('{"aeTitle":"%s","ipAddress":"%s","event":"CONNECTED","secret":"%s"}', modality, ip, secretToken)
+                os.execute("wget --post-data='" .. payload .. "' --header='Content-Type: application/json' --timeout=5 --tries=1 \"" .. logUrl .. "\" -O /dev/null 2>&1 &")
+            end
+        end
+    end
 end
 
-function OnAssociationClosed(modality, ip, port)
-    print("MODALITY DISCONNECTED: " .. modality .. " (" .. ip .. ")")
-    local frontendUrl = os.getenv("FRONTEND_INTERNAL_URL") or "http://pacs-web:3001"
-    local logUrl = frontendUrl .. "/api/modality/log"
-    local secretToken = "pacs_secret_token_2026"
-    
-    local payload = string.format('{"aeTitle":"%s","ipAddress":"%s","event":"DISCONNECTED","secret":"%s"}', modality, ip, secretToken)
-    os.execute("wget --post-data='" .. payload .. "' --header='Content-Type: application/json' --timeout=5 --tries=1 \"" .. logUrl .. "\" -O /dev/null 2>&1 &")
-end

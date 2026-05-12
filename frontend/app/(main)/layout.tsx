@@ -34,7 +34,7 @@ export default async function MainLayout({
         <SidebarProvider>
             <Preloader />
             <AppSidebar user={session.user} />
-            <SidebarInset>
+            <SidebarInset className="min-w-0">
                 <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b bg-white/80 backdrop-blur-md dark:bg-slate-950/80 dark:border-slate-800">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1" />
@@ -58,7 +58,7 @@ export default async function MainLayout({
                         <SystemStatusHeader />
                     </div>
                 </header>
-                <main className="flex-1 overflow-auto">
+                <main className="flex-1 overflow-auto min-w-0">
                     {children}
                 </main>
             </SidebarInset>

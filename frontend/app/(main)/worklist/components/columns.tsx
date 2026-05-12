@@ -26,6 +26,7 @@ export interface WorklistTableMeta {
     expandedStudies: Record<string, boolean>;
     aiResults?: Record<string, any>;
     ssIntegrationStatus?: Record<string, any>;
+    doctorNames?: Record<string, string>;
 }
 
 interface GetColumnsProps {
@@ -282,6 +283,28 @@ export const getColumns = ({
                 </div>
             );
         }
+    },
+    {
+        id: "doctor",
+        header: "Doctor",
+        cell: ({ row, table }) => {
+            const meta = table.options.meta as WorklistTableMeta;
+            const studyUidRaw = (row.original.MainDicomTags.StudyInstanceUID || "").trim();
+            const doctorName = meta.doctorNames?.[studyUidRaw] || meta.doctorNames?.[studyUidRaw.toUpperCase()];
+            
+            if (!doctorName) return <span className="text-slate-400 dark:text-slate-600">-</span>;
+            
+            return <span className="font-medium text-slate-700 dark:text-slate-300">{doctorName}</span>;
+        },
+        filterFn: (row, columnId, filterValue) => {
+            if (!filterValue || filterValue.length === 0) return true;
+            const table = row.getAllCells()[0].getContext().table;
+            const meta = table.options.meta as WorklistTableMeta;
+            const studyUidRaw = (row.original.MainDicomTags.StudyInstanceUID || "").trim();
+            const doctorName = meta.doctorNames?.[studyUidRaw] || meta.doctorNames?.[studyUidRaw.toUpperCase()];
+            
+            return filterValue.includes(doctorName);
+        },
     },
     {
         id: "actions",

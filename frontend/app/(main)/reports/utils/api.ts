@@ -7,6 +7,7 @@ export async function fetchReports(params: {
     accessionNumber?: string;
     startDate?: string;
     endDate?: string;
+    doctorNames?: string[];
 }): Promise<ReportsResponse> {
     const searchParams = new URLSearchParams();
     if (params.page) searchParams.set('page', params.page.toString());
@@ -15,6 +16,7 @@ export async function fetchReports(params: {
     if (params.accessionNumber) searchParams.set('accessionNumber', params.accessionNumber);
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
+    if (params.doctorNames && params.doctorNames.length > 0) searchParams.set('doctorName', params.doctorNames.join(','));
 
     const response = await fetch(`/api/reports?${searchParams.toString()}`);
     if (!response.ok) {

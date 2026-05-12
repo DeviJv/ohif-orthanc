@@ -25,6 +25,8 @@ export function useWorklist() {
     const [tagsData, setTagsData] = useState<Record<string, DicomTags>>({});
     const [aiResults, setAiResults] = useState<Record<string, any>>({});
     const [ssIntegrationStatus, setSsIntegrationStatus] = useState<Record<string, any>>({});
+    const [doctorNames, setDoctorNames] = useState<Record<string, string>>({});
+    const [doctors, setDoctors] = useState<any[]>([]);
 
     // Dialog states
     const [isSendTelegramDialogOpen, setIsSendTelegramDialogOpen] = useState(false);
@@ -76,6 +78,43 @@ export function useWorklist() {
         }
     }, []);
 
+    const fetchDoctorNames = useCallback(async () => {
+        try {
+            const res = await fetch("/api/reports/all");
+            if (res.ok) {
+                const data = await res.json();
+                const resultMap: Record<string, string> = {};
+                data.forEach((r: any) => {
+                    if (r.studyInstanceUid && r.doctorName) {
+                        const rawUid = r.studyInstanceUid.trim();
+                        const upperUid = rawUid.toUpperCase();
+                        resultMap[rawUid] = r.doctorName;
+                        resultMap[upperUid] = r.doctorName;
+                    }
+                });
+                setDoctorNames(resultMap);
+                return resultMap;
+            }
+        } catch (e) {
+            console.error("Failed to fetch doctor names from reports:", e);
+        }
+        return {};
+    }, []);
+
+    const fetchDoctors = useCallback(async () => {
+        try {
+            const res = await fetch("/api/users/doctors");
+            if (res.ok) {
+                const data = await res.json();
+                setDoctors(data);
+                return data;
+            }
+        } catch (e) {
+            console.error("Failed to fetch doctors:", e);
+        }
+        return [];
+    }, []);
+
     const fetchStudies = useCallback(async () => {
         setLoading(true);
         // Clear cached series/instances data on refresh to ensure latest data is fetched
@@ -84,10 +123,11 @@ export function useWorklist() {
         setTagsData({});
         
         try {
-            // Fetch studies AND AI results in parallel to avoid "hilang-muncul"
-            const [sortedDetails, resultMap] = await Promise.all([
+            // Fetch studies AND AI results AND doctor names in parallel to avoid "hilang-muncul"
+            const [sortedDetails, resultMap, docMap] = await Promise.all([
                 orthancApi.fetchStudies(),
-                fetchAiResults()
+                fetchAiResults(),
+                fetchDoctorNames()
             ]);
             setStudies(sortedDetails);
             
@@ -102,7 +142,7 @@ export function useWorklist() {
         } finally {
             setLoading(false);
         }
-    }, [fetchAiResults, fetchSsStatus]);
+    }, [fetchAiResults, fetchSsStatus, fetchDoctorNames]);
 
     const fetchAiConfig = useCallback(async () => {
         try {
@@ -158,7 +198,8 @@ export function useWorklist() {
     useEffect(() => {
         fetchStudies();
         fetchAiConfig();
-    }, [fetchStudies, fetchAiConfig]);
+        fetchDoctors();
+    }, [fetchStudies, fetchAiConfig, fetchDoctors]);
 
     const fetchSeries = useCallback(async (studyId: string) => {
         if (seriesData[studyId]) return;
@@ -603,6 +644,7 @@ export function useWorklist() {
         isBridgeDialogOpen, setIsBridgeDialogOpen,
         selectedStudyForBridge, openBridgeDialog,
         aiMode, handleRunAi, aiResults,
-        handleBridgeSatuSehat, ssIntegrationStatus
+        handleBridgeSatuSehat, ssIntegrationStatus,
+        doctorNames, doctors
     };
 }

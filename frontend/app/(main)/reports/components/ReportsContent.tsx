@@ -54,6 +54,7 @@ export default function ReportsContent() {
         handleDelete,
         handleBulkDelete,
         refresh,
+        doctors,
     } = useReports();
 
     // UI States
@@ -187,6 +188,9 @@ export default function ReportsContent() {
                 setAccessionNumber={(val) => setFilters(prev => ({ ...prev, accessionNumber: val, page: 1 }))}
                 dateRange={filters.startDate ? { from: new Date(parseInt(filters.startDate.slice(0, 4)), parseInt(filters.startDate.slice(4, 6)) - 1, parseInt(filters.startDate.slice(6, 8))), to: filters.endDate ? new Date(parseInt(filters.endDate.slice(0, 4)), parseInt(filters.endDate.slice(4, 6)) - 1, parseInt(filters.endDate.slice(6, 8))) : undefined } : undefined}
                 setDateRange={handleSetDateRange}
+                doctorNames={filters.doctorNames}
+                setDoctorNames={(val) => setFilters(prev => ({ ...prev, doctorNames: val, page: 1 }))}
+                doctors={doctors}
                 handleBulkDelete={handleBulkDeleteClick}
                 handleBulkDownload={handleBulkDownload}
                 handleExportCSV={handleExportCSV}

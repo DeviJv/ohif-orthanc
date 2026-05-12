@@ -11,7 +11,8 @@ import {
     Delete01Icon,
     Download01Icon,
     MoreVerticalIcon,
-    FilterIcon
+    FilterIcon,
+    UserIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Input } from "@/components/ui/input";
@@ -47,6 +48,7 @@ interface WorklistToolbarProps {
     fetchStudies: () => void;
     handleBulkDelete: () => void;
     handleBulkDownload: () => void;
+    doctors: any[];
 }
 
 const COMMON_MODALITIES = [
@@ -63,15 +65,16 @@ export function WorklistToolbar({
     handleFileUpload,
     fetchStudies,
     handleBulkDelete,
-    handleBulkDownload
+    handleBulkDownload,
+    doctors
 }: WorklistToolbarProps) {
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
     return (
         <Card className="mb-6 shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 backdrop-blur-sm">
             <CardHeader className="pb-3 border-b border-slate-200 dark:border-slate-800">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex flex-1 items-center gap-4">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                    <div className="flex flex-1 flex-wrap items-center gap-2 md:gap-4">
                         {/* ... existing bulk actions dropdown ... */}
                         {table.getFilteredSelectedRowModel().rows.length > 0 && (
                             <DropdownMenu>
@@ -93,11 +96,11 @@ export function WorklistToolbar({
                             </DropdownMenu>
                         )}
 
-                        <div className="relative flex-1 max-w-sm">
+                        <div className="relative w-full md:w-auto md:flex-1 md:max-w-sm">
                             <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                             <Input
                                 placeholder="Search Patient Name or ID..."
-                                className="pl-9"
+                                className="pl-9 w-full"
                                 value={globalFilter ?? ""}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
                             />
@@ -162,6 +165,73 @@ export function WorklistToolbar({
                             </PopoverContent>
                         </Popover>
                         
+                        <Popover>
+                            <PopoverTrigger 
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "sm" }),
+                                    "gap-2 border-slate-200 dark:border-slate-800 shrink-0",
+                                    (table.getColumn("doctor")?.getFilterValue() as string[] || []).length > 0 && "bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"
+                                )}
+                            >
+                                <HugeiconsIcon icon={UserIcon} className="size-4" />
+                                <span>Doctor</span>
+                                {(table.getColumn("doctor")?.getFilterValue() as string[] || []).length > 0 && (
+                                    <span className="ml-1 px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
+                                        {(table.getColumn("doctor")?.getFilterValue() as string[] || []).length}
+                                    </span>
+                                )}
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56 p-3" align="start">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-semibold text-sm">Doctor Filter</h4>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            className="h-auto p-0 text-xs text-emerald-600 hover:bg-transparent"
+                                            onClick={() => table.getColumn("doctor")?.setFilterValue([])}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </div>
+                                    <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+                                        <div className="flex items-center gap-2">
+                                            <Checkbox 
+                                                id="doc-all"
+                                                checked={!(table.getColumn("doctor")?.getFilterValue() as string[] || []).length}
+                                                onCheckedChange={() => table.getColumn("doctor")?.setFilterValue([])}
+                                            />
+                                            <label htmlFor="doc-all" className="text-xs font-medium cursor-pointer select-none">All Doctors</label>
+                                        </div>
+                                        {doctors?.map((doc) => {
+                                            const current = (table.getColumn("doctor")?.getFilterValue() as string[] || []);
+                                            const selected = current.includes(doc.name);
+                                            return (
+                                                <div key={doc.id} className="flex items-center gap-2">
+                                                    <Checkbox 
+                                                        id={`doc-${doc.id}`}
+                                                        checked={selected}
+                                                        onCheckedChange={(checked) => {
+                                                            const next = checked 
+                                                                ? [...current, doc.name]
+                                                                : current.filter(m => m !== doc.name);
+                                                            table.getColumn("doctor")?.setFilterValue(next.length ? next : undefined);
+                                                        }}
+                                                    />
+                                                    <label 
+                                                        htmlFor={`doc-${doc.id}`}
+                                                        className="text-xs font-medium cursor-pointer select-none leading-none"
+                                                    >
+                                                        {doc.name}
+                                                    </label>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                        
                         <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1 border border-slate-200 dark:border-slate-800 rounded-md px-2 py-1 bg-slate-50 dark:bg-slate-950">
                                 <Popover>
@@ -205,7 +275,7 @@ export function WorklistToolbar({
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <Button 
                             variant="default" 
                             size="sm" 

@@ -13,7 +13,9 @@ export function useReports() {
         accessionNumber: '',
         startDate: '',
         endDate: '',
+        doctorNames: [] as string[],
     });
+    const [doctors, setDoctors] = useState<any[]>([]);
 
     const loadReports = useCallback(async () => {
         setLoading(true);
@@ -28,9 +30,22 @@ export function useReports() {
         }
     }, [filters]);
 
+    const fetchDoctors = useCallback(async () => {
+        try {
+            const res = await fetch("/api/users/doctors");
+            if (res.ok) {
+                const data = await res.json();
+                setDoctors(data);
+            }
+        } catch (e) {
+            console.error("Failed to fetch doctors:", e);
+        }
+    }, []);
+
     useEffect(() => {
         loadReports();
-    }, [loadReports]);
+        fetchDoctors();
+    }, [loadReports, fetchDoctors]);
 
     const handleDelete = async (id: string) => {
         try {
@@ -77,5 +92,6 @@ export function useReports() {
         handleBulkDelete,
         handleUpdate,
         refresh: loadReports,
+        doctors,
     };
 }

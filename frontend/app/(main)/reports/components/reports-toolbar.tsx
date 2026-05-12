@@ -9,11 +9,13 @@ import {
     FileExportIcon,
     Download01Icon,
     Delete01Icon,
-    MoreVerticalIcon
+    MoreVerticalIcon,
+    UserIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -42,6 +44,9 @@ interface ReportsToolbarProps {
     handleBulkDownload: () => void;
     handleExportCSV: (ids?: string[]) => void;
     refresh: () => void;
+    doctorNames: string[];
+    setDoctorNames: (val: string[]) => void;
+    doctors: any[];
 }
 
 export function ReportsToolbar({
@@ -55,7 +60,10 @@ export function ReportsToolbar({
     handleBulkDelete,
     handleBulkDownload,
     handleExportCSV,
-    refresh
+    refresh,
+    doctorNames,
+    setDoctorNames,
+    doctors
 }: ReportsToolbarProps) {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const hasSelection = selectedRows.length > 0;
@@ -64,7 +72,7 @@ export function ReportsToolbar({
         <Card className="mb-6 shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 backdrop-blur-sm">
             <CardHeader className="pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex flex-1 items-center gap-4">
+                    <div className="flex flex-1 flex-wrap items-center gap-4">
                         {/* LEFT SIDE: Bulk Actions Dropdown (3 dots) - Exactly like Worklist */}
                         {hasSelection && (
                             <DropdownMenu>
@@ -86,25 +94,91 @@ export function ReportsToolbar({
                             </DropdownMenu>
                         )}
 
-                        <div className="relative flex-1 max-w-[240px]">
+                        <div className="relative w-full md:w-auto md:flex-1 md:max-w-[240px]">
                             <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                             <Input
                                 placeholder="Patient Name..."
-                                className="pl-9 h-9"
+                                className="pl-9 h-9 w-full"
                                 value={patientName}
                                 onChange={(e) => setPatientName(e.target.value)}
                             />
                         </div>
 
-                        <div className="relative flex-1 max-w-[200px]">
+                        <div className="relative w-full md:w-auto md:flex-1 md:max-w-[200px]">
                             <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                             <Input
                                 placeholder="Accession No..."
-                                className="pl-9 h-9"
+                                className="pl-9 h-9 w-full"
                                 value={accessionNumber}
                                 onChange={(e) => setAccessionNumber(e.target.value)}
                             />
                         </div>
+
+                        <Popover>
+                            <PopoverTrigger 
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "sm" }),
+                                    "gap-2 border-slate-200 dark:border-slate-800 shrink-0 h-9",
+                                    doctorNames.length > 0 && "bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"
+                                )}
+                            >
+                                <HugeiconsIcon icon={UserIcon} className="size-4" />
+                                <span>Doctor</span>
+                                {doctorNames.length > 0 && (
+                                    <span className="ml-1 px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
+                                        {doctorNames.length}
+                                    </span>
+                                )}
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56 p-3" align="start">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-semibold text-sm">Doctor Filter</h4>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            className="h-auto p-0 text-xs text-emerald-600 hover:bg-transparent"
+                                            onClick={() => setDoctorNames([])}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </div>
+                                    <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+                                        <div className="flex items-center gap-2">
+                                            <Checkbox 
+                                                id="doc-all"
+                                                checked={!doctorNames.length}
+                                                onCheckedChange={() => setDoctorNames([])}
+                                            />
+                                            <label htmlFor="doc-all" className="text-xs font-medium cursor-pointer select-none">All Doctors</label>
+                                        </div>
+                                        {doctors?.map((doc) => {
+                                            const selected = doctorNames.includes(doc.name);
+                                            return (
+                                                <div key={doc.id} className="flex items-center gap-2">
+                                                    <Checkbox 
+                                                        id={`doc-${doc.id}`}
+                                                        checked={selected}
+                                                        onCheckedChange={(checked) => {
+                                                            const next = checked 
+                                                                ? [...doctorNames, doc.name]
+                                                                : doctorNames.filter(m => m !== doc.name);
+                                                            setDoctorNames(next);
+                                                        }}
+                                                    />
+                                                    <label 
+                                                        htmlFor={`doc-${doc.id}`}
+                                                        className="text-xs font-medium cursor-pointer select-none leading-none"
+                                                    >
+                                                        {doc.name}
+                                                    </label>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                         
                         <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1 border border-slate-200 dark:border-slate-800 rounded-md px-2 py-1 bg-slate-50 dark:bg-slate-950 h-9">
@@ -150,7 +224,7 @@ export function ReportsToolbar({
                     </div>
 
                     {/* RIGHT SIDE: Action Buttons */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         {/* Status label for selection */}
                         {hasSelection && (
                             <div className="hidden lg:flex items-center px-3 py-1 bg-primary/5 border border-primary/20 rounded-full">

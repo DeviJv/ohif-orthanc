@@ -75,7 +75,8 @@ export default function WorklistContent() {
         isBridgeDialogOpen, setIsBridgeDialogOpen,
         selectedStudyForBridge, openBridgeDialog,
         aiMode, handleRunAi, aiResults,
-        handleBridgeSatuSehat, ssIntegrationStatus
+        handleBridgeSatuSehat, ssIntegrationStatus,
+        doctorNames, doctors
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -107,7 +108,9 @@ export default function WorklistContent() {
     const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState("");
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+        aiResult: false,
+    });
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
@@ -231,10 +234,12 @@ export default function WorklistContent() {
         expandedStudies,
         aiResults,
         ssIntegrationStatus,
+        doctorNames,
     }), [
         expandedStudies, 
         aiResults,
-        ssIntegrationStatus
+        ssIntegrationStatus,
+        doctorNames
     ]);
 
     const tableOptions = useMemo(() => ({
@@ -393,6 +398,7 @@ export default function WorklistContent() {
                 fetchStudies={fetchStudies}
                 handleBulkDelete={handleBulkDelete}
                 handleBulkDownload={handleBulkDownload}
+                doctors={doctors}
             />
 
             <div className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm overflow-hidden backdrop-blur-sm">

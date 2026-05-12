@@ -11,6 +11,7 @@ export async function GET(request: Request) {
         const accessionNumber = searchParams.get('accessionNumber');
         const startDate = searchParams.get('startDate');
         const endDate = searchParams.get('endDate');
+        const doctorNamesParam = searchParams.get('doctorName');
 
         const skip = (page - 1) * limit;
 
@@ -35,6 +36,15 @@ export async function GET(request: Request) {
                 gte: startDate || undefined,
                 lte: endDate || undefined,
             };
+        }
+
+        if (doctorNamesParam) {
+            const doctors = doctorNamesParam.split(',').filter(d => d.trim() !== '');
+            if (doctors.length > 0) {
+                where.doctorName = {
+                    in: doctors
+                };
+            }
         }
 
         const [reports, total] = await Promise.all([

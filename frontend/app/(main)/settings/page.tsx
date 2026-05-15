@@ -41,6 +41,7 @@ import {
     Link01Icon,
     Download01Icon,
     RefreshIcon,
+    WhatsappIcon,
 } from "@hugeicons/core-free-icons";
 import {
     Tooltip,
@@ -61,7 +62,9 @@ interface ClinicConfig {
     clinicPhone: string;
     clinicCity: string;
     clinicLogo: string;
-    doctors: string[];
+    kirimiUserCode: string;
+    kirimiDeviceId: string;
+    kirimiSecret: string;
 }
 
 export default function SettingsPage() {
@@ -71,7 +74,9 @@ export default function SettingsPage() {
         clinicPhone: "",
         clinicCity: "",
         clinicLogo: "",
-        doctors: [""],
+        kirimiUserCode: "",
+        kirimiDeviceId: "",
+        kirimiSecret: "",
     });
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -83,7 +88,9 @@ export default function SettingsPage() {
             .then((data) => {
                 setConfig({
                     ...data,
-                    doctors: data.doctors?.length ? data.doctors : [""],
+                    kirimiUserCode: data.kirimiUserCode || "",
+                    kirimiDeviceId: data.kirimiDeviceId || "",
+                    kirimiSecret: data.kirimiSecret || "",
                 });
             })
             .catch(() => toast.error("Gagal memuat konfigurasi klinik"))
@@ -102,13 +109,7 @@ export default function SettingsPage() {
         reader.readAsDataURL(file);
     };
 
-    const handleDoctorChange = (idx: number, value: string) =>
-        setConfig((p) => { const d = [...p.doctors]; d[idx] = value; return { ...p, doctors: d }; });
-
-    const addDoctor = () => setConfig((p) => ({ ...p, doctors: [...p.doctors, ""] }));
-
-    const removeDoctor = (idx: number) =>
-        setConfig((p) => ({ ...p, doctors: p.doctors.filter((_, i) => i !== idx) }));
+    // Doctors management removed as per user request (moved to user management)
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -116,10 +117,7 @@ export default function SettingsPage() {
             const res = await fetch("/api/config/clinic", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ...config,
-                    doctors: config.doctors.filter((d) => d.trim() !== ""),
-                }),
+                body: JSON.stringify(config),
             });
             if (res.ok) toast.success("Pengaturan berhasil disimpan");
             else toast.error("Gagal menyimpan pengaturan");
@@ -238,37 +236,48 @@ export default function SettingsPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
-                                    <CardHeader>
-                                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
-                                            <HugeiconsIcon icon={UserIcon} className="size-4.5 text-primary" strokeWidth={2} />
-                                            Daftar Dokter
+                                <Card className="border-2 shadow-sm">
+                                    <CardHeader className="bg-muted/30">
+                                        <CardTitle className="text-base flex items-center gap-2">
+                                            <HugeiconsIcon icon={WhatsappIcon} className="size-4.5 text-primary" strokeWidth={2} />
+                                            Integrasi WhatsApp (Kirimi.id)
                                         </CardTitle>
-                                        <CardDescription className="dark:text-slate-400">Nama dokter bisa dipilih saat mengisi laporan PDF</CardDescription>
+                                        <CardDescription>Kirim laporan PDF menggunakan API Kirimi.id</CardDescription>
                                     </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        {config.doctors.map((doc, idx) => (
-                                            <div key={idx} className="flex gap-2">
+                                    <CardContent className="space-y-4 pt-6">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label htmlFor="kirimiUserCode">User Code</Label>
                                                 <Input
-                                                    placeholder="dr. Nama Dokter, Sp.Rad"
-                                                    value={doc}
-                                                    onChange={(e) => handleDoctorChange(idx, e.target.value)}
+                                                    id="kirimiUserCode"
+                                                    placeholder="Contoh: KMK..."
+                                                    value={config.kirimiUserCode}
+                                                    onChange={(e) => setConfig((p) => ({ ...p, kirimiUserCode: e.target.value }))}
                                                 />
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="shrink-0 text-destructive hover:bg-destructive/10"
-                                                    onClick={() => removeDoctor(idx)}
-                                                    disabled={config.doctors.length === 1}
-                                                >
-                                                    <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-                                                </Button>
                                             </div>
-                                        ))}
-                                        <Button variant="outline" size="sm" className="gap-2 mt-1" onClick={addDoctor}>
-                                            <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
-                                            Tambah Dokter
-                                        </Button>
+                                            <div className="space-y-2">
+                                                <Label htmlFor="kirimiDeviceId">Device ID</Label>
+                                                <Input
+                                                    id="kirimiDeviceId"
+                                                    placeholder="Contoh: 123"
+                                                    value={config.kirimiDeviceId}
+                                                    onChange={(e) => setConfig((p) => ({ ...p, kirimiDeviceId: e.target.value }))}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="kirimiSecret">Secret Key</Label>
+                                            <Input
+                                                id="kirimiSecret"
+                                                type="password"
+                                                placeholder="Masukkan secret key dari kirimi.id"
+                                                value={config.kirimiSecret}
+                                                onChange={(e) => setConfig((p) => ({ ...p, kirimiSecret: e.target.value }))}
+                                            />
+                                        </div>
+                                        <p className="text-[11px] text-muted-foreground italic">
+                                            Dapatkan kredensial API di dashboard <a href="https://kirimi.id" target="_blank" rel="noopener noreferrer" className="text-primary underline">kirimi.id</a>.
+                                        </p>
                                     </CardContent>
                                 </Card>
                             </div>

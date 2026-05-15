@@ -11,6 +11,7 @@ import {
     LayersLogoIcon,
     FileExportIcon,
     AiCloud01Icon,
+    WhatsappIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ interface GetColumnsProps {
     openEditDialog: (study: Study) => void;
     openSendTelegramDialog: (study: Study) => void;
     openExportPdfDialog: (study: Study) => void;
+    openSendWhatsappDialog: (study: Study) => void;
     aiMode?: string;
     handleRunAi?: (studyId: string) => void;
     openAiResultDialog?: (result: any, patientName: string) => void;
@@ -55,6 +57,7 @@ export const getColumns = ({
     openEditDialog,
     openSendTelegramDialog,
     openExportPdfDialog,
+    openSendWhatsappDialog,
     aiMode,
     handleRunAi,
     openAiResultDialog,
@@ -375,6 +378,16 @@ export const getColumns = ({
                         title="Export Laporan PDF"
                     >
                         <HugeiconsIcon icon={FileExportIcon} className="size-4" />
+                    </Button>
+
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                        onClick={() => openSendWhatsappDialog(study)}
+                        title="Kirim ke WhatsApp Pasien"
+                    >
+                        <HugeiconsIcon icon={WhatsappIcon} className="size-4" />
                     </Button>
 
                     <Button

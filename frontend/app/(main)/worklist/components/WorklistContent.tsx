@@ -41,6 +41,7 @@ import { BulkDeleteStudyDialog } from "./bulk-delete-dialog";
 import { SendTelegramDialog } from "./send-telegram-dialog";
 import { EditStudyDialog } from "./edit-study-dialog";
 import { ExportPdfDialog } from "./export-pdf-dialog";
+import { SendWhatsappDialog } from "./send-whatsapp-dialog";
 import { AiResultDialog } from "./ai-result-dialog";
 import { BridgeSatuSehatDialog } from "./bridge-satusehat-dialog";
 import { FloatingAiProgress } from "./floating-ai-progress";
@@ -76,7 +77,10 @@ export default function WorklistContent() {
         selectedStudyForBridge, openBridgeDialog,
         aiMode, handleRunAi, aiResults,
         handleBridgeSatuSehat, ssIntegrationStatus,
-        doctorNames, doctors
+        doctorNames, doctors,
+        isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen,
+        selectedStudyForWhatsapp, openSendWhatsappDialog,
+        handleSendToWhatsapp
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -207,6 +211,7 @@ export default function WorklistContent() {
         openEditDialog,
         openSendTelegramDialog,
         openExportPdfDialog,
+        openSendWhatsappDialog,
         aiMode,
         handleRunAi,
         openAiResultDialog,
@@ -222,6 +227,7 @@ export default function WorklistContent() {
         openEditDialog,
         openSendTelegramDialog,
         openExportPdfDialog,
+        openSendWhatsappDialog,
         aiMode,
         handleRunAi,
         openAiResultDialog,
@@ -518,6 +524,7 @@ export default function WorklistContent() {
             <EditStudyDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} study={studyToEdit} onConfirm={handleEditStudy} />
             <AiResultDialog open={isAiResultDialogOpen} onOpenChange={setIsAiResultDialogOpen} result={selectedAiResult} patientName={selectedPatientName} />
             <ExportPdfDialog open={isExportPdfDialogOpen} onOpenChange={setIsExportPdfDialogOpen} study={studyForPdf} />
+            <SendWhatsappDialog open={isSendWhatsappDialogOpen} onOpenChange={setIsSendWhatsappDialogOpen} study={selectedStudyForWhatsapp} onSend={handleSendToWhatsapp} />
             <BridgeSatuSehatDialog open={isBridgeDialogOpen} onOpenChange={setIsBridgeDialogOpen} study={selectedStudyForBridge} onBridge={handleBridgeSatuSehat} />
             <FloatingAiProgress />
         </div>

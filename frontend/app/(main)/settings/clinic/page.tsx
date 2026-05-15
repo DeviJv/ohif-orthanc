@@ -1,8 +1,9 @@
 "use client";
+// BUILD_ID: 1715768514
 
 import React, { useState, useEffect, useRef } from "react";
 import {
-    Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+    Card, CardHeader, CardTitle, CardDescription, CardContent
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,8 @@ import {
     Building04Icon,
     FloppyDiskIcon,
     Delete02Icon,
-    PlusSignIcon,
     ImageUploadIcon,
-    UserIcon,
+    WhatsappIcon,
 } from "@hugeicons/core-free-icons";
 import { toast } from "sonner";
 
@@ -25,7 +25,7 @@ interface ClinicConfig {
     clinicPhone: string;
     clinicCity: string;
     clinicLogo: string;
-    doctors: string[];
+    fonnteToken: string;
 }
 
 export default function ClinicSettingsPage() {
@@ -35,7 +35,7 @@ export default function ClinicSettingsPage() {
         clinicPhone: "",
         clinicCity: "",
         clinicLogo: "",
-        doctors: [""],
+        fonnteToken: "",
     });
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -47,7 +47,7 @@ export default function ClinicSettingsPage() {
             .then((data) => {
                 setConfig({
                     ...data,
-                    doctors: data.doctors?.length ? data.doctors : [""],
+                    fonnteToken: data.fonnteToken || "",
                 });
             })
             .catch(() => toast.error("Gagal memuat konfigurasi klinik"))
@@ -68,27 +68,13 @@ export default function ClinicSettingsPage() {
         reader.readAsDataURL(file);
     };
 
-    const handleDoctorChange = (idx: number, value: string) => {
-        setConfig((prev) => {
-            const doctors = [...prev.doctors];
-            doctors[idx] = value;
-            return { ...prev, doctors };
-        });
-    };
-
-    const addDoctor = () => setConfig((prev) => ({ ...prev, doctors: [...prev.doctors, ""] }));
-
-    const removeDoctor = (idx: number) =>
-        setConfig((prev) => ({ ...prev, doctors: prev.doctors.filter((_, i) => i !== idx) }));
-
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const cleanedDoctors = config.doctors.filter((d) => d.trim() !== "");
             const res = await fetch("/api/config/clinic", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...config, doctors: cleanedDoctors }),
+                body: JSON.stringify(config),
             });
             if (res.ok) {
                 toast.success("Konfigurasi klinik berhasil disimpan");
@@ -185,43 +171,34 @@ export default function ClinicSettingsPage() {
                         </CardContent>
                     </Card>
 
-                    {/* Doctors */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base flex items-center gap-2">
-                                <HugeiconsIcon icon={UserIcon} className="size-4.5 text-primary" strokeWidth={2} />
-                                Daftar Dokter
+                    {/* Integrasi WhatsApp (Fonnte) */}
+                    <Card className="border-emerald-100 dark:border-emerald-900/30 shadow-sm">
+                        <CardHeader className="bg-emerald-50/50 dark:bg-emerald-900/10">
+                            <CardTitle className="text-base flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                <HugeiconsIcon icon={WhatsappIcon} className="size-4.5" strokeWidth={2} />
+                                Integrasi WhatsApp (Fonnte)
                             </CardTitle>
-                            <CardDescription>Nama dokter yang bisa dipilih saat mengisi laporan PDF</CardDescription>
+                            <CardDescription>Konfigurasi pengiriman laporan langsung ke nomor WhatsApp pasien.</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-3">
-                            {config.doctors.map((doc, idx) => (
-                                <div key={idx} className="flex gap-2">
-                                    <Input
-                                        placeholder={`dr. Nama Dokter, Sp.Rad`}
-                                        value={doc}
-                                        onChange={(e) => handleDoctorChange(idx, e.target.value)}
-                                    />
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="shrink-0 text-destructive hover:bg-destructive/10"
-                                        onClick={() => removeDoctor(idx)}
-                                        disabled={config.doctors.length === 1}
-                                    >
-                                        <HugeiconsIcon icon={Delete02Icon} className="size-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                            <Button variant="outline" size="sm" className="gap-2 mt-1" onClick={addDoctor}>
-                                <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
-                                Tambah Dokter
-                            </Button>
+                        <CardContent className="space-y-4 pt-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="fonnteToken">Fonnte API Token</Label>
+                                <Input
+                                    id="fonnteToken"
+                                    type="password"
+                                    placeholder="Masukkan token dari dashboard fonnte.com"
+                                    value={config.fonnteToken}
+                                    onChange={(e) => setConfig((p) => ({ ...p, fonnteToken: e.target.value }))}
+                                />
+                                <p className="text-[11px] text-muted-foreground italic">
+                                    Token ini diperlukan agar sistem bisa mengirimkan file PDF secara otomatis ke pasien. Dapatkan di <a href="https://fonnte.com" target="_blank" rel="noopener noreferrer" className="text-emerald-600 underline">fonnte.com</a>.
+                                </p>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Logo Upload */}
+                {/* RIGHT COLUMN: Logo Upload */}
                 <div className="space-y-6">
                     <Card>
                         <CardHeader>
@@ -233,7 +210,7 @@ export default function ClinicSettingsPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div
-                                className="border-2 border-dashed border-slate-200 rounded-xl aspect-square flex items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-slate-50 transition-all"
+                                className="border-2 border-dashed border-slate-200 rounded-xl aspect-square flex items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-slate-50 transition-all overflow-hidden"
                                 onClick={() => logoInputRef.current?.click()}
                             >
                                 {config.clinicLogo ? (
@@ -275,7 +252,7 @@ export default function ClinicSettingsPage() {
 
             <div className="flex justify-end pt-2">
                 <Button
-                    className="gap-2 h-10 px-8 font-semibold shadow-md active:scale-95 transition-all"
+                    className="gap-2 h-10 px-8 font-semibold shadow-md active:scale-95 transition-all bg-primary hover:bg-primary/90 text-primary-foreground"
                     onClick={handleSave}
                     disabled={isSaving}
                 >

@@ -47,6 +47,7 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
         StudyDate: "",
         StudyDescription: "",
         AccessionNumber: "",
+        PatientTelephoneNumbers: "",
     });
 
     useEffect(() => {
@@ -62,6 +63,7 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
                 StudyDate: mainTags.StudyDate || "",
                 StudyDescription: mainTags.StudyDescription || "",
                 AccessionNumber: mainTags.AccessionNumber || "",
+                PatientTelephoneNumbers: tags.PatientTelephoneNumbers || mainTags.PatientTelephoneNumbers || "",
             });
         }
     }, [study, open]);
@@ -85,6 +87,7 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
             StudyDate: mainTags.StudyDate || "",
             StudyDescription: mainTags.StudyDescription || "",
             AccessionNumber: mainTags.AccessionNumber || "",
+            PatientTelephoneNumbers: tags.PatientTelephoneNumbers || mainTags.PatientTelephoneNumbers || "",
         };
 
         const modifications: Record<string, string> = {};
@@ -263,6 +266,19 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
                                 value={formData.AccessionNumber}
                                 onChange={handleChange}
                                 className="col-span-3 h-9"
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="PatientTelephoneNumbers" className="text-right text-xs font-semibold uppercase text-slate-500">
+                                Patient Phone
+                            </Label>
+                            <Input
+                                id="PatientTelephoneNumbers"
+                                name="PatientTelephoneNumbers"
+                                value={formData.PatientTelephoneNumbers}
+                                onChange={handleChange}
+                                className="col-span-3 h-9"
+                                placeholder="Mis: 08123456789"
                             />
                         </div>
                     </div>

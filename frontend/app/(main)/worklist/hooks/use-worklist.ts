@@ -36,6 +36,10 @@ export function useWorklist() {
     const [isBridgeDialogOpen, setIsBridgeDialogOpen] = useState(false);
     const [selectedStudyForBridge, setSelectedStudyForBridge] = useState<Study | null>(null);
 
+    // WhatsApp state
+    const [isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen] = useState(false);
+    const [selectedStudyForWhatsapp, setSelectedStudyForWhatsapp] = useState<Study | null>(null);
+
     const fetchAiResults = useCallback(async () => {
         try {
             const res = await fetch("/api/ai/results/all");
@@ -577,6 +581,33 @@ export function useWorklist() {
         setIsBridgeDialogOpen(true);
     }, []);
 
+    const openSendWhatsappDialog = useCallback((study: Study) => {
+        setSelectedStudyForWhatsapp(study);
+        setIsSendWhatsappDialogOpen(true);
+    }, []);
+
+    const handleSendToWhatsapp = useCallback(async (target: string, message: string, file?: string, filename?: string) => {
+        try {
+            const res = await fetch("/api/whatsapp/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ target, message, file, filename })
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || "Gagal mengirim WhatsApp");
+            }
+
+            toast.success("Laporan berhasil dikirim ke WhatsApp Pasien");
+            return true;
+        } catch (error: any) {
+            console.error("Failed to send to WhatsApp:", error);
+            toast.error(error.message || "Gagal mengirim ke WhatsApp");
+            return false;
+        }
+    }, []);
+
     const handleBridgeSatuSehat = useCallback(async (studyId: string, manualNik?: string) => {
         const taskId = addTask({ 
             id: `ss-bridge-${studyId}`, 
@@ -643,6 +674,9 @@ export function useWorklist() {
         selectedStudyForTelegram, openSendTelegramDialog,
         isBridgeDialogOpen, setIsBridgeDialogOpen,
         selectedStudyForBridge, openBridgeDialog,
+        isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen,
+        selectedStudyForWhatsapp, openSendWhatsappDialog,
+        handleSendToWhatsapp,
         aiMode, handleRunAi, aiResults,
         handleBridgeSatuSehat, ssIntegrationStatus,
         doctorNames, doctors

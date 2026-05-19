@@ -58,7 +58,10 @@ export async function POST(request: NextRequest) {
                     const where: Prisma.RadiologyReportWhereInput = {};
                     if (filters) {
                         if (filters.patientName) {
-                            where.patientName = { contains: filters.patientName, mode: 'insensitive' };
+                            where.OR = [
+                                { patientName: { contains: filters.patientName, mode: 'insensitive' } },
+                                { patientId: { contains: filters.patientName, mode: 'insensitive' } }
+                            ];
                         }
                         if (filters.accessionNumber) {
                             where.accessionNumber = { contains: filters.accessionNumber, mode: 'insensitive' };

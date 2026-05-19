@@ -18,10 +18,20 @@ export async function GET(request: Request) {
         const where: Prisma.RadiologyReportWhereInput = {};
 
         if (patientName) {
-            where.patientName = {
-                contains: patientName,
-                mode: 'insensitive',
-            };
+            where.OR = [
+                {
+                    patientName: {
+                        contains: patientName,
+                        mode: 'insensitive',
+                    }
+                },
+                {
+                    patientId: {
+                        contains: patientName,
+                        mode: 'insensitive',
+                    }
+                }
+            ];
         }
 
         if (accessionNumber) {

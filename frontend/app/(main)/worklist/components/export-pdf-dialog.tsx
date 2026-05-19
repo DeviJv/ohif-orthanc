@@ -29,6 +29,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Image01Icon, ArrowDown01Icon, RefreshIcon } from "@hugeicons/core-free-icons";
 import { getDoctors, upsertRadiologyReport, getRadiologyReport } from "@/lib/actions/report-actions";
+import { normalizePatientName } from "../utils/format";
 
 interface ClinicConfig {
     clinicName: string;
@@ -100,7 +101,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     const modalityName = getModalityName(rawModality);
 
     // Auto-map tags from DICOM
-    const patientName = patientTags?.PatientName || studyMainTags?.PatientName || "";
+    const patientName = normalizePatientName(patientTags?.PatientName || studyMainTags?.PatientName || "");
     const patientID = patientTags?.PatientID || studyMainTags?.PatientID || "";
     const patientSex = (patientTags?.PatientSex || studyMainTags?.PatientSex || "").toUpperCase();
     const birthDate = patientTags?.PatientBirthDate || studyMainTags?.PatientBirthDate || "";

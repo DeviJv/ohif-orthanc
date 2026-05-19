@@ -26,6 +26,7 @@ import { useReports } from "../hooks/use-reports";
 import { getColumns } from "./columns";
 import { ReportsToolbar } from "./reports-toolbar";
 import { Report } from "../types";
+import { normalizePatientName } from "../../worklist/utils/format";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { handleBulkDownloadZip } from "../utils/actions";
@@ -158,7 +159,7 @@ export default function ReportsContent() {
             ID: selectedReportForExport.studyInstanceUid,
             MainDicomTags: {
                 StudyInstanceUID: selectedReportForExport.studyInstanceUid,
-                PatientName: selectedReportForExport.patientName,
+                PatientName: normalizePatientName(selectedReportForExport.patientName || ""),
                 PatientID: selectedReportForExport.patientId,
                 AccessionNumber: selectedReportForExport.accessionNumber,
                 StudyDate: selectedReportForExport.studyDate,
@@ -166,7 +167,7 @@ export default function ReportsContent() {
                 StudyDescription: selectedReportForExport.examType,
             },
             PatientMainDicomTags: {
-                PatientName: selectedReportForExport.patientName,
+                PatientName: normalizePatientName(selectedReportForExport.patientName || ""),
                 PatientID: selectedReportForExport.patientId,
                 PatientSex: selectedReportForExport.patientSex,
             }
@@ -279,7 +280,7 @@ export default function ReportsContent() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will permanently delete the report for patient <strong>{reportToDelete?.patientName}</strong>. This action cannot be undone.
+                            This will permanently delete the report for patient <strong>{normalizePatientName(reportToDelete?.patientName || "")}</strong>. This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

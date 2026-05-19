@@ -80,7 +80,7 @@ export default function WorklistContent() {
         doctorNames, doctors,
         isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen,
         selectedStudyForWhatsapp, openSendWhatsappDialog,
-        handleSendToWhatsapp
+        handleSendToWhatsapp, hasReports
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -241,11 +241,13 @@ export default function WorklistContent() {
         aiResults,
         ssIntegrationStatus,
         doctorNames,
+        hasReports,
     }), [
         expandedStudies, 
         aiResults,
         ssIntegrationStatus,
-        doctorNames
+        doctorNames,
+        hasReports
     ]);
 
     const tableOptions = useMemo(() => ({

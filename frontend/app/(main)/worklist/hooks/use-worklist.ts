@@ -26,6 +26,7 @@ export function useWorklist() {
     const [aiResults, setAiResults] = useState<Record<string, any>>({});
     const [ssIntegrationStatus, setSsIntegrationStatus] = useState<Record<string, any>>({});
     const [doctorNames, setDoctorNames] = useState<Record<string, string>>({});
+    const [hasReports, setHasReports] = useState<Record<string, boolean>>({});
     const [doctors, setDoctors] = useState<any[]>([]);
 
     // Dialog states
@@ -88,15 +89,23 @@ export function useWorklist() {
             if (res.ok) {
                 const data = await res.json();
                 const resultMap: Record<string, string> = {};
+                const reportMap: Record<string, boolean> = {};
                 data.forEach((r: any) => {
-                    if (r.studyInstanceUid && r.doctorName) {
+                    if (r.studyInstanceUid) {
                         const rawUid = r.studyInstanceUid.trim();
                         const upperUid = rawUid.toUpperCase();
-                        resultMap[rawUid] = r.doctorName;
-                        resultMap[upperUid] = r.doctorName;
+                        
+                        reportMap[rawUid] = true;
+                        reportMap[upperUid] = true;
+
+                        if (r.doctorName) {
+                            resultMap[rawUid] = r.doctorName;
+                            resultMap[upperUid] = r.doctorName;
+                        }
                     }
                 });
                 setDoctorNames(resultMap);
+                setHasReports(reportMap);
                 return resultMap;
             }
         } catch (e) {
@@ -679,6 +688,6 @@ export function useWorklist() {
         handleSendToWhatsapp,
         aiMode, handleRunAi, aiResults,
         handleBridgeSatuSehat, ssIntegrationStatus,
-        doctorNames, doctors
+        doctorNames, doctors, hasReports
     };
 }

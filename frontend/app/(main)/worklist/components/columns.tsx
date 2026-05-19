@@ -17,7 +17,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { Study } from "../types";
-import { formatDicomDate } from "../utils/format";
+import { formatDicomDate, normalizePatientName } from "../utils/format";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ export interface WorklistTableMeta {
     aiResults?: Record<string, any>;
     ssIntegrationStatus?: Record<string, any>;
     doctorNames?: Record<string, string>;
+    hasReports?: Record<string, boolean>;
 }
 
 interface GetColumnsProps {
@@ -110,10 +111,27 @@ export const getColumns = ({
         },
     },
     {
-        accessorFn: (row) => row.PatientMainDicomTags?.PatientName || row.MainDicomTags.PatientName,
+        accessorFn: (row) => normalizePatientName(row.PatientMainDicomTags?.PatientName || row.MainDicomTags.PatientName),
         id: "patientName",
         header: "Patient Name",
-        cell: ({ getValue }) => <span className="font-semibold">{getValue() as string}</span>,
+        cell: ({ row, table, getValue }) => {
+            const meta = table.options.meta as WorklistTableMeta;
+            const studyUidRaw = (row.original.MainDicomTags.StudyInstanceUID || "").trim();
+            const hasReport = meta.hasReports?.[studyUidRaw] || meta.hasReports?.[studyUidRaw.toUpperCase()];
+            
+            return (
+                <div className="flex items-center gap-2">
+                    <div 
+                        className={cn(
+                            "size-2.5 rounded-full shrink-0 shadow-sm",
+                            hasReport ? "bg-emerald-500" : "bg-rose-500"
+                        )} 
+                        title={hasReport ? "Measurement Report Available" : "No Measurement Report"}
+                    />
+                    <span className="font-semibold">{getValue() as string}</span>
+                </div>
+            );
+        },
         enableGlobalFilter: true,
     },
     {
@@ -255,7 +273,7 @@ export const getColumns = ({
             const meta = table.options.meta as WorklistTableMeta;
             const studyUidRaw = (row.original.MainDicomTags.StudyInstanceUID || "").trim();
             const studyUid = studyUidRaw.toUpperCase();
-            const patientName = row.original.PatientMainDicomTags?.PatientName || row.original.MainDicomTags.PatientName;
+            const patientName = normalizePatientName(row.original.PatientMainDicomTags?.PatientName || row.original.MainDicomTags.PatientName);
             const result = meta.aiResults?.[studyUid] || meta.aiResults?.[studyUidRaw];
             
             // Console log to debug matching process
@@ -314,7 +332,7 @@ export const getColumns = ({
         header: () => <div className="text-right">Action</div>,
         cell: ({ row }) => {
             const study = row.original;
-            const patientName = study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName;
+            const patientName = normalizePatientName(study.PatientMainDicomTags?.PatientName || study.MainDicomTags.PatientName);
             return (
                 <div className="flex justify-end gap-1.5">
                     <Button

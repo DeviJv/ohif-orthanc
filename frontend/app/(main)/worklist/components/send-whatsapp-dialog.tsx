@@ -34,6 +34,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { getDoctors, upsertRadiologyReport, getRadiologyReport } from "@/lib/actions/report-actions";
 import { cn } from "@/lib/utils";
+import { normalizePatientName } from "../utils/format";
 
 interface SendWhatsappDialogProps {
     open: boolean;
@@ -85,7 +86,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
     };
     const modalityName = getModalityName(rawModality);
 
-    const patientName = patientTags?.PatientName || studyMainTags?.PatientName || "";
+    const patientName = normalizePatientName(patientTags?.PatientName || studyMainTags?.PatientName || "");
     const patientID = patientTags?.PatientID || studyMainTags?.PatientID || "";
     const patientSex = (patientTags?.PatientSex || studyMainTags?.PatientSex || "").toUpperCase();
     const birthDate = patientTags?.PatientBirthDate || studyMainTags?.PatientBirthDate || "";

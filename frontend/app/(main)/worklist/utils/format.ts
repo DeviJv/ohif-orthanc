@@ -24,3 +24,8 @@ export const formatDicomTime = (timeStr?: string) => {
         return timeStr;
     }
 };
+
+export const normalizePatientName = (name?: string) => {
+    if (!name) return "";
+    return name.replace(/\^/g, " ").replace(/\s+/g, " ").trim();
+};

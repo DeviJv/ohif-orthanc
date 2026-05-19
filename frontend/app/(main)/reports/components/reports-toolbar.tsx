@@ -97,7 +97,7 @@ export function ReportsToolbar({
                         <div className="relative w-full md:w-auto md:flex-1 md:max-w-[240px]">
                             <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                             <Input
-                                placeholder="Patient Name..."
+                                placeholder="Search patient name, ID..."
                                 className="pl-9 h-9 w-full"
                                 value={patientName}
                                 onChange={(e) => setPatientName(e.target.value)}

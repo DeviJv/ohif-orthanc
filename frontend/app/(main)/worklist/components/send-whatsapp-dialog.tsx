@@ -117,7 +117,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
             // Get phone from DICOM
             const dicomPhone = patientTags?.PatientTelephoneNumbers || studyMainTags?.PatientTelephoneNumbers || "";
             setPhone(dicomPhone);
-            setWaMessage(`Halo Bapak/Ibu ${patientName},\n\nBerikut kami lampirkan hasil laporan radiologi (${modalityName}) Anda.\n\nTerima kasih.`);
+            setWaMessage(`Halo Bapak/Ibu ${patientName},\n\nBerikut kami lampirkan hasil laporan radiologi (${modalityName}) Anda${studyDateFormatted ? ` tanggal ${studyDateFormatted}` : ''}.\n\n*Catatan: Dokumen ini dilindungi kata sandi. Silakan masukkan Nomor RM (Rekam Medis) Anda yaitu ${patientID} untuk membuka dokumen ini.*\n\nTerima kasih.`);
 
             setFormData((prev) => ({
                 ...prev,
@@ -257,7 +257,16 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
             await upsertRadiologyReport(reportData);
 
             const { default: jsPDF } = await import("jspdf");
-            const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+            const pdf = new jsPDF({ 
+                orientation: "portrait", 
+                unit: "mm", 
+                format: "a4",
+                encryption: {
+                    userPassword: patientID.trim() || "12345",
+                    ownerPassword: patientID.trim() || "12345",
+                    userPermissions: ["print", "modify", "copy", "annot-forms"]
+                }
+            });
             const pageWidth = pdf.internal.pageSize.getWidth();
             const leftMargin = 20;
             const rightMargin = 20;

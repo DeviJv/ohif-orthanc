@@ -13,36 +13,51 @@ const DEFAULT_HEADERS = {
 
 export async function GET(req: NextRequest) {
     try {
-        // 1. Fetch study IDs from Orthanc
-        const idsRes = await fetch(`${ORTHANC_URL}/studies`, {
+        // 1. Fetch all studies with details to sort them properly
+        const studiesRes = await fetch(`${ORTHANC_URL}/studies?expand`, {
             headers: DEFAULT_HEADERS,
             cache: "no-store",
         });
 
-        if (!idsRes.ok) {
-            throw new Error(`Failed to fetch studies from Orthanc: ${idsRes.statusText}`);
+        if (!studiesRes.ok) {
+            throw new Error(`Failed to fetch studies from Orthanc: ${studiesRes.statusText}`);
         }
 
-        const ids: string[] = await idsRes.json();
-        // Limit to top 100 to maintain performance as in the current client-side implementation
-        const topIds = ids.slice(0, 100);
+        const allStudies: any[] = await studiesRes.json();
 
-        // 2. Fetch details for each study and its series in parallel
+        // 2. Sort all studies by StudyDate and StudyTime descending to get the most recent ones
+        allStudies.sort((a: any, b: any) => {
+            const dateA = a.MainDicomTags?.StudyDate || "00000000";
+            const dateB = b.MainDicomTags?.StudyDate || "00000000";
+            if (dateA === dateB) {
+                const timeA = a.MainDicomTags?.StudyTime || "000000";
+                const timeB = b.MainDicomTags?.StudyTime || "000000";
+                return timeB.localeCompare(timeA);
+            }
+            return dateB.localeCompare(dateA);
+        });
+
+        // 3. Limit to top 100 to maintain performance
+        const topStudies = allStudies.slice(0, 100);
+
+        // 4. Fetch series details for these top 100 to get modalities
         // We aggregate the data on the server to reduce round-trips from the browser
         const detailedStudies = await Promise.all(
-            topIds.map(async (id) => {
+            topStudies.map(async (study) => {
                 try {
-                    const [studyRes, seriesRes] = await Promise.all([
-                        fetch(`${ORTHANC_URL}/studies/${id}`, { headers: DEFAULT_HEADERS, cache: "no-store" }),
-                        fetch(`${ORTHANC_URL}/studies/${id}/series?expand`, { headers: DEFAULT_HEADERS, cache: "no-store" })
-                    ]);
+                    const seriesRes = await fetch(`${ORTHANC_URL}/studies/${study.ID}/series?expand`, { 
+                        headers: DEFAULT_HEADERS, 
+                        cache: "no-store" 
+                    });
 
-                    if (!studyRes.ok || !seriesRes.ok) {
-                        console.warn(`[Worklist API] Partial failure for study ${id}`);
-                        return null;
+                    if (!seriesRes.ok) {
+                        console.warn(`[Worklist API] Partial failure fetching series for study ${study.ID}`);
+                        return {
+                            ...study,
+                            Modalities: []
+                        };
                     }
 
-                    const study = await studyRes.json();
                     const series = await seriesRes.json();
                     
                     // Extract unique modalities from series
@@ -57,23 +72,16 @@ export async function GET(req: NextRequest) {
                         Modalities: modalities
                     };
                 } catch (err) {
-                    console.error(`[Worklist API] Error fetching details for study ${id}:`, err);
-                    return null;
+                    console.error(`[Worklist API] Error fetching details for study ${study.ID}:`, err);
+                    return {
+                        ...study,
+                        Modalities: []
+                    };
                 }
             })
         );
 
-        // Filter out any failed fetches
-        const validStudies = detailedStudies.filter(Boolean);
-
-        // 3. Sort by StudyDate descending (consistent with orthancApi.fetchStudies)
-        validStudies.sort((a: any, b: any) => {
-            const dateA = a.MainDicomTags?.StudyDate || "00000000";
-            const dateB = b.MainDicomTags?.StudyDate || "00000000";
-            return dateB.localeCompare(dateA);
-        });
-
-        return NextResponse.json(validStudies);
+        return NextResponse.json(detailedStudies);
     } catch (error: any) {
         console.error("[Worklist API] General Error:", error);
         return NextResponse.json({ error: error.message || "Failed to fetch worklist" }, { status: 500 });

@@ -201,10 +201,11 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     id: "create-order-acsn",
     method: "POST",
     path: "/api/external/study/accession",
-    description: "Update study Accession Number using Patient ID and Study Date. Designed for SIMRS integration when StudyInstanceUID is unknown.",
+    description: "Update study Accession Number using Patient ID or Order ID, and Study Date. Designed for SIMRS integration when StudyInstanceUID is unknown.",
     category: "Create ACSN",
     parameters: [
-      { name: "patientId", type: "string", description: "Required Patient ID (DICOM PatientID)", required: true },
+      { name: "patientId", type: "string", description: "Patient ID (DICOM PatientID). Opsional jika menggunakan orderId.", required: false },
+      { name: "orderId", type: "string", description: "Order ID (StudyID). Opsional jika menggunakan patientId.", required: false },
       { name: "studyDate", type: "string", description: "Required Study Date (Format: YYYYMMDD)", required: true },
       { name: "accessionNumber", type: "string", description: "The new Accession Number to assign", required: true },
       { name: "patientName", type: "string", description: "Optional Patient Name for better matching", required: false },

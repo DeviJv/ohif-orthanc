@@ -98,6 +98,7 @@ model AiResult {
 
 model SatuSehatIntegration {
   accessionNumber  String    @id
+  orderId          String?
   studyInstanceUid String?
   satusehatId      String?
   patientNik       String?
@@ -188,6 +189,7 @@ model RadiologyReport {
   studyInstanceUid  String
   studyDate         String?
   accessionNumber   String?
+  orderId           String?
   patientName       String?
   patientSex        String?
   age               String?

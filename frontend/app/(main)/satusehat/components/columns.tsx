@@ -55,6 +55,12 @@ export const getColumns = ({
         enableGlobalFilter: true,
     },
     {
+        accessorFn: (row) => row.satuSehat?.orderId || "-",
+        id: "orderID",
+        header: "Order ID",
+        enableGlobalFilter: true,
+    },
+    {
         accessorKey: "MainDicomTags.StudyDate",
         id: "studyDate",
         header: ({ column }) => {

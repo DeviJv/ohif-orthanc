@@ -13,10 +13,10 @@ $PRISMA_BIN migrate deploy --schema=prisma/schema.prisma || {
     echo "➜ Mencoba auto-resolve migrasi yang sering bermasalah..."
     $PRISMA_BIN migrate resolve --applied 20260429150700_remove_medical_context --schema=prisma/schema.prisma || true
     $PRISMA_BIN migrate resolve --applied 20260430082100_add_doctor_signature --schema=prisma/schema.prisma || true
-    
-    echo "➜ Mencoba sinkronisasi paksa (db push) sebagai fallback..."
-    $PRISMA_BIN db push --schema=prisma/schema.prisma --accept-data-loss || echo "⚠️ Sinkronisasi paksa gagal."
 }
+
+echo "➜ Mencoba sinkronisasi paksa (db push) untuk update schema terbaru..."
+$PRISMA_BIN db push --schema=prisma/schema.prisma --accept-data-loss || echo "⚠️ Sinkronisasi paksa gagal."
 
 echo "➜ Step 2: Menjalankan Seeder Database..."
 node prisma/seed.js || echo "⚠️ Seeder gagal, mungkin struktur tabel belum lengkap."

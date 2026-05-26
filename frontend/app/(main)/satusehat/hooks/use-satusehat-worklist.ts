@@ -12,6 +12,7 @@ export interface MergedStudy extends Study {
         syncedAt: string | null;
         satusehatId: string | null;
         bundleResponse: string | null; // json stored as string
+        orderId: string | null;
     };
 }
 

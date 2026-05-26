@@ -19,7 +19,8 @@ export async function upsertRadiologyReport(data: any) {
       selectedSeries,
       doctorId,
       doctorName,
-      reportDate
+      reportDate,
+      orderId
     } = data;
 
     const report = await prisma.radiologyReport.upsert({
@@ -42,6 +43,7 @@ export async function upsertRadiologyReport(data: any) {
         doctorId,
         doctorName,
         reportDate,
+        orderId,
         updatedAt: new Date()
       },
       create: {
@@ -58,7 +60,8 @@ export async function upsertRadiologyReport(data: any) {
         selectedSeries,
         doctorId,
         doctorName,
-        reportDate
+        reportDate,
+        orderId
       }
     });
 

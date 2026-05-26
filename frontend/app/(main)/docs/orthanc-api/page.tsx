@@ -199,6 +199,7 @@ function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiE
   -H "Content-Type: application/json" \\
   -d '{
     "patientId": "12345",
+    "orderId": "ORD-123",
     "studyDate": "20240420",
     "accessionNumber": "ACSN-001"
   }'` : ""}`;
@@ -210,6 +211,7 @@ function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiE
     "x-pacs-key": "${pacsKey}"${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
   }${!isGet ? `,\n  body: JSON.stringify({
     patientId: "12345",
+    orderId: "ORD-123",
     studyDate: "20240420",
     accessionNumber: "ACSN-001"
   })` : ''}
@@ -231,6 +233,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "${endpoint.method}");
 ${!isGet ? `$data = [
     "patientId" => "12345",
+    "orderId" => "ORD-123",
     "studyDate" => "20240420",
     "accessionNumber" => "ACSN-001"
 ];

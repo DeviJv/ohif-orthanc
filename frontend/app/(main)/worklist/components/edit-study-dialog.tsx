@@ -47,6 +47,7 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
         StudyDate: "",
         StudyDescription: "",
         AccessionNumber: "",
+        StudyID: "",
         PatientTelephoneNumbers: "",
     });
 
@@ -63,6 +64,7 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
                 StudyDate: mainTags.StudyDate || "",
                 StudyDescription: mainTags.StudyDescription || "",
                 AccessionNumber: mainTags.AccessionNumber || "",
+                StudyID: mainTags.StudyID || "",
                 PatientTelephoneNumbers: tags.PatientTelephoneNumbers || mainTags.PatientTelephoneNumbers || "",
             });
         }
@@ -87,6 +89,7 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
             StudyDate: mainTags.StudyDate || "",
             StudyDescription: mainTags.StudyDescription || "",
             AccessionNumber: mainTags.AccessionNumber || "",
+            StudyID: mainTags.StudyID || "",
             PatientTelephoneNumbers: tags.PatientTelephoneNumbers || mainTags.PatientTelephoneNumbers || "",
         };
 
@@ -98,6 +101,11 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
             if (value !== originalVal) {
                 modifications[key] = value;
                 hasChanges = true;
+                
+                // Also update RequestedProcedureID if StudyID is modified
+                if (key === "StudyID") {
+                    modifications["RequestedProcedureID"] = value;
+                }
             }
         });
 
@@ -266,6 +274,19 @@ export function EditStudyDialog({ open, onOpenChange, study, onConfirm }: EditSt
                                 value={formData.AccessionNumber}
                                 onChange={handleChange}
                                 className="col-span-3 h-9"
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="StudyID" className="text-right text-xs font-semibold uppercase text-slate-500">
+                                Order ID
+                            </Label>
+                            <Input
+                                id="StudyID"
+                                name="StudyID"
+                                value={formData.StudyID}
+                                onChange={handleChange}
+                                className="col-span-3 h-9"
+                                placeholder="Order ID / Study ID"
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">

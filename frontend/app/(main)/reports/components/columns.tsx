@@ -60,6 +60,11 @@ export const getColumns = ({
         header: "Patient ID",
     },
     {
+        accessorKey: "orderId",
+        header: "Order ID",
+        cell: ({ getValue }) => getValue() || "-",
+    },
+    {
         accessorKey: "accessionNumber",
         header: "Accession Number",
         cell: ({ getValue }) => getValue() || "-",

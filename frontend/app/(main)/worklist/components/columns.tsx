@@ -141,6 +141,12 @@ export const getColumns = ({
         enableGlobalFilter: true,
     },
     {
+        accessorFn: (row) => row.MainDicomTags?.StudyID || "-",
+        id: "orderID",
+        header: "Order ID",
+        enableGlobalFilter: true,
+    },
+    {
         accessorFn: (row) => (row.PatientMainDicomTags as any)?.PatientBirthDate || (row.MainDicomTags as any)?.PatientBirthDate,
         id: "birthDate",
         header: ({ column }) => {

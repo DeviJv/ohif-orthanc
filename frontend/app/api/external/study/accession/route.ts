@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
         const { 
             studyInstanceUid, 
             patientId, 
+            orderId,
             studyDate, 
             patientName, 
             description, 
@@ -72,12 +73,13 @@ export async function POST(req: NextRequest) {
                 })
             });
             if (results.length > 0) targetStudyId = results[0];
-        } else if (patientId && studyDate) {
-            // Find by PatientID and StudyDate (SIMRS logic)
+        } else if ((patientId || orderId) && studyDate) {
+            // Find by PatientID/OrderID and StudyDate
             const query: any = {
-                PatientID: patientId,
                 StudyDate: studyDate
             };
+            if (patientId) query.PatientID = patientId;
+            if (orderId) query.StudyID = orderId;
             if (patientName) query.PatientName = `*${patientName}*`; // Wildcard
             if (description) query.StudyDescription = `*${description}*`;
 
@@ -102,7 +104,7 @@ export async function POST(req: NextRequest) {
             targetStudyId = results[0];
         } else {
             return NextResponse.json({ 
-                error: "Identification criteria missing. Provide studyInstanceUid OR (patientId AND studyDate)" 
+                error: "Identification criteria missing. Provide studyInstanceUid OR ((patientId OR orderId) AND studyDate)" 
             }, { status: 400 });
         }
 
@@ -117,13 +119,19 @@ export async function POST(req: NextRequest) {
         const currentStudy = await fetchOrthanc(`/studies/${targetStudyId}`);
         const currentAcsn = currentStudy.MainDicomTags?.AccessionNumber;
 
-        if (currentAcsn !== accessionNumber) {
+        if (currentAcsn !== accessionNumber || orderId) {
             console.log(`[EXTERNAL API] Modifying AccessionNumber from '${currentAcsn}' to '${accessionNumber}' for study ${targetStudyId}`);
             
+            const replaceObj: any = { AccessionNumber: accessionNumber };
+            if (orderId) {
+                replaceObj.StudyID = orderId;
+                replaceObj.RequestedProcedureID = orderId;
+            }
+
             const modifyResult = await fetchOrthanc(`/studies/${targetStudyId}/modify`, {
                 method: "POST",
                 body: JSON.stringify({
-                    Replace: { AccessionNumber: accessionNumber },
+                    Replace: replaceObj,
                     Keep: ["StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"],
                     Force: true,
                     KeepSource: true
@@ -141,12 +149,14 @@ export async function POST(req: NextRequest) {
             update: {
                 studyInstanceUid: studyInstanceUid || null,
                 status: "PENDING",
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                ...(orderId && { orderId })
             },
             create: {
                 accessionNumber: accessionNumber,
                 studyInstanceUid: studyInstanceUid || null,
-                status: "PENDING"
+                status: "PENDING",
+                ...(orderId && { orderId })
             }
         });
 

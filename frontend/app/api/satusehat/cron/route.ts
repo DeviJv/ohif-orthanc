@@ -69,6 +69,21 @@ export async function GET(req: Request) {
         // Run asynchronously so we don't block the CRON ping response
         (async () => {
              try {
+                 // 1. CLEANUP MODALITY LOGS OLDER THAN 30 DAYS
+                 const thirtyDaysAgo = new Date();
+                 thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                 
+                 const deletedLogs = await db.modalityConnection.deleteMany({
+                     where: {
+                         timestamp: {
+                             lt: thirtyDaysAgo
+                         }
+                     }
+                 });
+                 if (deletedLogs.count > 0) {
+                     console.log(`[CRON] Cleaned up ${deletedLogs.count} old modality logs.`);
+                 }
+
                  const worklistRes = await fetch(`${appUrl}/api/satusehat/worklist`);
                  if (!worklistRes.ok) {
                      console.error("[CRON] Failed to fetch worklist");

@@ -13,7 +13,9 @@ import {
     WifiIcon, 
     WifiOffIcon, 
     RefreshIcon,
-    ActivityIcon
+    ActivityIcon,
+    ArrowLeft01Icon,
+    ArrowRight01Icon
 } from "@hugeicons/core-free-icons";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
@@ -31,14 +33,25 @@ interface ModalityLog {
 
 export default function DeviceConnectivityPage() {
     const [history, setHistory] = useState<ModalityLog[]>([]);
+    const [activeDevices, setActiveDevices] = useState<ModalityLog[]>([]);
     const [loading, setLoading] = useState(true);
+    
+    // Pagination states
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 10;
 
-    const fetchHistory = async () => {
+    const fetchHistory = async (currentPage = page) => {
         setLoading(true);
         try {
-            const res = await fetch("/api/modality/history");
+            const res = await fetch(`/api/modality/history?page=${currentPage}&limit=${limit}`);
             const data = await res.json();
-            if (Array.isArray(data)) {
+            if (data.history) {
+                setHistory(data.history);
+                setActiveDevices(data.activeDevices || []);
+                setTotalPages(data.pagination?.totalPages || 1);
+            } else if (Array.isArray(data)) {
+                // Fallback for old API just in case
                 setHistory(data);
             }
         } catch (error) {
@@ -49,26 +62,19 @@ export default function DeviceConnectivityPage() {
     };
 
     useEffect(() => {
-        fetchHistory();
+        fetchHistory(page);
         // Auto refresh every 30 seconds
-        const interval = setInterval(fetchHistory, 30000);
+        const interval = setInterval(() => fetchHistory(page), 30000);
         return () => clearInterval(interval);
-    }, []);
+    }, [page]);
 
-    const activeDevices = history.reduce((acc, log) => {
-        if (!acc[log.aeTitle]) {
-            acc[log.aeTitle] = log;
-        } else {
-            // Keep the latest status
-            const existing = acc[log.aeTitle];
-            if (new Date(log.timestamp) > new Date(existing.timestamp)) {
-                acc[log.aeTitle] = log;
-            }
-        }
-        return acc;
-    }, {} as Record<string, ModalityLog>);
+    const handlePrevPage = () => {
+        if (page > 1) setPage(page - 1);
+    };
 
-    const deviceList = Object.values(activeDevices);
+    const handleNextPage = () => {
+        if (page < totalPages) setPage(page + 1);
+    };
 
     return (
         <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full">
@@ -87,7 +93,7 @@ export default function DeviceConnectivityPage() {
                 <Button 
                     variant="outline" 
                     className="gap-2 h-10 px-4 rounded-xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800"
-                    onClick={fetchHistory}
+                    onClick={() => fetchHistory(page)}
                     disabled={loading}
                 >
                     <HugeiconsIcon icon={RefreshIcon} className={loading ? "animate-spin" : ""} strokeWidth={2} />
@@ -105,12 +111,12 @@ export default function DeviceConnectivityPage() {
                         <CardDescription>Status terakhir alat yang pernah terhubung.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {loading ? (
+                        {loading && activeDevices.length === 0 ? (
                             Array.from({ length: 3 }).map((_, i) => (
                                 <Skeleton key={i} className="h-16 w-full rounded-xl" />
                             ))
-                        ) : deviceList.length > 0 ? (
-                            deviceList.sort((a,b) => a.aeTitle.localeCompare(b.aeTitle)).map((device) => (
+                        ) : activeDevices.length > 0 ? (
+                            activeDevices.sort((a,b) => a.aeTitle.localeCompare(b.aeTitle)).map((device) => (
                                 <div key={device.aeTitle} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950/50 shadow-sm transition-all hover:border-primary/20">
                                     <div className="flex items-center gap-3">
                                         <div className={`p-2 rounded-lg ${device.event === "CONNECTED" ? "bg-emerald-500/10 text-emerald-500" : "bg-slate-500/10 text-slate-500"}`}>
@@ -135,7 +141,7 @@ export default function DeviceConnectivityPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2 shadow-sm border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                <Card className="md:col-span-2 shadow-sm border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm flex flex-col">
                     <CardHeader>
                         <CardTitle className="text-sm font-bold flex items-center gap-2">
                             <HugeiconsIcon icon={Link01Icon} className="size-4 text-primary" />
@@ -143,8 +149,8 @@ export default function DeviceConnectivityPage() {
                         </CardTitle>
                         <CardDescription>Log aktivitas koneksi DICOM Association otomatis.</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <div className="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-950/20">
+                    <CardContent className="flex-1 flex flex-col">
+                        <div className="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-950/20 flex-1">
                             <Table>
                                 <TableHeader className="bg-slate-50/50 dark:bg-slate-800/80">
                                     <TableRow className="border-slate-200 dark:border-slate-800">
@@ -155,7 +161,7 @@ export default function DeviceConnectivityPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {loading ? (
+                                    {loading && history.length === 0 ? (
                                         Array.from({ length: 5 }).map((_, i) => (
                                             <TableRow key={i}>
                                                 <TableCell><Skeleton className="h-4 w-24" /></TableCell>
@@ -193,6 +199,37 @@ export default function DeviceConnectivityPage() {
                                 </TableBody>
                             </Table>
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 0 && (
+                            <div className="flex items-center justify-between pt-4 mt-auto">
+                                <div className="text-xs text-slate-500">
+                                    Halaman {page} dari {totalPages}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handlePrevPage}
+                                        disabled={page === 1 || loading}
+                                        className="h-8 gap-1"
+                                    >
+                                        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+                                        Prev
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleNextPage}
+                                        disabled={page === totalPages || loading}
+                                        className="h-8 gap-1"
+                                    >
+                                        Next
+                                        <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>

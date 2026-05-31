@@ -29,8 +29,8 @@ ENV HOSTNAME="0.0.0.0"
 
 # Install dependencies yang dibutuhkan Prisma & Docker
 RUN apk add --no-cache docker-cli docker-cli-compose openssl libc6-compat
-# Install npm dependencies yang dibutuhkan oleh seed.js tapi tidak ter-copy di standalone
-RUN npm install bcryptjs
+# Install npm dependencies yang dibutuhkan oleh seed.js dan db push tapi tidak ter-copy di standalone
+RUN npm install bcryptjs prisma@6.19.2
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

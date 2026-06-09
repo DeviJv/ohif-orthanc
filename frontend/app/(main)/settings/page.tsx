@@ -392,6 +392,8 @@ function TelegramSettingsTab() {
     const [botToken, setBotToken] = useState("");
     const [chatId, setChatId] = useState("");
     const [satuSehatChatId, setSatuSehatChatId] = useState("");
+    const [doctorsConfig, setDoctorsConfig] = useState<{userId: string, chatId: string}[]>([]);
+    const [doctorsList, setDoctorsList] = useState<{id: string, name: string}[]>([]);
     const [showToken, setShowToken] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -414,12 +416,22 @@ function TelegramSettingsTab() {
     useEffect(() => {
         const fetchConfig = async () => {
             try {
-                const res = await fetch("/api/config/telegram");
-                if (res.ok) {
-                    const data = await res.json();
+                const [resConfig, resDoctors] = await Promise.all([
+                    fetch("/api/config/telegram"),
+                    fetch("/api/users/doctors")
+                ]);
+
+                if (resDoctors.ok) {
+                    const docData = await resDoctors.json();
+                    setDoctorsList(docData);
+                }
+
+                if (resConfig.ok) {
+                    const data = await resConfig.json();
                     setBotToken(data.botToken);
                     setChatId(data.chatId);
                     setSatuSehatChatId(data.satuSehatChatId);
+                    setDoctorsConfig(data.doctors || []);
                     setConfigInfo(data);
                 }
             } catch (error) {
@@ -434,16 +446,26 @@ function TelegramSettingsTab() {
     }, []);
 
     const handleSave = async () => {
+        // Validation: 1 doctor, 1 chat ID
+        const validDoctors = doctorsConfig.filter(d => d.userId.trim() !== "" && d.chatId.trim() !== "");
+        const userIds = validDoctors.map(d => d.userId);
+        const uniqueUserIds = new Set(userIds);
+        
+        if (userIds.length !== uniqueUserIds.size) {
+            toast.error("Setiap dokter hanya boleh memiliki satu Chat ID Telegram.");
+            return;
+        }
+
+        if (validDoctors.length !== doctorsConfig.length) {
+            toast.error("Harap isi lengkap semua konfigurasi dokter atau hapus yang kosong.");
+            return;
+        }
+
         // Only send fields that the user actually edited to avoid saving masked values
-        const payload: Record<string, string> = {};
+        const payload: Record<string, any> = { doctors: validDoctors };
         if (tokenDirty) payload.botToken = botToken;
         if (chatIdDirty) payload.chatId = chatId;
         if (satuSehatChatIdDirty) payload.satuSehatChatId = satuSehatChatId;
-
-        if (Object.keys(payload).length === 0) {
-            toast.info("Tidak ada perubahan untuk disimpan.");
-            return;
-        }
 
         setIsSaving(true);
         try {
@@ -465,6 +487,7 @@ function TelegramSettingsTab() {
                     setBotToken(data.botToken);
                     setChatId(data.chatId);
                     setSatuSehatChatId(data.satuSehatChatId);
+                    setDoctorsConfig(data.doctors || []);
                     setConfigInfo(data);
                 }
             } else {
@@ -575,32 +598,7 @@ function TelegramSettingsTab() {
                             </div>
                         </div>
 
-                        {/* Chat ID */}
-                        <div className="space-y-3">
-                            <Label htmlFor="chatId" className="text-sm font-semibold">User/Chat ID Telegram</Label>
-                            <div className="flex gap-2">
-                                <Input
-                                    id="chatId"
-                                    type="text"
-                                    placeholder="Ex: 1085499706"
-                                    value={chatId}
-                                    onChange={(e) => { setChatId(e.target.value); setChatIdDirty(true); }}
-                                    className="font-mono text-sm h-10"
-                                />
-                                <Button 
-                                    variant="outline" 
-                                    size="icon" 
-                                    className="shrink-0 h-10 w-10 aspect-square"
-                                    onClick={() => copyToClipboard(chatId, "Chat ID")}
-                                >
-                                    <HugeiconsIcon icon={Copy01Icon} className="size-4" />
-                                </Button>
-                            </div>
-                            <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 ml-1">
-                                <HugeiconsIcon icon={InformationCircleIcon} className="size-3" />
-                                Gunakan chat ID personal atau group ID (pake tanda minus).
-                            </p>
-                        </div>
+                        {/* Chat ID moved below */}
 
                         {/* Satu Sehat Sync Chat ID */}
                         <div className="space-y-3">
@@ -628,6 +626,84 @@ function TelegramSettingsTab() {
                                 Chat ID khusus untuk log webhook dari dicom-router (SatuSehat).
                             </p>
                         </div>
+
+                        {/* Telegram Doctors & Default Chat ID */}
+                        <div className="space-y-4 pt-6 mt-6 border-t border-slate-200 dark:border-slate-800">
+                            <div className="flex justify-between items-center">
+                                <div className="space-y-1">
+                                    <Label className="text-sm font-semibold">Chat ID & Doctors Telegram</Label>
+                                    <p className="text-xs text-muted-foreground">Konfigurasi chat ID Telegram default dan khusus untuk setiap dokter.</p>
+                                </div>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={() => setDoctorsConfig([...doctorsConfig, {userId: "", chatId: ""}])}
+                                    className="h-8 px-3 text-xs gap-1.5"
+                                >
+                                    <HugeiconsIcon icon={PlusSignIcon} className="size-3.5" />
+                                    Tambah Dokter
+                                </Button>
+                            </div>
+
+                            <div className="space-y-3">
+
+
+                                {/* Doctors Repeater */}
+                                {doctorsConfig.map((doc, idx) => (
+                                    <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start relative bg-slate-50 dark:bg-slate-800/30 p-3 md:pr-14 rounded-lg border border-slate-100 dark:border-slate-800/50">
+                                        <div className="space-y-1.5">
+                                            <Label className="text-xs text-muted-foreground">Pilih Dokter</Label>
+                                            <Select 
+                                                value={doc.userId} 
+                                                onValueChange={(val) => {
+                                                    const newDocs = [...doctorsConfig];
+                                                    newDocs[idx].userId = val || "";
+                                                    setDoctorsConfig(newDocs);
+                                                }}
+                                            >
+                                                <SelectTrigger className="h-9 text-sm bg-white dark:bg-slate-900">
+                                                    <SelectValue placeholder="Pilih Dokter">
+                                                        {doc.userId ? doctorsList.find(d => d.id === doc.userId)?.name : "Pilih Dokter"}
+                                                    </SelectValue>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {doctorsList.map(d => (
+                                                        <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label className="text-xs text-muted-foreground">Chat ID</Label>
+                                            <Input 
+                                                placeholder="Ex: 1085499706"
+                                                value={doc.chatId}
+                                                onChange={(e) => {
+                                                    const newDocs = [...doctorsConfig];
+                                                    newDocs[idx].chatId = e.target.value;
+                                                    setDoctorsConfig(newDocs);
+                                                }}
+                                                className="font-mono text-sm h-9 bg-white dark:bg-slate-900"
+                                            />
+                                        </div>
+                                        <div className="md:absolute md:right-3 md:top-3 pt-2 md:pt-0 shrink-0 flex justify-end">
+                                            <Button 
+                                                variant="outline" 
+                                                size="icon" 
+                                                className="h-9 w-9 md:mt-[22px] text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20 bg-white dark:bg-slate-900"
+                                                onClick={() => {
+                                                    const newDocs = doctorsConfig.filter((_, i) => i !== idx);
+                                                    setDoctorsConfig(newDocs);
+                                                }}
+                                            >
+                                                <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                     </CardContent>
                     <Separator />
                     <div className="p-6 flex flex-wrap gap-3 justify-between">

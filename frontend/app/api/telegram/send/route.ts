@@ -9,14 +9,30 @@ const ORTHANC_AUTH = Buffer.from(
     `${process.env.ORTHANC_USERNAME || "quantum"}:${process.env.ORTHANC_PASSWORD || "quantum123"}`
 ).toString("base64");
 
-async function getTelegramCredentials() {
-    const [tokenRow, chatIdRow] = await Promise.all([
+async function getTelegramCredentials(doctorId?: string) {
+    const [tokenRow, chatIdRow, doctorsRow] = await Promise.all([
         db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } }),
         db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } }),
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_DOCTORS" } }),
     ]);
+
+    let targetChatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "";
+
+    if (doctorId && doctorsRow?.value) {
+        try {
+            const doctorsConfig: { userId: string, chatId: string }[] = JSON.parse(doctorsRow.value);
+            const doctor = doctorsConfig.find(d => d.userId === doctorId);
+            if (doctor && doctor.chatId) {
+                targetChatId = doctor.chatId;
+            }
+        } catch (e) {
+            console.error("Failed to parse TELEGRAM_DOCTORS", e);
+        }
+    }
+
     return {
         botToken: tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "",
-        chatId: chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "",
+        chatId: targetChatId,
     };
 }
 
@@ -54,14 +70,14 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { botToken: TELEGRAM_BOT_TOKEN, chatId: TELEGRAM_CHAT_ID } = await getTelegramCredentials();
-
-    if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "your_bot_token_here") {
-        return NextResponse.json({ error: "Telegram Bot Token is not configured" }, { status: 500 });
-    }
-
     try {
-        const { studyId } = await req.json();
+        const { studyId, doctorId } = await req.json();
+
+        const { botToken: TELEGRAM_BOT_TOKEN, chatId: TELEGRAM_CHAT_ID } = await getTelegramCredentials(doctorId);
+
+        if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "your_bot_token_here") {
+            return NextResponse.json({ error: "Telegram Bot Token is not configured" }, { status: 500 });
+        }
 
         if (!studyId) {
             return NextResponse.json({ error: "Study ID is required" }, { status: 400 });

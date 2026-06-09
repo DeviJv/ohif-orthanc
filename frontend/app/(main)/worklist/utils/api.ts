@@ -20,11 +20,11 @@ export const orthancApi = {
         return response;
     },
 
-    sendToTelegram: async (studyId: string) => {
+    sendToTelegram: async (studyId: string, doctorId?: string) => {
         const response = await fetch("/api/telegram/send", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ studyId })
+            body: JSON.stringify({ studyId, doctorId })
         });
         if (!response.ok) {
             const error = await response.json();

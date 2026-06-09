@@ -540,9 +540,9 @@ export function useWorklist() {
         }
     }, [fetchStudies, addTask, updateTask]);
 
-    const handleSendToTelegram = useCallback(async (studyId: string) => {
+    const handleSendToTelegram = useCallback(async (studyId: string, doctorId?: string) => {
         try {
-            await orthancApi.sendToTelegram(studyId);
+            await orthancApi.sendToTelegram(studyId, doctorId);
             toast.success("Gambar berhasil dikirim ke Telegram Dokter");
         } catch (error: any) {
             console.error("Failed to send to Telegram:", error);

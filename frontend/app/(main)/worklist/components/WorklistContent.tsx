@@ -522,7 +522,7 @@ export default function WorklistContent() {
 
             <DeleteStudyDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen} study={studyToDelete} onConfirm={handleDeleteStudyLocal} />
             <BulkDeleteStudyDialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen} count={table.getFilteredSelectedRowModel().rows.length} onConfirm={handleConfirmBulkDelete} />
-            <SendTelegramDialog open={isSendTelegramDialogOpen} onOpenChange={setIsSendTelegramDialogOpen} study={selectedStudyForTelegram} onSendToDoctor={handleSendToTelegram} />
+            <SendTelegramDialog open={isSendTelegramDialogOpen} onOpenChange={setIsSendTelegramDialogOpen} study={selectedStudyForTelegram} onSendToDoctor={handleSendToTelegram} doctors={doctors} />
             <EditStudyDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} study={studyToEdit} onConfirm={handleEditStudy} />
             <AiResultDialog open={isAiResultDialogOpen} onOpenChange={setIsAiResultDialogOpen} result={selectedAiResult} patientName={selectedPatientName} />
             <ExportPdfDialog open={isExportPdfDialogOpen} onOpenChange={setIsExportPdfDialogOpen} study={studyForPdf} />

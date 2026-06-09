@@ -14,20 +14,30 @@ export async function GET() {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const [tokenRow, chatIdRow, satuSehatChatIdRow] = await Promise.all([
+    const [tokenRow, chatIdRow, satuSehatChatIdRow, doctorsRow] = await Promise.all([
         db.appConfig.findUnique({ where: { key: "TELEGRAM_BOT_TOKEN" } }),
         db.appConfig.findUnique({ where: { key: "TELEGRAM_CHAT_ID" } }),
         db.appConfig.findUnique({ where: { key: "TELEGRAM_SATUSEHAT_CHAT_ID" } }),
+        db.appConfig.findUnique({ where: { key: "TELEGRAM_DOCTORS" } }),
     ]);
 
     const token = tokenRow?.value || process.env.TELEGRAM_BOT_TOKEN || "";
     const chatId = chatIdRow?.value || process.env.TELEGRAM_CHAT_ID || "";
     const satuSehatChatId = satuSehatChatIdRow?.value || process.env.TELEGRAM_SATUSEHAT_CHAT_ID || "";
+    let doctors = [];
+    try {
+        if (doctorsRow?.value) {
+            doctors = JSON.parse(doctorsRow.value);
+        }
+    } catch (e) {
+        console.error("Failed to parse TELEGRAM_DOCTORS", e);
+    }
 
     return NextResponse.json({
         botToken: token,
         chatId: chatId,
         satuSehatChatId: satuSehatChatId,
+        doctors: doctors,
         hasDbToken: !!tokenRow?.value,
         hasDbChatId: !!chatIdRow?.value,
         hasDbSatuSehatChatId: !!satuSehatChatIdRow?.value,
@@ -45,7 +55,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { botToken, chatId, satuSehatChatId } = await req.json();
+    const { botToken, chatId, satuSehatChatId, doctors } = await req.json();
 
     const ops: Promise<any>[] = [];
 
@@ -89,6 +99,16 @@ export async function POST(req: NextRequest) {
                 })
             );
         }
+    }
+
+    if (doctors !== undefined) {
+        ops.push(
+            db.appConfig.upsert({
+                where: { key: "TELEGRAM_DOCTORS" },
+                update: { value: JSON.stringify(doctors) },
+                create: { key: "TELEGRAM_DOCTORS", value: JSON.stringify(doctors) },
+            })
+        );
     }
 
     await Promise.all(ops);

@@ -595,12 +595,12 @@ export function useWorklist() {
         setIsSendWhatsappDialogOpen(true);
     }, []);
 
-    const handleSendToWhatsapp = useCallback(async (target: string, message: string, file?: string, filename?: string) => {
+    const handleSendToWhatsapp = useCallback(async (target: string, message: string, file?: string, filename?: string, variables?: string[]) => {
         try {
             const res = await fetch("/api/whatsapp/send", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ target, message, file, filename })
+                body: JSON.stringify({ target, message, file, filename, variables })
             });
 
             if (!res.ok) {

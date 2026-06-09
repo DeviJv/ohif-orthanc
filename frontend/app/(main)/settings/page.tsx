@@ -65,6 +65,8 @@ interface ClinicConfig {
     kirimiUserCode: string;
     kirimiDeviceId: string;
     kirimiSecret: string;
+    kirimiWabaId?: string;
+    kirimiTemplateName?: string;
 }
 
 export default function SettingsPage() {
@@ -77,6 +79,8 @@ export default function SettingsPage() {
         kirimiUserCode: "",
         kirimiDeviceId: "",
         kirimiSecret: "",
+        kirimiWabaId: "",
+        kirimiTemplateName: "",
     });
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -91,6 +95,8 @@ export default function SettingsPage() {
                     kirimiUserCode: data.kirimiUserCode || "",
                     kirimiDeviceId: data.kirimiDeviceId || "",
                     kirimiSecret: data.kirimiSecret || "",
+                    kirimiWabaId: data.kirimiWabaId || "",
+                    kirimiTemplateName: data.kirimiTemplateName || "",
                 });
             })
             .catch(() => toast.error("Gagal memuat konfigurasi klinik"))
@@ -274,6 +280,30 @@ export default function SettingsPage() {
                                                 value={config.kirimiSecret}
                                                 onChange={(e) => setConfig((p) => ({ ...p, kirimiSecret: e.target.value }))}
                                             />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label htmlFor="kirimiWabaId" className="flex items-center gap-1">
+                                                    WABA ID <span className="text-[10px] text-muted-foreground font-normal">(Optional)</span>
+                                                </Label>
+                                                <Input
+                                                    id="kirimiWabaId"
+                                                    placeholder="Contoh: 956596060526609"
+                                                    value={config.kirimiWabaId || ""}
+                                                    onChange={(e) => setConfig((p) => ({ ...p, kirimiWabaId: e.target.value }))}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label htmlFor="kirimiTemplateName" className="flex items-center gap-1">
+                                                    Template Name <span className="text-[10px] text-muted-foreground font-normal">(Optional)</span>
+                                                </Label>
+                                                <Input
+                                                    id="kirimiTemplateName"
+                                                    placeholder="Contoh: radiologi"
+                                                    value={config.kirimiTemplateName || ""}
+                                                    onChange={(e) => setConfig((p) => ({ ...p, kirimiTemplateName: e.target.value }))}
+                                                />
+                                            </div>
                                         </div>
                                         <p className="text-[11px] text-muted-foreground italic">
                                             Dapatkan kredensial API di dashboard <a href="https://kirimi.id" target="_blank" rel="noopener noreferrer" className="text-primary underline">kirimi.id</a>.

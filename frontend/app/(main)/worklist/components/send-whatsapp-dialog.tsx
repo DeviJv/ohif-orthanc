@@ -40,7 +40,7 @@ interface SendWhatsappDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     study: Study | null;
-    onSend: (target: string, message: string, file?: string, filename?: string) => Promise<boolean>;
+    onSend: (target: string, message: string, file?: string, filename?: string, variables?: string[]) => Promise<boolean>;
 }
 
 function parseDicomDate(dateStr?: string): Date | null {
@@ -351,7 +351,17 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
             if (phone) {
                 let cleanPhone = phone.replace(/[^0-9]/g, "");
                 if (cleanPhone.startsWith("0")) cleanPhone = "62" + cleanPhone.slice(1);
-                success = await onSend(cleanPhone, waMessage, pdfBase64, filename);
+                
+                // Siapkan variabel untuk template WABA (hasil_radiologi / radiologi)
+                // 1: Nama, 2: Tanggal, 3: RM, 4: Link Download (On the go)
+                const wabaVariables = [
+                    patientName,
+                    studyDateFormatted || formData.date,
+                    patientID,
+                    `${window.location.origin}/download/${study?.MainDicomTags?.StudyInstanceUID}`
+                ];
+                
+                success = await onSend(cleanPhone, waMessage, pdfBase64, filename, wabaVariables);
             }
             
             if (success) {

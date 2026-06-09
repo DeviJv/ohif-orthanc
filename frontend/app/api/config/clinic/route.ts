@@ -14,6 +14,8 @@ const KEYS = [
     "KIRIMI_USER_CODE",
     "KIRIMI_DEVICE_ID",
     "KIRIMI_SECRET",
+    "KIRIMI_WABA_ID",
+    "KIRIMI_TEMPLATE_NAME",
 ];
 
 export async function GET() {
@@ -50,6 +52,8 @@ export async function GET() {
             kirimiUserCode: map["KIRIMI_USER_CODE"] || "",
             kirimiDeviceId: map["KIRIMI_DEVICE_ID"] || "",
             kirimiSecret: map["KIRIMI_SECRET"] || "",
+            kirimiWabaId: map["KIRIMI_WABA_ID"] || "",
+            kirimiTemplateName: map["KIRIMI_TEMPLATE_NAME"] || "",
         });
     } catch (error) {
         console.error("[Clinic API] Unexpected error in GET:", error);
@@ -65,7 +69,7 @@ export async function POST(req: NextRequest) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const { clinicName, clinicAddress, clinicPhone, clinicCity, clinicLogo, doctors, kirimiUserCode, kirimiDeviceId, kirimiSecret } = body;
+    const { clinicName, clinicAddress, clinicPhone, clinicCity, clinicLogo, doctors, kirimiUserCode, kirimiDeviceId, kirimiSecret, kirimiWabaId, kirimiTemplateName } = body;
 
     const upsert = (key: string, value: string) =>
         db.appConfig.upsert({
@@ -84,6 +88,8 @@ export async function POST(req: NextRequest) {
         upsert("KIRIMI_USER_CODE", kirimiUserCode || ""),
         upsert("KIRIMI_DEVICE_ID", kirimiDeviceId || ""),
         upsert("KIRIMI_SECRET", kirimiSecret || ""),
+        upsert("KIRIMI_WABA_ID", kirimiWabaId || ""),
+        upsert("KIRIMI_TEMPLATE_NAME", kirimiTemplateName || ""),
     ]);
 
     return NextResponse.json({ success: true });

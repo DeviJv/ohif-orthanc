@@ -37,10 +37,10 @@ export async function GET(req: NextRequest) {
             return dateB.localeCompare(dateA);
         });
 
-        // 3. Limit to top 100 to maintain performance
-        const topStudies = allStudies.slice(0, 100);
+        // 3. Limit removed to ensure all data from Orthanc is retrieved
+        const topStudies = allStudies;
 
-        // 4. Fetch series details for these top 100 to get modalities
+        // 4. Fetch series details for these studies to get modalities
         // We aggregate the data on the server to reduce round-trips from the browser
         const detailedStudies = await Promise.all(
             topStudies.map(async (study) => {

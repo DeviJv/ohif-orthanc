@@ -197,6 +197,7 @@ exports.Prisma.AiResultScalarFieldEnum = {
 
 exports.Prisma.SatuSehatIntegrationScalarFieldEnum = {
   accessionNumber: 'accessionNumber',
+  orderId: 'orderId',
   studyInstanceUid: 'studyInstanceUid',
   satusehatId: 'satusehatId',
   patientNik: 'patientNik',
@@ -287,6 +288,7 @@ exports.Prisma.RadiologyReportScalarFieldEnum = {
   studyInstanceUid: 'studyInstanceUid',
   studyDate: 'studyDate',
   accessionNumber: 'accessionNumber',
+  orderId: 'orderId',
   patientName: 'patientName',
   patientSex: 'patientSex',
   age: 'age',
@@ -342,6 +344,15 @@ exports.Prisma.SatuSehatLogExportTaskScalarFieldEnum = {
   completedAt: 'completedAt'
 };
 
+exports.Prisma.TemplateExerciseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  nama: 'nama',
+  template: 'template',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -390,7 +401,8 @@ exports.Prisma.ModelName = {
   RadiologyReport: 'RadiologyReport',
   SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask',
   ReportExportTask: 'ReportExportTask',
-  SatuSehatLogExportTask: 'SatuSehatLogExportTask'
+  SatuSehatLogExportTask: 'SatuSehatLogExportTask',
+  TemplateExercise: 'TemplateExercise'
 };
 
 /**

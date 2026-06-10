@@ -98,6 +98,11 @@ export type ReportExportTask = $Result.DefaultSelection<Prisma.$ReportExportTask
  * 
  */
 export type SatuSehatLogExportTask = $Result.DefaultSelection<Prisma.$SatuSehatLogExportTaskPayload>
+/**
+ * Model TemplateExercise
+ * 
+ */
+export type TemplateExercise = $Result.DefaultSelection<Prisma.$TemplateExercisePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -386,6 +391,16 @@ export class PrismaClient<
     * ```
     */
   get satuSehatLogExportTask(): Prisma.SatuSehatLogExportTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.templateExercise`: Exposes CRUD operations for the **TemplateExercise** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TemplateExercises
+    * const templateExercises = await prisma.templateExercise.findMany()
+    * ```
+    */
+  get templateExercise(): Prisma.TemplateExerciseDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -843,7 +858,8 @@ export namespace Prisma {
     RadiologyReport: 'RadiologyReport',
     SatuSehatBulkSyncTask: 'SatuSehatBulkSyncTask',
     ReportExportTask: 'ReportExportTask',
-    SatuSehatLogExportTask: 'SatuSehatLogExportTask'
+    SatuSehatLogExportTask: 'SatuSehatLogExportTask',
+    TemplateExercise: 'TemplateExercise'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -862,7 +878,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport" | "satuSehatBulkSyncTask" | "reportExportTask" | "satuSehatLogExportTask"
+      modelProps: "user" | "role" | "permission" | "account" | "session" | "verificationToken" | "appConfig" | "aiResult" | "satuSehatIntegration" | "satuSehatWebhookLog" | "satuSehatSetting" | "satuSehatResourceLog" | "modalityConnection" | "radiologyReport" | "satuSehatBulkSyncTask" | "reportExportTask" | "satuSehatLogExportTask" | "templateExercise"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2124,6 +2140,80 @@ export namespace Prisma {
           }
         }
       }
+      TemplateExercise: {
+        payload: Prisma.$TemplateExercisePayload<ExtArgs>
+        fields: Prisma.TemplateExerciseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TemplateExerciseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TemplateExerciseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>
+          }
+          findFirst: {
+            args: Prisma.TemplateExerciseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TemplateExerciseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>
+          }
+          findMany: {
+            args: Prisma.TemplateExerciseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>[]
+          }
+          create: {
+            args: Prisma.TemplateExerciseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>
+          }
+          createMany: {
+            args: Prisma.TemplateExerciseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TemplateExerciseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>[]
+          }
+          delete: {
+            args: Prisma.TemplateExerciseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>
+          }
+          update: {
+            args: Prisma.TemplateExerciseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>
+          }
+          deleteMany: {
+            args: Prisma.TemplateExerciseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TemplateExerciseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TemplateExerciseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>[]
+          }
+          upsert: {
+            args: Prisma.TemplateExerciseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateExercisePayload>
+          }
+          aggregate: {
+            args: Prisma.TemplateExerciseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTemplateExercise>
+          }
+          groupBy: {
+            args: Prisma.TemplateExerciseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TemplateExerciseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TemplateExerciseCountArgs<ExtArgs>
+            result: $Utils.Optional<TemplateExerciseCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2237,6 +2327,7 @@ export namespace Prisma {
     satuSehatBulkSyncTask?: SatuSehatBulkSyncTaskOmit
     reportExportTask?: ReportExportTaskOmit
     satuSehatLogExportTask?: SatuSehatLogExportTaskOmit
+    templateExercise?: TemplateExerciseOmit
   }
 
   /* Types for Logging */
@@ -2320,12 +2411,14 @@ export namespace Prisma {
     accounts: number
     reports: number
     sessions: number
+    templateExercises: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     reports?: boolean | UserCountOutputTypeCountReportsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    templateExercises?: boolean | UserCountOutputTypeCountTemplateExercisesArgs
   }
 
   // Custom InputTypes
@@ -2358,6 +2451,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTemplateExercisesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemplateExerciseWhereInput
   }
 
 
@@ -2651,6 +2751,7 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    templateExercises?: boolean | User$templateExercisesArgs<ExtArgs>
     role?: boolean | User$roleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2704,6 +2805,7 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     reports?: boolean | User$reportsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    templateExercises?: boolean | User$templateExercisesArgs<ExtArgs>
     role?: boolean | User$roleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2720,6 +2822,7 @@ export namespace Prisma {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       reports: Prisma.$RadiologyReportPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
+      templateExercises: Prisma.$TemplateExercisePayload<ExtArgs>[]
       role: Prisma.$RolePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3131,6 +3234,7 @@ export namespace Prisma {
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reports<T extends User$reportsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RadiologyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    templateExercises<T extends User$templateExercisesArgs<ExtArgs> = {}>(args?: Subset<T, User$templateExercisesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     role<T extends User$roleArgs<ExtArgs> = {}>(args?: Subset<T, User$roleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3637,6 +3741,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.templateExercises
+   */
+  export type User$templateExercisesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    where?: TemplateExerciseWhereInput
+    orderBy?: TemplateExerciseOrderByWithRelationInput | TemplateExerciseOrderByWithRelationInput[]
+    cursor?: TemplateExerciseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TemplateExerciseScalarFieldEnum | TemplateExerciseScalarFieldEnum[]
   }
 
   /**
@@ -11040,6 +11168,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationMinAggregateOutputType = {
     accessionNumber: string | null
+    orderId: string | null
     studyInstanceUid: string | null
     satusehatId: string | null
     patientNik: string | null
@@ -11052,6 +11181,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationMaxAggregateOutputType = {
     accessionNumber: string | null
+    orderId: string | null
     studyInstanceUid: string | null
     satusehatId: string | null
     patientNik: string | null
@@ -11064,6 +11194,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationCountAggregateOutputType = {
     accessionNumber: number
+    orderId: number
     studyInstanceUid: number
     satusehatId: number
     patientNik: number
@@ -11079,6 +11210,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationMinAggregateInputType = {
     accessionNumber?: true
+    orderId?: true
     studyInstanceUid?: true
     satusehatId?: true
     patientNik?: true
@@ -11091,6 +11223,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationMaxAggregateInputType = {
     accessionNumber?: true
+    orderId?: true
     studyInstanceUid?: true
     satusehatId?: true
     patientNik?: true
@@ -11103,6 +11236,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationCountAggregateInputType = {
     accessionNumber?: true
+    orderId?: true
     studyInstanceUid?: true
     satusehatId?: true
     patientNik?: true
@@ -11189,6 +11323,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationGroupByOutputType = {
     accessionNumber: string
+    orderId: string | null
     studyInstanceUid: string | null
     satusehatId: string | null
     patientNik: string | null
@@ -11219,6 +11354,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     accessionNumber?: boolean
+    orderId?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -11232,6 +11368,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     accessionNumber?: boolean
+    orderId?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -11245,6 +11382,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     accessionNumber?: boolean
+    orderId?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -11258,6 +11396,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationSelectScalar = {
     accessionNumber?: boolean
+    orderId?: boolean
     studyInstanceUid?: boolean
     satusehatId?: boolean
     patientNik?: boolean
@@ -11269,13 +11408,14 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"accessionNumber" | "studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "bundleResponse" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
+  export type SatuSehatIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"accessionNumber" | "orderId" | "studyInstanceUid" | "satusehatId" | "patientNik" | "status" | "error" | "bundleResponse" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["satuSehatIntegration"]>
 
   export type $SatuSehatIntegrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatuSehatIntegration"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       accessionNumber: string
+      orderId: string | null
       studyInstanceUid: string | null
       satusehatId: string | null
       patientNik: string | null
@@ -11709,6 +11849,7 @@ export namespace Prisma {
    */
   interface SatuSehatIntegrationFieldRefs {
     readonly accessionNumber: FieldRef<"SatuSehatIntegration", 'String'>
+    readonly orderId: FieldRef<"SatuSehatIntegration", 'String'>
     readonly studyInstanceUid: FieldRef<"SatuSehatIntegration", 'String'>
     readonly satusehatId: FieldRef<"SatuSehatIntegration", 'String'>
     readonly patientNik: FieldRef<"SatuSehatIntegration", 'String'>
@@ -16669,6 +16810,7 @@ export namespace Prisma {
     studyInstanceUid: string | null
     studyDate: string | null
     accessionNumber: string | null
+    orderId: string | null
     patientName: string | null
     patientSex: string | null
     age: string | null
@@ -16687,6 +16829,7 @@ export namespace Prisma {
     studyInstanceUid: string | null
     studyDate: string | null
     accessionNumber: string | null
+    orderId: string | null
     patientName: string | null
     patientSex: string | null
     age: string | null
@@ -16705,6 +16848,7 @@ export namespace Prisma {
     studyInstanceUid: number
     studyDate: number
     accessionNumber: number
+    orderId: number
     patientName: number
     patientSex: number
     age: number
@@ -16727,6 +16871,7 @@ export namespace Prisma {
     studyInstanceUid?: true
     studyDate?: true
     accessionNumber?: true
+    orderId?: true
     patientName?: true
     patientSex?: true
     age?: true
@@ -16745,6 +16890,7 @@ export namespace Prisma {
     studyInstanceUid?: true
     studyDate?: true
     accessionNumber?: true
+    orderId?: true
     patientName?: true
     patientSex?: true
     age?: true
@@ -16763,6 +16909,7 @@ export namespace Prisma {
     studyInstanceUid?: true
     studyDate?: true
     accessionNumber?: true
+    orderId?: true
     patientName?: true
     patientSex?: true
     age?: true
@@ -16856,6 +17003,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate: string | null
     accessionNumber: string | null
+    orderId: string | null
     patientName: string | null
     patientSex: string | null
     age: string | null
@@ -16893,6 +17041,7 @@ export namespace Prisma {
     studyInstanceUid?: boolean
     studyDate?: boolean
     accessionNumber?: boolean
+    orderId?: boolean
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
@@ -16914,6 +17063,7 @@ export namespace Prisma {
     studyInstanceUid?: boolean
     studyDate?: boolean
     accessionNumber?: boolean
+    orderId?: boolean
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
@@ -16935,6 +17085,7 @@ export namespace Prisma {
     studyInstanceUid?: boolean
     studyDate?: boolean
     accessionNumber?: boolean
+    orderId?: boolean
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
@@ -16956,6 +17107,7 @@ export namespace Prisma {
     studyInstanceUid?: boolean
     studyDate?: boolean
     accessionNumber?: boolean
+    orderId?: boolean
     patientName?: boolean
     patientSex?: boolean
     age?: boolean
@@ -16970,7 +17122,7 @@ export namespace Prisma {
     doctorName?: boolean
   }
 
-  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "doctorId" | "reportDate" | "createdAt" | "updatedAt" | "doctorName", ExtArgs["result"]["radiologyReport"]>
+  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "orderId" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "doctorId" | "reportDate" | "createdAt" | "updatedAt" | "doctorName", ExtArgs["result"]["radiologyReport"]>
   export type RadiologyReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }
@@ -16992,6 +17144,7 @@ export namespace Prisma {
       studyInstanceUid: string
       studyDate: string | null
       accessionNumber: string | null
+      orderId: string | null
       patientName: string | null
       patientSex: string | null
       age: string | null
@@ -17433,6 +17586,7 @@ export namespace Prisma {
     readonly studyInstanceUid: FieldRef<"RadiologyReport", 'String'>
     readonly studyDate: FieldRef<"RadiologyReport", 'String'>
     readonly accessionNumber: FieldRef<"RadiologyReport", 'String'>
+    readonly orderId: FieldRef<"RadiologyReport", 'String'>
     readonly patientName: FieldRef<"RadiologyReport", 'String'>
     readonly patientSex: FieldRef<"RadiologyReport", 'String'>
     readonly age: FieldRef<"RadiologyReport", 'String'>
@@ -21179,6 +21333,1077 @@ export namespace Prisma {
 
 
   /**
+   * Model TemplateExercise
+   */
+
+  export type AggregateTemplateExercise = {
+    _count: TemplateExerciseCountAggregateOutputType | null
+    _min: TemplateExerciseMinAggregateOutputType | null
+    _max: TemplateExerciseMaxAggregateOutputType | null
+  }
+
+  export type TemplateExerciseMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    nama: string | null
+    template: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TemplateExerciseMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    nama: string | null
+    template: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TemplateExerciseCountAggregateOutputType = {
+    id: number
+    userId: number
+    nama: number
+    template: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TemplateExerciseMinAggregateInputType = {
+    id?: true
+    userId?: true
+    nama?: true
+    template?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TemplateExerciseMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    nama?: true
+    template?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TemplateExerciseCountAggregateInputType = {
+    id?: true
+    userId?: true
+    nama?: true
+    template?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TemplateExerciseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TemplateExercise to aggregate.
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateExercises to fetch.
+     */
+    orderBy?: TemplateExerciseOrderByWithRelationInput | TemplateExerciseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TemplateExerciseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateExercises from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateExercises.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TemplateExercises
+    **/
+    _count?: true | TemplateExerciseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TemplateExerciseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TemplateExerciseMaxAggregateInputType
+  }
+
+  export type GetTemplateExerciseAggregateType<T extends TemplateExerciseAggregateArgs> = {
+        [P in keyof T & keyof AggregateTemplateExercise]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTemplateExercise[P]>
+      : GetScalarType<T[P], AggregateTemplateExercise[P]>
+  }
+
+
+
+
+  export type TemplateExerciseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemplateExerciseWhereInput
+    orderBy?: TemplateExerciseOrderByWithAggregationInput | TemplateExerciseOrderByWithAggregationInput[]
+    by: TemplateExerciseScalarFieldEnum[] | TemplateExerciseScalarFieldEnum
+    having?: TemplateExerciseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TemplateExerciseCountAggregateInputType | true
+    _min?: TemplateExerciseMinAggregateInputType
+    _max?: TemplateExerciseMaxAggregateInputType
+  }
+
+  export type TemplateExerciseGroupByOutputType = {
+    id: string
+    userId: string
+    nama: string
+    template: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TemplateExerciseCountAggregateOutputType | null
+    _min: TemplateExerciseMinAggregateOutputType | null
+    _max: TemplateExerciseMaxAggregateOutputType | null
+  }
+
+  type GetTemplateExerciseGroupByPayload<T extends TemplateExerciseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TemplateExerciseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TemplateExerciseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TemplateExerciseGroupByOutputType[P]>
+            : GetScalarType<T[P], TemplateExerciseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TemplateExerciseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    nama?: boolean
+    template?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["templateExercise"]>
+
+  export type TemplateExerciseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    nama?: boolean
+    template?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["templateExercise"]>
+
+  export type TemplateExerciseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    nama?: boolean
+    template?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["templateExercise"]>
+
+  export type TemplateExerciseSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    nama?: boolean
+    template?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TemplateExerciseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "nama" | "template" | "createdAt" | "updatedAt", ExtArgs["result"]["templateExercise"]>
+  export type TemplateExerciseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TemplateExerciseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TemplateExerciseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TemplateExercisePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TemplateExercise"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      nama: string
+      template: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["templateExercise"]>
+    composites: {}
+  }
+
+  type TemplateExerciseGetPayload<S extends boolean | null | undefined | TemplateExerciseDefaultArgs> = $Result.GetResult<Prisma.$TemplateExercisePayload, S>
+
+  type TemplateExerciseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TemplateExerciseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TemplateExerciseCountAggregateInputType | true
+    }
+
+  export interface TemplateExerciseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TemplateExercise'], meta: { name: 'TemplateExercise' } }
+    /**
+     * Find zero or one TemplateExercise that matches the filter.
+     * @param {TemplateExerciseFindUniqueArgs} args - Arguments to find a TemplateExercise
+     * @example
+     * // Get one TemplateExercise
+     * const templateExercise = await prisma.templateExercise.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TemplateExerciseFindUniqueArgs>(args: SelectSubset<T, TemplateExerciseFindUniqueArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TemplateExercise that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TemplateExerciseFindUniqueOrThrowArgs} args - Arguments to find a TemplateExercise
+     * @example
+     * // Get one TemplateExercise
+     * const templateExercise = await prisma.templateExercise.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TemplateExerciseFindUniqueOrThrowArgs>(args: SelectSubset<T, TemplateExerciseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TemplateExercise that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseFindFirstArgs} args - Arguments to find a TemplateExercise
+     * @example
+     * // Get one TemplateExercise
+     * const templateExercise = await prisma.templateExercise.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TemplateExerciseFindFirstArgs>(args?: SelectSubset<T, TemplateExerciseFindFirstArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TemplateExercise that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseFindFirstOrThrowArgs} args - Arguments to find a TemplateExercise
+     * @example
+     * // Get one TemplateExercise
+     * const templateExercise = await prisma.templateExercise.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TemplateExerciseFindFirstOrThrowArgs>(args?: SelectSubset<T, TemplateExerciseFindFirstOrThrowArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TemplateExercises that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TemplateExercises
+     * const templateExercises = await prisma.templateExercise.findMany()
+     * 
+     * // Get first 10 TemplateExercises
+     * const templateExercises = await prisma.templateExercise.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const templateExerciseWithIdOnly = await prisma.templateExercise.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TemplateExerciseFindManyArgs>(args?: SelectSubset<T, TemplateExerciseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TemplateExercise.
+     * @param {TemplateExerciseCreateArgs} args - Arguments to create a TemplateExercise.
+     * @example
+     * // Create one TemplateExercise
+     * const TemplateExercise = await prisma.templateExercise.create({
+     *   data: {
+     *     // ... data to create a TemplateExercise
+     *   }
+     * })
+     * 
+     */
+    create<T extends TemplateExerciseCreateArgs>(args: SelectSubset<T, TemplateExerciseCreateArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TemplateExercises.
+     * @param {TemplateExerciseCreateManyArgs} args - Arguments to create many TemplateExercises.
+     * @example
+     * // Create many TemplateExercises
+     * const templateExercise = await prisma.templateExercise.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TemplateExerciseCreateManyArgs>(args?: SelectSubset<T, TemplateExerciseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TemplateExercises and returns the data saved in the database.
+     * @param {TemplateExerciseCreateManyAndReturnArgs} args - Arguments to create many TemplateExercises.
+     * @example
+     * // Create many TemplateExercises
+     * const templateExercise = await prisma.templateExercise.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TemplateExercises and only return the `id`
+     * const templateExerciseWithIdOnly = await prisma.templateExercise.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TemplateExerciseCreateManyAndReturnArgs>(args?: SelectSubset<T, TemplateExerciseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TemplateExercise.
+     * @param {TemplateExerciseDeleteArgs} args - Arguments to delete one TemplateExercise.
+     * @example
+     * // Delete one TemplateExercise
+     * const TemplateExercise = await prisma.templateExercise.delete({
+     *   where: {
+     *     // ... filter to delete one TemplateExercise
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TemplateExerciseDeleteArgs>(args: SelectSubset<T, TemplateExerciseDeleteArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TemplateExercise.
+     * @param {TemplateExerciseUpdateArgs} args - Arguments to update one TemplateExercise.
+     * @example
+     * // Update one TemplateExercise
+     * const templateExercise = await prisma.templateExercise.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TemplateExerciseUpdateArgs>(args: SelectSubset<T, TemplateExerciseUpdateArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TemplateExercises.
+     * @param {TemplateExerciseDeleteManyArgs} args - Arguments to filter TemplateExercises to delete.
+     * @example
+     * // Delete a few TemplateExercises
+     * const { count } = await prisma.templateExercise.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TemplateExerciseDeleteManyArgs>(args?: SelectSubset<T, TemplateExerciseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TemplateExercises.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TemplateExercises
+     * const templateExercise = await prisma.templateExercise.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TemplateExerciseUpdateManyArgs>(args: SelectSubset<T, TemplateExerciseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TemplateExercises and returns the data updated in the database.
+     * @param {TemplateExerciseUpdateManyAndReturnArgs} args - Arguments to update many TemplateExercises.
+     * @example
+     * // Update many TemplateExercises
+     * const templateExercise = await prisma.templateExercise.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TemplateExercises and only return the `id`
+     * const templateExerciseWithIdOnly = await prisma.templateExercise.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TemplateExerciseUpdateManyAndReturnArgs>(args: SelectSubset<T, TemplateExerciseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TemplateExercise.
+     * @param {TemplateExerciseUpsertArgs} args - Arguments to update or create a TemplateExercise.
+     * @example
+     * // Update or create a TemplateExercise
+     * const templateExercise = await prisma.templateExercise.upsert({
+     *   create: {
+     *     // ... data to create a TemplateExercise
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TemplateExercise we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TemplateExerciseUpsertArgs>(args: SelectSubset<T, TemplateExerciseUpsertArgs<ExtArgs>>): Prisma__TemplateExerciseClient<$Result.GetResult<Prisma.$TemplateExercisePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TemplateExercises.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseCountArgs} args - Arguments to filter TemplateExercises to count.
+     * @example
+     * // Count the number of TemplateExercises
+     * const count = await prisma.templateExercise.count({
+     *   where: {
+     *     // ... the filter for the TemplateExercises we want to count
+     *   }
+     * })
+    **/
+    count<T extends TemplateExerciseCountArgs>(
+      args?: Subset<T, TemplateExerciseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TemplateExerciseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TemplateExercise.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TemplateExerciseAggregateArgs>(args: Subset<T, TemplateExerciseAggregateArgs>): Prisma.PrismaPromise<GetTemplateExerciseAggregateType<T>>
+
+    /**
+     * Group by TemplateExercise.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateExerciseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TemplateExerciseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TemplateExerciseGroupByArgs['orderBy'] }
+        : { orderBy?: TemplateExerciseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TemplateExerciseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTemplateExerciseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TemplateExercise model
+   */
+  readonly fields: TemplateExerciseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TemplateExercise.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TemplateExerciseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TemplateExercise model
+   */
+  interface TemplateExerciseFieldRefs {
+    readonly id: FieldRef<"TemplateExercise", 'String'>
+    readonly userId: FieldRef<"TemplateExercise", 'String'>
+    readonly nama: FieldRef<"TemplateExercise", 'String'>
+    readonly template: FieldRef<"TemplateExercise", 'String'>
+    readonly createdAt: FieldRef<"TemplateExercise", 'DateTime'>
+    readonly updatedAt: FieldRef<"TemplateExercise", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TemplateExercise findUnique
+   */
+  export type TemplateExerciseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateExercise to fetch.
+     */
+    where: TemplateExerciseWhereUniqueInput
+  }
+
+  /**
+   * TemplateExercise findUniqueOrThrow
+   */
+  export type TemplateExerciseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateExercise to fetch.
+     */
+    where: TemplateExerciseWhereUniqueInput
+  }
+
+  /**
+   * TemplateExercise findFirst
+   */
+  export type TemplateExerciseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateExercise to fetch.
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateExercises to fetch.
+     */
+    orderBy?: TemplateExerciseOrderByWithRelationInput | TemplateExerciseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TemplateExercises.
+     */
+    cursor?: TemplateExerciseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateExercises from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateExercises.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TemplateExercises.
+     */
+    distinct?: TemplateExerciseScalarFieldEnum | TemplateExerciseScalarFieldEnum[]
+  }
+
+  /**
+   * TemplateExercise findFirstOrThrow
+   */
+  export type TemplateExerciseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateExercise to fetch.
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateExercises to fetch.
+     */
+    orderBy?: TemplateExerciseOrderByWithRelationInput | TemplateExerciseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TemplateExercises.
+     */
+    cursor?: TemplateExerciseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateExercises from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateExercises.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TemplateExercises.
+     */
+    distinct?: TemplateExerciseScalarFieldEnum | TemplateExerciseScalarFieldEnum[]
+  }
+
+  /**
+   * TemplateExercise findMany
+   */
+  export type TemplateExerciseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateExercises to fetch.
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateExercises to fetch.
+     */
+    orderBy?: TemplateExerciseOrderByWithRelationInput | TemplateExerciseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TemplateExercises.
+     */
+    cursor?: TemplateExerciseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateExercises from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateExercises.
+     */
+    skip?: number
+    distinct?: TemplateExerciseScalarFieldEnum | TemplateExerciseScalarFieldEnum[]
+  }
+
+  /**
+   * TemplateExercise create
+   */
+  export type TemplateExerciseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TemplateExercise.
+     */
+    data: XOR<TemplateExerciseCreateInput, TemplateExerciseUncheckedCreateInput>
+  }
+
+  /**
+   * TemplateExercise createMany
+   */
+  export type TemplateExerciseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TemplateExercises.
+     */
+    data: TemplateExerciseCreateManyInput | TemplateExerciseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TemplateExercise createManyAndReturn
+   */
+  export type TemplateExerciseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * The data used to create many TemplateExercises.
+     */
+    data: TemplateExerciseCreateManyInput | TemplateExerciseCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TemplateExercise update
+   */
+  export type TemplateExerciseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TemplateExercise.
+     */
+    data: XOR<TemplateExerciseUpdateInput, TemplateExerciseUncheckedUpdateInput>
+    /**
+     * Choose, which TemplateExercise to update.
+     */
+    where: TemplateExerciseWhereUniqueInput
+  }
+
+  /**
+   * TemplateExercise updateMany
+   */
+  export type TemplateExerciseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TemplateExercises.
+     */
+    data: XOR<TemplateExerciseUpdateManyMutationInput, TemplateExerciseUncheckedUpdateManyInput>
+    /**
+     * Filter which TemplateExercises to update
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * Limit how many TemplateExercises to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TemplateExercise updateManyAndReturn
+   */
+  export type TemplateExerciseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * The data used to update TemplateExercises.
+     */
+    data: XOR<TemplateExerciseUpdateManyMutationInput, TemplateExerciseUncheckedUpdateManyInput>
+    /**
+     * Filter which TemplateExercises to update
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * Limit how many TemplateExercises to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TemplateExercise upsert
+   */
+  export type TemplateExerciseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TemplateExercise to update in case it exists.
+     */
+    where: TemplateExerciseWhereUniqueInput
+    /**
+     * In case the TemplateExercise found by the `where` argument doesn't exist, create a new TemplateExercise with this data.
+     */
+    create: XOR<TemplateExerciseCreateInput, TemplateExerciseUncheckedCreateInput>
+    /**
+     * In case the TemplateExercise was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TemplateExerciseUpdateInput, TemplateExerciseUncheckedUpdateInput>
+  }
+
+  /**
+   * TemplateExercise delete
+   */
+  export type TemplateExerciseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+    /**
+     * Filter which TemplateExercise to delete.
+     */
+    where: TemplateExerciseWhereUniqueInput
+  }
+
+  /**
+   * TemplateExercise deleteMany
+   */
+  export type TemplateExerciseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TemplateExercises to delete
+     */
+    where?: TemplateExerciseWhereInput
+    /**
+     * Limit how many TemplateExercises to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TemplateExercise without action
+   */
+  export type TemplateExerciseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateExercise
+     */
+    select?: TemplateExerciseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateExercise
+     */
+    omit?: TemplateExerciseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateExerciseInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -21292,6 +22517,7 @@ export namespace Prisma {
 
   export const SatuSehatIntegrationScalarFieldEnum: {
     accessionNumber: 'accessionNumber',
+    orderId: 'orderId',
     studyInstanceUid: 'studyInstanceUid',
     satusehatId: 'satusehatId',
     patientNik: 'patientNik',
@@ -21397,6 +22623,7 @@ export namespace Prisma {
     studyInstanceUid: 'studyInstanceUid',
     studyDate: 'studyDate',
     accessionNumber: 'accessionNumber',
+    orderId: 'orderId',
     patientName: 'patientName',
     patientSex: 'patientSex',
     age: 'age',
@@ -21462,6 +22689,18 @@ export namespace Prisma {
   };
 
   export type SatuSehatLogExportTaskScalarFieldEnum = (typeof SatuSehatLogExportTaskScalarFieldEnum)[keyof typeof SatuSehatLogExportTaskScalarFieldEnum]
+
+
+  export const TemplateExerciseScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    nama: 'nama',
+    template: 'template',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TemplateExerciseScalarFieldEnum = (typeof TemplateExerciseScalarFieldEnum)[keyof typeof TemplateExerciseScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -21615,6 +22854,7 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
+    templateExercises?: TemplateExerciseListRelationFilter
     role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
   }
 
@@ -21633,6 +22873,7 @@ export namespace Prisma {
     accounts?: AccountOrderByRelationAggregateInput
     reports?: RadiologyReportOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
+    templateExercises?: TemplateExerciseOrderByRelationAggregateInput
     role?: RoleOrderByWithRelationInput
   }
 
@@ -21654,6 +22895,7 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     reports?: RadiologyReportListRelationFilter
     sessions?: SessionListRelationFilter
+    templateExercises?: TemplateExerciseListRelationFilter
     role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
   }, "id" | "email">
 
@@ -22099,6 +23341,7 @@ export namespace Prisma {
     OR?: SatuSehatIntegrationWhereInput[]
     NOT?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
     accessionNumber?: StringFilter<"SatuSehatIntegration"> | string
+    orderId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     studyInstanceUid?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     satusehatId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
@@ -22112,6 +23355,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationOrderByWithRelationInput = {
     accessionNumber?: SortOrder
+    orderId?: SortOrderInput | SortOrder
     studyInstanceUid?: SortOrderInput | SortOrder
     satusehatId?: SortOrderInput | SortOrder
     patientNik?: SortOrderInput | SortOrder
@@ -22128,6 +23372,7 @@ export namespace Prisma {
     AND?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
     OR?: SatuSehatIntegrationWhereInput[]
     NOT?: SatuSehatIntegrationWhereInput | SatuSehatIntegrationWhereInput[]
+    orderId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     studyInstanceUid?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     satusehatId?: StringNullableFilter<"SatuSehatIntegration"> | string | null
     patientNik?: StringNullableFilter<"SatuSehatIntegration"> | string | null
@@ -22141,6 +23386,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationOrderByWithAggregationInput = {
     accessionNumber?: SortOrder
+    orderId?: SortOrderInput | SortOrder
     studyInstanceUid?: SortOrderInput | SortOrder
     satusehatId?: SortOrderInput | SortOrder
     patientNik?: SortOrderInput | SortOrder
@@ -22160,6 +23406,7 @@ export namespace Prisma {
     OR?: SatuSehatIntegrationScalarWhereWithAggregatesInput[]
     NOT?: SatuSehatIntegrationScalarWhereWithAggregatesInput | SatuSehatIntegrationScalarWhereWithAggregatesInput[]
     accessionNumber?: StringWithAggregatesFilter<"SatuSehatIntegration"> | string
+    orderId?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     studyInstanceUid?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     satusehatId?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
     patientNik?: StringNullableWithAggregatesFilter<"SatuSehatIntegration"> | string | null
@@ -22597,6 +23844,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFilter<"RadiologyReport"> | string
     studyDate?: StringNullableFilter<"RadiologyReport"> | string | null
     accessionNumber?: StringNullableFilter<"RadiologyReport"> | string | null
+    orderId?: StringNullableFilter<"RadiologyReport"> | string | null
     patientName?: StringNullableFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
     age?: StringNullableFilter<"RadiologyReport"> | string | null
@@ -22618,6 +23866,7 @@ export namespace Prisma {
     studyInstanceUid?: SortOrder
     studyDate?: SortOrderInput | SortOrder
     accessionNumber?: SortOrderInput | SortOrder
+    orderId?: SortOrderInput | SortOrder
     patientName?: SortOrderInput | SortOrder
     patientSex?: SortOrderInput | SortOrder
     age?: SortOrderInput | SortOrder
@@ -22643,6 +23892,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFilter<"RadiologyReport"> | string
     studyDate?: StringNullableFilter<"RadiologyReport"> | string | null
     accessionNumber?: StringNullableFilter<"RadiologyReport"> | string | null
+    orderId?: StringNullableFilter<"RadiologyReport"> | string | null
     patientName?: StringNullableFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
     age?: StringNullableFilter<"RadiologyReport"> | string | null
@@ -22664,6 +23914,7 @@ export namespace Prisma {
     studyInstanceUid?: SortOrder
     studyDate?: SortOrderInput | SortOrder
     accessionNumber?: SortOrderInput | SortOrder
+    orderId?: SortOrderInput | SortOrder
     patientName?: SortOrderInput | SortOrder
     patientSex?: SortOrderInput | SortOrder
     age?: SortOrderInput | SortOrder
@@ -22690,6 +23941,7 @@ export namespace Prisma {
     studyInstanceUid?: StringWithAggregatesFilter<"RadiologyReport"> | string
     studyDate?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     accessionNumber?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    orderId?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     patientName?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
     age?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
@@ -22951,6 +24203,66 @@ export namespace Prisma {
     completedAt?: DateTimeNullableWithAggregatesFilter<"SatuSehatLogExportTask"> | Date | string | null
   }
 
+  export type TemplateExerciseWhereInput = {
+    AND?: TemplateExerciseWhereInput | TemplateExerciseWhereInput[]
+    OR?: TemplateExerciseWhereInput[]
+    NOT?: TemplateExerciseWhereInput | TemplateExerciseWhereInput[]
+    id?: StringFilter<"TemplateExercise"> | string
+    userId?: StringFilter<"TemplateExercise"> | string
+    nama?: StringFilter<"TemplateExercise"> | string
+    template?: StringFilter<"TemplateExercise"> | string
+    createdAt?: DateTimeFilter<"TemplateExercise"> | Date | string
+    updatedAt?: DateTimeFilter<"TemplateExercise"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TemplateExerciseOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    nama?: SortOrder
+    template?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type TemplateExerciseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TemplateExerciseWhereInput | TemplateExerciseWhereInput[]
+    OR?: TemplateExerciseWhereInput[]
+    NOT?: TemplateExerciseWhereInput | TemplateExerciseWhereInput[]
+    userId?: StringFilter<"TemplateExercise"> | string
+    nama?: StringFilter<"TemplateExercise"> | string
+    template?: StringFilter<"TemplateExercise"> | string
+    createdAt?: DateTimeFilter<"TemplateExercise"> | Date | string
+    updatedAt?: DateTimeFilter<"TemplateExercise"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type TemplateExerciseOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    nama?: SortOrder
+    template?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TemplateExerciseCountOrderByAggregateInput
+    _max?: TemplateExerciseMaxOrderByAggregateInput
+    _min?: TemplateExerciseMinOrderByAggregateInput
+  }
+
+  export type TemplateExerciseScalarWhereWithAggregatesInput = {
+    AND?: TemplateExerciseScalarWhereWithAggregatesInput | TemplateExerciseScalarWhereWithAggregatesInput[]
+    OR?: TemplateExerciseScalarWhereWithAggregatesInput[]
+    NOT?: TemplateExerciseScalarWhereWithAggregatesInput | TemplateExerciseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TemplateExercise"> | string
+    userId?: StringWithAggregatesFilter<"TemplateExercise"> | string
+    nama?: StringWithAggregatesFilter<"TemplateExercise"> | string
+    template?: StringWithAggregatesFilter<"TemplateExercise"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TemplateExercise"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TemplateExercise"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -22965,6 +24277,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
   }
 
@@ -22983,6 +24296,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -22999,6 +24313,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
@@ -23017,6 +24332,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -23492,6 +24808,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationCreateInput = {
     accessionNumber: string
+    orderId?: string | null
     studyInstanceUid?: string | null
     satusehatId?: string | null
     patientNik?: string | null
@@ -23505,6 +24822,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationUncheckedCreateInput = {
     accessionNumber: string
+    orderId?: string | null
     studyInstanceUid?: string | null
     satusehatId?: string | null
     patientNik?: string | null
@@ -23518,6 +24836,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationUpdateInput = {
     accessionNumber?: StringFieldUpdateOperationsInput | string
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23531,6 +24850,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationUncheckedUpdateInput = {
     accessionNumber?: StringFieldUpdateOperationsInput | string
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23544,6 +24864,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationCreateManyInput = {
     accessionNumber: string
+    orderId?: string | null
     studyInstanceUid?: string | null
     satusehatId?: string | null
     patientNik?: string | null
@@ -23557,6 +24878,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationUpdateManyMutationInput = {
     accessionNumber?: StringFieldUpdateOperationsInput | string
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23570,6 +24892,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationUncheckedUpdateManyInput = {
     accessionNumber?: StringFieldUpdateOperationsInput | string
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     studyInstanceUid?: NullableStringFieldUpdateOperationsInput | string | null
     satusehatId?: NullableStringFieldUpdateOperationsInput | string | null
     patientNik?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24098,6 +25421,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate?: string | null
     accessionNumber?: string | null
+    orderId?: string | null
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
@@ -24118,6 +25442,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate?: string | null
     accessionNumber?: string | null
+    orderId?: string | null
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
@@ -24138,6 +25463,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24158,6 +25484,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24178,6 +25505,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate?: string | null
     accessionNumber?: string | null
+    orderId?: string | null
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
@@ -24198,6 +25526,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24217,6 +25546,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24518,6 +25848,68 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type TemplateExerciseCreateInput = {
+    id?: string
+    nama: string
+    template: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTemplateExercisesInput
+  }
+
+  export type TemplateExerciseUncheckedCreateInput = {
+    id?: string
+    userId: string
+    nama: string
+    template: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemplateExerciseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTemplateExercisesNestedInput
+  }
+
+  export type TemplateExerciseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemplateExerciseCreateManyInput = {
+    id?: string
+    userId: string
+    nama: string
+    template: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemplateExerciseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemplateExerciseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -24588,6 +25980,12 @@ export namespace Prisma {
     none?: SessionWhereInput
   }
 
+  export type TemplateExerciseListRelationFilter = {
+    every?: TemplateExerciseWhereInput
+    some?: TemplateExerciseWhereInput
+    none?: TemplateExerciseWhereInput
+  }
+
   export type RoleNullableScalarRelationFilter = {
     is?: RoleWhereInput | null
     isNot?: RoleWhereInput | null
@@ -24607,6 +26005,10 @@ export namespace Prisma {
   }
 
   export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TemplateExerciseOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -25061,6 +26463,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationCountOrderByAggregateInput = {
     accessionNumber?: SortOrder
+    orderId?: SortOrder
     studyInstanceUid?: SortOrder
     satusehatId?: SortOrder
     patientNik?: SortOrder
@@ -25074,6 +26477,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationMaxOrderByAggregateInput = {
     accessionNumber?: SortOrder
+    orderId?: SortOrder
     studyInstanceUid?: SortOrder
     satusehatId?: SortOrder
     patientNik?: SortOrder
@@ -25086,6 +26490,7 @@ export namespace Prisma {
 
   export type SatuSehatIntegrationMinOrderByAggregateInput = {
     accessionNumber?: SortOrder
+    orderId?: SortOrder
     studyInstanceUid?: SortOrder
     satusehatId?: SortOrder
     patientNik?: SortOrder
@@ -25394,6 +26799,7 @@ export namespace Prisma {
     studyInstanceUid?: SortOrder
     studyDate?: SortOrder
     accessionNumber?: SortOrder
+    orderId?: SortOrder
     patientName?: SortOrder
     patientSex?: SortOrder
     age?: SortOrder
@@ -25414,6 +26820,7 @@ export namespace Prisma {
     studyInstanceUid?: SortOrder
     studyDate?: SortOrder
     accessionNumber?: SortOrder
+    orderId?: SortOrder
     patientName?: SortOrder
     patientSex?: SortOrder
     age?: SortOrder
@@ -25432,6 +26839,7 @@ export namespace Prisma {
     studyInstanceUid?: SortOrder
     studyDate?: SortOrder
     accessionNumber?: SortOrder
+    orderId?: SortOrder
     patientName?: SortOrder
     patientSex?: SortOrder
     age?: SortOrder
@@ -25587,6 +26995,33 @@ export namespace Prisma {
     processedCount?: SortOrder
   }
 
+  export type TemplateExerciseCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    nama?: SortOrder
+    template?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TemplateExerciseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    nama?: SortOrder
+    template?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TemplateExerciseMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    nama?: SortOrder
+    template?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -25606,6 +27041,13 @@ export namespace Prisma {
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type TemplateExerciseCreateNestedManyWithoutUserInput = {
+    create?: XOR<TemplateExerciseCreateWithoutUserInput, TemplateExerciseUncheckedCreateWithoutUserInput> | TemplateExerciseCreateWithoutUserInput[] | TemplateExerciseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemplateExerciseCreateOrConnectWithoutUserInput | TemplateExerciseCreateOrConnectWithoutUserInput[]
+    createMany?: TemplateExerciseCreateManyUserInputEnvelope
+    connect?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
   }
 
   export type RoleCreateNestedOneWithoutUsersInput = {
@@ -25633,6 +27075,13 @@ export namespace Prisma {
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type TemplateExerciseUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TemplateExerciseCreateWithoutUserInput, TemplateExerciseUncheckedCreateWithoutUserInput> | TemplateExerciseCreateWithoutUserInput[] | TemplateExerciseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemplateExerciseCreateOrConnectWithoutUserInput | TemplateExerciseCreateOrConnectWithoutUserInput[]
+    createMany?: TemplateExerciseCreateManyUserInputEnvelope
+    connect?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -25693,6 +27142,20 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
+  export type TemplateExerciseUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TemplateExerciseCreateWithoutUserInput, TemplateExerciseUncheckedCreateWithoutUserInput> | TemplateExerciseCreateWithoutUserInput[] | TemplateExerciseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemplateExerciseCreateOrConnectWithoutUserInput | TemplateExerciseCreateOrConnectWithoutUserInput[]
+    upsert?: TemplateExerciseUpsertWithWhereUniqueWithoutUserInput | TemplateExerciseUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TemplateExerciseCreateManyUserInputEnvelope
+    set?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    disconnect?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    delete?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    connect?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    update?: TemplateExerciseUpdateWithWhereUniqueWithoutUserInput | TemplateExerciseUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TemplateExerciseUpdateManyWithWhereWithoutUserInput | TemplateExerciseUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TemplateExerciseScalarWhereInput | TemplateExerciseScalarWhereInput[]
+  }
+
   export type RoleUpdateOneWithoutUsersNestedInput = {
     create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
     connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
@@ -25743,6 +27206,20 @@ export namespace Prisma {
     update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type TemplateExerciseUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TemplateExerciseCreateWithoutUserInput, TemplateExerciseUncheckedCreateWithoutUserInput> | TemplateExerciseCreateWithoutUserInput[] | TemplateExerciseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TemplateExerciseCreateOrConnectWithoutUserInput | TemplateExerciseCreateOrConnectWithoutUserInput[]
+    upsert?: TemplateExerciseUpsertWithWhereUniqueWithoutUserInput | TemplateExerciseUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TemplateExerciseCreateManyUserInputEnvelope
+    set?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    disconnect?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    delete?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    connect?: TemplateExerciseWhereUniqueInput | TemplateExerciseWhereUniqueInput[]
+    update?: TemplateExerciseUpdateWithWhereUniqueWithoutUserInput | TemplateExerciseUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TemplateExerciseUpdateManyWithWhereWithoutUserInput | TemplateExerciseUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TemplateExerciseScalarWhereInput | TemplateExerciseScalarWhereInput[]
   }
 
   export type UserCreateNestedManyWithoutRoleInput = {
@@ -25925,6 +27402,20 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReportsInput, UserUpdateWithoutReportsInput>, UserUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type UserCreateNestedOneWithoutTemplateExercisesInput = {
+    create?: XOR<UserCreateWithoutTemplateExercisesInput, UserUncheckedCreateWithoutTemplateExercisesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTemplateExercisesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTemplateExercisesNestedInput = {
+    create?: XOR<UserCreateWithoutTemplateExercisesInput, UserUncheckedCreateWithoutTemplateExercisesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTemplateExercisesInput
+    upsert?: UserUpsertWithoutTemplateExercisesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTemplateExercisesInput, UserUpdateWithoutTemplateExercisesInput>, UserUncheckedUpdateWithoutTemplateExercisesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -26218,6 +27709,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate?: string | null
     accessionNumber?: string | null
+    orderId?: string | null
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
@@ -26237,6 +27729,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate?: string | null
     accessionNumber?: string | null
+    orderId?: string | null
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
@@ -26279,6 +27772,32 @@ export namespace Prisma {
 
   export type SessionCreateManyUserInputEnvelope = {
     data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TemplateExerciseCreateWithoutUserInput = {
+    id?: string
+    nama: string
+    template: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemplateExerciseUncheckedCreateWithoutUserInput = {
+    id?: string
+    nama: string
+    template: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TemplateExerciseCreateOrConnectWithoutUserInput = {
+    where: TemplateExerciseWhereUniqueInput
+    create: XOR<TemplateExerciseCreateWithoutUserInput, TemplateExerciseUncheckedCreateWithoutUserInput>
+  }
+
+  export type TemplateExerciseCreateManyUserInputEnvelope = {
+    data: TemplateExerciseCreateManyUserInput | TemplateExerciseCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -26362,6 +27881,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFilter<"RadiologyReport"> | string
     studyDate?: StringNullableFilter<"RadiologyReport"> | string | null
     accessionNumber?: StringNullableFilter<"RadiologyReport"> | string | null
+    orderId?: StringNullableFilter<"RadiologyReport"> | string | null
     patientName?: StringNullableFilter<"RadiologyReport"> | string | null
     patientSex?: StringNullableFilter<"RadiologyReport"> | string | null
     age?: StringNullableFilter<"RadiologyReport"> | string | null
@@ -26400,6 +27920,34 @@ export namespace Prisma {
     sessionToken?: StringFilter<"Session"> | string
     userId?: StringFilter<"Session"> | string
     expires?: DateTimeFilter<"Session"> | Date | string
+  }
+
+  export type TemplateExerciseUpsertWithWhereUniqueWithoutUserInput = {
+    where: TemplateExerciseWhereUniqueInput
+    update: XOR<TemplateExerciseUpdateWithoutUserInput, TemplateExerciseUncheckedUpdateWithoutUserInput>
+    create: XOR<TemplateExerciseCreateWithoutUserInput, TemplateExerciseUncheckedCreateWithoutUserInput>
+  }
+
+  export type TemplateExerciseUpdateWithWhereUniqueWithoutUserInput = {
+    where: TemplateExerciseWhereUniqueInput
+    data: XOR<TemplateExerciseUpdateWithoutUserInput, TemplateExerciseUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TemplateExerciseUpdateManyWithWhereWithoutUserInput = {
+    where: TemplateExerciseScalarWhereInput
+    data: XOR<TemplateExerciseUpdateManyMutationInput, TemplateExerciseUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TemplateExerciseScalarWhereInput = {
+    AND?: TemplateExerciseScalarWhereInput | TemplateExerciseScalarWhereInput[]
+    OR?: TemplateExerciseScalarWhereInput[]
+    NOT?: TemplateExerciseScalarWhereInput | TemplateExerciseScalarWhereInput[]
+    id?: StringFilter<"TemplateExercise"> | string
+    userId?: StringFilter<"TemplateExercise"> | string
+    nama?: StringFilter<"TemplateExercise"> | string
+    template?: StringFilter<"TemplateExercise"> | string
+    createdAt?: DateTimeFilter<"TemplateExercise"> | Date | string
+    updatedAt?: DateTimeFilter<"TemplateExercise"> | Date | string
   }
 
   export type RoleUpsertWithoutUsersInput = {
@@ -26443,6 +27991,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -26459,6 +28008,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRoleInput = {
@@ -26609,6 +28159,7 @@ export namespace Prisma {
     sip?: string | null
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
   }
 
@@ -26626,6 +28177,7 @@ export namespace Prisma {
     sip?: string | null
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -26657,6 +28209,7 @@ export namespace Prisma {
     sip?: NullableStringFieldUpdateOperationsInput | string | null
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
@@ -26674,6 +28227,7 @@ export namespace Prisma {
     sip?: NullableStringFieldUpdateOperationsInput | string | null
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -26689,6 +28243,7 @@ export namespace Prisma {
     sip?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
+    templateExercises?: TemplateExerciseCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
   }
 
@@ -26706,6 +28261,7 @@ export namespace Prisma {
     sip?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
+    templateExercises?: TemplateExerciseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -26737,6 +28293,7 @@ export namespace Prisma {
     sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
+    templateExercises?: TemplateExerciseUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
@@ -26754,6 +28311,7 @@ export namespace Prisma {
     sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
+    templateExercises?: TemplateExerciseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutReportsInput = {
@@ -26769,6 +28327,7 @@ export namespace Prisma {
     sip?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
   }
 
@@ -26786,6 +28345,7 @@ export namespace Prisma {
     sip?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    templateExercises?: TemplateExerciseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -26817,6 +28377,7 @@ export namespace Prisma {
     sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
@@ -26833,6 +28394,91 @@ export namespace Prisma {
     signature?: NullableStringFieldUpdateOperationsInput | string | null
     sip?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutTemplateExercisesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    signature?: string | null
+    sip?: string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportCreateNestedManyWithoutDoctorInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutTemplateExercisesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roleId?: string | null
+    signature?: string | null
+    sip?: string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    reports?: RadiologyReportUncheckedCreateNestedManyWithoutDoctorInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTemplateExercisesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTemplateExercisesInput, UserUncheckedCreateWithoutTemplateExercisesInput>
+  }
+
+  export type UserUpsertWithoutTemplateExercisesInput = {
+    update: XOR<UserUpdateWithoutTemplateExercisesInput, UserUncheckedUpdateWithoutTemplateExercisesInput>
+    create: XOR<UserCreateWithoutTemplateExercisesInput, UserUncheckedCreateWithoutTemplateExercisesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTemplateExercisesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTemplateExercisesInput, UserUncheckedUpdateWithoutTemplateExercisesInput>
+  }
+
+  export type UserUpdateWithoutTemplateExercisesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTemplateExercisesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
+    sip?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -26856,6 +28502,7 @@ export namespace Prisma {
     studyInstanceUid: string
     studyDate?: string | null
     accessionNumber?: string | null
+    orderId?: string | null
     patientName?: string | null
     patientSex?: string | null
     age?: string | null
@@ -26873,6 +28520,14 @@ export namespace Prisma {
     id?: string
     sessionToken: string
     expires: Date | string
+  }
+
+  export type TemplateExerciseCreateManyUserInput = {
+    id?: string
+    nama: string
+    template: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -26923,6 +28578,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26942,6 +28598,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26961,6 +28618,7 @@ export namespace Prisma {
     studyInstanceUid?: StringFieldUpdateOperationsInput | string
     studyDate?: NullableStringFieldUpdateOperationsInput | string | null
     accessionNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    orderId?: NullableStringFieldUpdateOperationsInput | string | null
     patientName?: NullableStringFieldUpdateOperationsInput | string | null
     patientSex?: NullableStringFieldUpdateOperationsInput | string | null
     age?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26992,6 +28650,30 @@ export namespace Prisma {
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TemplateExerciseUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemplateExerciseUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TemplateExerciseUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nama?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyRoleInput = {
     id?: string
     name?: string | null
@@ -27019,6 +28701,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -27035,6 +28718,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reports?: RadiologyReportUncheckedUpdateManyWithoutDoctorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    templateExercises?: TemplateExerciseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {

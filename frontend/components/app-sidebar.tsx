@@ -105,22 +105,30 @@ export function AppSidebar({ user, ...props }: any) {
       icon: (
         <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />
       ),
-      // Hide settings if not ROOT/SUPER-ADMIN
-      hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll),
+      // Show settings if ROOT/SUPER-ADMIN, has manage-all, or has view-template
+      hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll || permissions.includes('view-template')),
       items: [
         {
           title: "Pengaturan",
           url: "/settings",
+          hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll),
+        },
+        {
+          title: "Template Exercise",
+          url: "/settings/template-exercise",
+          hidden: !permissions.includes('view-template') && !hasManageAll
         },
         {
           title: "Cek Request Resource Pasient by NIK",
           url: "/settings/resource-check",
+          hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll),
         },
         {
           title: "Testing Integrasi",
           url: "/settings/testing",
+          hidden: !(roleName === 'ROOT' || roleName === 'SUPER-ADMIN' || hasManageAll),
         },
-      ],
+      ].filter(item => !item.hidden),
     },
   ].filter(item => !(item as any).hidden);
 

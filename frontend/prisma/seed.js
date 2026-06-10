@@ -16,6 +16,7 @@ async function main() {
     'manage-roles',
     'manage-settings',
     'view-reports',
+    'view-template',
     'manage-all' // special for ROOT
   ];
 
@@ -42,7 +43,7 @@ async function main() {
     },
     { 
       name: 'DOCTOR', 
-      perms: ['view-dashboard', 'view-worklist', 'view-viewer', 'run-ai', 'sync-satusehat', 'view-reports'] 
+      perms: ['view-dashboard', 'view-worklist', 'view-viewer', 'run-ai', 'sync-satusehat', 'view-reports', 'view-template'] 
     },
     { 
       name: 'RADIOGRAPHER', 

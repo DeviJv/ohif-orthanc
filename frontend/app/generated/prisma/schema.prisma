@@ -10,21 +10,22 @@ datasource db {
 }
 
 model User {
-  id            String            @id @default(cuid())
-  name          String?
-  email         String?           @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  roleId        String?
-  signature     String?
-  sip           String?
-  accounts      Account[]
-  reports       RadiologyReport[] @relation("DoctorReports")
-  sessions      Session[]
-  role          Role?             @relation(fields: [roleId], references: [id])
+  id                String             @id @default(cuid())
+  name              String?
+  email             String?            @unique
+  password          String?
+  emailVerified     DateTime?
+  image             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  roleId            String?
+  signature         String?
+  sip               String?
+  accounts          Account[]
+  reports           RadiologyReport[]  @relation("DoctorReports")
+  sessions          Session[]
+  templateExercises TemplateExercise[]
+  role              Role?              @relation(fields: [roleId], references: [id])
 }
 
 model Role {
@@ -98,6 +99,7 @@ model AiResult {
 
 model SatuSehatIntegration {
   accessionNumber  String    @id
+  orderId          String?
   studyInstanceUid String?
   satusehatId      String?
   patientNik       String?
@@ -188,6 +190,7 @@ model RadiologyReport {
   studyInstanceUid  String
   studyDate         String?
   accessionNumber   String?
+  orderId           String?
   patientName       String?
   patientSex        String?
   age               String?
@@ -246,4 +249,14 @@ model SatuSehatLogExportTask {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   completedAt    DateTime?
+}
+
+model TemplateExercise {
+  id        String   @id @default(cuid())
+  userId    String
+  nama      String
+  template  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

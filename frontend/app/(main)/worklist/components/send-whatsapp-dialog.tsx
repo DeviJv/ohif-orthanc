@@ -35,6 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { getDoctors, upsertRadiologyReport, getRadiologyReport } from "@/lib/actions/report-actions";
 import { cn } from "@/lib/utils";
 import { normalizePatientName } from "../utils/format";
+import { TemplateSelector } from "./template-selector";
 
 interface SendWhatsappDialogProps {
     open: boolean;
@@ -413,6 +414,46 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="bg-card border rounded-xl p-5 shadow-sm space-y-4">
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
+                                    <Combobox value={formData.doctorId} onValueChange={(val) => {
+                                        const d = dbDoctors.find(x => x.id === val);
+                                        if (d) { setFormData(p => ({...p, doctorId: d.id, doctor: d.name})); setSearchValue(d.name); }
+                                    }}>
+                                        <ComboboxInput placeholder="Cari dokter..." value={searchValue} onChange={e => setSearchValue(e.target.value)} className="h-9 text-sm" />
+                                        <ComboboxList>
+                                            <ComboboxEmpty>Dokter tidak ditemukan.</ComboboxEmpty>
+                                            {filteredDoctors.map(d => <ComboboxItem key={d.id} value={d.id}>{d.name}</ComboboxItem>)}
+                                        </ComboboxList>
+                                    </Combobox>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-2">
+                                        Gunakan Template Exercise <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span>
+                                    </Label>
+                                    <TemplateSelector 
+                                        doctorId={formData.doctorId} 
+                                        onSelectTemplate={(templateText) => {
+                                            if (templateText) {
+                                                setFormData(prev => ({ ...prev, findings: templateText }));
+                                            }
+                                        }} 
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan <span className="text-destructive">*</span></Label>
+                                    <Input 
+                                        value={formData.date} 
+                                        onChange={e => setFormData(p => ({...p, date: e.target.value}))} 
+                                        placeholder="Contoh: 10 Juni 2026" 
+                                        className="h-9 text-sm"
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         {/* RIGHT COLUMN */}
@@ -547,20 +588,6 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                                             )}
                                         </div>
                                     </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label className="font-bold">Dokter Penanggung Jawab</Label>
-                                    <Combobox value={formData.doctorId} onValueChange={(val) => {
-                                        const d = dbDoctors.find(x => x.id === val);
-                                        if (d) { setFormData(p => ({...p, doctorId: d.id, doctor: d.name})); setSearchValue(d.name); }
-                                    }}>
-                                        <ComboboxInput placeholder="Cari dokter..." value={searchValue} onChange={e => setSearchValue(e.target.value)} />
-                                        <ComboboxList>
-                                            <ComboboxEmpty>Dokter tidak ditemukan.</ComboboxEmpty>
-                                            {filteredDoctors.map(d => <ComboboxItem key={d.id} value={d.id}>{d.name}</ComboboxItem>)}
-                                        </ComboboxList>
-                                    </Combobox>
                                 </div>
                             </div>
                         </div>

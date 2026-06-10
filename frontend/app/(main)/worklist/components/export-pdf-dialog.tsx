@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { Image01Icon, ArrowDown01Icon, RefreshIcon } from "@hugeicons/core-free-icons";
 import { getDoctors, upsertRadiologyReport, getRadiologyReport } from "@/lib/actions/report-actions";
 import { normalizePatientName } from "../utils/format";
+import { TemplateSelector } from "./template-selector";
 
 interface ClinicConfig {
     clinicName: string;
@@ -734,10 +735,113 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                     </div>
                                 </div>
 
+                                {/* Configuration & Metadata Box */}
+                                <div className="bg-card border rounded-xl shadow-sm p-5 flex flex-col gap-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
+                                        {dbDoctors && dbDoctors.length > 0 ? (
+                                            <Combobox
+                                                value={formData.doctor}
+                                                onValueChange={(v) => {
+                                                    const doc = dbDoctors.find(d => d.name === v);
+                                                    if (doc) {
+                                                        setFormData((p) => ({ ...p, doctor: doc.name, doctorId: doc.id }));
+                                                        setSearchValue(doc.name);
+                                                    }
+                                                }}
+                                                inputValue={searchValue}
+                                                onInputValueChange={(val) => {
+                                                    setSearchValue(val);
+                                                    if (formData.doctor && val !== formData.doctor) {
+                                                        setFormData(p => ({ ...p, doctor: "", doctorId: "" }));
+                                                    }
+                                                }}
+                                            >
+                                                <ComboboxInput
+                                                    placeholder="Cari atau pilih nama dokter..."
+                                                    className="w-full h-10 bg-background border"
+                                                >
+                                                    <ComboboxContent>
+                                                        <ComboboxList tabIndex={-1}>
+                                                            {filteredDoctors.map((d, i) => (
+                                                                <ComboboxItem key={i} value={d.name}>{d.name}</ComboboxItem>
+                                                            ))}
+                                                        </ComboboxList>
+                                                        <ComboboxEmpty>Dokter tidak ditemukan</ComboboxEmpty>
+                                                    </ComboboxContent>
+                                                </ComboboxInput>
+                                            </Combobox>
+                                        ) : isFetchingDoctors ? (
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 border rounded-md h-10 bg-background">
+                                                <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
+                                                Memuat daftar dokter...
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-2 text-sm text-destructive p-2 border border-destructive/20 rounded-md h-10 bg-destructive/5">
+                                                Daftar dokter kosong. Silakan tambah dokter di Settings.
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Template Selection */}
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-2">
+                                            Gunakan Template Exercise <span className="text-muted-foreground/60 leading-none lowercase text-[10px] font-normal italic">(Opsional)</span>
+                                        </Label>
+                                        <TemplateSelector 
+                                            doctorId={formData.doctorId} 
+                                            onSelectTemplate={(templateText) => {
+                                                if (templateText) {
+                                                    setFormData(prev => ({ ...prev, findings: templateText }));
+                                                }
+                                            }} 
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="e-date" className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan <span className="text-destructive">*</span></Label>
+                                        <Popover>
+                                            <PopoverTrigger
+                                                className={cn(
+                                                    "w-full justify-start text-left font-medium h-10 bg-background border flex items-center px-3 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground",
+                                                    !formData.date && "text-muted-foreground"
+                                                )}
+                                            >
+                                                <HugeiconsIcon icon={Calendar01Icon} className="mr-2 size-4 text-primary" />
+                                                {formData.date ? formData.date : <span>Pilih tanggal</span>}
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="end">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={parseReportDate(formData.date)}
+                                                    onSelect={(date) => {
+                                                        if (date) {
+                                                            setFormData(prev => ({ 
+                                                                ...prev, 
+                                                                date: format(date, "d MMMM yyyy", { locale: idLocale }) 
+                                                            }));
+                                                        }
+                                                    }}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+
+                                    {(!clinic?.clinicName) && (
+                                        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 shadow-sm">
+                                            <span className="text-sm">⚠️</span>
+                                            <span>Profil klinik belum diisi. Pergi ke <strong>Settings → Profil Klinik</strong> untuk mengisi nama klinik, alamat, logo, dan daftar dokter.</span>
+                                        </div>
+                                    )}
+                                </div>
+
                             </div>
                             
-                            {/* Right Column: Medical Report Content */}
+                                {/* Right Column: Medical Report Content */}
                             <div className="md:col-span-8 flex flex-col gap-6">
+
+
                                 <div className="bg-card border rounded-xl shadow-sm flex-1 flex flex-col overflow-hidden">
                                     <div className="p-5 border-b bg-muted/40">
                                         <div className="flex justify-between items-center">
@@ -936,94 +1040,9 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="bg-card border rounded-xl shadow-sm p-5 grid grid-cols-12 gap-6">
-                                    <div className="col-span-8 space-y-2">
-                                        <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
-                                        {dbDoctors && dbDoctors.length > 0 ? (
-                                            <Combobox
-                                                value={formData.doctor}
-                                                onValueChange={(v) => {
-                                                    const doc = dbDoctors.find(d => d.name === v);
-                                                    if (doc) {
-                                                        setFormData((p) => ({ ...p, doctor: doc.name, doctorId: doc.id }));
-                                                        setSearchValue(doc.name);
-                                                    }
-                                                }}
-                                                inputValue={searchValue}
-                                                onInputValueChange={(val) => {
-                                                    setSearchValue(val);
-                                                    // If user is typing and it doesn't match the current selected doctor's name, clear the selection
-                                                    if (formData.doctor && val !== formData.doctor) {
-                                                        setFormData(p => ({ ...p, doctor: "", doctorId: "" }));
-                                                    }
-                                                }}
-                                            >
-                                                <ComboboxInput
-                                                    placeholder="Cari atau pilih nama dokter..."
-                                                    className="w-full h-10 bg-background border"
-                                                >
-                                                    <ComboboxContent>
-                                                        <ComboboxList tabIndex={-1}>
-                                                            {filteredDoctors.map((d, i) => (
-                                                                <ComboboxItem key={i} value={d.name}>{d.name}</ComboboxItem>
-                                                            ))}
-                                                        </ComboboxList>
-                                                        <ComboboxEmpty>Dokter tidak ditemukan</ComboboxEmpty>
-                                                    </ComboboxContent>
-                                                </ComboboxInput>
-                                            </Combobox>
-                                        ) : isFetchingDoctors ? (
-                                            <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 border rounded-md h-10 bg-background">
-                                                <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
-                                                Memuat daftar dokter...
-                                            </div>
-                                        ) : (
-                                            <div className="flex items-center gap-2 text-sm text-destructive p-2 border border-destructive/20 rounded-md h-10 bg-destructive/5">
-                                                Daftar dokter kosong. Silakan tambah dokter di Settings.
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="col-span-4 space-y-2">
-                                        <Label htmlFor="e-date" className="text-xs font-bold text-muted-foreground uppercase">Tanggal Laporan <span className="text-destructive">*</span></Label>
-                                        <Popover>
-                                            <PopoverTrigger
-                                                className={cn(
-                                                    "w-full justify-start text-left font-medium h-10 bg-background border flex items-center px-3 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground",
-                                                    !formData.date && "text-muted-foreground"
-                                                )}
-                                            >
-                                                <HugeiconsIcon icon={Calendar01Icon} className="mr-2 size-4 text-primary" />
-                                                {formData.date ? formData.date : <span>Pilih tanggal</span>}
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="end">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={parseReportDate(formData.date)}
-                                                    onSelect={(date) => {
-                                                        if (date) {
-                                                            setFormData(prev => ({ 
-                                                                ...prev, 
-                                                                date: format(date, "d MMMM yyyy", { locale: idLocale }) 
-                                                            }));
-                                                        }
-                                                    }}
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-
-                                {(!clinic?.clinicName) && (
-                                    <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 shadow-sm">
-                                        <span className="text-sm">⚠️</span>
-                                        <span>Profil klinik belum diisi. Pergi ke <strong>Settings → Profil Klinik</strong> untuk mengisi nama klinik, alamat, logo, dan daftar dokter.</span>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
-                </div>
 
                     <div className="px-6 py-4 border-t bg-muted/50 flex items-center justify-end gap-3 h-16">
                         <Button variant="outline" onClick={() => onOpenChange(false)} className="px-8 h-10">Batal</Button>

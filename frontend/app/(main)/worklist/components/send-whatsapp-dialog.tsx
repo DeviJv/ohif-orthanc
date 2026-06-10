@@ -52,14 +52,41 @@ function parseDicomDate(dateStr?: string): Date | null {
     return new Date(year, month, day);
 }
 
-function calcAge(birthDateStr?: string): string {
-    const birth = parseDicomDate(birthDateStr);
-    if (!birth) return "";
-    const now = new Date();
-    let age = now.getFullYear() - birth.getFullYear();
-    const m = now.getMonth() - birth.getMonth();
-    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
-    return String(age);
+function getPatientAge(birthDateStr?: string, patientAgeStr?: string): string {
+    if (birthDateStr && birthDateStr.length === 8) {
+        const birth = parseDicomDate(birthDateStr);
+        if (birth) {
+            const now = new Date();
+            let age = now.getFullYear() - birth.getFullYear();
+            const m = now.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+            if (age > 0) return String(age);
+            
+            // Under 1 year
+            let months = now.getFullYear() * 12 + now.getMonth() - (birth.getFullYear() * 12 + birth.getMonth());
+            if (now.getDate() < birth.getDate()) months--;
+            if (months > 0) return `${months} Bulan`;
+            
+            const timeDiff = now.getTime() - birth.getTime();
+            const days = Math.floor(timeDiff / (1000 * 3600 * 24));
+            return `${days} Hari`;
+        }
+    }
+    
+    if (patientAgeStr) {
+        const match = patientAgeStr.match(/^0*(\d+)([YMWD])$/);
+        if (match) {
+            const num = match[1];
+            const unit = match[2];
+            if (unit === 'Y') return String(num);
+            if (unit === 'M') return `${num} Bulan`;
+            if (unit === 'W') return `${num} Minggu`;
+            if (unit === 'D') return `${num} Hari`;
+        }
+        return patientAgeStr.replace(/^0+/, ''); // Fallback
+    }
+    
+    return "";
 }
 
 export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWhatsappDialogProps) {
@@ -91,6 +118,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
     const patientID = patientTags?.PatientID || studyMainTags?.PatientID || "";
     const patientSex = (patientTags?.PatientSex || studyMainTags?.PatientSex || "").toUpperCase();
     const birthDate = patientTags?.PatientBirthDate || studyMainTags?.PatientBirthDate || "";
+    const patientAgeStr = patientTags?.PatientAge || studyMainTags?.PatientAge || "";
     const studyDesc = studyMainTags?.StudyDescription || "";
     const accessionNumber = studyMainTags?.AccessionNumber || "";
     const studyDateRaw = studyMainTags?.StudyDate || "";
@@ -122,7 +150,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
 
             setFormData((prev) => ({
                 ...prev,
-                age: calcAge(birthDate),
+                age: getPatientAge(birthDate, patientAgeStr),
                 gender: patientSex === "M" || patientSex === "L" ? "L" : patientSex === "F" || patientSex === "P" ? "P" : "",
                 examType: studyDesc || `Pemeriksaan ${modalityName}`,
                 date: format(new Date(), "d MMMM yyyy", { locale: idLocale }),

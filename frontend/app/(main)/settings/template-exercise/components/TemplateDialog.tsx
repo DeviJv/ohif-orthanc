@@ -56,13 +56,15 @@ export function TemplateDialog({ open, onOpenChange, doctors, initialData, onSav
                 <form onSubmit={handleSubmit} className="space-y-4 py-4">
                     <div className="space-y-2">
                         <Label>Doctor</Label>
-                        <Select value={userId} onValueChange={(val) => setUserId(val || "")} required>
+                        <Select value={String(userId)} onValueChange={(val) => setUserId(val || "")} required>
                             <SelectTrigger>
-                                <SelectValue placeholder="Select a doctor" />
+                                <SelectValue placeholder="Select a doctor">
+                                    {userId ? doctors.find(d => String(d.id) === String(userId))?.name : "Select a doctor"}
+                                </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 {doctors.map((doc) => (
-                                    <SelectItem key={doc.id} value={doc.id}>
+                                    <SelectItem key={doc.id} value={String(doc.id)}>
                                         {doc.name}
                                     </SelectItem>
                                 ))}

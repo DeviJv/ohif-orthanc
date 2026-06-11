@@ -31,10 +31,10 @@ export async function POST(req: NextRequest) {
 
         const { status, message, error: errorDetail, data, id } = body;
         
-        let studyInstanceUid = body.studyInstanceUid;
-        let patientName = body.patientName;
+        let studyInstanceUid = body.studyInstanceUid || data?.studyInstanceUID || data?.studyInstanceUid || body.studyInstanceUID;
+        let patientName = body.patientName || data?.patientName || data?.patient_name;
 
-        const resourceId = id || data?.id;
+        const resourceId = id || data?.id || data?.imagingStudyId || data?.imagingstudyId;
 
         if (!studyInstanceUid && resourceId) {
             const integration = await db.satuSehatIntegration.findFirst({
@@ -75,14 +75,45 @@ export async function POST(req: NextRequest) {
 
         console.log(`[WEBHOOK] Received from router: ${studyInstanceUid || 'N/A'} - Status: ${isSuccess ? "SUCCESS" : "FAILED"}, Message: ${message}`);
 
-        if (studyInstanceUid) {
+        // Update local SatuSehatIntegration state
+        const accessionNumber = body.accessionNumber || body.accession_number || body.accession || data?.accessionNumber || data?.accession_number || data?.accession;
+        let matchAccessionNumber = accessionNumber;
+        if (!matchAccessionNumber && studyInstanceUid) {
             try {
-                await db.satuSehatIntegration.updateMany({
-                    where: { studyInstanceUid },
-                    data: { syncedAt: new Date() }
+                const integration = await db.satuSehatIntegration.findFirst({
+                    where: { studyInstanceUid }
                 });
+                if (integration) {
+                    matchAccessionNumber = integration.accessionNumber;
+                }
             } catch (dbErr) {
-                console.warn(`[WEBHOOK] Could not update syncedAt for ${studyInstanceUid}:`, dbErr);
+                console.warn("[WEBHOOK] Error resolving accession number:", dbErr);
+            }
+        }
+
+        if (matchAccessionNumber || studyInstanceUid) {
+            try {
+                const errorMsg = isSuccess 
+                    ? null 
+                    : (message || (errorDetail ? (typeof errorDetail === 'object' ? JSON.stringify(errorDetail) : String(errorDetail)) : "Gagal diunggah oleh DICOM Router"));
+
+                const updateData: any = {
+                    status: isSuccess ? "SUCCESS" : "FAILED",
+                    error: errorMsg,
+                    syncedAt: isSuccess ? new Date() : null
+                };
+
+                if (resourceId) {
+                    updateData.satusehatId = resourceId;
+                }
+
+                await db.satuSehatIntegration.updateMany({
+                    where: matchAccessionNumber ? { accessionNumber: matchAccessionNumber } : { studyInstanceUid },
+                    data: updateData
+                });
+                console.log(`[WEBHOOK] Updated SatuSehatIntegration status to ${isSuccess ? "SUCCESS" : "FAILED"} for match: ${matchAccessionNumber || studyInstanceUid}`);
+            } catch (dbErr) {
+                console.warn(`[WEBHOOK] Could not update status/syncedAt for match:`, dbErr);
             }
         }
 

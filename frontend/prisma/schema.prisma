@@ -155,11 +155,12 @@ model SatuSehatSetting {
   patientIdSource       String?   @default("PatientID")
   isActive              Boolean   @default(true)
   updatedAt             DateTime  @updatedAt
-  autoSyncEnabled       Boolean   @default(false)
-  autoSyncFrequency     String    @default("DAILY")
-  autoSyncTime          String    @default("23:00")
-  lastAutoSyncAt        DateTime?
-  sendImageStudyFromWeb Boolean   @default(true)
+  autoSyncEnabled          Boolean   @default(false)
+  autoSyncFrequency        String    @default("DAILY")
+  autoSyncTime             String    @default("23:00")
+  lastAutoSyncAt           DateTime?
+  sendImageStudyFromWeb    Boolean   @default(true)
+  autoSendOnAcsnCreation   Boolean   @default(false)
 }
 
 model SatuSehatResourceLog {

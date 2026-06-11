@@ -1076,6 +1076,7 @@ function SatuSehatSettingsTab() {
         autoSyncFrequency: "DAILY",
         autoSyncTime: "23:00",
         sendImageStudyFromWeb: true,
+        autoSendOnAcsnCreation: false,
     });
     
     const [showSecretStg, setShowSecretStg] = useState(false);
@@ -1643,6 +1644,31 @@ function SatuSehatSettingsTab() {
                                     </div>
                                 )}
                             </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Column 2: Automations */}
+                <Card className="border-2 border-slate-200/60 dark:border-slate-800 shadow-sm bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="text-base flex items-center gap-2 dark:text-slate-100">
+                            <HugeiconsIcon icon={CpuIcon} className="size-4 text-primary" strokeWidth={2.5} />
+                            Kirim otomatis ketika create acsn
+                        </CardTitle>
+                        <CardDescription className="text-xs dark:text-slate-400">Pengaturan otomatisasi pengiriman data saat pembuatan accession number.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+                            <div className="space-y-1 pr-4">
+                                <Label className="text-[13px] font-bold text-slate-800 dark:text-slate-200">Kirim Otomatis</Label>
+                                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                    Aktifkan untuk mengirim data secara otomatis ke Satu Sehat ketika accession number (acsn) dibuat
+                                </p>
+                            </div>
+                            <Switch 
+                                checked={config.autoSendOnAcsnCreation} 
+                                onCheckedChange={(v) => handleChange("autoSendOnAcsnCreation", v)} 
+                            />
                         </div>
                     </CardContent>
                 </Card>

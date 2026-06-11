@@ -123,43 +123,44 @@ model SatuSehatWebhookLog {
 }
 
 model SatuSehatSetting {
-  id                    Int       @id @default(1)
-  environment           String    @default("staging")
-  stgOrganizationId     String    @default("")
-  stgClientId           String    @default("")
-  stgClientSecret       String    @default("")
-  stgAuthUrl            String    @default("")
-  stgBaseUrl            String    @default("")
-  prdOrganizationId     String    @default("")
-  prdClientId           String    @default("")
-  prdClientSecret       String    @default("")
-  prdAuthUrl            String    @default("")
-  prdBaseUrl            String    @default("")
-  organizationId        String    @default("")
-  clientId              String    @default("")
-  clientSecret          String    @default("")
-  authUrl               String    @default("")
-  baseUrl               String    @default("")
-  encounterUrl          String?
-  conditionUrl          String?
-  serviceRequestUrl     String?
-  imagingStudyUrl       String?
-  observationUrl        String?
-  diagnosticReportUrl   String?
-  compositionUrl        String?
-  patientUrl            String?
-  locationUrl           String?
-  practitionerUrl       String?
-  defaultPatientId      String?   @default("")
-  defaultPractitionerId String?   @default("")
-  patientIdSource       String?   @default("PatientID")
-  isActive              Boolean   @default(true)
-  updatedAt             DateTime  @updatedAt
-  autoSyncEnabled       Boolean   @default(false)
-  autoSyncFrequency     String    @default("DAILY")
-  autoSyncTime          String    @default("23:00")
-  lastAutoSyncAt        DateTime?
-  sendImageStudyFromWeb Boolean   @default(true)
+  id                     Int       @id @default(1)
+  environment            String    @default("staging")
+  stgOrganizationId      String    @default("")
+  stgClientId            String    @default("")
+  stgClientSecret        String    @default("")
+  stgAuthUrl             String    @default("")
+  stgBaseUrl             String    @default("")
+  prdOrganizationId      String    @default("")
+  prdClientId            String    @default("")
+  prdClientSecret        String    @default("")
+  prdAuthUrl             String    @default("")
+  prdBaseUrl             String    @default("")
+  organizationId         String    @default("")
+  clientId               String    @default("")
+  clientSecret           String    @default("")
+  authUrl                String    @default("")
+  baseUrl                String    @default("")
+  encounterUrl           String?
+  conditionUrl           String?
+  serviceRequestUrl      String?
+  imagingStudyUrl        String?
+  observationUrl         String?
+  diagnosticReportUrl    String?
+  compositionUrl         String?
+  patientUrl             String?
+  locationUrl            String?
+  practitionerUrl        String?
+  defaultPatientId       String?   @default("")
+  defaultPractitionerId  String?   @default("")
+  patientIdSource        String?   @default("PatientID")
+  isActive               Boolean   @default(true)
+  updatedAt              DateTime  @updatedAt
+  autoSyncEnabled        Boolean   @default(false)
+  autoSyncFrequency      String    @default("DAILY")
+  autoSyncTime           String    @default("23:00")
+  lastAutoSyncAt         DateTime?
+  sendImageStudyFromWeb  Boolean   @default(true)
+  autoSendOnAcsnCreation Boolean   @default(false)
 }
 
 model SatuSehatResourceLog {

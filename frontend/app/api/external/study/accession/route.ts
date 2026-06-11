@@ -160,6 +160,24 @@ export async function POST(req: NextRequest) {
             }
         });
 
+        // --- 6. Auto Send to DICOM Router (if enabled) ---
+        const setting = await db.satuSehatSetting.findFirst({ where: { id: 1 } });
+        if (setting?.autoSendOnAcsnCreation && newStudyId) {
+            console.log(`[EXTERNAL API] Auto send is enabled (autoSendOnAcsnCreation). Triggering QTM-ROUTER for study ID: ${newStudyId}`);
+            try {
+                await fetchOrthanc("/modalities/QTM-ROUTER/store", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        Resources: [newStudyId],
+                        Asynchronous: true
+                    })
+                });
+                console.log(`[EXTERNAL API] Successfully triggered QTM-ROUTER store for study ID: ${newStudyId}`);
+            } catch (routerErr: any) {
+                console.error(`[EXTERNAL API] Warning: Failed to trigger QTM-ROUTER: ${routerErr.message}`);
+            }
+        }
+
         return NextResponse.json({
             success: true,
             oldStudyId: targetStudyId,

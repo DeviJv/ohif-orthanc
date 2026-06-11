@@ -58,6 +58,7 @@ export async function GET() {
             autoSyncFrequency: dbSetting.autoSyncFrequency,
             autoSyncTime: dbSetting.autoSyncTime,
             sendImageStudyFromWeb: dbSetting.sendImageStudyFromWeb ?? true,
+            autoSendOnAcsnCreation: dbSetting.autoSendOnAcsnCreation ?? false,
             
             source: "SatuSehatSetting"
         });
@@ -139,7 +140,8 @@ export async function POST(req: NextRequest) {
         autoSyncEnabled: body.autoSyncEnabled ?? false,
         autoSyncFrequency: body.autoSyncFrequency || "DAILY",
         autoSyncTime: body.autoSyncTime || "23:00",
-        sendImageStudyFromWeb: body.sendImageStudyFromWeb ?? true
+        sendImageStudyFromWeb: body.sendImageStudyFromWeb ?? true,
+        autoSendOnAcsnCreation: body.autoSendOnAcsnCreation ?? false
     };
 
     await db.satuSehatSetting.upsert({

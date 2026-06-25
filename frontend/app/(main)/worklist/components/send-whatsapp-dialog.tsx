@@ -100,6 +100,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
     const [dbDoctors, setDbDoctors] = useState<{id: string, name: string, signature?: string | null, sip?: string | null}[]>([]);
     const [phone, setPhone] = useState("");
     const [waMessage, setWaMessage] = useState("");
+    const [saveAsExpertise, setSaveAsExpertise] = useState(false);
 
     const studyMainTags = study?.MainDicomTags as any;
     const patientTags = study?.PatientMainDicomTags as any;
@@ -137,10 +138,18 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
     });
 
     useEffect(() => {
+        let isSubscribed = true;
+
         if (open) {
+            setSearchValue("");
+            setSeriesData([]);
+            setSelectedInstanceIds([]);
+            setMeasurementImages([]);
+            setSaveAsExpertise(false);
+
             fetch("/api/config/clinic")
                 .then(r => r.json())
-                .then(data => setClinic(data))
+                .then(data => { if (isSubscribed) setClinic(data); })
                 .catch(() => console.error("Failed to fetch clinic config"));
 
             // Get phone from DICOM
@@ -162,7 +171,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                 fetch(`/api/ai/results?studyInstanceUid=${studyUID}`)
                     .then(r => r.ok ? r.json() : null)
                     .then(aiData => {
-                        if (aiData?.findings) {
+                        if (isSubscribed && aiData?.findings) {
                             const aiFindingsText = Object.entries(aiData.findings)
                                 .filter(([k]) => k !== "Clinical Conclusion")
                                 .map(([k, v]) => `• ${k}: ${typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : v}`)
@@ -174,24 +183,52 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
 
             if (study?.ID) {
                 setIsFetchingSeries(true);
-                const id = study.ID.includes(".") ? study.ID : study.ID; 
-                fetch(`/api/orthanc/studies/${id}/series`)
+                
+                const fetchSeriesData = (id: string) => {
+                    fetch(`/api/orthanc/studies/${id}/series`)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (isSubscribed && Array.isArray(data)) {
+                                setSeriesData(data);
+                                const uniqueTypes = new Set<string>();
+                                data.forEach(s => {
+                                    const sd = s.MainDicomTags?.SeriesDescription || s.MainDicomTags?.ProtocolName;
+                                    if (sd && sd.length > 3) uniqueTypes.add(sd);
+                                });
+                                if (uniqueTypes.size > 0) setFormData(prev => ({ ...prev, examType: Array.from(uniqueTypes).join(", ") }));
+                            }
+                        })
+                        .catch(err => console.error("Error fetching series:", err))
+                        .finally(() => { if (isSubscribed) setIsFetchingSeries(false); });
+                };
+
+                if (study.ID.includes(".")) {
+                    fetch("/api/orthanc/tools/find", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            Level: "Study",
+                            Query: { StudyInstanceUID: study.ID }
+                        })
+                    })
                     .then(r => r.json())
-                    .then(data => {
-                        if (Array.isArray(data)) {
-                            setSeriesData(data);
-                            const uniqueTypes = new Set<string>();
-                            data.forEach(s => {
-                                const sd = s.MainDicomTags?.SeriesDescription || s.MainDicomTags?.ProtocolName;
-                                if (sd && sd.length > 3) uniqueTypes.add(sd);
-                            });
-                            if (uniqueTypes.size > 0) setFormData(prev => ({ ...prev, examType: Array.from(uniqueTypes).join(", ") }));
+                    .then(ids => {
+                        if (Array.isArray(ids) && ids.length > 0) {
+                            fetchSeriesData(ids[0]);
+                        } else {
+                            if (isSubscribed) setIsFetchingSeries(false);
                         }
-                    }).finally(() => setIsFetchingSeries(false));
+                    })
+                    .catch(err => {
+                        console.error("Error resolving StudyInstanceUID:", err);
+                        if (isSubscribed) setIsFetchingSeries(false);
+                    });
+                } else {
+                    fetchSeriesData(study.ID);
+                }
             }
 
             getDoctors().then(res => {
-                if (res.success && res.data) {
+                if (isSubscribed && res.success && res.data) {
                     const docs = res.data.map(d => ({ id: d.id, name: d.name || "Unknown", signature: d.signature, sip: d.sip }));
                     setDbDoctors(docs);
                     if (!formData.doctorId && docs.length > 0) {
@@ -204,7 +241,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
             // Load Existing Report
             if (patientID && study?.MainDicomTags?.StudyInstanceUID) {
                 getRadiologyReport(patientID, study.MainDicomTags.StudyInstanceUID).then(res => {
-                    if (res.success && res.data) {
+                    if (isSubscribed && res.success && res.data) {
                         const r = res.data;
                         setFormData(prev => ({
                             ...prev,
@@ -224,6 +261,10 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                 });
             }
         }
+        
+        return () => {
+            isSubscribed = false;
+        };
     }, [open, study, birthDate, patientSex, studyDesc, modalityName, patientName, patientID]);
 
     const filteredDoctors = React.useMemo(() => {
@@ -267,23 +308,25 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
 
         setIsSending(true);
         try {
-            const reportData = {
-                patientId: patientID,
-                studyInstanceUid: study?.MainDicomTags?.StudyInstanceUID,
-                studyDate: studyDateRaw,
-                accessionNumber: accessionNumber,
-                patientName: patientName,
-                patientSex: formData.gender,
-                age: formData.age,
-                examType: formData.examType,
-                findings: formData.findings,
-                measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
-                selectedSeries: selectedInstanceIds,
-                doctorId: formData.doctorId,
-                doctorName: formData.doctor,
-                reportDate: formData.date
-            };
-            await upsertRadiologyReport(reportData);
+            if (saveAsExpertise) {
+                const reportData = {
+                    patientId: patientID,
+                    studyInstanceUid: study?.MainDicomTags?.StudyInstanceUID,
+                    studyDate: studyDateRaw,
+                    accessionNumber: accessionNumber,
+                    patientName: patientName,
+                    patientSex: formData.gender,
+                    age: formData.age,
+                    examType: formData.examType,
+                    findings: formData.findings,
+                    measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
+                    selectedSeries: selectedInstanceIds,
+                    doctorId: formData.doctorId,
+                    doctorName: formData.doctor,
+                    reportDate: formData.date
+                };
+                await upsertRadiologyReport(reportData);
+            }
 
             const { default: jsPDF } = await import("jspdf");
             const pdf = new jsPDF({ 
@@ -523,7 +566,12 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                                                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Pilih Gambar dari Series</p>
                                                 </div>
                                                 <div className="max-h-[400px] overflow-y-auto p-2 space-y-4">
-                                                    {imageSeriesData.length === 0 ? (
+                                                    {isFetchingSeries ? (
+                                                        <div className="flex items-center justify-center p-8 gap-3 text-sm text-muted-foreground">
+                                                            <HugeiconsIcon icon={RefreshIcon} className="size-4 animate-spin" />
+                                                            Memuat data series...
+                                                        </div>
+                                                    ) : imageSeriesData.length === 0 ? (
                                                         <div className="p-8 text-center text-sm text-muted-foreground italic">Tidak ada series ditemukan.</div>
                                                     ) : (
                                                         imageSeriesData.map(series => {
@@ -618,14 +666,29 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        {(!clinic?.kirimiUserCode || !clinic?.kirimiSecret) && (
-                            <div className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-2 shadow-sm mb-2">
-                                <span>⚠️</span>
-                                <span>API Kirimi.id belum dikonfigurasi. Pergi ke <strong>Settings → Profil Klinik</strong> untuk memasukkan User Code dan Secret API Kirimi.id agar bisa mengirim WhatsApp.</span>
+                            
+                            <div className="bg-card border rounded-xl p-4 shadow-sm flex items-center space-x-3">
+                                <Checkbox 
+                                    id="save-expertise" 
+                                    checked={saveAsExpertise} 
+                                    onCheckedChange={(c) => setSaveAsExpertise(!!c)} 
+                                    className="data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                                />
+                                <label 
+                                    htmlFor="save-expertise" 
+                                    className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none"
+                                >
+                                    Simpan sebagai Expertise <span className="text-muted-foreground font-normal">(Ubah indikator Worklist menjadi Hijau)</span>
+                                </label>
                             </div>
-                        )}
+                            
+                            {(!clinic?.kirimiUserCode || !clinic?.kirimiSecret) && (
+                                <div className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-2 shadow-sm">
+                                    <span>⚠️</span>
+                                    <span>API Kirimi.id belum dikonfigurasi. Pergi ke <strong>Settings → Profil Klinik</strong> untuk memasukkan User Code dan Secret API Kirimi.id agar bisa mengirim WhatsApp.</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

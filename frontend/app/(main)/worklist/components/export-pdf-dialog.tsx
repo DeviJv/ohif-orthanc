@@ -152,14 +152,18 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
     });
 
     useEffect(() => {
+        let isSubscribed = true;
+
         if (open) {
             fetch("/api/config/clinic")
                 .then((r) => r.json())
                 .then((data) => {
-                    setClinic(data);
-                    if (data.doctors?.[0]) setFormData(p => ({ ...p, doctor: data.doctors[0] }));
+                    if (isSubscribed) {
+                        setClinic(data);
+                        if (data.doctors?.[0]) setFormData(p => ({ ...p, doctor: data.doctors[0] }));
+                    }
                 })
-                .catch(() => toast.error("Gagal memuat profil klinik"));
+                .catch(() => { if (isSubscribed) toast.error("Gagal memuat profil klinik"); });
 
             setFormData((prev) => ({
                 ...prev,
@@ -175,7 +179,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 fetch(`/api/ai/results?studyInstanceUid=${studyUID}`)
                     .then(r => r.ok ? r.json() : null)
                     .then(aiData => {
-                        if (aiData) {
+                        if (isSubscribed && aiData) {
                             let aiFindingsText = "";
                             if (aiData.findings && typeof aiData.findings === 'object') {
                                 aiFindingsText = Object.entries(aiData.findings)
@@ -210,7 +214,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                     fetch(`/api/orthanc/studies/${id}/series`)
                         .then(r => r.json())
                         .then(data => {
-                            if (Array.isArray(data)) {
+                            if (isSubscribed && Array.isArray(data)) {
                                 setSeriesData(data);
 
                                 // --- SMART EXAM TYPE EXTRACTION ---
@@ -242,7 +246,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                             }
                         })
                         .catch(err => console.error("Error fetching series:", err))
-                        .finally(() => setIsFetchingSeries(false));
+                        .finally(() => { if (isSubscribed) setIsFetchingSeries(false); });
                 };
 
                 // If ID contains dots, it's likely a StudyInstanceUID and needs resolution
@@ -259,12 +263,12 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                         if (Array.isArray(ids) && ids.length > 0) {
                             fetchSeriesData(ids[0]);
                         } else {
-                            setIsFetchingSeries(false);
+                            if (isSubscribed) setIsFetchingSeries(false);
                         }
                     })
                     .catch(err => {
                         console.error("Error resolving StudyInstanceUID:", err);
-                        setIsFetchingSeries(false);
+                        if (isSubscribed) setIsFetchingSeries(false);
                     });
                 } else {
                     fetchSeriesData(study.ID);
@@ -274,7 +278,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             // --- FETCH DOCTORS FROM DB ---
             setIsFetchingDoctors(true);
             getDoctors().then(res => {
-                if (res.success && res.data) {
+                if (isSubscribed && res.success && res.data) {
                     const docs = res.data.map(d => ({ 
                         id: d.id, 
                         name: d.name || d.email || "Unknown",
@@ -294,12 +298,12 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                         setSearchValue(oldest.name);
                     }
                 }
-            }).finally(() => setIsFetchingDoctors(false));
+            }).finally(() => { if (isSubscribed) setIsFetchingDoctors(false); });
 
             // --- LOAD EXISTING REPORT ---
             if (patientID && study?.MainDicomTags?.StudyInstanceUID) {
                 getRadiologyReport(patientID, study.MainDicomTags.StudyInstanceUID).then(res => {
-                    if (res.success && res.data) {
+                    if (isSubscribed && res.success && res.data) {
                         const report = res.data;
                         setFormData(prev => ({
                             ...prev,
@@ -332,6 +336,10 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 });
             }
         }
+        
+        return () => {
+            isSubscribed = false;
+        };
     }, [open, birthDate, patientSex, studyDesc, modalityName, studyMainTags?.ReferringPhysicianName, study?.MainDicomTags?.StudyInstanceUID, study?.ID, patientID]);
 
     const filteredDoctors = React.useMemo(() => {

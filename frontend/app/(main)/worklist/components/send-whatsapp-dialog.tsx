@@ -489,15 +489,36 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                             <div className="bg-card border rounded-xl p-5 shadow-sm space-y-4">
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold text-muted-foreground uppercase">Dokter Penanggung Jawab <span className="text-destructive">*</span></Label>
-                                    <Combobox value={formData.doctorId} onValueChange={(val) => {
-                                        const d = dbDoctors.find(x => x.id === val);
-                                        if (d) { setFormData(p => ({...p, doctorId: d.id, doctor: d.name})); setSearchValue(d.name); }
-                                    }}>
-                                        <ComboboxInput placeholder="Cari dokter..." value={searchValue} onChange={e => setSearchValue(e.target.value)} className="h-9 text-sm" />
-                                        <ComboboxList>
-                                            <ComboboxEmpty>Dokter tidak ditemukan.</ComboboxEmpty>
-                                            {filteredDoctors.map(d => <ComboboxItem key={d.id} value={d.id}>{d.name}</ComboboxItem>)}
-                                        </ComboboxList>
+                                    <Combobox 
+                                        value={formData.doctor} 
+                                        onValueChange={(val) => {
+                                            const d = dbDoctors.find(x => x.name === val);
+                                            if (d) { 
+                                                setFormData(p => ({...p, doctorId: d.id, doctor: d.name})); 
+                                                setSearchValue(d.name); 
+                                            }
+                                        }}
+                                        inputValue={searchValue}
+                                        onInputValueChange={(val) => {
+                                            setSearchValue(val);
+                                            if (formData.doctor && val !== formData.doctor) {
+                                                setFormData(p => ({ ...p, doctor: "", doctorId: "" }));
+                                            }
+                                        }}
+                                    >
+                                        <ComboboxInput 
+                                            placeholder="Cari dokter..." 
+                                            className="w-full h-9 bg-background text-sm border" 
+                                        >
+                                            <ComboboxContent>
+                                                <ComboboxList tabIndex={-1}>
+                                                    {filteredDoctors.map(d => (
+                                                        <ComboboxItem key={d.id} value={d.name}>{d.name}</ComboboxItem>
+                                                    ))}
+                                                </ComboboxList>
+                                                <ComboboxEmpty>Dokter tidak ditemukan.</ComboboxEmpty>
+                                            </ComboboxContent>
+                                        </ComboboxInput>
                                     </Combobox>
                                 </div>
 

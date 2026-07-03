@@ -10,7 +10,8 @@ export async function GET() {
             select: {
                 studyInstanceUid: true,
                 doctorName: true,
-                doctorId: true
+                doctorId: true,
+                isExpertise: true
             }
         });
 

@@ -451,7 +451,8 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
                 selectedSeries: selectedInstanceIds, // Saving instance IDs in this field
                 doctorId: formData.doctorId,
                 doctorName: formData.doctor,
-                reportDate: formData.date
+                reportDate: formData.date,
+                isExpertise: true
             };
 
             const saveRes = await upsertRadiologyReport(reportData);
@@ -705,6 +706,7 @@ export const ExportPdfDialog = React.memo(function ExportPdfDialog({ open, onOpe
             const filename = `Laporan_${modalityName}_${patientName.replace(/\s+/g, "_") || "Pasien"}.pdf`;
             pdf.save(filename);
             toast.success("PDF berhasil di-generate secara manual!");
+            onOpenChange(false);
         } catch (err) {
             console.error(err);
             toast.error("Gagal generate PDF");

@@ -243,6 +243,7 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                 getRadiologyReport(patientID, study.MainDicomTags.StudyInstanceUID).then(res => {
                     if (isSubscribed && res.success && res.data) {
                         const r = res.data;
+                        setSaveAsExpertise(r.isExpertise || false);
                         setFormData(prev => ({
                             ...prev,
                             age: r.age || prev.age,
@@ -308,25 +309,24 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
 
         setIsSending(true);
         try {
-            if (saveAsExpertise) {
-                const reportData = {
-                    patientId: patientID,
-                    studyInstanceUid: study?.MainDicomTags?.StudyInstanceUID,
-                    studyDate: studyDateRaw,
-                    accessionNumber: accessionNumber,
-                    patientName: patientName,
-                    patientSex: formData.gender,
-                    age: formData.age,
-                    examType: formData.examType,
-                    findings: formData.findings,
-                    measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
-                    selectedSeries: selectedInstanceIds,
-                    doctorId: formData.doctorId,
-                    doctorName: formData.doctor,
-                    reportDate: formData.date
-                };
-                await upsertRadiologyReport(reportData);
-            }
+            const reportData = {
+                patientId: patientID,
+                studyInstanceUid: study?.MainDicomTags?.StudyInstanceUID,
+                studyDate: studyDateRaw,
+                accessionNumber: accessionNumber,
+                patientName: patientName,
+                patientSex: formData.gender,
+                age: formData.age,
+                examType: formData.examType,
+                findings: formData.findings,
+                measurementImages: measurementImages.map(img => ({ base64: img.base64, name: img.name })),
+                selectedSeries: selectedInstanceIds,
+                doctorId: formData.doctorId,
+                doctorName: formData.doctor,
+                reportDate: formData.date,
+                isExpertise: saveAsExpertise
+            };
+            await upsertRadiologyReport(reportData);
 
             const { default: jsPDF } = await import("jspdf");
             const pdf = new jsPDF({ 
@@ -424,14 +424,34 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                 let cleanPhone = phone.replace(/[^0-9]/g, "");
                 if (cleanPhone.startsWith("0")) cleanPhone = "62" + cleanPhone.slice(1);
                 
-                // Siapkan variabel untuk template WABA (hasil_radiologi / radiologi)
-                // 1: Nama, 2: Tanggal, 3: RM, 4: Link Download (On the go)
-                const wabaVariables = [
+                // Siapkan variabel untuk template WABA
+                const origin = window.location.origin;
+
+                // Default 4 variabel: 1: Nama, 2: Tanggal, 3: RM, 4: Link Download
+                let wabaVariables = [
                     patientName,
                     studyDateFormatted || formData.date,
                     patientID,
-                    `${window.location.origin}/download/${study?.MainDicomTags?.StudyInstanceUID}`
+                    `${origin}/download/${study?.MainDicomTags?.StudyInstanceUID}`
                 ];
+
+                // Kirimi template mapping
+                const templateName = clinic?.kirimiTemplateName || "radiologi";
+                if (templateName === "order_radiologi_indonesia") {
+                    wabaVariables = [
+                        patientName, // {{1}} Nama Pasien
+                        `pemeriksaan ${modalityName}`, // {{2}} jenis pemeriksaan
+                        patientID, // {{3}} Nomor rekam medis
+                        "dokumen hasil radiologi", // {{4}} jenis dokumen
+                        `${origin}/download/${study?.MainDicomTags?.StudyInstanceUID}` // {{5}} link download
+                    ];
+                } else if (templateName === "konfirmasi_radiologi") {
+                    wabaVariables = [
+                        patientName, // {{1}} Nama Pasien
+                        patientID, // {{2}} Nomor rekam medis
+                        studyDateFormatted || formData.date // {{3}} Tanggal pemeriksaan
+                    ];
+                }
                 
                 success = await onSend(cleanPhone, waMessage, pdfBase64, filename, wabaVariables);
             }
@@ -471,7 +491,18 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold uppercase text-muted-foreground">Pesan Pengantar</Label>
-                                    <Textarea value={waMessage} onChange={e => setWaMessage(e.target.value)} rows={4} className="text-sm" />
+                                    <Textarea 
+                                        value={waMessage} 
+                                        onChange={e => setWaMessage(e.target.value)} 
+                                        rows={4} 
+                                        className="text-sm" 
+                                        readOnly={!clinic?.kirimiDeviceId}
+                                    />
+                                    {!clinic?.kirimiDeviceId && (
+                                        <p className="text-[10px] text-red-500 font-semibold mt-1">
+                                            Atur template pada dashboard kirimi.id
+                                        </p>
+                                    )}
                                 </div>
                                 <Separator />
                                 <div className="space-y-3">
@@ -697,9 +728,9 @@ export function SendWhatsappDialog({ open, onOpenChange, study, onSend }: SendWh
                                 />
                                 <label 
                                     htmlFor="save-expertise" 
-                                    className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none"
+                                    className="text-sm font-semibold cursor-pointer select-none"
                                 >
-                                    Simpan sebagai Expertise <span className="text-muted-foreground font-normal">(Ubah indikator Worklist menjadi Hijau)</span>
+                                    Simpan sebagai Expertise
                                 </label>
                             </div>
                             

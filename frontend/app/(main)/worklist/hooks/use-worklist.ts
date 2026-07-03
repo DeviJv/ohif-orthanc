@@ -609,13 +609,14 @@ export function useWorklist() {
             }
 
             toast.success("Laporan berhasil dikirim ke WhatsApp Pasien");
+            await fetchDoctorNames();
             return true;
         } catch (error: any) {
             console.error("Failed to send to WhatsApp:", error);
             toast.error(error.message || "Gagal mengirim ke WhatsApp");
             return false;
         }
-    }, []);
+    }, [fetchDoctorNames]);
 
     const handleBridgeSatuSehat = useCallback(async (studyId: string, manualNik?: string) => {
         const taskId = addTask({ 
@@ -686,6 +687,7 @@ export function useWorklist() {
         isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen,
         selectedStudyForWhatsapp, openSendWhatsappDialog,
         handleSendToWhatsapp,
+        fetchDoctorNames,
         aiMode, handleRunAi, aiResults,
         handleBridgeSatuSehat, ssIntegrationStatus,
         doctorNames, doctors, hasReports

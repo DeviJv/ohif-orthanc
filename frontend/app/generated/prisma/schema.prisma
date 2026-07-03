@@ -204,6 +204,7 @@ model RadiologyReport {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   doctorName        String?
+  isExpertise       Boolean  @default(false)
   doctor            User?    @relation("DoctorReports", fields: [doctorId], references: [id])
 
   @@unique([patientId, studyInstanceUid])

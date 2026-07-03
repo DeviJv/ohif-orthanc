@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
         const { target, message, file, filename } = body;
+        console.log("[WHATSAPP_DEBUG] Received body keys:", Object.keys(body), "variables:", body.variables);
 
         if (!target || !message) {
             return NextResponse.json({ error: "Target and message are required" }, { status: 400 });
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
                 waba_id: config["KIRIMI_WABA_ID"] || "",
                 to: target,
                 template_name: body.templateName || config["KIRIMI_TEMPLATE_NAME"] || "radiologi",
-                variables: JSON.stringify(body.variables || []),
+                variables: body.variables || [],
                 // We won't use header since the template doesn't have a document header
             };
 

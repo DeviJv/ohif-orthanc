@@ -16834,6 +16834,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     doctorName: string | null
+    isExpertise: boolean | null
   }
 
   export type RadiologyReportMaxAggregateOutputType = {
@@ -16853,6 +16854,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     doctorName: string | null
+    isExpertise: boolean | null
   }
 
   export type RadiologyReportCountAggregateOutputType = {
@@ -16874,6 +16876,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     doctorName: number
+    isExpertise: number
     _all: number
   }
 
@@ -16895,6 +16898,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     doctorName?: true
+    isExpertise?: true
   }
 
   export type RadiologyReportMaxAggregateInputType = {
@@ -16914,6 +16918,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     doctorName?: true
+    isExpertise?: true
   }
 
   export type RadiologyReportCountAggregateInputType = {
@@ -16935,6 +16940,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     doctorName?: true
+    isExpertise?: true
     _all?: true
   }
 
@@ -17029,6 +17035,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     doctorName: string | null
+    isExpertise: boolean
     _count: RadiologyReportCountAggregateOutputType | null
     _min: RadiologyReportMinAggregateOutputType | null
     _max: RadiologyReportMaxAggregateOutputType | null
@@ -17067,6 +17074,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     doctorName?: boolean
+    isExpertise?: boolean
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }, ExtArgs["result"]["radiologyReport"]>
 
@@ -17089,6 +17097,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     doctorName?: boolean
+    isExpertise?: boolean
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }, ExtArgs["result"]["radiologyReport"]>
 
@@ -17111,6 +17120,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     doctorName?: boolean
+    isExpertise?: boolean
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }, ExtArgs["result"]["radiologyReport"]>
 
@@ -17133,9 +17143,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     doctorName?: boolean
+    isExpertise?: boolean
   }
 
-  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "orderId" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "doctorId" | "reportDate" | "createdAt" | "updatedAt" | "doctorName", ExtArgs["result"]["radiologyReport"]>
+  export type RadiologyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "studyInstanceUid" | "studyDate" | "accessionNumber" | "orderId" | "patientName" | "patientSex" | "age" | "examType" | "findings" | "measurementImages" | "selectedSeries" | "doctorId" | "reportDate" | "createdAt" | "updatedAt" | "doctorName" | "isExpertise", ExtArgs["result"]["radiologyReport"]>
   export type RadiologyReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | RadiologyReport$doctorArgs<ExtArgs>
   }
@@ -17170,6 +17181,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       doctorName: string | null
+      isExpertise: boolean
     }, ExtArgs["result"]["radiologyReport"]>
     composites: {}
   }
@@ -17612,6 +17624,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"RadiologyReport", 'DateTime'>
     readonly updatedAt: FieldRef<"RadiologyReport", 'DateTime'>
     readonly doctorName: FieldRef<"RadiologyReport", 'String'>
+    readonly isExpertise: FieldRef<"RadiologyReport", 'Boolean'>
   }
     
 
@@ -22649,7 +22662,8 @@ export namespace Prisma {
     reportDate: 'reportDate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    doctorName: 'doctorName'
+    doctorName: 'doctorName',
+    isExpertise: 'isExpertise'
   };
 
   export type RadiologyReportScalarFieldEnum = (typeof RadiologyReportScalarFieldEnum)[keyof typeof RadiologyReportScalarFieldEnum]
@@ -23876,6 +23890,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
+    isExpertise?: BoolFilter<"RadiologyReport"> | boolean
     doctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
@@ -23898,6 +23913,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     doctorName?: SortOrderInput | SortOrder
+    isExpertise?: SortOrder
     doctor?: UserOrderByWithRelationInput
   }
 
@@ -23924,6 +23940,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
+    isExpertise?: BoolFilter<"RadiologyReport"> | boolean
     doctor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id" | "patientId_studyInstanceUid">
 
@@ -23946,6 +23963,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     doctorName?: SortOrderInput | SortOrder
+    isExpertise?: SortOrder
     _count?: RadiologyReportCountOrderByAggregateInput
     _max?: RadiologyReportMaxOrderByAggregateInput
     _min?: RadiologyReportMinOrderByAggregateInput
@@ -23973,6 +23991,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"RadiologyReport"> | Date | string
     doctorName?: StringNullableWithAggregatesFilter<"RadiologyReport"> | string | null
+    isExpertise?: BoolWithAggregatesFilter<"RadiologyReport"> | boolean
   }
 
   export type SatuSehatBulkSyncTaskWhereInput = {
@@ -25459,6 +25478,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     doctorName?: string | null
+    isExpertise?: boolean
     doctor?: UserCreateNestedOneWithoutReportsInput
   }
 
@@ -25481,6 +25501,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     doctorName?: string | null
+    isExpertise?: boolean
   }
 
   export type RadiologyReportUpdateInput = {
@@ -25501,6 +25522,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
     doctor?: UserUpdateOneWithoutReportsNestedInput
   }
 
@@ -25523,6 +25545,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RadiologyReportCreateManyInput = {
@@ -25544,6 +25567,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     doctorName?: string | null
+    isExpertise?: boolean
   }
 
   export type RadiologyReportUpdateManyMutationInput = {
@@ -25564,6 +25588,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RadiologyReportUncheckedUpdateManyInput = {
@@ -25585,6 +25610,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SatuSehatBulkSyncTaskCreateInput = {
@@ -26841,6 +26867,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     doctorName?: SortOrder
+    isExpertise?: SortOrder
   }
 
   export type RadiologyReportMaxOrderByAggregateInput = {
@@ -26860,6 +26887,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     doctorName?: SortOrder
+    isExpertise?: SortOrder
   }
 
   export type RadiologyReportMinOrderByAggregateInput = {
@@ -26879,6 +26907,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     doctorName?: SortOrder
+    isExpertise?: SortOrder
   }
 
   export type SatuSehatBulkSyncTaskCountOrderByAggregateInput = {
@@ -27750,6 +27779,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     doctorName?: string | null
+    isExpertise?: boolean
   }
 
   export type RadiologyReportUncheckedCreateWithoutDoctorInput = {
@@ -27770,6 +27800,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     doctorName?: string | null
+    isExpertise?: boolean
   }
 
   export type RadiologyReportCreateOrConnectWithoutDoctorInput = {
@@ -27923,6 +27954,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     updatedAt?: DateTimeFilter<"RadiologyReport"> | Date | string
     doctorName?: StringNullableFilter<"RadiologyReport"> | string | null
+    isExpertise?: BoolFilter<"RadiologyReport"> | boolean
   }
 
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
@@ -28543,6 +28575,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     doctorName?: string | null
+    isExpertise?: boolean
   }
 
   export type SessionCreateManyUserInput = {
@@ -28619,6 +28652,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RadiologyReportUncheckedUpdateWithoutDoctorInput = {
@@ -28639,6 +28673,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RadiologyReportUncheckedUpdateManyWithoutDoctorInput = {
@@ -28659,6 +28694,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctorName?: NullableStringFieldUpdateOperationsInput | string | null
+    isExpertise?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SessionUpdateWithoutUserInput = {

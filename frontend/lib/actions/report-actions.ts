@@ -44,6 +44,7 @@ export async function upsertRadiologyReport(data: any) {
         doctorName,
         reportDate,
         orderId,
+        isExpertise: data.isExpertise ?? false,
         updatedAt: new Date()
       },
       create: {
@@ -61,7 +62,8 @@ export async function upsertRadiologyReport(data: any) {
         doctorId,
         doctorName,
         reportDate,
-        orderId
+        orderId,
+        isExpertise: data.isExpertise ?? false,
       }
     });
 

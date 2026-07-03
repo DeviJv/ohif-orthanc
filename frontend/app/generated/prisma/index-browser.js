@@ -301,7 +301,8 @@ exports.Prisma.RadiologyReportScalarFieldEnum = {
   reportDate: 'reportDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  doctorName: 'doctorName'
+  doctorName: 'doctorName',
+  isExpertise: 'isExpertise'
 };
 
 exports.Prisma.SatuSehatBulkSyncTaskScalarFieldEnum = {

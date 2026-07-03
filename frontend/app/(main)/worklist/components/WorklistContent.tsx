@@ -80,7 +80,7 @@ export default function WorklistContent() {
         doctorNames, doctors,
         isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen,
         selectedStudyForWhatsapp, openSendWhatsappDialog,
-        handleSendToWhatsapp, hasReports
+        handleSendToWhatsapp, hasReports, fetchDoctorNames
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -525,8 +525,23 @@ export default function WorklistContent() {
             <SendTelegramDialog open={isSendTelegramDialogOpen} onOpenChange={setIsSendTelegramDialogOpen} study={selectedStudyForTelegram} onSendToDoctor={handleSendToTelegram} doctors={doctors} />
             <EditStudyDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} study={studyToEdit} onConfirm={handleEditStudy} />
             <AiResultDialog open={isAiResultDialogOpen} onOpenChange={setIsAiResultDialogOpen} result={selectedAiResult} patientName={selectedPatientName} />
-            <ExportPdfDialog open={isExportPdfDialogOpen} onOpenChange={setIsExportPdfDialogOpen} study={studyForPdf} />
-            <SendWhatsappDialog open={isSendWhatsappDialogOpen} onOpenChange={setIsSendWhatsappDialogOpen} study={selectedStudyForWhatsapp} onSend={handleSendToWhatsapp} />
+            <ExportPdfDialog 
+                open={isExportPdfDialogOpen} 
+                onOpenChange={(open) => {
+                    setIsExportPdfDialogOpen(open);
+                    if (!open) fetchDoctorNames();
+                }} 
+                study={studyForPdf} 
+            />
+            <SendWhatsappDialog 
+                open={isSendWhatsappDialogOpen} 
+                onOpenChange={(open) => {
+                    setIsSendWhatsappDialogOpen(open);
+                    if (!open) fetchDoctorNames();
+                }} 
+                study={selectedStudyForWhatsapp} 
+                onSend={handleSendToWhatsapp} 
+            />
             <BridgeSatuSehatDialog open={isBridgeDialogOpen} onOpenChange={setIsBridgeDialogOpen} study={selectedStudyForBridge} onBridge={handleBridgeSatuSehat} />
             <FloatingAiProgress />
         </div>

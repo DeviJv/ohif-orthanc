@@ -171,78 +171,84 @@ function getCategoryIcon(category: string) {
 
 function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiEndpoint, onCopy: (text: string) => void, appUrl?: string, orthancUrl?: string }) {
     const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
-    const isExternalApi = endpoint.category === "Create ACSN" || endpoint.category === "Radiology Reports";
+    const isAppApi = endpoint.category === "Create ACSN" || 
+                     endpoint.category === "Radiology Reports" || 
+                     endpoint.category === "Public Study API" || 
+                     endpoint.category === "Public Worklist API";
+    const isPublicApi = endpoint.category === "Public Study API" || endpoint.category === "Public Worklist API";
+    
     const isConnectDevices = endpoint.category === "Connect Devices";
     const pacsKey = "pacs_secret_token_2026";
+    const publicApiKey = "pacs_citama_2026";
     
     const resolvedAppUrl = appUrl || "http://localhost:3000";
     const resolvedOrthancUrl = orthancUrl || "http://localhost:8042";
 
-    const authHeader = isExternalApi 
-        ? `-H "x-pacs-key: ${pacsKey}"`
+    const authHeader = isAppApi 
+        ? (isPublicApi ? `-H "x-api-key: ${publicApiKey}"` : `-H "x-pacs-key: ${pacsKey}"`)
         : `-H "Authorization: Basic cXVhbnR1bTpxdWFudHVtMTIz"`;
 
     const isGet = endpoint.method === "GET";
     let queryParams = "";
-    if (isGet && isExternalApi) {
+    if (isGet && isAppApi) {
         if (endpoint.id === "get-report-by-accession") {
             queryParams = "?accessionNumber=ACSN-001";
         } else if (endpoint.id === "search-reports") {
             queryParams = "?q=ACSN-001";
-        } else {
+        } else if (!isPublicApi) {
             queryParams = "?patientId=12345&studyDate=20240420";
         }
     }
     
-    const curlCode = `curl -X ${endpoint.method} "${isExternalApi ? resolvedAppUrl : resolvedOrthancUrl}${endpoint.path}${queryParams}" \\
+    const curlCode = `curl -X ${endpoint.method} "${isAppApi ? resolvedAppUrl : resolvedOrthancUrl}${endpoint.path}${queryParams}" \\
   ${authHeader}${!isGet ? ` \\
   -H "Content-Type: application/json" \\
-  -d '{
+  -d '${endpoint.exampleBody || `{
     "patientId": "12345",
     "orderId": "ORD-123",
     "studyDate": "20240420",
     "accessionNumber": "ACSN-001"
-  }'` : ""}`;
+  }`}'` : ""}`;
     
-    const fetchCode = isExternalApi 
+    const fetchCode = isAppApi 
         ? `const response = await fetch("${resolvedAppUrl}${endpoint.path}${queryParams}", {
   method: "${endpoint.method}",
   headers: {
-    "x-pacs-key": "${pacsKey}"${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
-  }${!isGet ? `,\n  body: JSON.stringify({
+    "${isPublicApi ? 'x-api-key' : 'x-pacs-key'}": "${isPublicApi ? publicApiKey : pacsKey}"${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
+  }${!isGet ? `,\n  body: JSON.stringify(${endpoint.exampleBody || `{
     patientId: "12345",
     orderId: "ORD-123",
     studyDate: "20240420",
     accessionNumber: "ACSN-001"
-  })` : ''}
+  }`})` : ''}
 });
 const data = await response.json();`
         : `const response = await fetch("${resolvedOrthancUrl}${endpoint.path}", {
   method: "${endpoint.method}",
   headers: {
-    "Authorization": "Basic " + btoa("quantum:quantum123")
-  }
+    "Authorization": "Basic " + btoa("quantum:quantum123")${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
+  }${!isGet ? `,\n  body: JSON.stringify(${endpoint.exampleBody || `{}`})` : ''}
 });
 const data = await response.json();`;
 
-    const phpCode = isExternalApi
+    const phpCode = isAppApi
         ? `<?php
 $url = "${resolvedAppUrl}${endpoint.path}${queryParams}";
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "${endpoint.method}");
-${!isGet ? `$data = [
+${!isGet ? `$data = ${endpoint.exampleBody ? `json_decode('${endpoint.exampleBody}', true)` : `[
     "patientId" => "12345",
     "orderId" => "ORD-123",
     "studyDate" => "20240420",
     "accessionNumber" => "ACSN-001"
-];
+]`};
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'x-pacs-key: ${pacsKey}',
+    '${isPublicApi ? 'x-api-key' : 'x-pacs-key'}: ${isPublicApi ? publicApiKey : pacsKey}',
     'Content-Type: application/json'
 ]);` : `curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'x-pacs-key: ${pacsKey}'
+    '${isPublicApi ? 'x-api-key' : 'x-pacs-key'}: ${isPublicApi ? publicApiKey : pacsKey}'
 ]);`}
 
 $response = curl_exec($ch);
@@ -257,9 +263,14 @@ $auth = base64_encode("quantum:quantum123");
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "${endpoint.method}");
+${!isGet ? `$data = ${endpoint.exampleBody ? `json_decode('${endpoint.exampleBody}', true)` : `[]`};
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Basic ' . $auth,
+    'Content-Type: application/json'
+]);` : `curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Basic ' . $auth
-]);
+]);`}
 
 $response = curl_exec($ch);
 $result = json_decode($response, true);

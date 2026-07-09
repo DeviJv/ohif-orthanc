@@ -12,6 +12,7 @@ export interface ApiEndpoint {
   }[];
   response?: string;
   exampleUrl?: string;
+  exampleBody?: string;
 }
 
 export const ORTHANC_API_CATEGORIES = [
@@ -25,6 +26,7 @@ export const ORTHANC_API_CATEGORIES = [
   "Create ACSN",
   "Connect Devices",
   "Public Worklist API",
+  "Public Study API",
 ];
 
 export const ORTHANC_API_DATA: ApiEndpoint[] = [
@@ -423,6 +425,92 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     parameters: [
       { name: "x-api-key", type: "header", description: "API Key", required: true },
     ]
+  },
+  {
+    id: "public-patient-studies",
+    method: "GET",
+    path: "/api/public/patient/{patientId}/studies?page=1&limit=10",
+    description: "Ambil daftar study milik pasien tertentu (berdasarkan patientId) lengkap dengan paginasi dan URL preview gambar DICOM.",
+    category: "Public Study API",
+    parameters: [
+      { name: "x-api-key", type: "header", description: "Wajib disi dengan API Key (pacs_citama_2026)", required: true },
+      { name: "patientId", type: "path", description: "ID Pasien", required: true },
+      { name: "page", type: "query", description: "Halaman data (default: 1)", required: false },
+      { name: "limit", type: "query", description: "Jumlah data per halaman (default: 10)", required: false }
+    ],
+    response: `{
+  "data": [
+    {
+      "id": "orthanc-id",
+      "studyInstanceUid": "1.2.3.4",
+      "patientId": "12345",
+      "patientName": "JOHN DOE",
+      "dicomImages": [
+        "http://localhost/api/orthanc/instances/.../preview"
+      ]
+      // ... (data lengkap study lainnya seperti endpoint /worklist)
+    }
+  ],
+  "meta": { "total": 10, "page": 1, "limit": 10, "totalPages": 1 }
+}`
+  },
+  {
+    id: "public-order-study",
+    method: "GET",
+    path: "/api/public/order/{orderId}",
+    description: "Ambil detail spesifik dari sebuah study berdasarkan orderId (bisa berupa AccessionNumber, StudyID, atau RequestedProcedureID). Hanya menampilkan data detail dasar, measurementReport, satusehat status, dan dicomImages (URL preview).",
+    category: "Public Study API",
+    parameters: [
+      { name: "x-api-key", type: "header", description: "Wajib disi dengan API Key (pacs_citama_2026)", required: true },
+      { name: "orderId", type: "path", description: "Order ID / Accession Number / Study ID", required: true }
+    ],
+    response: `{
+  "data": {
+    "id": "orthanc-id",
+    "studyInstanceUid": "1.2.3.4",
+    "patientId": "12345",
+    "patientName": "JOHN DOE",
+    "accessionNumber": "ACC123",
+    "orderId": "ORD123",
+    "measurementReport": {
+      "findings": "Normal Cor dan Pulmo...",
+      "measurementImages": [
+        { "name": "screenshot1.png", "base64": "data:image/png;base64,..." }
+      ]
+    },
+    "satusehat": {
+      "status": "COMPLETED",
+      "satusehatId": "ihs-12345"
+    },
+    "dicomImages": [
+      "http://localhost/api/orthanc/instances/.../preview"
+    ]
+  }
+}`
+  },
+  {
+    id: "public-order-export-pdf",
+    method: "POST",
+    path: "/api/public/export-pdf",
+    description: "Generate dan unduh (download) file PDF yang berisi laporan hasil bacaan (jika expertise=true) dan gambar DICOM yang dipilih (berdasarkan array instances uuid). Responsenya berupa file PDF biner. Pastikan Client membaca response sebagai Blob/File.\n*(Catatan: Jika mengetes menggunakan Postman, jangan klik 'Send' biasa, melainkan klik panah bawah dan pilih **'Download response'** atau **'Send and Download'**)*.",
+    category: "Public Study API",
+    exampleBody: `{
+  "orderId": "ACC123",
+  "protect_pdf": true,
+  "expertise": true,
+  "instances": [
+    "89f365d7-ab370fbd-197e3a35-1f9e20a4-cf36424e"
+  ]
+}`,
+    parameters: [
+      { name: "x-api-key", type: "header", description: "Wajib diisi dengan API Key (pacs_citama_2026)", required: true },
+      { name: "orderId", type: "body", description: "ID Order atau Accession Number", required: true },
+      { name: "protect_pdf", type: "body", description: "Boolean. Jika true, PDF akan dipassword dengan RM pasien", required: true },
+      { name: "expertise", type: "body", description: "Boolean. Jika true, PDF akan menyertakan halaman laporan bacaan (Kop Surat, Dokter, Hasil)", required: true },
+      { name: "instances", type: "body", description: "Array of string. Kumpulan UUID instance DICOM yang akan dimasukkan (1 halaman = 1 gambar)", required: true }
+    ],
+    response: `(File PDF langsung di-download / biner application/pdf)`
   }
 ];
+
 

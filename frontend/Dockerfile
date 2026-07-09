@@ -19,8 +19,8 @@ RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM node:22-alpine AS runner
-# Install docker-cli & docker-compose agar Node.js bisa mengeksekusi "docker compose" via sock
-RUN apk add --no-cache docker-cli docker-cli-compose
+# Install docker-cli & docker-compose agar Node.js bisa mengeksekusi "docker compose" via sock, dan qpdf untuk encrypt PDF
+RUN apk add --no-cache docker-cli docker-cli-compose qpdf
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 WORKDIR /app
 

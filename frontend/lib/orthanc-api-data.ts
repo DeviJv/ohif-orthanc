@@ -547,6 +547,33 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
 }`
   },
   {
+    id: "public-study-by-uuid",
+    method: "GET",
+    path: "/api/public/study/[studyId]",
+    description: "Mendapatkan detail studi lengkap (termasuk laporan hasil bacaan dan gambar DICOM) menggunakan DICOM StudyInstanceUID langsung di URL.",
+    category: "Public Study API",
+    parameters: [
+      { name: "x-pacs-key", type: "header", description: "Wajib diisi dengan API Key (pacs_secret_token_2026)", required: true },
+      { name: "studyId", type: "path", description: "DICOM StudyInstanceUID", required: true }
+    ],
+    response: `{
+  "data": {
+    "id": "e0b1c2d3-...",
+    "studyInstanceUid": "1.2.840.113619.2.55.3.28311...",
+    "patientId": "12345",
+    "patientName": "JOHN DOE",
+    "studyDate": "20240420",
+    "accessionNumber": "ACC123",
+    "orderId": "ORD-123",
+    "measurementReport": null,
+    "satusehat": null,
+    "dicomImages": [
+      "http://localhost/api/orthanc/instances/.../preview"
+    ]
+  }
+}`
+  },
+  {
     id: "public-order-export-pdf",
     method: "POST",
     path: "/api/public/export-pdf",

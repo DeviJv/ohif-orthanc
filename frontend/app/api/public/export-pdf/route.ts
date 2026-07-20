@@ -81,6 +81,16 @@ export async function POST(req: NextRequest) {
         }
 
         if (studies.length === 0) {
+            queryBody.Query = { "StudyInstanceUID": orderId } as any;
+            const res5 = await fetch(`${ORTHANC_URL}/tools/find`, {
+                method: 'POST',
+                headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
+                body: JSON.stringify(queryBody)
+            });
+            studies = await res5.json();
+        }
+
+        if (studies.length === 0) {
             return NextResponse.json({ success: false, error: "Study not found with provided orderId" }, { status: 404 });
         }
 

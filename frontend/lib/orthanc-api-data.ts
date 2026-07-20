@@ -562,7 +562,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
 }`,
     parameters: [
       { name: "x-pacs-key", type: "header", description: "Wajib diisi dengan API Key (pacs_secret_token_2026)", required: true },
-      { name: "orderId", type: "body", description: "ID Order, Accession Number, atau Study Date (YYYYMMDD)", required: true },
+      { name: "orderId", type: "body", description: "ID Order, Accession Number, Study Date (YYYYMMDD), atau Study ID (StudyInstanceUID)", required: true },
       { name: "protect_pdf", type: "body", description: "Boolean. Jika true, PDF akan dipassword dengan RM pasien", required: true },
       { name: "expertise", type: "body", description: "Boolean. Jika true, PDF akan menyertakan halaman laporan bacaan (Kop Surat, Dokter, Hasil)", required: true },
       { name: "instances", type: "body", description: "Array of string. Kumpulan UUID instance DICOM yang akan dimasukkan (1 halaman = 1 gambar)", required: true }

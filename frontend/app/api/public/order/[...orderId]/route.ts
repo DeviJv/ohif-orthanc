@@ -15,16 +15,17 @@ const DEFAULT_HEADERS = {
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: Promise<{ orderId: string }> }
+    { params }: { params: Promise<{ orderId: string | string[] }> }
 ) {
     const authError = verifyApiKey(req);
     if (authError) return authError;
 
     try {
-        const { orderId } = await params;
+        const paramsData = await params;
+        const orderId = Array.isArray(paramsData.orderId) ? paramsData.orderId.join('/') : paramsData.orderId;
 
         let study = null;
-        const searchTags = ["AccessionNumber", "StudyID", "RequestedProcedureID"];
+        const searchTags = ["AccessionNumber", "StudyID", "RequestedProcedureID", "StudyDate"];
 
         for (const tag of searchTags) {
             const queryRes = await fetch(`${ORTHANC_URL}/tools/find`, {
@@ -56,7 +57,7 @@ export async function GET(
             return NextResponse.json({ error: "Study not found" }, { status: 404 });
         }
 
-        const uid = study.MainDicomTags?.StudyInstanceUID;
+        const uid = study.MainDicomTags?.StudyInstanceUID || "";
         const accessionNumber = study.MainDicomTags?.AccessionNumber;
 
         const [report, ssIntegration] = await Promise.all([

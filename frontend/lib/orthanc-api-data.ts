@@ -24,6 +24,7 @@ export const ORTHANC_API_CATEGORIES = [
   "DICOMweb",
   "Radiology Reports",
   "Create ACSN",
+  "Create Order ID",
   "Connect Devices",
   "Public Worklist API",
   "Public Study API",
@@ -258,6 +259,26 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
 }`
   },
   {
+    id: "external-study-order",
+    method: "POST",
+    path: "/api/external/study/order",
+    description: "Memperbarui Order ID (StudyID / RequestedProcedureID) dari studi menggunakan StudyInstanceUID, atau kombinasi ID Pasien dan Tanggal Studi.",
+    category: "Create Order ID",
+    parameters: [
+      { name: "x-pacs-key", type: "header", description: "Wajib diisi dengan API Key", required: true },
+      { name: "orderId", type: "body", description: "Order ID baru yang akan diberikan", required: true },
+      { name: "studyUuid", type: "body", description: "StudyInstanceUID dari DICOM (Prioritas 1). Jika diisi, parameter lain bisa dikosongkan.", required: false },
+      { name: "patientId", type: "body", description: "ID Pasien DICOM (Prioritas 2). Wajib diisi jika studyUuid kosong.", required: false },
+      { name: "studyDate", type: "body", description: "Tanggal Studi format YYYYMMDD. Wajib diisi bersama patientId jika studyUuid kosong.", required: false }
+    ],
+    exampleBody: `{
+  "patientId": "12345",
+  "studyDate": "20260615",
+  "orderId": "ORD-12345"
+}`,
+    response: '{"success": true, "message": "Order ID updated successfully", "newStudyId": "..."}'
+  },
+  {
     id: "get-report-by-accession",
     method: "GET",
     path: "/api/external/reports/by-accession",
@@ -317,10 +338,10 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     id: "public-worklist",
     method: "GET",
     path: "/api/public/worklist?page=1&limit=10",
-    description: "Ambil daftar study worklist dengan paginasi dan fitur pencarian. Selalu sertakan header x-api-key.\n\n*Catatan*: Respons memiliki properti `actionLinks` per study yang berisi:\n- `viewer`: Link yang dapat dibuka di browser untuk langsung menampilkan OHIF Viewer bagi study tersebut.\n- `exportPdf`: Link yang dapat dibuka di browser untuk memicu dialog Export Laporan PDF secara otomatis.",
+    description: "Ambil daftar study worklist dengan paginasi dan fitur pencarian. Selalu sertakan header x-pacs-key.\n\n*Catatan*: Respons memiliki properti `actionLinks` per study yang berisi:\n- `viewer`: Link yang dapat dibuka di browser untuk langsung menampilkan OHIF Viewer bagi study tersebut.\n- `exportPdf`: Link yang dapat dibuka di browser untuk memicu dialog Export Laporan PDF secara otomatis.",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "Wajib disi dengan API Key (pacs_citama_2026)", required: true },
+      { name: "x-pacs-key", type: "header", description: "Wajib disi dengan API Key (pacs_secret_token_2026)", required: true },
       { name: "page", type: "query", description: "Halaman data (default: 1)", required: false },
       { name: "limit", type: "query", description: "Jumlah data per halaman (default: 10)", required: false },
       { name: "search", type: "query", description: "Pencarian berdasarkan PatientName, PatientID, atau StudyInstanceUID", required: false },
@@ -372,7 +393,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Hapus study dan data AI-nya dari database.",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "API Key", required: true },
+      { name: "x-pacs-key", type: "header", description: "API Key", required: true },
     ]
   },
   {
@@ -382,7 +403,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Ubah metadata study (PatientName, PatientID, dll).",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "API Key", required: true },
+      { name: "x-pacs-key", type: "header", description: "API Key", required: true },
     ],
     response: '{"success": true, "jobId": "...", "message": "Modification job started"}'
   },
@@ -393,7 +414,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Anonymize study dan hasilkan study baru tanpa identitas asli.",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "API Key", required: true },
+      { name: "x-pacs-key", type: "header", description: "API Key", required: true },
     ]
   },
   {
@@ -403,7 +424,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Jalankan analisa AI untuk study ini.",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "API Key", required: true },
+      { name: "x-pacs-key", type: "header", description: "API Key", required: true },
     ]
   },
   {
@@ -413,7 +434,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Ambil daftar series untuk sebuah study.",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "API Key", required: true },
+      { name: "x-pacs-key", type: "header", description: "API Key", required: true },
     ]
   },
   {
@@ -423,7 +444,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Ambil daftar instances (gambar) dari sebuah series.",
     category: "Public Worklist API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "API Key", required: true },
+      { name: "x-pacs-key", type: "header", description: "API Key", required: true },
     ]
   },
   {
@@ -433,7 +454,7 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     description: "Ambil daftar study milik pasien tertentu (berdasarkan patientId) lengkap dengan paginasi dan URL preview gambar DICOM.",
     category: "Public Study API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "Wajib disi dengan API Key (pacs_citama_2026)", required: true },
+      { name: "x-pacs-key", type: "header", description: "Wajib disi dengan API Key (pacs_secret_token_2026)", required: true },
       { name: "patientId", type: "path", description: "ID Pasien", required: true },
       { name: "page", type: "query", description: "Halaman data (default: 1)", required: false },
       { name: "limit", type: "query", description: "Jumlah data per halaman (default: 10)", required: false }
@@ -458,11 +479,48 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
     id: "public-order-study",
     method: "GET",
     path: "/api/public/order/{orderId}",
-    description: "Ambil detail spesifik dari sebuah study berdasarkan orderId (bisa berupa AccessionNumber, StudyID, atau RequestedProcedureID). Hanya menampilkan data detail dasar, measurementReport, satusehat status, dan dicomImages (URL preview).",
+    description: "Ambil detail spesifik dari sebuah study berdasarkan orderId (bisa berupa AccessionNumber, StudyID, StudyDate, atau RequestedProcedureID). Hanya menampilkan data detail dasar, measurementReport, satusehat status, dan dicomImages (URL preview).",
     category: "Public Study API",
     parameters: [
-      { name: "x-api-key", type: "header", description: "Wajib disi dengan API Key (pacs_citama_2026)", required: true },
-      { name: "orderId", type: "path", description: "Order ID / Accession Number / Study ID", required: true }
+      { name: "x-pacs-key", type: "header", description: "Wajib disi dengan API Key (pacs_secret_token_2026)", required: true },
+      { name: "orderId", type: "path", description: "Order ID / Accession Number / Study ID / Study Date", required: true }
+    ],
+    response: `{
+  "data": {
+    "id": "orthanc-id",
+    "studyInstanceUid": "1.2.3.4",
+    "patientId": "12345",
+    "patientName": "JOHN DOE",
+    "accessionNumber": "ACC123",
+    "orderId": "ORD123",
+    "measurementReport": {
+      "findings": "Normal Cor dan Pulmo...",
+      "measurementImages": [
+        { "name": "screenshot1.png", "base64": "data:image/png;base64,..." }
+      ]
+    },
+    "satusehat": {
+      "status": "COMPLETED",
+      "satusehatId": "ihs-12345"
+    },
+    "dicomImages": [
+      "http://localhost/api/orthanc/instances/.../preview"
+    ]
+  }
+}`
+  },
+  {
+    id: "public-study-detail",
+    method: "GET",
+    path: "/api/public/study/detail?patientId={patientId}&studyDate={studyDate}&orderId={orderId}&studyId={studyId}",
+    description: "Ambil detail studi secara spesifik dan dinamis. Wajib menggunakan parameter patientId. Dapat dikombinasikan dengan studyDate, orderId (berfungsi ganda sebagai AccessionNumber/StudyID/RequestedProcedureID), atau studyId (StudyInstanceUID) untuk pencarian yang lebih akurat. Karena bisa mengembalikan lebih dari 1 studi di hari yang sama, struktur datanya adalah array yang isinya persis seperti endpoint /order/{orderId}.",
+    category: "Public Study API",
+    parameters: [
+      { name: "x-pacs-key", type: "header", description: "Wajib disi dengan API Key (pacs_secret_token_2026)", required: true },
+      { name: "patientId", type: "query", description: "ID Pasien (DICOM PatientID)", required: true },
+      { name: "studyDate", type: "query", description: "Tanggal Studi format YYYYMMDD (Opsional)", required: false },
+      { name: "orderId", type: "query", description: "ID Order, Accession Number, atau Study ID (Opsional)", required: false },
+      { name: "studyId", type: "query", description: "StudyInstanceUID (Opsional)", required: false }
     ],
     response: `{
   "data": {
@@ -503,8 +561,8 @@ export const ORTHANC_API_DATA: ApiEndpoint[] = [
   ]
 }`,
     parameters: [
-      { name: "x-api-key", type: "header", description: "Wajib diisi dengan API Key (pacs_citama_2026)", required: true },
-      { name: "orderId", type: "body", description: "ID Order atau Accession Number", required: true },
+      { name: "x-pacs-key", type: "header", description: "Wajib diisi dengan API Key (pacs_secret_token_2026)", required: true },
+      { name: "orderId", type: "body", description: "ID Order, Accession Number, atau Study Date (YYYYMMDD)", required: true },
       { name: "protect_pdf", type: "body", description: "Boolean. Jika true, PDF akan dipassword dengan RM pasien", required: true },
       { name: "expertise", type: "body", description: "Boolean. Jika true, PDF akan menyertakan halaman laporan bacaan (Kop Surat, Dokter, Hasil)", required: true },
       { name: "instances", type: "body", description: "Array of string. Kumpulan UUID instance DICOM yang akan dimasukkan (1 halaman = 1 gambar)", required: true }

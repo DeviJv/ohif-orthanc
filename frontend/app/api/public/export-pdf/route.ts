@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         if (!instances || !Array.isArray(instances)) return NextResponse.json({ success: false, error: "Missing required parameter: instances (must be array)" }, { status: 400 });
 
         // 3. Find Study from Orthanc
-        let queryBody = { 
+        let queryBody: any = { 
             Level: "Study", 
             Query: { "StudyID": orderId }, 
             Expand: true, 
@@ -58,6 +58,26 @@ export async function POST(req: NextRequest) {
                 body: JSON.stringify(queryBody)
             });
             studies = await res2.json();
+        }
+
+        if (studies.length === 0) {
+            queryBody.Query = { "StudyDate": orderId } as any;
+            const res3 = await fetch(`${ORTHANC_URL}/tools/find`, {
+                method: 'POST',
+                headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
+                body: JSON.stringify(queryBody)
+            });
+            studies = await res3.json();
+        }
+
+        if (studies.length === 0) {
+            queryBody.Query = { "RequestedProcedureID": orderId } as any;
+            const res4 = await fetch(`${ORTHANC_URL}/tools/find`, {
+                method: 'POST',
+                headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
+                body: JSON.stringify(queryBody)
+            });
+            studies = await res4.json();
         }
 
         if (studies.length === 0) {

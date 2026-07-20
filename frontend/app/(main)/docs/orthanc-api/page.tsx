@@ -164,6 +164,7 @@ function getCategoryIcon(category: string) {
         case "DICOMweb": return <HugeiconsIcon icon={InternetIcon} className={size} />;
         case "Radiology Reports": return <HugeiconsIcon icon={ApiIcon} className={size} />;
         case "Create ACSN": return <HugeiconsIcon icon={CodeIcon} className={size} />;
+        case "Create Order ID": return <HugeiconsIcon icon={CodeIcon} className={size} />;
         case "Connect Devices": return <HugeiconsIcon icon={ComputerTerminalIcon} className={size} />;
         default: return <HugeiconsIcon icon={Link01Icon} className={size} />;
     }
@@ -172,6 +173,7 @@ function getCategoryIcon(category: string) {
 function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiEndpoint, onCopy: (text: string) => void, appUrl?: string, orthancUrl?: string }) {
     const [activeTab, setActiveTab] = useState<"curl" | "fetch" | "php" | "response">("curl");
     const isAppApi = endpoint.category === "Create ACSN" || 
+                     endpoint.category === "Create Order ID" ||
                      endpoint.category === "Radiology Reports" || 
                      endpoint.category === "Public Study API" || 
                      endpoint.category === "Public Worklist API";
@@ -179,13 +181,13 @@ function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiE
     
     const isConnectDevices = endpoint.category === "Connect Devices";
     const pacsKey = "pacs_secret_token_2026";
-    const publicApiKey = "pacs_citama_2026";
+    const publicApiKey = "pacs_secret_token_2026";
     
     const resolvedAppUrl = appUrl || "http://localhost:3000";
     const resolvedOrthancUrl = orthancUrl || "http://localhost:8042";
 
     const authHeader = isAppApi 
-        ? (isPublicApi ? `-H "x-api-key: ${publicApiKey}"` : `-H "x-pacs-key: ${pacsKey}"`)
+        ? (isPublicApi ? `-H "x-pacs-key: ${publicApiKey}"` : `-H "x-pacs-key: ${pacsKey}"`)
         : `-H "Authorization: Basic cXVhbnR1bTpxdWFudHVtMTIz"`;
 
     const isGet = endpoint.method === "GET";
@@ -214,7 +216,7 @@ function EndpointCard({ endpoint, onCopy, appUrl, orthancUrl }: { endpoint: ApiE
         ? `const response = await fetch("${resolvedAppUrl}${endpoint.path}${queryParams}", {
   method: "${endpoint.method}",
   headers: {
-    "${isPublicApi ? 'x-api-key' : 'x-pacs-key'}": "${isPublicApi ? publicApiKey : pacsKey}"${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
+    "${isPublicApi ? 'x-pacs-key' : 'x-pacs-key'}": "${isPublicApi ? publicApiKey : pacsKey}"${!isGet ? ',\n    "Content-Type": "application/json"' : ''}
   }${!isGet ? `,\n  body: JSON.stringify(${endpoint.exampleBody || `{
     patientId: "12345",
     orderId: "ORD-123",
@@ -245,10 +247,10 @@ ${!isGet ? `$data = ${endpoint.exampleBody ? `json_decode('${endpoint.exampleBod
 ]`};
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    '${isPublicApi ? 'x-api-key' : 'x-pacs-key'}: ${isPublicApi ? publicApiKey : pacsKey}',
+    '${isPublicApi ? 'x-pacs-key' : 'x-pacs-key'}: ${isPublicApi ? publicApiKey : pacsKey}',
     'Content-Type: application/json'
 ]);` : `curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    '${isPublicApi ? 'x-api-key' : 'x-pacs-key'}: ${isPublicApi ? publicApiKey : pacsKey}'
+    '${isPublicApi ? 'x-pacs-key' : 'x-pacs-key'}: ${isPublicApi ? publicApiKey : pacsKey}'
 ]);`}
 
 $response = curl_exec($ch);

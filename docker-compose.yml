@@ -139,14 +139,20 @@ services:
     container_name: backup-system
     restart: always
     environment:
-      - PGPASSWORD=${ORTHANC_PASSWORD}
+      - ORTHANC_USERNAME=${ORTHANC_USERNAME}
+      - ORTHANC_PASSWORD=${ORTHANC_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     volumes:
       - ./backups:/backups
       - ./scripts/auto-backup.sh:/auto-backup.sh
     command: /auto-backup.sh
     depends_on:
-      - backend-db
-      - app-db
+      backend-db:
+        condition: service_healthy
+      app-db:
+        condition: service_healthy
     networks:
       - pacs
 

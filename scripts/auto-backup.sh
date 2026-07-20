@@ -3,17 +3,31 @@
 # Pastikan folder ada
 mkdir -p /backups/last
 
+# Fallback values if environment variables are not set (for backward compatibility)
+: "${ORTHANC_USERNAME:=quantum}"
+: "${DB_USER:=pacsuser}"
+: "${DB_NAME:=pacsweb}"
+
 while true; do
   DATE=$(date +%Y%m%d-%H%M%S)
   echo "[$DATE] Starting consolidated backup process..."
 
+  # Wait for databases to be ready (as a safety measure)
+  echo "Waiting for backend-db to be ready..."
+  while ! pg_isready -h backend-db -U "$ORTHANC_USERNAME" -d orthanc > /dev/null 2>&1; do sleep 2; done
+  
+  echo "Waiting for app-db to be ready..."
+  while ! pg_isready -h app-db -U "$DB_USER" -d "$DB_NAME" > /dev/null 2>&1; do sleep 2; done
+
   # 1. Backup Orthanc DB
   echo "Backing up Orthanc DB..."
-  pg_dump -h backend-db -U quantum -d orthanc --clean --if-exists > /backups/last/orthanc-$DATE.sql
+  export PGPASSWORD="$ORTHANC_PASSWORD"
+  pg_dump -h backend-db -U "$ORTHANC_USERNAME" -d orthanc --clean --if-exists > /backups/last/orthanc-$DATE.sql
   
   # 2. Backup App DB
   echo "Backing up App DB..."
-  pg_dump -h app-db -U pacsuser -d pacsweb --clean --if-exists > /backups/last/pacsweb-$DATE.sql
+  export PGPASSWORD="$DB_PASSWORD"
+  pg_dump -h app-db -U "$DB_USER" -d "$DB_NAME" --clean --if-exists > /backups/last/pacsweb-$DATE.sql
 
   # 3. Clean and Gzip
   echo "Cleaning and compressing..."

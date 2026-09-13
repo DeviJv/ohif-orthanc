@@ -8,7 +8,7 @@ const execAsync = promisify(exec);
 export const dynamic = "force-dynamic";
 
 // Proteksi container vital agar tidak bisa dimatikan via UI
-const PROTECTED_CONTAINERS = ["quantum-web", "pacs-gateway", "backend", "viewer", "nginx"];
+const PROTECTED_CONTAINERS = ["quantum-web", "pacs-gateway", "viewer", "nginx"];
 
 /**
  * Mencari path executable docker secara dinamis

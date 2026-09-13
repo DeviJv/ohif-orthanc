@@ -22,30 +22,15 @@ while true; do
   # 1. Backup Orthanc DB
   echo "Backing up Orthanc DB..."
   export PGPASSWORD="$ORTHANC_PASSWORD"
-  pg_dump -h backend-db -U "$ORTHANC_USERNAME" -d orthanc --clean --if-exists > /backups/last/orthanc-$DATE.sql
+  pg_dump -h backend-db -U "$ORTHANC_USERNAME" -d orthanc --clean --if-exists | sed '5d' | gzip > /backups/last/orthanc-$DATE.sql.gz
+  ln -sf orthanc-$DATE.sql.gz /backups/last/orthanc-latest.sql.gz
   
   # 2. Backup App DB
   echo "Backing up App DB..."
   export PGPASSWORD="$DB_PASSWORD"
-  pg_dump -h app-db -U "$DB_USER" -d "$DB_NAME" --clean --if-exists > /backups/last/pacsweb-$DATE.sql
-
-  # 3. Clean and Gzip
-  echo "Cleaning and compressing..."
-  find /backups/last -name "*.sql" -type f | while read f; do
-    sed -i '5d' "$f"
-    gzip -f "$f"
-    
-    # Update latest symlinks
-    DIR=$(dirname "$f")
-    BASE=$(basename "$f" .sql)
-    if echo "$BASE" | grep -q "orthanc"; then
-      ln -sf "$BASE.sql.gz" "$DIR/orthanc-latest.sql.gz"
-    fi
-    if echo "$BASE" | grep -q "pacsweb"; then
-      ln -sf "$BASE.sql.gz" "$DIR/pacsweb-latest.sql.gz"
-    fi
-  done
+  pg_dump -h app-db -U "$DB_USER" -d "$DB_NAME" --clean --if-exists | sed '5d' | gzip > /backups/last/pacsweb-$DATE.sql.gz
+  ln -sf pacsweb-$DATE.sql.gz /backups/last/pacsweb-latest.sql.gz
 
   echo "Backup cycle complete. Waiting for next schedule..."
-  sleep 86400 # Run once a day (you can change this to 3600 for hourly)
+  sleep 604800 # Run once a week
 done

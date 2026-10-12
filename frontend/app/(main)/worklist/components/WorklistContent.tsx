@@ -47,7 +47,6 @@ import { BridgeSatuSehatDialog } from "./bridge-satusehat-dialog";
 import { FloatingAiProgress } from "./floating-ai-progress";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "../utils/actions";
 import { Study } from "../types";
-import { getCurrentMonthRange } from "../utils/format";
 import { Skeleton } from "@/components/ui/skeleton";
 import OhifViewer from "@/components/ohif-viewer";
 import BasicViewer from "@/components/basic-viewer";
@@ -81,7 +80,8 @@ export default function WorklistContent() {
         doctorNames, doctors,
         isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen,
         selectedStudyForWhatsapp, openSendWhatsappDialog,
-        handleSendToWhatsapp, hasReports, fetchDoctorNames
+        handleSendToWhatsapp, hasReports, fetchDoctorNames,
+        dateRange, setDateRange
     } = useWorklist();
 
     const [isExportPdfDialogOpen, setIsExportPdfDialogOpen] = useState<boolean>(false);
@@ -110,11 +110,8 @@ export default function WorklistContent() {
     }, []);
 
     // Table State
-    const initialMonthRange = useMemo(() => getCurrentMonthRange(), []);
     const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-        { id: "studyDate", value: initialMonthRange }
-    ]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
         aiResult: false,
@@ -124,7 +121,6 @@ export default function WorklistContent() {
         pageIndex: 0,
         pageSize: 10,
     });
-    const [dateRange, setDateRange] = useState<DateRange | undefined>(initialMonthRange);
 
     const { addTask, updateTask } = useTaskActions();
     const searchParams = useSearchParams();
@@ -157,12 +153,7 @@ export default function WorklistContent() {
 
     const handleSetDateRange = useCallback((range: DateRange | undefined) => {
         setDateRange(range);
-        setColumnFilters(prev => {
-            const others = prev.filter(f => f.id !== "studyDate");
-            if (!range) return others;
-            return [...others, { id: "studyDate", value: range }];
-        });
-    }, []);
+    }, [setDateRange]);
 
     const selectedStudy = useMemo(() => {
         if (!viewerStudyUID) return null;

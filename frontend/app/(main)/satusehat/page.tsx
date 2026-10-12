@@ -38,7 +38,6 @@ import { FloatingSyncProgress } from "./components/floating-sync-progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 import { handleBulkDownloadStudy } from "../worklist/utils/actions";
-import { getCurrentMonthRange } from "../worklist/utils/format";
 import { useTaskActions } from "@/context/task-context";
 import { BridgeSatuSehatDialog } from "../worklist/components/bridge-satusehat-dialog";
 
@@ -61,15 +60,13 @@ function SatuSehatContent() {
         isBridgeDialogOpen, setIsBridgeDialogOpen,
         selectedStudyForBridge, openBridgeDialog,
         isErrorDialogOpen, setIsErrorDialogOpen,
-        selectedStudyError, openErrorDialog
+        selectedStudyError, openErrorDialog,
+        dateRange, setDateRange
     } = useSatuSehatWorklist();
 
     // Table State
-    const initialMonthRange = useMemo(() => getCurrentMonthRange(), []);
     const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-        { id: "studyDate", value: initialMonthRange }
-    ]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
@@ -77,7 +74,6 @@ function SatuSehatContent() {
         pageIndex: 0,
         pageSize: 10,
     });
-    const [dateRange, setDateRange] = useState<DateRange | undefined>(initialMonthRange);
     const [statusFilter, setStatusFilter] = useState("ALL");
 
     // Columns
@@ -113,11 +109,6 @@ function SatuSehatContent() {
 
     const handleSetDateRange = (range: DateRange | undefined) => {
         setDateRange(range);
-        setColumnFilters(prev => {
-            const others = prev.filter(f => f.id !== "studyDate");
-            if (!range) return others;
-            return [...others, { id: "studyDate", value: range }];
-        });
     };
 
     const handleSetStatusFilter = (val: string) => {

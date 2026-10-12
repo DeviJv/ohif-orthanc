@@ -1,20 +1,57 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+
+export const dynamic = "force-dynamic";
 
 const ORTHANC_URL = process.env.ORTHANC_URL || "http://pacs:8042";
 const ORTHANC_AUTH = Buffer.from(
     `${process.env.ORTHANC_USERNAME || "quantum"}:${process.env.ORTHANC_PASSWORD || "quantum123"}`
 ).toString("base64");
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
+        const { searchParams } = new URL(req.url);
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
+
+        // Construct DICOM date query
+        let dateQuery: string | null = null;
+        if (startDate && endDate) {
+            if (startDate === endDate) {
+                dateQuery = startDate;
+            } else {
+                dateQuery = `${startDate}-${endDate}`;
+            }
+        } else if (startDate) {
+            dateQuery = `${startDate}-`;
+        } else if (endDate) {
+            dateQuery = `-${endDate}`;
+        }
+
         // 1. Fetch studies from Orthanc
-        const orthancRes = await fetch(`${ORTHANC_URL}/studies?expand`, {
-            headers: {
-                "Authorization": `Basic ${ORTHANC_AUTH}`
-            },
-            cache: 'no-store' // Avoid caching to get real-time worklist data
-        });
+        let orthancRes: Response;
+        if (dateQuery) {
+            orthancRes = await fetch(`${ORTHANC_URL}/tools/find`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Basic ${ORTHANC_AUTH}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    Level: "Study",
+                    Query: { StudyDate: dateQuery },
+                    Expand: true
+                }),
+                cache: 'no-store'
+            });
+        } else {
+            orthancRes = await fetch(`${ORTHANC_URL}/studies?expand`, {
+                headers: {
+                    "Authorization": `Basic ${ORTHANC_AUTH}`
+                },
+                cache: 'no-store'
+            });
+        }
 
         if (!orthancRes.ok) {
             console.error(`[Merged Worklist] Failed to fetch from Orthanc. Status: ${orthancRes.status}`);

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { DateRange } from "react-day-picker";
 import { Study } from "../../worklist/types"; 
+import { getCurrentMonthRange, toDicomDate } from "../../worklist/utils/format";
 
 // Using the same Study type, but the new API will return an augmented Study with 'satuSehat' tracking data
 export interface MergedStudy extends Study {
@@ -20,16 +22,30 @@ export function useSatuSehatWorklist() {
     const [studies, setStudies] = useState<MergedStudy[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const [dateRange, setDateRangeState] = useState<DateRange | undefined>(getCurrentMonthRange);
+    const dateRangeRef = useRef<DateRange | undefined>(dateRange);
+    dateRangeRef.current = dateRange;
+
     const [isBridgeDialogOpen, setIsBridgeDialogOpen] = useState(false);
     const [selectedStudyForBridge, setSelectedStudyForBridge] = useState<MergedStudy | null>(null);
 
     const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
     const [selectedStudyError, setSelectedStudyError] = useState<{ error: string | null; bundleResponse: string | null } | null>(null);
 
-    const fetchStudies = useCallback(async () => {
+    const fetchStudies = useCallback(async (customRange?: DateRange | null) => {
         setLoading(true);
         try {
-            const res = await fetch("/api/satusehat/worklist");
+            const isDateRangeObj = customRange && typeof customRange === "object" && ("from" in customRange || "to" in customRange);
+            const activeRange = isDateRangeObj ? customRange : (dateRangeRef.current || getCurrentMonthRange());
+
+            const startDate = toDicomDate(activeRange?.from);
+            const endDate = toDicomDate(activeRange?.to) || startDate;
+
+            let url = `/api/satusehat/worklist?_t=${Date.now()}`;
+            if (startDate) url += `&startDate=${startDate}`;
+            if (endDate) url += `&endDate=${endDate}`;
+
+            const res = await fetch(url);
             if (!res.ok) {
                 throw new Error("Failed to fetch merged worklist");
             }
@@ -44,6 +60,13 @@ export function useSatuSehatWorklist() {
             setLoading(false);
         }
     }, []);
+
+    const setDateRange = useCallback((range: DateRange | undefined) => {
+        const nextRange = (!range || !range.from) ? getCurrentMonthRange() : range;
+        setDateRangeState(nextRange);
+        dateRangeRef.current = nextRange;
+        fetchStudies(nextRange);
+    }, [fetchStudies]);
 
     useEffect(() => {
         fetchStudies();
@@ -153,6 +176,7 @@ export function useSatuSehatWorklist() {
         isBridgeDialogOpen, setIsBridgeDialogOpen,
         selectedStudyForBridge, openBridgeDialog,
         isErrorDialogOpen, setIsErrorDialogOpen,
-        selectedStudyError, openErrorDialog
+        selectedStudyError, openErrorDialog,
+        dateRange, setDateRange
     };
 }

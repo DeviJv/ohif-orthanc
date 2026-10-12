@@ -36,6 +36,7 @@ import {
 import { Table } from "@tanstack/react-table";
 import { Study } from "../types";
 import { UploadDicomDialog } from "./upload-dicom-dialog";
+import { getCurrentMonthRange } from "../utils/format";
 
 interface WorklistToolbarProps {
     table: Table<Study>;
@@ -255,22 +256,21 @@ export function WorklistToolbar({
                                             mode="range"
                                             defaultMonth={dateRange?.from}
                                             selected={dateRange}
-                                            onSelect={setDateRange}
+                                            onSelect={(range) => setDateRange(range || getCurrentMonthRange())}
                                             numberOfMonths={2}
                                         />
                                     </PopoverContent>
                                 </Popover>
                                 
-                                {dateRange && (
-                                    <Button 
-                                        variant="ghost" 
-                                        size="icon" 
-                                        className="size-5 hover:text-destructive ml-1"
-                                        onClick={() => setDateRange(undefined)}
-                                    >
-                                        <HugeiconsIcon icon={RefreshIcon} className="size-3" />
-                                    </Button>
-                                )}
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="size-5 text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 ml-1"
+                                    onClick={() => setDateRange(getCurrentMonthRange())}
+                                    title="Reset ke Bulan Ini"
+                                >
+                                    <HugeiconsIcon icon={RefreshIcon} className="size-3" />
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -302,7 +302,7 @@ export function WorklistToolbar({
                             variant="outline" 
                             size="sm" 
                             className="gap-2"
-                            onClick={fetchStudies}
+                            onClick={() => fetchStudies()}
                         >
                             <HugeiconsIcon icon={RefreshIcon} className="size-4" />
                             Refresh

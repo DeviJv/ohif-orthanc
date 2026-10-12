@@ -2,8 +2,10 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { DateRange } from "react-day-picker";
 import { Study, Series, Instance, DicomTags } from "../types";
 import { orthancApi } from "../utils/api";
+import { getCurrentMonthRange, toDicomDate } from "../utils/format";
 import { useTaskState, useTaskActions } from "@/context/task-context";
 
 export function useWorklist() {
@@ -40,6 +42,11 @@ export function useWorklist() {
     // WhatsApp state
     const [isSendWhatsappDialogOpen, setIsSendWhatsappDialogOpen] = useState(false);
     const [selectedStudyForWhatsapp, setSelectedStudyForWhatsapp] = useState<Study | null>(null);
+
+    // Date Range state (defaults to current month for fast server-side query)
+    const [dateRange, setDateRangeState] = useState<DateRange | undefined>(getCurrentMonthRange);
+    const dateRangeRef = useRef<DateRange | undefined>(dateRange);
+    dateRangeRef.current = dateRange;
 
     const fetchAiResults = useCallback(async () => {
         try {
@@ -138,7 +145,7 @@ export function useWorklist() {
         return [];
     }, []);
 
-    const fetchStudies = useCallback(async () => {
+    const fetchStudies = useCallback(async (customRange?: DateRange | null) => {
         setLoading(true);
         // Clear cached series/instances data on refresh to ensure latest data is fetched
         setSeriesData({});
@@ -146,9 +153,17 @@ export function useWorklist() {
         setTagsData({});
         
         try {
+            // Determine active date range:
+            // Always required (never empty) - fallbacks to current month
+            const isDateRangeObj = customRange && typeof customRange === "object" && ("from" in customRange || "to" in customRange);
+            const activeRange = isDateRangeObj ? customRange : (dateRangeRef.current || getCurrentMonthRange());
+
+            const startDate = toDicomDate(activeRange?.from);
+            const endDate = toDicomDate(activeRange?.to) || startDate;
+
             // Fetch studies, AI results, doctor names, and SatuSehat status in parallel
             const [sortedDetails, resultMap, docMap, ssMap] = await Promise.all([
-                orthancApi.fetchStudies(),
+                orthancApi.fetchStudies(startDate, endDate),
                 fetchAiResults(),
                 fetchDoctorNames(),
                 fetchSsStatus(),
@@ -163,6 +178,13 @@ export function useWorklist() {
             setLoading(false);
         }
     }, [fetchAiResults, fetchDoctorNames, fetchSsStatus]);
+
+    const setDateRange = useCallback((range: DateRange | undefined) => {
+        const nextRange = (!range || !range.from) ? getCurrentMonthRange() : range;
+        setDateRangeState(nextRange);
+        dateRangeRef.current = nextRange;
+        fetchStudies(nextRange);
+    }, [fetchStudies]);
 
     const fetchAiConfig = useCallback(async () => {
         try {
@@ -697,6 +719,7 @@ export function useWorklist() {
         fetchDoctorNames,
         aiMode, handleRunAi, aiResults,
         handleBridgeSatuSehat, ssIntegrationStatus,
-        doctorNames, doctors, hasReports
+        doctorNames, doctors, hasReports,
+        dateRange, setDateRange
     };
 }

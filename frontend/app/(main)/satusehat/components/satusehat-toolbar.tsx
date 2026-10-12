@@ -25,6 +25,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { FilterIcon } from "@hugeicons/core-free-icons";
+import { getCurrentMonthRange } from "../../worklist/utils/format";
 
 interface SatuSehatToolbarProps<TData> {
     table: Table<TData>;
@@ -122,31 +123,30 @@ export function SatuSehatToolbar<TData>({
                                 mode="range"
                                 defaultMonth={dateRange?.from}
                                 selected={dateRange}
-                                onSelect={setDateRange}
+                                onSelect={(range) => setDateRange(range || getCurrentMonthRange())}
                                 numberOfMonths={2}
                             />
                         </PopoverContent>
                     </Popover>
 
-                    {(dateRange?.from || dateRange?.to) && (
-                        <div className="flex items-center pr-1 border-l border-slate-200 dark:border-slate-800">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-slate-400 dark:text-slate-600 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20"
-                                onClick={() => setDateRange(undefined)}
-                            >
-                                <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
-                            </Button>
-                        </div>
-                    )}
+                    <div className="flex items-center pr-1 border-l border-slate-200 dark:border-slate-800">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-400 dark:text-slate-600 hover:text-primary dark:hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10"
+                            onClick={() => setDateRange(getCurrentMonthRange())}
+                            title="Reset ke Bulan Ini"
+                        >
+                            <HugeiconsIcon icon={RefreshIcon} className="size-4" />
+                        </Button>
+                    </div>
                 </div>
 
                 <Button
                     variant="outline"
                     size="icon"
                     className="h-9 w-9 shrink-0 bg-white dark:bg-slate-900 shadow-sm border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 dark:hover:border-primary/40 transition-all"
-                    onClick={fetchStudies}
+                    onClick={() => fetchStudies()}
                     title="Refresh Data"
                 >
                     <HugeiconsIcon icon={RefreshIcon} className="size-4" />

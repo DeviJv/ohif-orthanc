@@ -36,3 +36,8 @@ export const getCurrentMonthRange = () => {
     const to = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     return { from, to };
 };
+
+export const toDicomDate = (date?: Date): string | undefined => {
+    if (!date) return undefined;
+    return format(date, "yyyyMMdd");
+};

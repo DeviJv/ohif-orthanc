@@ -3,8 +3,11 @@ import { Study, Series, Instance } from "../types";
 
 export const orthancApi = {
     // Studies
-    fetchStudies: async (): Promise<Study[]> => {
-        const response = await fetch(`/api/orthanc/worklist?_t=${Date.now()}`, { 
+    fetchStudies: async (startDate?: string, endDate?: string): Promise<Study[]> => {
+        let url = `/api/orthanc/worklist?_t=${Date.now()}`;
+        if (startDate) url += `&startDate=${startDate}`;
+        if (endDate) url += `&endDate=${endDate}`;
+        const response = await fetch(url, { 
             cache: "no-store", 
             headers: { "Cache-Control": "no-cache" } 
         });

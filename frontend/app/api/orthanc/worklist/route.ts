@@ -13,11 +13,20 @@ const DEFAULT_HEADERS = {
 
 export async function GET(req: NextRequest) {
     try {
-        // 1. Fetch all studies with details to sort them properly
-        const studiesRes = await fetch(`${ORTHANC_URL}/studies?expand`, {
-            headers: DEFAULT_HEADERS,
-            cache: "no-store",
-        });
+        // 1. Fetch studies and series concurrently from Orthanc (only 2 requests total)
+        const [studiesRes, seriesRes] = await Promise.all([
+            fetch(`${ORTHANC_URL}/studies?expand`, {
+                headers: DEFAULT_HEADERS,
+                cache: "no-store",
+            }),
+            fetch(`${ORTHANC_URL}/series?expand`, {
+                headers: DEFAULT_HEADERS,
+                cache: "no-store",
+            }).catch((err) => {
+                console.warn("[Worklist API] Could not fetch series for modalities:", err);
+                return null;
+            }),
+        ]);
 
         if (!studiesRes.ok) {
             throw new Error(`Failed to fetch studies from Orthanc: ${studiesRes.statusText}`);
@@ -25,7 +34,30 @@ export async function GET(req: NextRequest) {
 
         const allStudies: any[] = await studiesRes.json();
 
-        // 2. Sort all studies by StudyDate and StudyTime descending to get the most recent ones
+        // 2. Map series to study ID to extract modalities in-memory in O(N)
+        const modalityMap = new Map<string, Set<string>>();
+        if (seriesRes && seriesRes.ok) {
+            try {
+                const allSeries: any[] = await seriesRes.json();
+                for (let i = 0; i < allSeries.length; i++) {
+                    const s = allSeries[i];
+                    const parentStudy = s.ParentStudy;
+                    const modality = s.MainDicomTags?.Modality;
+                    if (parentStudy && modality) {
+                        let set = modalityMap.get(parentStudy);
+                        if (!set) {
+                            set = new Set<string>();
+                            modalityMap.set(parentStudy, set);
+                        }
+                        set.add(modality);
+                    }
+                }
+            } catch (err) {
+                console.warn("[Worklist API] Error parsing series data:", err);
+            }
+        }
+
+        // 3. Sort all studies by StudyDate and StudyTime descending to get the most recent ones
         allStudies.sort((a: any, b: any) => {
             const dateA = a.MainDicomTags?.StudyDate || "00000000";
             const dateB = b.MainDicomTags?.StudyDate || "00000000";
@@ -37,49 +69,11 @@ export async function GET(req: NextRequest) {
             return dateB.localeCompare(dateA);
         });
 
-        // 3. Limit removed to ensure all data from Orthanc is retrieved
-        const topStudies = allStudies;
-
-        // 4. Fetch series details for these studies to get modalities
-        // We aggregate the data on the server to reduce round-trips from the browser
-        const detailedStudies = await Promise.all(
-            topStudies.map(async (study) => {
-                try {
-                    const seriesRes = await fetch(`${ORTHANC_URL}/studies/${study.ID}/series?expand`, { 
-                        headers: DEFAULT_HEADERS, 
-                        cache: "no-store" 
-                    });
-
-                    if (!seriesRes.ok) {
-                        console.warn(`[Worklist API] Partial failure fetching series for study ${study.ID}`);
-                        return {
-                            ...study,
-                            Modalities: []
-                        };
-                    }
-
-                    const series = await seriesRes.json();
-                    
-                    // Extract unique modalities from series
-                    const modalities = Array.from(new Set(
-                        series
-                            .map((s: any) => s.MainDicomTags?.Modality)
-                            .filter(Boolean)
-                    )) as string[];
-
-                    return {
-                        ...study,
-                        Modalities: modalities
-                    };
-                } catch (err) {
-                    console.error(`[Worklist API] Error fetching details for study ${study.ID}:`, err);
-                    return {
-                        ...study,
-                        Modalities: []
-                    };
-                }
-            })
-        );
+        // 4. Attach modalities
+        const detailedStudies = allStudies.map((study) => ({
+            ...study,
+            Modalities: Array.from(modalityMap.get(study.ID) || []),
+        }));
 
         return NextResponse.json(detailedStudies);
     } catch (error: any) {

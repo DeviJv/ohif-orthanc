@@ -38,6 +38,7 @@ import { FloatingSyncProgress } from "./components/floating-sync-progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 import { handleBulkDownloadStudy } from "../worklist/utils/actions";
+import { getCurrentMonthRange } from "../worklist/utils/format";
 import { useTaskActions } from "@/context/task-context";
 import { BridgeSatuSehatDialog } from "../worklist/components/bridge-satusehat-dialog";
 
@@ -64,8 +65,11 @@ function SatuSehatContent() {
     } = useSatuSehatWorklist();
 
     // Table State
+    const initialMonthRange = useMemo(() => getCurrentMonthRange(), []);
     const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+        { id: "studyDate", value: initialMonthRange }
+    ]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
@@ -73,7 +77,7 @@ function SatuSehatContent() {
         pageIndex: 0,
         pageSize: 10,
     });
-    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(initialMonthRange);
     const [statusFilter, setStatusFilter] = useState("ALL");
 
     // Columns

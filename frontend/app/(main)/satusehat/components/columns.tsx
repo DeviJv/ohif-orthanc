@@ -107,6 +107,10 @@ export const getColumns = ({
                 const fromDate = new Date(filterValue.from);
                 fromDate.setHours(0,0,0,0);
                 return rowDate >= fromDate;
+            } else if (filterValue.to) {
+                const toDate = new Date(filterValue.to);
+                toDate.setHours(0,0,0,0);
+                return rowDate <= toDate;
             }
             return true;
         }

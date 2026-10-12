@@ -29,3 +29,10 @@ export const normalizePatientName = (name?: string) => {
     if (!name) return "";
     return name.replace(/\^/g, " ").replace(/\s+/g, " ").trim();
 };
+
+export const getCurrentMonthRange = () => {
+    const now = new Date();
+    const from = new Date(now.getFullYear(), now.getMonth(), 1);
+    const to = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return { from, to };
+};

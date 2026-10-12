@@ -67,20 +67,30 @@ export function useWorklist() {
         return {};
     }, []);
 
-    const fetchSsStatus = useCallback(async (studyInstanceUids: string[]) => {
+    const fetchSsStatus = useCallback(async () => {
         try {
-            const statusMap: Record<string, any> = {};
-            await Promise.all(studyInstanceUids.map(async (uid) => {
-                const res = await fetch(`/api/satusehat/bridge?studyInstanceUid=${uid}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    statusMap[uid] = data;
-                }
-            }));
-            setSsIntegrationStatus(prev => ({ ...prev, ...statusMap }));
+            const res = await fetch("/api/satusehat/all");
+            if (res.ok) {
+                const data = await res.json();
+                const statusMap: Record<string, any> = {};
+                data.forEach((r: any) => {
+                    if (r.studyInstanceUid) {
+                        const uid = r.studyInstanceUid.trim();
+                        statusMap[uid] = r;
+                        statusMap[uid.toUpperCase()] = r;
+                    }
+                    if (r.accessionNumber) {
+                        const acsn = r.accessionNumber.trim();
+                        statusMap[acsn] = r;
+                    }
+                });
+                setSsIntegrationStatus(statusMap);
+                return statusMap;
+            }
         } catch (e) {
             console.error("Failed to fetch SS status:", e);
         }
+        return {};
     }, []);
 
     const fetchDoctorNames = useCallback(async () => {
@@ -136,17 +146,14 @@ export function useWorklist() {
         setTagsData({});
         
         try {
-            // Fetch studies AND AI results AND doctor names in parallel to avoid "hilang-muncul"
-            const [sortedDetails, resultMap, docMap] = await Promise.all([
+            // Fetch studies, AI results, doctor names, and SatuSehat status in parallel
+            const [sortedDetails, resultMap, docMap, ssMap] = await Promise.all([
                 orthancApi.fetchStudies(),
                 fetchAiResults(),
-                fetchDoctorNames()
+                fetchDoctorNames(),
+                fetchSsStatus(),
             ]);
             setStudies(sortedDetails);
-            
-            // Fetch SS status for the studies
-            const uids = sortedDetails.map(s => s.MainDicomTags.StudyInstanceUID);
-            fetchSsStatus(uids);
         } catch (error) {
             console.error("Failed to fetch studies:", error);
             toast.error("Koneksi Server Gagal", {
@@ -155,7 +162,7 @@ export function useWorklist() {
         } finally {
             setLoading(false);
         }
-    }, [fetchAiResults, fetchSsStatus, fetchDoctorNames]);
+    }, [fetchAiResults, fetchDoctorNames, fetchSsStatus]);
 
     const fetchAiConfig = useCallback(async () => {
         try {

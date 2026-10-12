@@ -47,6 +47,7 @@ import { BridgeSatuSehatDialog } from "./bridge-satusehat-dialog";
 import { FloatingAiProgress } from "./floating-ai-progress";
 import { handleDownloadStudy, handleOpenOrthancViewer, handleDownloadSeries, handleDownloadInstance, handleBulkDownloadStudy } from "../utils/actions";
 import { Study } from "../types";
+import { getCurrentMonthRange } from "../utils/format";
 import { Skeleton } from "@/components/ui/skeleton";
 import OhifViewer from "@/components/ohif-viewer";
 import BasicViewer from "@/components/basic-viewer";
@@ -109,8 +110,11 @@ export default function WorklistContent() {
     }, []);
 
     // Table State
+    const initialMonthRange = useMemo(() => getCurrentMonthRange(), []);
     const [sorting, setSorting] = useState<SortingState>([{ id: "studyDate", desc: true }]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+        { id: "studyDate", value: initialMonthRange }
+    ]);
     const [globalFilter, setGlobalFilter] = useState("");
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
         aiResult: false,
@@ -120,7 +124,7 @@ export default function WorklistContent() {
         pageIndex: 0,
         pageSize: 10,
     });
-    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(initialMonthRange);
 
     const { addTask, updateTask } = useTaskActions();
     const searchParams = useSearchParams();
